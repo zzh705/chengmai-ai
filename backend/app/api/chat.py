@@ -71,6 +71,8 @@ def chat(req: ChatRequest) -> ChatResponse:
     ]
     if intent == "CREATION":
         actions.insert(0, Action(type="lab", label="打开活化实验室"))
+    if intent == "STORY":
+        actions.insert(0, Action(type="story", label="生成完整故事"))
 
     return ChatResponse(
         code=0,

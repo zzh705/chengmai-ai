@@ -207,3 +207,87 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* 测验卡片 */
+.quiz-card,
+.story-card {
+  margin-top: 10px;
+  padding: 14px 16px;
+  max-width: 76%;
+  background: #1b1713;
+  border: 1px solid #4a9d8f66;
+  border-radius: 12px;
+  font-size: 14px;
+}
+.story-card {
+  border-color: #c98ad466;
+}
+.quiz-q {
+  border-top: 1px dashed #3a332c;
+  padding: 10px 0;
+}
+.quiz-question {
+  color: #f3ece2;
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.quiz-opt {
+  text-align: left;
+  padding: 8px 12px;
+  border: 1px solid #3a332c;
+  border-radius: 8px;
+  background: #14110f;
+  color: #d8cfc0;
+  font-size: 13px;
+  cursor: pointer;
+}
+.quiz-opt:not(:disabled):hover {
+  border-color: #e8c56b;
+}
+.quiz-opt.correct {
+  border-color: #4a9d8f;
+  background: #4a9d8f33;
+  color: #8fd8c9;
+}
+.quiz-opt.wrong {
+  border-color: #b03a2e;
+  background: #b03a2e33;
+  color: #e89a90;
+}
+.quiz-explain {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #9a8f80;
+  line-height: 1.6;
+}
+
+/* 故事卡片 */
+.story-section {
+  border-top: 1px dashed #3a332c;
+  padding: 10px 0;
+}
+.story-section strong {
+  color: #c98ad4;
+  font-size: 13px;
+}
+.story-section p {
+  margin: 6px 0 0;
+  color: #d8cfc0;
+  line-height: 1.8;
+}
+.story-tips {
+  border-top: 1px dashed #3a332c;
+  padding-top: 10px;
+  color: #d8cfc0;
+}
+.story-tips ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  line-height: 1.7;
+  color: #b6ab9a;
+}

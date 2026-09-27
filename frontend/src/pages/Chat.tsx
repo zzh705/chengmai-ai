@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react'
 import { sendChat, type Action, type ChatResponse, type Source } from '../api/chat'
 import { fetchLearningPlan, type LearningPlan } from '../api/learning'
+import { generateQuiz, type QuizResponse } from '../api/quiz'
+import { generateStory, type StoryResponse } from '../api/story'
 import '../styles/chat.css'
 
 type Mode = 'scholar' | 'inheritor' | 'youth'
@@ -24,8 +26,21 @@ export default function Chat() {
   const [loading, setLoading] = useState(false)
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [plans, setPlans] = useState<Record<number, LearningPlan>>({})
-  const [planLoading, setPlanLoading] = useState<number | null>(null)
+  const [quizzes, setQuizzes] = useState<Record<number, QuizResponse>>({})
+  const [stories, setStories] = useState<Record<number, StoryResponse>>({})
+  const [picks, setPicks] = useState<Record<string, string>>({})
+  const [actionBusy, setActionBusy] = useState<string | null>(null)
   const listRef = useRef<HTMLDivElement>(null)
+
+  function topicFor(msgIndex: number, data: ChatResponse): string | undefined {
+    // 主题优先取知识库关联项，否则回退到该回答之前的用户原话
+    const related = data.related_items[0]?.name
+    if (related) return related
+    for (let i = msgIndex - 1; i >= 0; i--) {
+      if (messages[i].role === 'user') return messages[i].content
+    }
+    return undefined
+  }
 
   async function handleSend() {
     const text = input.trim()
@@ -51,27 +66,33 @@ export default function Chat() {
   }
 
   async function handleAction(msgIndex: number, action: Action, data: ChatResponse) {
-    if (action.type !== 'learning_plan') return
-    // 主题优先取知识库关联项，否则回退到该回答之前的用户原话
-    let topic = data.related_items[0]?.name
-    if (!topic) {
-      for (let i = msgIndex - 1; i >= 0; i--) {
-        if (messages[i].role === 'user') {
-          topic = messages[i].content
-          break
-        }
-      }
-    }
-    if (!topic) return
-    setPlanLoading(msgIndex)
+    const topic = topicFor(msgIndex, data)
+    if (!topic || actionBusy) return
+    const key = `${msgIndex}:${action.type}`
+    setActionBusy(key)
     try {
-      const plan = await fetchLearningPlan(topic, 7)
-      setPlans((prev) => ({ ...prev, [msgIndex]: plan }))
+      if (action.type === 'learning_plan') {
+        const plan = await fetchLearningPlan(topic, 7)
+        setPlans((prev) => ({ ...prev, [msgIndex]: plan }))
+      } else if (action.type === 'quiz') {
+        const quiz = await generateQuiz(topic, 3)
+        setQuizzes((prev) => ({ ...prev, [msgIndex]: quiz }))
+      } else if (action.type === 'story') {
+        const story = await generateStory(topic)
+        setStories((prev) => ({ ...prev, [msgIndex]: story }))
+      } else if (action.type === 'lab') {
+        alert('请在顶部导航打开「活化实验室」')
+        return
+      }
     } catch (e) {
-      alert(e instanceof Error ? e.message : '生成失败')
+      alert(e instanceof Error ? e.message : '操作失败')
     } finally {
-      setPlanLoading(null)
+      setActionBusy(null)
     }
+  }
+
+  function pick(msgIndex: number, qid: number, option: string) {
+    setPicks((prev) => ({ ...prev, [`${msgIndex}-${qid}`]: option }))
   }
 
   return (
@@ -97,7 +118,7 @@ export default function Chat() {
         {messages.length === 0 && (
           <div className="chat-empty">
             你想了解哪一种非遗？<br />
-            <span>例如：什么是苏绣 / 我只有 10 分钟了解剪纸</span>
+            <span>例如：什么是苏绣 / 把京剧讲给外国留学生听</span>
           </div>
         )}
         {messages.map((msg, i) => (
@@ -131,13 +152,14 @@ export default function Chat() {
                     <button
                       key={a.type}
                       className="action-btn"
-                      disabled={planLoading === i}
+                      disabled={actionBusy === `${i}:${a.type}`}
                       onClick={() => handleAction(i, a, msg.data!)}
                     >
-                      {planLoading === i && a.type === 'learning_plan' ? '生成中…' : a.label}
+                      {actionBusy === `${i}:${a.type}` ? '生成中…' : a.label}
                     </button>
                   ))}
                 </div>
+
                 {plans[i] && (
                   <div className="plan-card">
                     <div className="plan-title">
@@ -148,7 +170,9 @@ export default function Chat() {
                     </div>
                     {plans[i].days.map((d) => (
                       <div key={d.day} className="plan-day">
-                        <strong>Day {d.day} · {d.title}</strong>
+                        <strong>
+                          Day {d.day} · {d.title}
+                        </strong>
                         <ul>
                           {d.tasks.map((t, ti) => (
                             <li key={ti}>{t}</li>
@@ -156,6 +180,74 @@ export default function Chat() {
                         </ul>
                       </div>
                     ))}
+                  </div>
+                )}
+
+                {quizzes[i] && (
+                  <div className="quiz-card">
+                    <div className="plan-title">
+                      📝「{quizzes[i].topic}」知识挑战
+                      {quizzes[i].sources.length > 0 && (
+                        <span className="plan-src">依据：{quizzes[i].sources.join('、')}</span>
+                      )}
+                    </div>
+                    {quizzes[i].questions.map((q) => {
+                      const picked = picks[`${i}-${q.id}`]
+                      return (
+                        <div key={q.id} className="quiz-q">
+                          <div className="quiz-question">
+                            {q.id}. {q.question}
+                          </div>
+                          <div className="quiz-options">
+                            {q.options.map((opt) => {
+                              const chosen = picked === opt
+                              const isAnswer = opt === q.answer
+                              let cls = 'quiz-opt'
+                              if (picked && isAnswer) cls += ' correct'
+                              else if (chosen && !isAnswer) cls += ' wrong'
+                              return (
+                                <button
+                                  key={opt}
+                                  className={cls}
+                                  disabled={!!picked}
+                                  onClick={() => pick(i, q.id, opt)}
+                                >
+                                  {opt}
+                                </button>
+                              )
+                            })}
+                          </div>
+                          {picked && (
+                            <div className="quiz-explain">
+                              {picked === q.answer ? '✅ 答对了！' : '❌ 答错了，'}解析：
+                              {q.explanation}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+
+                {stories[i] && (
+                  <div className="story-card">
+                    <div className="plan-title">📖 {stories[i].title}</div>
+                    {stories[i].sections.map((s, si) => (
+                      <div key={si} className="story-section">
+                        <strong>{s.heading}</strong>
+                        <p>{s.content}</p>
+                      </div>
+                    ))}
+                    {stories[i].spread_tips.length > 0 && (
+                      <div className="story-tips">
+                        <strong>📢 传播建议</strong>
+                        <ul>
+                          {stories[i].spread_tips.map((t, ti) => (
+                            <li key={ti}>{t}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
