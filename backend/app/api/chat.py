@@ -14,6 +14,7 @@ from app.schemas.chat import (
     RelatedItem,
     Source,
 )
+from app.services import session_store
 from app.services.llm import chat as llm_chat
 
 router = APIRouter(prefix="/api", tags=["chat"])
@@ -23,9 +24,14 @@ router = APIRouter(prefix="/api", tags=["chat"])
 def chat(req: ChatRequest) -> ChatResponse:
     """承脉 AI 对话：意图识别 → 构建视角提示词 → 调用 Qwen3 → 按合同返回。"""
     intent = detect_intent(req.message)
+    session_id = req.session_id or str(uuid.uuid4())
 
     system_prompt = build_system_prompt(req.mode)
-    answer = llm_chat(req.message, system=system_prompt)
+    history = session_store.get_history(session_id)
+    answer = llm_chat(req.message, history=history, system=system_prompt)
+
+    session_store.append(session_id, "user", req.message)
+    session_store.append(session_id, "assistant", answer)
 
     actions = [
         Action(type="learning_plan", label="生成学习路线"),
@@ -36,7 +42,7 @@ def chat(req: ChatRequest) -> ChatResponse:
 
     return ChatResponse(
         code=0,
-        session_id=req.session_id or str(uuid.uuid4()),
+        session_id=session_id,
         answer=answer,
         sources=[],  # RAG 阶段接入，合同要求字段必须存在
         related_items=[],

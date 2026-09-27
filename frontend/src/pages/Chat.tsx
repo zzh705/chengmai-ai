@@ -21,6 +21,7 @@ export default function Chat() {
   const [input, setInput] = useState('')
   const [mode, setMode] = useState<Mode>('youth')
   const [loading, setLoading] = useState(false)
+  const [sessionId, setSessionId] = useState<string | null>(null)
   const listRef = useRef<HTMLDivElement>(null)
 
   async function handleSend() {
@@ -30,7 +31,8 @@ export default function Chat() {
     setInput('')
     setLoading(true)
     try {
-      const data = await sendChat({ message: text, mode })
+      const data = await sendChat({ message: text, mode, session_id: sessionId })
+      setSessionId(data.session_id)
       setMessages((prev) => [...prev, { role: 'assistant', content: data.answer, data }])
       requestAnimationFrame(() =>
         listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' }),
