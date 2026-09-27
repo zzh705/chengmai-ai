@@ -1,25 +1,15 @@
 """学习规划 Agent：生成结构化学习路径（总文档 3.4 / 11.2）。"""
 
-import json
-import re
-
 from app.knowledge.search import search as knowledge_search
 from app.schemas.learning import LearningDay, LearningPlanRequest
 from app.services.llm import chat as llm_chat
+from app.utils.json_parse import extract_json
 
 _SYSTEM = (
     "你是承脉 AI 的学习规划师。请根据主题生成循序渐进的学习计划，"
     "只输出 JSON，不要任何解释文字，格式：\n"
     '{"days": [{"day": 1, "title": "主题", "tasks": ["任务1", "任务2"]}]}'
 )
-
-
-def _parse_json(text: str) -> dict:
-    """从模型输出中提取 JSON（容忍 ```json 代码块等包裹）。"""
-    match = re.search(r"\{.*\}", text, re.S)
-    if not match:
-        raise ValueError("模型未返回有效 JSON")
-    return json.loads(match.group(0))
 
 
 def generate_plan(req: LearningPlanRequest) -> list[LearningDay]:
@@ -41,7 +31,7 @@ def generate_plan(req: LearningPlanRequest) -> list[LearningDay]:
         "最后一天安排产出/传播类任务，体现'知识→理解→实践→创作→传播'闭环。"
     )
 
-    data = _parse_json(llm_chat(user_prompt, system=_SYSTEM))
+    data = extract_json(llm_chat(user_prompt, system=_SYSTEM))
     days = [LearningDay(**d) for d in data.get("days", [])][: req.days]
     if len(days) < req.days:
         days += [

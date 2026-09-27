@@ -9,7 +9,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.chat import router as chat_router
+from app.api.creation import router as creation_router
 from app.api.graph import router as graph_router
+from app.api.heritage import router as heritage_router
 from app.api.learning import router as learning_router
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -32,6 +34,8 @@ app.add_middleware(
 app.include_router(chat_router)
 app.include_router(learning_router)
 app.include_router(graph_router)
+app.include_router(creation_router)
+app.include_router(heritage_router)
 
 
 @app.get("/api/health")
