@@ -13,6 +13,8 @@ from app.api.creation import router as creation_router
 from app.api.graph import router as graph_router
 from app.api.heritage import router as heritage_router
 from app.api.learning import router as learning_router
+from app.api.quiz import router as quiz_router
+from app.api.story import router as story_router
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 load_dotenv(PROJECT_ROOT / ".env")
@@ -36,6 +38,8 @@ app.include_router(learning_router)
 app.include_router(graph_router)
 app.include_router(creation_router)
 app.include_router(heritage_router)
+app.include_router(quiz_router)
+app.include_router(story_router)
 
 
 @app.get("/api/health")
