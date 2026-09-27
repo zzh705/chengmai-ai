@@ -3,6 +3,7 @@ import { sendChat, type Action, type ChatResponse, type Source } from '../api/ch
 import { fetchLearningPlan, type LearningPlan } from '../api/learning'
 import { generateQuiz, type QuizResponse } from '../api/quiz'
 import { generateStory, type StoryResponse } from '../api/story'
+import { recordProgress } from '../api/progress'
 import '../styles/chat.css'
 
 type Mode = 'scholar' | 'inheritor' | 'youth'
@@ -51,6 +52,10 @@ export default function Chat() {
     try {
       const data = await sendChat({ message: text, mode, session_id: sessionId })
       setSessionId(data.session_id)
+      if (data.related_items.length > 0) {
+        const it = data.related_items[0]
+        recordProgress('view', { id: it.id, name: it.name })
+      }
       setMessages((prev) => [...prev, { role: 'assistant', content: data.answer, data }])
       requestAnimationFrame(() =>
         listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' }),
@@ -74,6 +79,7 @@ export default function Chat() {
       if (action.type === 'learning_plan') {
         const plan = await fetchLearningPlan(topic, 7)
         setPlans((prev) => ({ ...prev, [msgIndex]: plan }))
+        recordProgress('learning_plan', { name: topic })
       } else if (action.type === 'quiz') {
         const quiz = await generateQuiz(topic, 3)
         setQuizzes((prev) => ({ ...prev, [msgIndex]: quiz }))
@@ -93,6 +99,11 @@ export default function Chat() {
 
   function pick(msgIndex: number, qid: number, option: string) {
     setPicks((prev) => ({ ...prev, [`${msgIndex}-${qid}`]: option }))
+    const quiz = quizzes[msgIndex]
+    const q = quiz?.questions.find((x) => x.id === qid)
+    if (quiz && q) {
+      recordProgress('quiz_answer', { name: quiz.topic }, { correct: option === q.answer })
+    }
   }
 
   return (

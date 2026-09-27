@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { fetchHeritageList, type HeritageSummary } from '../api/heritage'
 import { fetchLearningPlan, type LearningPlan } from '../api/learning'
+import { recordProgress } from '../api/progress'
 import '../styles/path.css'
 
 const DAYS = [3, 7, 14]
@@ -27,7 +28,9 @@ export default function Path() {
     setLoading(true)
     setError('')
     try {
-      setPlan(await fetchLearningPlan(topic.trim(), days))
+      const p = await fetchLearningPlan(topic.trim(), days)
+      setPlan(p)
+      recordProgress('learning_plan', { name: topic.trim() })
     } catch (e) {
       setError(e instanceof Error ? e.message : '生成失败')
     } finally {

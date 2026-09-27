@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { generateCreation, type CreationResponse } from '../api/creation'
 import { fetchHeritageList, type HeritageSummary } from '../api/heritage'
+import { recordProgress } from '../api/progress'
 import '../styles/lab.css'
 
 const OUTPUT_TYPES = [
@@ -33,7 +34,9 @@ export default function Lab() {
     setError('')
     try {
       const name = list.find((h) => h.id === heritage)?.name ?? heritage
-      setResult(await generateCreation(name, requirement.trim(), outputType))
+      const resp = await generateCreation(name, requirement.trim(), outputType)
+      setResult(resp)
+      recordProgress('creation', { name })
     } catch (e) {
       setError(e instanceof Error ? e.message : '生成失败')
     } finally {
