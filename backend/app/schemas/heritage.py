@@ -9,6 +9,7 @@ class HeritageSummary(BaseModel):
     category: str
     region: str
     level: str
+    image: str  # 前端图片路径（public/images/heritage/{id}.jpg）
 
 
 class HeritageDetail(BaseModel):
@@ -18,6 +19,7 @@ class HeritageDetail(BaseModel):
     region: str
     era: str
     level: str
+    image: str
     description: str
     cultural_meaning: str
     craft_process: str

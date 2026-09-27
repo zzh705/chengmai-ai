@@ -94,14 +94,65 @@
 
 ---
 
-## 接口清单（后续逐步补充）
+## 接口清单（2026-09-28 更新）
 
 | 状态 | 接口 | 用途 |
 |------|------|------|
-| ✅ 已定义 | POST /api/chat | AI 对话 |
-| ⬜ 待定义 | POST /api/search | 非遗知识库搜索 |
-| ⬜ 待定义 | GET /api/heritage/{id} | 非遗项目详情 |
-| ⬜ 待定义 | GET /api/graph/{id} | 知识图谱关系 |
-| ⬜ 待定义 | POST /api/learning-plan | 学习路径生成 |
-| ⬜ 待定义 | POST /api/quiz/generate | 测验生成 |
-| ⬜ 待定义 | POST /api/creation/generate | 活化实验室创作 |
+| ✅ 已实现 | POST /api/chat | AI 对话（含意图/来源/证据分/动作） |
+| ✅ 已实现 | GET /api/heritage | 知识库列表（24 项） |
+| ✅ 已实现 | GET /api/heritage/{id} | 非遗项目详情（含 `image`、`sources`） |
+| ✅ 已实现 | GET /api/graph · /api/graph/{id} | 知识图谱全图 / 一跳子图（含 `source` 节点） |
+| ✅ 已实现 | POST /api/learning-plan | 学习路径生成 |
+| ✅ 已实现 | POST /api/quiz/generate | 测验生成 |
+| ✅ 已实现 | POST /api/story/generate | 故事生成 |
+| ✅ 已实现 | POST /api/creation/generate | 活化实验室创作 |
+| ✅ 已实现 | POST /api/user/progress | 记录进度事件 |
+| ✅ 已实现 | GET /api/user/profile/{uid} | 个人传承档案 |
+| ✅ 已实现 | GET /api/health | 健康检查 |
+
+### POST /api/learning-plan（V2，2026-09-28 扩展）
+
+请求：
+
+```json
+{
+  "topic": "苏绣",
+  "days": 7,
+  "level": "beginner",
+  "goal": "understand",
+  "daily_minutes": 60
+}
+```
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `goal` | string | `understand` 入门了解 / `master` 深入掌握 / `teach` 讲给别人听 |
+| `daily_minutes` | int | 15-240，决定每日任务量（≤30→1-2 个，≤60→2-3 个，其余 3-4 个） |
+
+返回：`{code, topic, days:[{day,title,tasks}], sources}`（不变）。
+
+### POST /api/creation/generate（V2，2026-09-28 扩展）
+
+请求：
+
+```json
+{
+  "heritage": "剪纸",
+  "requirement": "校园社团一周活动",
+  "output_type": "plan",
+  "style": "guochao",
+  "audience": "campus"
+}
+```
+
+| 字段 | 取值 |
+|------|------|
+| `output_type` | `plan` 文创 / `event` 活动 / `video` 短视频 / `exhibit` 展览（新增） |
+| `style` | `guochao` 国潮融合 / `serious` 学术严谨 / `lively` 活泼轻趣（新增） |
+| `audience` | `campus` 校园 / `community` 社区 / `overseas` 海外中文学习者（新增） |
+
+### GET /api/heritage（V2，2026-09-28 扩展）
+
+列表与详情均新增 `image` 字段（如 `images/heritage/h_suxiu.jpg`，
+指向 `frontend/public/images/heritage/`，404 时前端回退渐变字卡）；
+图片版权标注见同目录 `credits.json`。

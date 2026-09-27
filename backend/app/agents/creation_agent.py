@@ -26,6 +26,19 @@ _OUTPUT_HINT = {
     "plan": "输出文创/综合创意方案",
     "event": "侧重校园活动策划方案",
     "video": "侧重短视频脚本与传播方案",
+    "exhibit": "侧重线下展览/体验展陈方案",
+}
+
+_STYLE_HINT = {
+    "guochao": "风格：国潮融合（传统符号与现代审美强碰撞，视觉冲击力优先）",
+    "serious": "风格：学术严谨（表述克制专业，适配博物馆/学术传播场景）",
+    "lively": "风格：活泼轻趣（网感语言、互动游戏化，适合年轻人社交传播）",
+}
+
+_AUDIENCE_HINT = {
+    "campus": "受众：校园师生（贴合课余时间、社团与校园媒介）",
+    "community": "受众：社区居民（贴近日常生活、老少咸宜的参与方式）",
+    "overseas": "受众：海外中文学习者（兼顾语言学习与文化理解，降低文化折扣）",
 }
 
 
@@ -43,7 +56,9 @@ def generate_creation(req: CreationRequest) -> tuple[CreationResult, list[str]]:
     user_prompt = (
         f"非遗项目：{req.heritage}\n"
         f"用户需求：{req.requirement}\n"
-        f"方案类型：{_OUTPUT_HINT.get(req.output_type, _OUTPUT_HINT['plan'])}"
+        f"方案类型：{_OUTPUT_HINT.get(req.output_type, _OUTPUT_HINT['plan'])}\n"
+        f"{_STYLE_HINT.get(req.style, _STYLE_HINT['guochao'])}\n"
+        f"{_AUDIENCE_HINT.get(req.audience, _AUDIENCE_HINT['campus'])}\n"
         f"{context}\n"
         "流程：先从资料中提炼传统元素与不可改变的文化语义，再设计现代化落地方案。\n"
         "字段含义：\n"

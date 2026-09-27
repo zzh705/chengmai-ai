@@ -3,7 +3,7 @@
 export interface GraphNode {
   id: string
   label: string
-  type: 'heritage' | 'category' | 'region' | 'person' | 'work'
+  type: 'heritage' | 'category' | 'region' | 'person' | 'work' | 'source'
 }
 
 export interface GraphLink {

@@ -28,9 +28,10 @@ def test_heritage_list(client: TestClient):
     resp = client.get("/api/heritage")
     assert resp.status_code == 200
     items = resp.json()
-    assert len(items) == 10
+    assert len(items) >= 24
     for it in items:
-        assert {"id", "name", "category", "region", "level"} <= set(it)
+        assert {"id", "name", "category", "region", "level", "image"} <= set(it)
+        assert it["image"].endswith(".jpg")
 
 
 def test_heritage_detail_with_sources(client: TestClient):

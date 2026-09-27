@@ -18,6 +18,7 @@ def list_heritage() -> list[HeritageSummary]:
             category=item["category"],
             region=item["region"],
             level=item["level"],
+            image=f"images/heritage/{item['id']}.jpg",
         )
         for item in _load_items()
     ]
@@ -28,5 +29,9 @@ def get_heritage(item_id: str) -> HeritageDetail:
     """单个项目完整详情。"""
     for item in _load_items():
         if item["id"] == item_id:
-            return HeritageDetail(**item, sources=sources_of(item))
+            return HeritageDetail(
+                **item,
+                image=f"images/heritage/{item['id']}.jpg",
+                sources=sources_of(item),
+            )
     raise HTTPException(status_code=404, detail=f"项目不存在: {item_id}")

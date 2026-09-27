@@ -17,15 +17,32 @@ export interface CreationResponse {
   sources: string[]
 }
 
+export type OutputType = 'plan' | 'event' | 'video' | 'exhibit'
+export type CreationStyle = 'guochao' | 'serious' | 'lively'
+export type Audience = 'campus' | 'community' | 'overseas'
+
+export interface CreationOptions {
+  outputType?: OutputType
+  style?: CreationStyle
+  audience?: Audience
+}
+
 export async function generateCreation(
   heritage: string,
   requirement: string,
-  outputType: 'plan' | 'event' | 'video' = 'plan',
+  opts: CreationOptions | OutputType = {},
 ): Promise<CreationResponse> {
+  const o: CreationOptions = typeof opts === 'string' ? { outputType: opts } : opts
   const resp = await fetch('/api/creation/generate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ heritage, requirement, output_type: outputType }),
+    body: JSON.stringify({
+      heritage,
+      requirement,
+      output_type: o.outputType ?? 'plan',
+      style: o.style ?? 'guochao',
+      audience: o.audience ?? 'campus',
+    }),
   })
   if (!resp.ok) throw new Error(`方案生成失败：HTTP ${resp.status}`)
   return (await resp.json()) as CreationResponse

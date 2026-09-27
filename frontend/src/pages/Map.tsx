@@ -26,6 +26,23 @@ function provKey(name: string): string {
 const W = 960
 const H = 720
 
+/**
+ * d3-geo 按球面绕向解释多边形：GeoJSON 规范的逆时针外环会被当成"除该省以外的
+ * 全世界"，导致每个省都画出全图边框（整页被涂红）。统一反转环向即可正常渲染。
+ */
+function fixWinding(geo: GeoJSON.FeatureCollection): GeoJSON.FeatureCollection {
+  for (const f of geo.features) {
+    const g = f.geometry
+    if (!g) continue
+    if (g.type === 'Polygon') {
+      g.coordinates = g.coordinates.map((ring) => ring.slice().reverse())
+    } else if (g.type === 'MultiPolygon') {
+      g.coordinates = g.coordinates.map((poly) => poly.map((ring) => ring.slice().reverse()))
+    }
+  }
+  return geo
+}
+
 export default function Map({ onNavigate }: Props) {
   const [geo, setGeo] = useState<GeoJSON.FeatureCollection | null>(null)
   const [list, setList] = useState<HeritageSummary[]>([])
@@ -36,7 +53,7 @@ export default function Map({ onNavigate }: Props) {
   useEffect(() => {
     fetch('/china.json')
       .then((r) => r.json())
-      .then(setGeo)
+      .then((g) => setGeo(fixWinding(g)))
       .catch((e) => setError(`地图加载失败：${e.message}`))
     fetchHeritageList().then(setList).catch((e) => setError(e.message))
   }, [])

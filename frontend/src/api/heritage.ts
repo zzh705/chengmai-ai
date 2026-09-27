@@ -6,6 +6,7 @@ export interface HeritageSummary {
   category: string
   region: string
   level: string
+  image: string
 }
 
 export async function fetchHeritageList(): Promise<HeritageSummary[]> {

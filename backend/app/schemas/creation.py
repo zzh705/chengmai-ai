@@ -6,7 +6,9 @@ from pydantic import BaseModel, Field
 class CreationRequest(BaseModel):
     heritage: str = Field(..., min_length=1, description="非遗项目名，如'剪纸'")
     requirement: str = Field(..., min_length=1, description="用户的创意需求描述")
-    output_type: str = Field("plan", description="方案类型: plan文创/ event活动/ video短视频")
+    output_type: str = Field("plan", description="方案类型: plan文创/ event活动/ video短视频/ exhibit展览")
+    style: str = Field("guochao", description="风格: guochao国潮融合/ serious学术严谨/ lively活泼轻趣")
+    audience: str = Field("campus", description="受众: campus校园/ community社区/ overseas海外中文学习者")
 
 
 class CreationResult(BaseModel):

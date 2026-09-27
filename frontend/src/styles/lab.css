@@ -161,3 +161,105 @@
   font-size: 14px;
   color: #d8cfc0;
 }
+
+/* 风格/受众/类型选择区 */
+.lab-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.lab-opt label {
+  display: block;
+  font-size: 12px;
+  color: #9a8f80;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+.lab-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.lab-presets button {
+  padding: 6px 13px;
+  border: 1px dashed #3a332c;
+  border-radius: 999px;
+  background: transparent;
+  color: #9a8f80;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.lab-presets button:hover {
+  border-color: #e8c56b;
+  color: #e8c56b;
+}
+.lab-actions {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+.lab-actions .lab-generate {
+  flex: 1;
+}
+.lab-clear {
+  padding: 0 18px;
+  border: 1px solid #3a332c;
+  border-radius: 8px;
+  background: transparent;
+  color: #9a8f80;
+  font-size: 13px;
+  cursor: pointer;
+}
+.lab-clear:hover {
+  border-color: #e07a6a;
+  color: #e07a6a;
+}
+
+/* 历史方案 */
+.lab-history {
+  max-width: 760px;
+  margin: 16px auto 0;
+  padding: 0 20px;
+}
+.lab-history h3 {
+  font-size: 14px;
+  color: #e8c56b;
+  letter-spacing: 2px;
+  margin: 0 0 10px;
+}
+.lab-history h3 em {
+  font-style: normal;
+  font-size: 11px;
+  color: #6e655a;
+}
+.lab-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.lab-history-list button {
+  text-align: left;
+  background: #1b1713;
+  border: 1px solid #2e2823;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.lab-history-list button:hover,
+.lab-history-list button.active {
+  border-color: #e8c56b;
+}
+.lab-history-list strong {
+  color: #f3ece2;
+  font-size: 14px;
+  font-weight: 600;
+}
+.lab-history-list span {
+  color: #6e655a;
+  font-size: 11px;
+}

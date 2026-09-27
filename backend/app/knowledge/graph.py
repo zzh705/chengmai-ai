@@ -6,6 +6,15 @@ from pathlib import Path
 
 _DATA_DIR = Path(__file__).resolve().parent.parent.parent.parent / "data" / "structured"
 
+# 来源节点短标签（全称太长会压垮图谱布局）
+_SOURCE_LABEL = {
+    "src_ihchina": "中国非遗网",
+    "src_zhwiki": "维基百科",
+    "src_cnfolk": "中国民俗学网",
+    "src_unesco": "UNESCO",
+    "src_baike": "百科资料",
+}
+
 
 def _strip_paren(text: str) -> str:
     """去掉括号注释，让节点标签更干净：'姚惠芬（国家级…）' → '姚惠芬'。"""
@@ -60,6 +69,9 @@ def build_graph() -> dict:
             wid = f"work::{wname}"
             add_node(wid, wname, "work")
             add_link(item["id"], wid, "产生作品")
+        for sid in item.get("source_ids", []):
+            add_node(sid, _SOURCE_LABEL.get(sid, sid), "source")
+            add_link(item["id"], sid, "引用")
 
     return {"nodes": list(nodes.values()), "links": links}
 

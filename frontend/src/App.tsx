@@ -70,7 +70,7 @@ function App() {
           {page === 'home' && <Home onNavigate={navigate} />}
           {page === 'chat' && <Chat initialQuery={chatQuery} />}
           {page === 'knowledge' && <Knowledge />}
-          {page === 'graph' && <KnowledgeGraph />}
+          {page === 'graph' && <KnowledgeGraph onNavigate={navigate} />}
           {page === 'map' && <Map onNavigate={navigate} />}
           {page === 'path' && <Path />}
           {page === 'lab' && <Lab />}

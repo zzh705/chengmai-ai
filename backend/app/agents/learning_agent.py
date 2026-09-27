@@ -12,6 +12,13 @@ _SYSTEM = (
 )
 
 
+_GOAL_TEXT = {
+    "understand": "目标是入门了解：建立整体认知即可，不必深究",
+    "master": "目标是深入掌握：安排临摹/研读/对比分析等深度任务",
+    "teach": "目标是能讲给别人听：每天安排一个'向他人转述/做小分享'的输出任务",
+}
+
+
 def generate_plan(req: LearningPlanRequest) -> list[LearningDay]:
     """生成学习路径；优先结合知识库检索到的项目信息。"""
     items = knowledge_search(req.topic, top_k=2)
@@ -23,11 +30,22 @@ def generate_plan(req: LearningPlanRequest) -> list[LearningDay]:
         )
         context = f"\n知识库相关项目：\n{context}"
 
+    # 按每日时长换算任务量：30分钟1-2个、60分钟2-3个、90分钟以上3-4个
+    if req.daily_minutes <= 30:
+        task_count = "1-2"
+    elif req.daily_minutes <= 60:
+        task_count = "2-3"
+    else:
+        task_count = "3-4"
+
     user_prompt = (
         f"主题：{req.topic}\n天数：{req.days} 天\n"
-        f"学习者水平：{'零基础入门' if req.level == 'beginner' else '有一定了解'}"
+        f"学习者水平：{'零基础入门' if req.level == 'beginner' else '有一定了解'}\n"
+        f"{_GOAL_TEXT.get(req.goal, _GOAL_TEXT['understand'])}\n"
+        f"每天可投入约 {req.daily_minutes} 分钟，每天安排 {task_count} 个任务，"
+        "单个任务的用时需与该时长相符\n"
         f"{context}\n"
-        "要求：每天 2-4 个具体任务，任务要可执行（如'观察一幅XX作品'），"
+        "要求：任务要具体可执行（如'观察一幅XX作品'并写出3个观察点），"
         "最后一天安排产出/传播类任务，体现'知识→理解→实践→创作→传播'闭环。"
     )
 

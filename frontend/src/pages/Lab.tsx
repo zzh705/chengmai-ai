@@ -1,22 +1,70 @@
 import { useEffect, useState } from 'react'
-import { generateCreation, type CreationResponse } from '../api/creation'
+import {
+  generateCreation,
+  type Audience,
+  type CreationResponse,
+  type CreationStyle,
+  type OutputType,
+} from '../api/creation'
 import { fetchHeritageList, type HeritageSummary } from '../api/heritage'
 import { recordProgress } from '../api/progress'
 import '../styles/lab.css'
 
-const OUTPUT_TYPES = [
+const OUTPUT_TYPES: { key: OutputType; label: string }[] = [
   { key: 'plan', label: '文创方案' },
   { key: 'event', label: '校园活动' },
   { key: 'video', label: '短视频脚本' },
-] as const
+  { key: 'exhibit', label: '展览策划' },
+]
+
+const STYLES: { key: CreationStyle; label: string }[] = [
+  { key: 'guochao', label: '国潮融合' },
+  { key: 'serious', label: '学术严谨' },
+  { key: 'lively', label: '活泼轻趣' },
+]
+
+const AUDIENCES: { key: Audience; label: string }[] = [
+  { key: 'campus', label: '校园' },
+  { key: 'community', label: '社区' },
+  { key: 'overseas', label: '海外中文学习者' },
+]
+
+const PRESETS = [
+  '做成校园社团可以落地的一周活动',
+  '让外国朋友也能看懂并愿意分享',
+  '设计一款年轻人愿意买的文创',
+  '适合发在社交平台的互动创意',
+]
+
+interface HistoryItem {
+  id: number
+  heritage: string
+  typeLabel: string
+  title: string
+  time: string
+  data: CreationResponse
+}
+
+const HISTORY_KEY = 'lab_history'
+
+function loadHistory(): HistoryItem[] {
+  try {
+    return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]')
+  } catch {
+    return []
+  }
+}
 
 export default function Lab() {
   const [list, setList] = useState<HeritageSummary[]>([])
   const [heritage, setHeritage] = useState('')
   const [requirement, setRequirement] = useState('')
-  const [outputType, setOutputType] = useState<'plan' | 'event' | 'video'>('plan')
+  const [outputType, setOutputType] = useState<OutputType>('plan')
+  const [style, setStyle] = useState<CreationStyle>('guochao')
+  const [audience, setAudience] = useState<Audience>('campus')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<CreationResponse | null>(null)
+  const [history, setHistory] = useState<HistoryItem[]>(loadHistory)
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -34,14 +82,36 @@ export default function Lab() {
     setError('')
     try {
       const name = list.find((h) => h.id === heritage)?.name ?? heritage
-      const resp = await generateCreation(name, requirement.trim(), outputType)
+      const resp = await generateCreation(name, requirement.trim(), {
+        outputType,
+        style,
+        audience,
+      })
       setResult(resp)
       recordProgress('creation', { name })
+
+      // 存入历史（最多 10 条）
+      const item: HistoryItem = {
+        id: Date.now(),
+        heritage: name,
+        typeLabel: OUTPUT_TYPES.find((t) => t.key === outputType)?.label ?? '',
+        title: resp.result.title,
+        time: new Date().toLocaleString('zh-CN', { hour12: false }),
+        data: resp,
+      }
+      const next = [item, ...history].slice(0, 10)
+      setHistory(next)
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(next))
     } catch (e) {
       setError(e instanceof Error ? e.message : '生成失败')
     } finally {
       setLoading(false)
     }
+  }
+
+  function clearHistory() {
+    setHistory([])
+    localStorage.removeItem(HISTORY_KEY)
   }
 
   const r = result?.result
@@ -61,28 +131,101 @@ export default function Lab() {
             </option>
           ))}
         </select>
-        <div className="lab-types">
-          {OUTPUT_TYPES.map((t) => (
-            <button
-              key={t.key}
-              className={outputType === t.key ? 'active' : ''}
-              onClick={() => setOutputType(t.key)}
-            >
-              {t.label}
-            </button>
-          ))}
+
+        <div className="lab-row">
+          <div className="lab-opt">
+            <label>方案类型</label>
+            <div className="lab-types">
+              {OUTPUT_TYPES.map((t) => (
+                <button
+                  key={t.key}
+                  className={outputType === t.key ? 'active' : ''}
+                  onClick={() => setOutputType(t.key)}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="lab-opt">
+            <label>创作风格</label>
+            <div className="lab-types">
+              {STYLES.map((s) => (
+                <button
+                  key={s.key}
+                  className={style === s.key ? 'active' : ''}
+                  onClick={() => setStyle(s.key)}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="lab-opt">
+            <label>目标受众</label>
+            <div className="lab-types">
+              {AUDIENCES.map((a) => (
+                <button
+                  key={a.key}
+                  className={audience === a.key ? 'active' : ''}
+                  onClick={() => setAudience(a.key)}
+                >
+                  {a.label}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
+
         <textarea
           rows={3}
           value={requirement}
           onChange={(e) => setRequirement(e.target.value)}
           placeholder="描述你的创意需求，例如：把剪纸和现代校园文化结合，做一个有传播效果的社团活动…"
         />
-        <button className="lab-generate" onClick={handleGenerate} disabled={loading}>
-          {loading ? '实验室分析中…' : '生成活化方案'}
-        </button>
+        <div className="lab-presets">
+          {PRESETS.map((p) => (
+            <button key={p} onClick={() => setRequirement(p)}>
+              {p}
+            </button>
+          ))}
+        </div>
+
+        <div className="lab-actions">
+          <button className="lab-generate" onClick={handleGenerate} disabled={loading}>
+            {loading ? '实验室分析中…' : result ? '换一个方案' : '生成活化方案'}
+          </button>
+          {history.length > 0 && (
+            <button className="lab-clear" onClick={clearHistory}>
+              清空历史
+            </button>
+          )}
+        </div>
         {error && <div className="lab-error">{error}</div>}
       </div>
+
+      {/* 历史方案 */}
+      {history.length > 0 && (
+        <div className="lab-history">
+          <h3>
+            历史方案 <em>（本地保存 {history.length} 条）</em>
+          </h3>
+          <div className="lab-history-list">
+            {history.map((h) => (
+              <button
+                key={h.id}
+                className={result?.result.title === h.title ? 'active' : ''}
+                onClick={() => setResult(h.data)}
+              >
+                <strong>{h.title}</strong>
+                <span>
+                  {h.heritage} · {h.typeLabel} · {h.time}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {r && result && (
         <div className="lab-result">
