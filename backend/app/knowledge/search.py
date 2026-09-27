@@ -1,8 +1,10 @@
-"""非遗知识检索（V1 关键词/字面匹配版，Phase 2 升级为 Embedding 向量检索）。"""
+"""非遗知识检索（混合版：Embedding 语义检索为主，关键词匹配兜底）。"""
 
 import json
 from functools import lru_cache
 from pathlib import Path
+
+from app.rag import vector_store
 
 _DATA_DIR = Path(__file__).resolve().parent.parent.parent.parent / "data" / "structured"
 
@@ -36,9 +38,9 @@ def _bigrams(text: str) -> set[str]:
     return {text[i : i + 2] for i in range(len(text) - 1)}
 
 
-def search(query: str, top_k: int = 3) -> list[dict]:
-    """按相关度返回匹配的非遗项目（含 score 字段）。"""
-    results = []
+def _keyword_search(query: str) -> dict[str, float]:
+    """关键词/字面匹配打分，返回 {item_id: score}。"""
+    scores: dict[str, float] = {}
     query_bigrams = _bigrams(query)
     for item in _load_items():
         score = sum(weight for term, weight in _item_terms(item) if term in query)
@@ -46,9 +48,34 @@ def search(query: str, top_k: int = 3) -> list[dict]:
             overlap = len(query_bigrams & _bigrams(item["description"])) / len(query_bigrams)
             score = round(overlap * 4, 2)
         if score > 0:
-            results.append({**item, "score": score})
-    results.sort(key=lambda x: x["score"], reverse=True)
-    return results[:top_k]
+            scores[item["id"]] = score
+    return scores
+
+
+def _vector_search(query: str) -> dict[str, float]:
+    """语义检索打分，返回 {item_id: score}；失败时静默降级为空。"""
+    try:
+        hits = vector_store.search(query, _load_items())
+    except Exception:
+        return {}
+    scores: dict[str, float] = {}
+    for h in hits:
+        points = round(h["similarity"] * 10, 2)
+        item_id = h["item_id"]
+        scores[item_id] = max(scores.get(item_id, 0.0), points)
+    return scores
+
+
+def search(query: str, top_k: int = 3) -> list[dict]:
+    """混合检索：两路分数各取最大值后排序（两个量纲都换算到 0~10）。"""
+    kw, vec = _keyword_search(query), _vector_search(query)
+    merged = {
+        item_id: max(kw.get(item_id, 0.0), vec.get(item_id, 0.0))
+        for item_id in set(kw) | set(vec)
+    }
+    ranked = sorted(merged.items(), key=lambda x: x[1], reverse=True)[:top_k]
+    items_by_id = {it["id"]: it for it in _load_items()}
+    return [{**items_by_id[i], "score": s} for i, s in ranked if i in items_by_id and s > 0]
 
 
 def sources_of(item: dict) -> list[dict]:

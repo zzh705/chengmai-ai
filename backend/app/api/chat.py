@@ -34,7 +34,7 @@ def _evidence_score(items: list[dict], sources: list[Source]) -> EvidenceScore:
     """计算证据分（总文档 10.3，工程指标而非事实真伪证明）。"""
     if not items:
         return EvidenceScore()
-    relevance = round(min(0.99, 0.55 + 0.12 * items[0]["score"]), 2)
+    relevance = round(min(0.99, 0.4 + 0.06 * items[0]["score"]), 2)
     credibility = credibility_of([s.model_dump() for s in sources])
     coverage = round(min(1.0, len(items) / 2), 2)
     total = round(relevance * 0.5 + credibility * 0.3 + coverage * 0.2, 2)
