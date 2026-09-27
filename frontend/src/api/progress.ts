@@ -15,6 +15,7 @@ export interface Profile {
   viewed: { item_id: string; name: string; count: number }[]
   learning_plans: { topic: string; ts: string }[]
   quiz: { answered: number; correct: number; accuracy: number }
+  quiz_by_topic: { topic: string; answered: number; correct: number; accuracy: number }[]
   creations: { topic: string; ts: string }[]
   interests: { category: string; count: number }[]
 }

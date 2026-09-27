@@ -1,0 +1,140 @@
+/* 非遗地图 */
+.map-page {
+  height: 100%;
+  overflow-y: auto;
+  background: #14110f;
+  color: #f3ece2;
+  padding-bottom: 40px;
+}
+.map-header {
+  text-align: center;
+  padding: 26px 20px 4px;
+}
+.map-header h1 {
+  margin: 0;
+  font-size: 24px;
+  letter-spacing: 5px;
+  color: #e8c56b;
+}
+.map-header p {
+  color: #9a8f80;
+  font-size: 13px;
+  margin-top: 8px;
+}
+.map-error {
+  text-align: center;
+  color: #e07a6a;
+  padding: 12px;
+}
+
+.map-wrap {
+  position: relative;
+  max-width: 900px;
+  margin: 8px auto 0;
+  padding: 0 16px;
+}
+.map-svg {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.4));
+}
+.map-prov {
+  stroke: #0e0c0a;
+  stroke-width: 1.2;
+  cursor: pointer;
+  transition: opacity 0.15s, stroke 0.15s;
+}
+.map-prov:hover {
+  stroke: #e8c56b;
+  stroke-width: 2;
+}
+.map-prov.is-selected {
+  stroke: #e8c56b;
+  stroke-width: 2.4;
+}
+.map-prov:not(.has-items) {
+  cursor: default;
+}
+.map-prov:not(.has-items):hover {
+  stroke: #0e0c0a;
+  stroke-width: 1.2;
+}
+
+.map-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #9a8f80;
+  font-size: 12px;
+  margin-top: 4px;
+}
+.map-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  display: inline-block;
+}
+.map-dot.low {
+  background: #241f1b;
+  margin-left: 10px;
+}
+.map-dot.high {
+  background: rgba(176, 58, 46, 1);
+}
+
+.map-tip {
+  position: absolute;
+  top: 8px;
+  right: 26px;
+  background: #1b1713;
+  border: 1px solid #e8c56b;
+  color: #e8c56b;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.map-panel {
+  max-width: 900px;
+  margin: 6px auto;
+  padding: 0 16px;
+}
+.map-panel h2 {
+  font-size: 16px;
+  color: #e8c56b;
+  letter-spacing: 2px;
+  margin: 14px 0 10px;
+}
+.map-empty {
+  color: #6e655a;
+  font-size: 13px;
+}
+.map-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 10px;
+}
+.map-item {
+  background: #1b1713;
+  border: 1px solid #2e2823;
+  border-radius: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.map-item:hover {
+  border-color: #e8c56b;
+  transform: translateY(-2px);
+}
+.map-item strong {
+  display: block;
+  color: #f3ece2;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+.map-item span {
+  color: #9a8f80;
+  font-size: 12px;
+}

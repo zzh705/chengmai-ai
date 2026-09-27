@@ -39,6 +39,7 @@ def profile(user_id: str) -> dict:
     plan_topics: list[dict] = []
     creations: list[dict] = []
     quiz = {"answered": 0, "correct": 0}
+    quiz_by_topic: dict[str, dict] = {}
     category_counts: dict[str, int] = defaultdict(int)
 
     for e in events:
@@ -55,8 +56,15 @@ def profile(user_id: str) -> dict:
             quiz["answered"] += 1
             if e["detail"].get("correct"):
                 quiz["correct"] += 1
+            topic = e["item_name"] or "综合"
+            t = quiz_by_topic.setdefault(topic, {"topic": topic, "answered": 0, "correct": 0})
+            t["answered"] += 1
+            if e["detail"].get("correct"):
+                t["correct"] += 1
 
     quiz["accuracy"] = round(quiz["correct"] / quiz["answered"], 2) if quiz["answered"] else 0.0
+    for t in quiz_by_topic.values():
+        t["accuracy"] = round(t["correct"] / t["answered"], 2)
     interests = sorted(
         [{"category": c, "count": n} for c, n in category_counts.items()],
         key=lambda x: x["count"],
@@ -74,6 +82,7 @@ def profile(user_id: str) -> dict:
         "viewed": list(viewed.values()),
         "learning_plans": plan_topics[-10:],
         "quiz": quiz,
+        "quiz_by_topic": sorted(quiz_by_topic.values(), key=lambda x: x["answered"], reverse=True),
         "creations": creations[-10:],
         "interests": interests,
     }

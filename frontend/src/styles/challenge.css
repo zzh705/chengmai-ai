@@ -1,0 +1,194 @@
+/* 非遗挑战页 */
+.ch-page {
+  height: 100%;
+  overflow-y: auto;
+  background: #14110f;
+  color: #f3ece2;
+  padding-bottom: 40px;
+}
+.ch-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9a8f80;
+}
+.ch-header {
+  text-align: center;
+  padding: 26px 20px 6px;
+}
+.ch-header h1 {
+  margin: 0;
+  font-size: 24px;
+  letter-spacing: 5px;
+  color: #e8c56b;
+}
+.ch-header p {
+  color: #9a8f80;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+/* 正确率环 */
+.ch-hero {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  max-width: 760px;
+  margin: 22px auto;
+  padding: 24px;
+  background: #1b1713;
+  border: 1px solid #2e2823;
+  border-radius: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.ch-ring {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #e8c56b calc(var(--pct) * 1%),
+    #2e2823 0
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ch-ring-inner {
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  background: #1b1713;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.ch-ring-inner strong {
+  font-size: 28px;
+  color: #e8c56b;
+}
+.ch-ring-inner span {
+  font-size: 12px;
+  color: #9a8f80;
+}
+.ch-hero-stats {
+  display: flex;
+  gap: 26px;
+}
+.ch-hero-stats div {
+  text-align: center;
+}
+.ch-hero-stats strong {
+  display: block;
+  font-size: 26px;
+  color: #f3ece2;
+}
+.ch-hero-stats span {
+  font-size: 12px;
+  color: #9a8f80;
+}
+.ch-cta {
+  padding: 13px 28px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #b03a2e, #d4763b);
+  color: #fff;
+  font-size: 15px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.ch-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(176, 58, 46, 0.45);
+}
+
+.ch-section {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.ch-section h2 {
+  font-size: 17px;
+  letter-spacing: 3px;
+  color: #e8c56b;
+  margin: 24px 0 14px;
+}
+.ch-empty {
+  color: #6e655a;
+  font-size: 14px;
+}
+
+/* 徽章 */
+.ch-badges {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+.ch-badge {
+  background: #1b1713;
+  border: 1px solid #2e2823;
+  border-radius: 12px;
+  padding: 16px 12px;
+  text-align: center;
+  opacity: 0.5;
+  filter: grayscale(1);
+  transition: all 0.25s;
+}
+.ch-badge.earned {
+  opacity: 1;
+  filter: none;
+  border-color: #e8c56b;
+  box-shadow: 0 4px 18px rgba(232, 197, 107, 0.12);
+}
+.ch-badge-icon {
+  display: block;
+  font-size: 30px;
+  margin-bottom: 6px;
+}
+.ch-badge strong {
+  display: block;
+  font-size: 14px;
+  color: #f3ece2;
+  margin-bottom: 4px;
+}
+.ch-badge em {
+  font-style: normal;
+  font-size: 11px;
+  color: #9a8f80;
+}
+
+/* 分主题战绩 */
+.ch-topic {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.ch-topic-name {
+  width: 130px;
+  font-size: 14px;
+  color: #d8cfc0;
+  flex-shrink: 0;
+}
+.ch-topic-bar {
+  flex: 1;
+  height: 10px;
+  background: #2e2823;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.ch-topic-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #b03a2e, #e8c56b);
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+.ch-topic-stat {
+  width: 90px;
+  text-align: right;
+  font-size: 12px;
+  color: #9a8f80;
+}

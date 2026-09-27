@@ -22,5 +22,6 @@ class ProfileResponse(BaseModel):
     viewed: list[dict]
     learning_plans: list[dict]
     quiz: dict
+    quiz_by_topic: list[dict]
     creations: list[dict]
     interests: list[dict]

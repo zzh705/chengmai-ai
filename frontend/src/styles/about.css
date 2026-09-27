@@ -1,0 +1,127 @@
+/* 关于项目页 */
+.ab-page {
+  height: 100%;
+  overflow-y: auto;
+  background: #14110f;
+  color: #f3ece2;
+  padding-bottom: 50px;
+}
+.ab-header {
+  text-align: center;
+  padding: 34px 20px 10px;
+}
+.ab-seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: #b03a2e;
+  color: #f7ead2;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  border-radius: 9px;
+  transform: rotate(-4deg);
+  box-shadow: 0 6px 22px rgba(176, 58, 46, 0.45);
+  margin-bottom: 16px;
+}
+.ab-header h1 {
+  margin: 0;
+  font-size: 26px;
+  letter-spacing: 6px;
+  color: #e8c56b;
+}
+.ab-header p {
+  color: #9a8f80;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.ab-card {
+  max-width: 760px;
+  margin: 14px auto;
+  background: #1b1713;
+  border: 1px solid #2e2823;
+  border-radius: 14px;
+  padding: 20px 24px;
+}
+.ab-card h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  color: #e8c56b;
+  letter-spacing: 2px;
+}
+.ab-card p {
+  margin: 0;
+  line-height: 2;
+  font-size: 14px;
+  color: #d8cfc0;
+}
+
+.ab-agents {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+.ab-agent {
+  background: #14110f;
+  border: 1px solid #2e2823;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.ab-agent strong {
+  display: block;
+  color: #f3ece2;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+.ab-agent span {
+  font-size: 12px;
+  color: #9a8f80;
+  line-height: 1.7;
+}
+
+.ab-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ab-tags span {
+  padding: 7px 13px;
+  background: #14110f;
+  border: 1px solid #3a332c;
+  border-radius: 999px;
+  font-size: 12px;
+  color: #c9bfae;
+}
+
+.ab-team {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+.ab-team div {
+  background: #14110f;
+  border: 1px solid #2e2823;
+  border-radius: 10px;
+  padding: 16px;
+}
+.ab-team strong {
+  display: block;
+  color: #e8c56b;
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+.ab-team span {
+  font-size: 13px;
+  color: #9a8f80;
+}
+
+.ab-footer {
+  text-align: center;
+  color: #4a413a;
+  font-size: 12px;
+  letter-spacing: 3px;
+  margin-top: 30px;
+}

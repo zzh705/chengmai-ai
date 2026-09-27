@@ -1,22 +1,38 @@
 import { useState } from 'react'
+import About from './pages/About'
 import Chat from './pages/Chat'
+import Challenge from './pages/Challenge'
 import Home from './pages/Home'
 import Knowledge from './pages/Knowledge'
 import KnowledgeGraph from './pages/KnowledgeGraph'
 import Lab from './pages/Lab'
+import Map from './pages/Map'
 import Path from './pages/Path'
 import ProfilePage from './pages/Profile'
 
-type Page = 'home' | 'chat' | 'knowledge' | 'graph' | 'path' | 'lab' | 'profile'
+type Page =
+  | 'home'
+  | 'chat'
+  | 'knowledge'
+  | 'graph'
+  | 'map'
+  | 'path'
+  | 'lab'
+  | 'challenge'
+  | 'profile'
+  | 'about'
 
 const NAV: { key: Page; label: string }[] = [
   { key: 'home', label: '首页' },
   { key: 'chat', label: '承脉 AI' },
   { key: 'knowledge', label: '非遗知识库' },
   { key: 'graph', label: '知识图谱' },
+  { key: 'map', label: '非遗地图' },
   { key: 'path', label: '学习路径' },
   { key: 'lab', label: '活化实验室' },
+  { key: 'challenge', label: '非遗挑战' },
   { key: 'profile', label: '传承档案' },
+  { key: 'about', label: '关于项目' },
 ]
 
 function App() {
@@ -55,9 +71,12 @@ function App() {
           {page === 'chat' && <Chat initialQuery={chatQuery} />}
           {page === 'knowledge' && <Knowledge />}
           {page === 'graph' && <KnowledgeGraph />}
+          {page === 'map' && <Map onNavigate={navigate} />}
           {page === 'path' && <Path />}
           {page === 'lab' && <Lab />}
+          {page === 'challenge' && <Challenge onNavigate={navigate} />}
           {page === 'profile' && <ProfilePage />}
+          {page === 'about' && <About />}
         </div>
       </main>
     </div>
