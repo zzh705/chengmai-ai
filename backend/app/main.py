@@ -8,8 +8,8 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(BASE_DIR / ".env")
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+load_dotenv(PROJECT_ROOT / ".env")
 
 app = FastAPI(
     title="承脉 AI",
