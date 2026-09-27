@@ -7,6 +7,12 @@ interface Props {
   onNavigate: (page: string, query?: string) => void
 }
 
+// 模块加载时计算一次今日序号，避免渲染期调用不纯函数
+const DAY_INDEX = (() => {
+  const start = new Date(new Date().getFullYear(), 0, 0)
+  return Math.floor((Date.now() - start.getTime()) / 86400000)
+})()
+
 export default function Home({ onNavigate }: Props) {
   const [list, setList] = useState<HeritageSummary[]>([])
   const [profile, setProfile] = useState<Profile | null>(null)
@@ -19,11 +25,7 @@ export default function Home({ onNavigate }: Props) {
   }, [])
 
   // 今日非遗：按日期轮换，每天换一个
-  const dayIndex = useMemo(() => {
-    const start = new Date(new Date().getFullYear(), 0, 0)
-    const day = Math.floor((Date.now() - start.getTime()) / 86400000)
-    return list.length ? day % list.length : 0
-  }, [list])
+  const dayIndex = list.length ? DAY_INDEX % list.length : 0
   const featured = list[dayIndex]
   const recommended = list.slice(0).filter((h) => h !== featured).slice(0, 3)
 
