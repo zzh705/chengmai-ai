@@ -3,9 +3,17 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: #14110f;
   color: #f3ece2;
   position: relative;
+  /* 星尘 + 中心青晕背景，让图谱页更有纵深 */
+  background:
+    radial-gradient(1.5px 1.5px at 18% 28%, rgba(232, 197, 107, 0.4), transparent),
+    radial-gradient(1px 1px at 72% 62%, rgba(232, 197, 107, 0.28), transparent),
+    radial-gradient(2px 2px at 42% 82%, rgba(176, 58, 46, 0.45), transparent),
+    radial-gradient(1px 1px at 86% 22%, rgba(232, 197, 107, 0.32), transparent),
+    radial-gradient(1px 1px at 8% 70%, rgba(122, 167, 224, 0.3), transparent),
+    radial-gradient(ellipse 55% 45% at 50% 45%, rgba(74, 157, 143, 0.07), transparent),
+    #14110f;
 }
 
 .graph-header {
@@ -64,10 +72,66 @@
 
 .g-link {
   stroke-width: 1.2px;
-  opacity: 0.7;
+  opacity: 0.65;
+  /* 连线流动：虚线沿方向滚动，图谱整体有"呼吸感" */
+  stroke-dasharray: 5 5;
+  animation: g-flow 1.6s linear infinite;
 }
+@keyframes g-flow {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
 .g-node {
   cursor: pointer;
+  animation: g-fade 0.5s ease both;
+}
+@keyframes g-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.g-node > circle {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+.g-node:hover > circle {
+  transform: scale(1.25);
+  filter: brightness(1.4);
+}
+
+/* 非遗项目节点：金色呼吸光晕 */
+.g-heritage > circle {
+  filter: drop-shadow(0 0 6px rgba(232, 197, 107, 0.6));
+  animation: g-breathe 2.6s ease-in-out infinite;
+}
+@keyframes g-breathe {
+  50% {
+    filter: drop-shadow(0 0 15px rgba(232, 197, 107, 0.95));
+  }
+}
+
+/* 选中节点：亮描边 + 外发光脉冲（d3 通过 g-selected 类切换） */
+.g-node.g-selected > circle {
+  stroke: #f7ead2;
+  stroke-width: 3px;
+}
+.g-node.g-selected {
+  animation: g-fade 0.5s ease, g-sel 1.5s ease-in-out infinite;
+}
+@keyframes g-sel {
+  50% {
+    filter: drop-shadow(0 0 13px rgba(232, 197, 107, 0.95));
+  }
+}
+
+/* 悬停/选中时显示副节点标签（默认隐藏防糊版） */
+.g-node:not(.g-heritage):hover > text,
+.g-node.g-selected > text {
+  display: block !important;
 }
 .g-label {
   fill: #d8cfc0;
@@ -127,6 +191,13 @@
   gap: 8px;
   font-size: 14px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  animation: panelIn 0.25s ease;
+}
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
 }
 .graph-detail-head {
   display: flex;
@@ -189,6 +260,15 @@
   background: #c94a3a;
   color: #fff;
 }
+.graph-btn.graph-btn-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+.graph-loading-line {
+  color: #6e655a;
+  font-style: italic;
+}
 .graph-relations {
   border-top: 1px dashed #2e2823;
   padding-top: 8px;
@@ -202,8 +282,34 @@
   color: #6e655a;
 }
 .graph-relation-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 6px;
+  font-family: inherit;
   font-size: 12px;
   color: #d8cfc0;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, transform 0.15s;
+}
+.graph-relation-line:hover {
+  background: #2e2823;
+  color: #e8c56b;
+  transform: translateX(3px);
+}
+.graph-relation-arrow {
+  margin-left: auto;
+  color: #e8c56b;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.graph-relation-line:hover .graph-relation-arrow {
+  opacity: 1;
 }
 .graph-relation-tag {
   display: inline-block;

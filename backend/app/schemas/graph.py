@@ -7,6 +7,7 @@ class GraphNode(BaseModel):
     id: str
     label: str
     type: str
+    extra: dict[str, str] | None = None
 
 
 class GraphLink(BaseModel):

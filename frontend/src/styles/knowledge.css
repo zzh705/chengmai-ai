@@ -54,6 +54,32 @@
   transition: all 0.2s;
   display: flex;
   flex-direction: column;
+  /* 逐张错落入场（backwards：结束后交还控制权，hover 位移才生效） */
+  animation: kbIn 0.5s ease backwards;
+}
+.kb-cards > *:nth-child(6n + 1) {
+  animation-delay: 0ms;
+}
+.kb-cards > *:nth-child(6n + 2) {
+  animation-delay: 60ms;
+}
+.kb-cards > *:nth-child(6n + 3) {
+  animation-delay: 120ms;
+}
+.kb-cards > *:nth-child(6n + 4) {
+  animation-delay: 180ms;
+}
+.kb-cards > *:nth-child(6n + 5) {
+  animation-delay: 240ms;
+}
+.kb-cards > *:nth-child(6n + 6) {
+  animation-delay: 300ms;
+}
+@keyframes kbIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
 }
 .kb-card:hover {
   border-color: #e8c56b;
@@ -66,6 +92,10 @@
   object-fit: cover;
   display: block;
   border-bottom: 1px solid #2e2823;
+  transition: transform 0.35s ease;
+}
+.kb-card:hover .kb-card-cover {
+  transform: scale(1.07);
 }
 .kb-card-body {
   padding: 12px 14px 14px;

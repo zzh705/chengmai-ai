@@ -101,7 +101,7 @@
 | ✅ 已实现 | POST /api/chat | AI 对话（含意图/来源/证据分/动作） |
 | ✅ 已实现 | GET /api/heritage | 知识库列表（24 项） |
 | ✅ 已实现 | GET /api/heritage/{id} | 非遗项目详情（含 `image`、`sources`） |
-| ✅ 已实现 | GET /api/graph · /api/graph/{id} | 知识图谱全图 / 一跳子图（含 `source` 节点） |
+| ✅ 已实现 | GET /api/graph · /api/graph/{id} | 知识图谱全图 / 一跳子图（含 `source` 节点；节点可带 `extra`：heritage=类别/地域/等级，source=标题/发布方/链接/可信度） |
 | ✅ 已实现 | POST /api/learning-plan | 学习路径生成 |
 | ✅ 已实现 | POST /api/quiz/generate | 测验生成 |
 | ✅ 已实现 | POST /api/story/generate | 故事生成 |

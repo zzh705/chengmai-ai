@@ -34,20 +34,35 @@ def _load_items() -> list[dict]:
     return json.loads((_DATA_DIR / "heritage_items.json").read_text(encoding="utf-8"))
 
 
+@lru_cache(maxsize=1)
+def _load_sources() -> dict[str, dict]:
+    rows = json.loads((_DATA_DIR / "sources.json").read_text(encoding="utf-8"))
+    return {row["id"]: row for row in rows}
+
+
 def build_graph() -> dict:
     """构建完整图谱：{nodes, links}，D3 力导向图直接消费。"""
     nodes: dict[str, dict] = {}
     links: list[dict] = []
 
-    def add_node(node_id: str, label: str, node_type: str) -> None:
+    def add_node(node_id: str, label: str, node_type: str, extra: dict | None = None) -> None:
         if node_id not in nodes:
-            nodes[node_id] = {"id": node_id, "label": label, "type": node_type}
+            node = {"id": node_id, "label": label, "type": node_type}
+            if extra:
+                node["extra"] = extra
+            nodes[node_id] = node
 
     def add_link(source: str, target: str, relation: str) -> None:
         links.append({"source": source, "target": target, "relation": relation})
 
+    sources = _load_sources()
     for item in _load_items():
-        add_node(item["id"], item["name"], "heritage")
+        add_node(
+            item["id"],
+            item["name"],
+            "heritage",
+            {"category": item["category"], "region": item["region"], "level": item["level"]},
+        )
         for raw in item["category"].replace("，", "·").split("·"):
             cat = raw.strip()
             if cat:
@@ -70,7 +85,16 @@ def build_graph() -> dict:
             add_node(wid, wname, "work")
             add_link(item["id"], wid, "产生作品")
         for sid in item.get("source_ids", []):
-            add_node(sid, _SOURCE_LABEL.get(sid, sid), "source")
+            src = sources.get(sid, {})
+            extra = None
+            if src:
+                extra = {
+                    "title": src.get("title", ""),
+                    "publisher": src.get("publisher", ""),
+                    "url": src.get("url", ""),
+                    "reliability": src.get("reliability_level", ""),
+                }
+            add_node(sid, _SOURCE_LABEL.get(sid, sid), "source", extra)
             add_link(item["id"], sid, "引用")
 
     return {"nodes": list(nodes.values()), "links": links}

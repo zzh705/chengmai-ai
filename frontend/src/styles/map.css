@@ -42,15 +42,24 @@
   stroke: #0e0c0a;
   stroke-width: 1.2;
   cursor: pointer;
-  transition: opacity 0.15s, stroke 0.15s;
+  transition: opacity 0.15s, stroke 0.15s, filter 0.2s;
+  /* 逐省浮现入场（delay 在 TSX 内联按序号递增） */
+  animation: provIn 0.5s ease backwards;
+}
+@keyframes provIn {
+  from {
+    opacity: 0;
+  }
 }
 .map-prov:hover {
   stroke: #e8c56b;
   stroke-width: 2;
+  filter: brightness(1.5) drop-shadow(0 0 7px rgba(232, 197, 107, 0.4));
 }
 .map-prov.is-selected {
   stroke: #e8c56b;
   stroke-width: 2.4;
+  filter: brightness(1.35) drop-shadow(0 0 9px rgba(232, 197, 107, 0.5));
 }
 .map-prov:not(.has-items) {
   cursor: default;

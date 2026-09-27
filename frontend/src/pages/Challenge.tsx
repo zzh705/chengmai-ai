@@ -16,10 +16,20 @@ interface Badge {
 export default function Challenge({ onNavigate }: Props) {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [error, setError] = useState('')
+  /** 下一帧才写入实际正确率，让环形进度从 0 平滑生长 */
+  const [shownPct, setShownPct] = useState(0)
 
   useEffect(() => {
     fetchProfile().then(setProfile).catch((e) => setError(e.message))
   }, [])
+
+  useEffect(() => {
+    if (!profile) return
+    const target =
+      profile.quiz.answered > 0 ? Math.round(profile.quiz.accuracy * 100) : 0
+    const t = requestAnimationFrame(() => setShownPct(target))
+    return () => cancelAnimationFrame(t)
+  }, [profile])
 
   if (error) return <div className="ch-page ch-center">⚠️ {error}</div>
   if (!profile) return <div className="ch-page ch-center">加载中…</div>
@@ -45,7 +55,7 @@ export default function Challenge({ onNavigate }: Props) {
       </header>
 
       <div className="ch-hero">
-        <div className="ch-ring" style={{ '--pct': pct } as React.CSSProperties}>
+        <div className="ch-ring" style={{ '--pct': shownPct } as React.CSSProperties}>
           <div className="ch-ring-inner">
             <strong>{quiz.answered > 0 ? `${pct}%` : '—'}</strong>
             <span>正确率</span>

@@ -19,6 +19,18 @@ body {
   height: 100%;
 }
 
+/* 全站回纹底纹（中国元素）：低透明度罩层，不遮内容 */
+.app-shell::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='56'%20height='56'%3E%3Cg%20fill='none'%20stroke='%23e8c56b'%20stroke-width='1.2'%3E%3Cpath%20d='M8%208h40v40H16V16h24v24'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 56px 56px;
+}
+
 .app-nav {
   display: flex;
   align-items: center;
@@ -75,6 +87,12 @@ body {
   border-color: #b03a2e;
   color: #fff;
   box-shadow: 0 4px 14px rgba(176, 58, 46, 0.35);
+  animation: navPulse 2.6s ease-in-out infinite;
+}
+@keyframes navPulse {
+  50% {
+    box-shadow: 0 4px 20px rgba(176, 58, 46, 0.6);
+  }
 }
 
 .app-body {
@@ -101,6 +119,17 @@ body {
     opacity: 1;
     transform: none;
   }
+}
+
+/* 页面主标题下的金色饰线（卷轴感），标题居中故饰线居中 */
+.app-body h1::after {
+  content: '';
+  display: block;
+  width: 72px;
+  height: 3px;
+  margin: 10px auto 0;
+  background: linear-gradient(90deg, transparent, #e8c56b, transparent);
+  border-radius: 2px;
 }
 
 /* 滚动条 */

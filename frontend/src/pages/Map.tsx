@@ -5,6 +5,8 @@ import '../styles/map.css'
 
 interface Props {
   onNavigate: (page: string, query?: string) => void
+  /** 外部导航带参：省份 key，进入页面时自动选中（如知识图谱的地域节点） */
+  openRegion?: string
 }
 
 interface Province {
@@ -43,11 +45,12 @@ function fixWinding(geo: GeoJSON.FeatureCollection): GeoJSON.FeatureCollection {
   return geo
 }
 
-export default function Map({ onNavigate }: Props) {
+export default function Map({ onNavigate, openRegion }: Props) {
   const [geo, setGeo] = useState<GeoJSON.FeatureCollection | null>(null)
   const [list, setList] = useState<HeritageSummary[]>([])
   const [hover, setHover] = useState<string | null>(null)
-  const [selected, setSelected] = useState<string | null>(null)
+  // 外部导航带参进入（如知识图谱地域节点）→ 初始即选中该省；页面切换会重挂载
+  const [selected, setSelected] = useState<string | null>(openRegion ?? null)
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -79,7 +82,12 @@ export default function Map({ onNavigate }: Props) {
   }, [geo, list])
 
   const maxCount = Math.max(1, ...provinces.map((p) => p.count))
-  const selectedProv = provinces.find((p) => p.key === selected)
+  // 选中兼容：图谱地域节点可能是"江苏省苏州市"这类全称，用省 key 前缀匹配
+  const selectedProv = provinces.find(
+    (p) => p.key === selected || (selected !== null && selected.startsWith(p.key)),
+  )
+  const isSelected = (p: Province) =>
+    p.key === selected || (selected !== null && selected.startsWith(p.key))
 
   return (
     <div className="map-page">
@@ -92,11 +100,11 @@ export default function Map({ onNavigate }: Props) {
 
       <div className="map-wrap">
         <svg viewBox={`0 0 ${W} ${H}`} className="map-svg">
-          {provinces.map((p) => (
+          {provinces.map((p, i) => (
             <path
               key={p.name}
               d={p.path}
-              className={`map-prov ${selected === p.key ? 'is-selected' : ''} ${
+              className={`map-prov ${isSelected(p) ? 'is-selected' : ''} ${
                 p.count > 0 ? 'has-items' : ''
               }`}
               style={{
@@ -104,10 +112,11 @@ export default function Map({ onNavigate }: Props) {
                   p.count > 0
                     ? `rgba(176, 58, 46, ${0.3 + (0.7 * p.count) / maxCount})`
                     : '#241f1b',
+                animationDelay: `${i * 35}ms`,
               }}
               onMouseEnter={() => setHover(p.name)}
               onMouseLeave={() => setHover(null)}
-              onClick={() => setSelected(p.key === selected ? null : p.key)}
+              onClick={() => setSelected(isSelected(p) ? null : p.key)}
             >
               <title>{`${p.name}：${p.count} 项`}</title>
             </path>
@@ -132,7 +141,11 @@ export default function Map({ onNavigate }: Props) {
         )}
         <div className="map-items">
           {selectedProv?.items.map((it) => (
-            <div key={it.id} className="map-item" onClick={() => onNavigate('knowledge')}>
+            <div
+              key={it.id}
+              className="map-item"
+              onClick={() => onNavigate('knowledge', it.id)}
+            >
               <strong>{it.name}</strong>
               <span>
                 {it.category} · {it.region}

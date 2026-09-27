@@ -32,11 +32,14 @@ function Cover({ item, className }: { item: HeritageSummary | HeritageDetail; cl
   )
 }
 
-export default function Knowledge() {
+export default function Knowledge({ openParam }: { openParam?: string }) {
   const [list, setList] = useState<HeritageSummary[]>([])
   const [detail, setDetail] = useState<HeritageDetail | null>(null)
   const [credits, setCredits] = useState<Record<string, Credit>>({})
-  const [keyword, setKeyword] = useState('')
+  // kw:关键词 → 列表预填搜索（由 App 的 key 重挂载保证初始值即最终值）
+  const [keyword, setKeyword] = useState(() =>
+    openParam?.startsWith('kw:') ? openParam.slice(3) : '',
+  )
   const [error, setError] = useState('')
   const pageRef = useRef<HTMLDivElement>(null)
 
@@ -47,6 +50,24 @@ export default function Knowledge() {
       .then(setCredits)
       .catch(() => setCredits({}))
   }, [])
+
+  // 项目 id → 直达详情（异步 setState，挂载时只跑一次）
+  useEffect(() => {
+    if (!openParam || openParam.startsWith('kw:')) return
+    let cancelled = false
+    fetchHeritageDetail(openParam)
+      .then((d) => {
+        if (cancelled) return
+        setDetail(d)
+        if (pageRef.current) pageRef.current.scrollTop = 0
+      })
+      .catch((e) => {
+        if (!cancelled) setError(e instanceof Error ? e.message : '加载失败')
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [openParam])
 
   async function open(id: string) {
     try {

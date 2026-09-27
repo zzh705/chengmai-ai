@@ -4,6 +4,8 @@ export interface GraphNode {
   id: string
   label: string
   type: 'heritage' | 'category' | 'region' | 'person' | 'work' | 'source'
+  /** 节点附带信息：heritage=类别/地域/等级，source=标题/发布方/链接等 */
+  extra?: Record<string, string>
 }
 
 export interface GraphLink {

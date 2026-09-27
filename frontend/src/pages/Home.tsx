@@ -46,6 +46,11 @@ export default function Home({ onNavigate }: Props) {
     <div className="home-page">
       {/* Hero：品牌门面 */}
       <section className="home-hero">
+        <div className="home-petals" aria-hidden>
+          {Array.from({ length: 7 }, (_, i) => (
+            <span key={i} />
+          ))}
+        </div>
         <div className="home-seal">承脉</div>
         <h1>让千年非遗，被这一代人接住</h1>
         <p className="home-slogan">
@@ -78,8 +83,8 @@ export default function Home({ onNavigate }: Props) {
           <h2>🌸 今日非遗</h2>
           <div
             className="home-today"
-            onClick={() => onNavigate('knowledge')}
-            title="进入知识库查看更多"
+            onClick={() => onNavigate('knowledge', featured.id)}
+            title="进入知识库查看详情"
           >
             <div className="home-today-main">
               <h3>{featured.name}</h3>
@@ -98,7 +103,7 @@ export default function Home({ onNavigate }: Props) {
           <h2>✨ AI 推荐</h2>
           <div className="home-recs">
             {recommended.map((h) => (
-              <div key={h.id} className="home-rec" onClick={() => onNavigate('knowledge')}>
+              <div key={h.id} className="home-rec" onClick={() => onNavigate('knowledge', h.id)}>
                 <strong>{h.name}</strong>
                 <span>{h.region}</span>
               </div>
@@ -110,7 +115,7 @@ export default function Home({ onNavigate }: Props) {
           <h2>🗺️ 地域探索</h2>
           <div className="home-regions">
             {regions.map(([r, n]) => (
-              <button key={r} onClick={() => onNavigate('knowledge')}>
+              <button key={r} onClick={() => onNavigate('knowledge', `kw:${r.split('（')[0]}`)}>
                 {r} <em>{n}</em>
               </button>
             ))}

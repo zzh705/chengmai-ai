@@ -12,9 +12,81 @@
 
 /* Hero */
 .home-hero {
+  position: relative;
   text-align: center;
   padding: 56px 20px 30px;
   animation: homeFade 0.6s ease;
+}
+/* 飘落花瓣（中国元素点缀） */
+.home-petals {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.home-petals span {
+  position: absolute;
+  top: -14px;
+  width: 9px;
+  height: 9px;
+  border-radius: 60% 0 60% 60%;
+  background: rgba(232, 197, 107, 0.5);
+  animation: petalFall linear infinite;
+}
+.home-petals span:nth-child(1) {
+  left: 6%;
+  animation-duration: 7.5s;
+  animation-delay: 0s;
+}
+.home-petals span:nth-child(2) {
+  left: 18%;
+  animation-duration: 9s;
+  animation-delay: 1.6s;
+  background: rgba(176, 58, 46, 0.45);
+}
+.home-petals span:nth-child(3) {
+  left: 32%;
+  animation-duration: 8s;
+  animation-delay: 3.2s;
+}
+.home-petals span:nth-child(4) {
+  left: 47%;
+  animation-duration: 10s;
+  animation-delay: 0.8s;
+  background: rgba(176, 58, 46, 0.4);
+}
+.home-petals span:nth-child(5) {
+  left: 62%;
+  animation-duration: 7.8s;
+  animation-delay: 2.4s;
+}
+.home-petals span:nth-child(6) {
+  left: 76%;
+  animation-duration: 9.4s;
+  animation-delay: 4.2s;
+  background: rgba(74, 157, 143, 0.4);
+}
+.home-petals span:nth-child(7) {
+  left: 90%;
+  animation-duration: 8.6s;
+  animation-delay: 1.2s;
+  background: rgba(176, 58, 46, 0.45);
+}
+@keyframes petalFall {
+  0% {
+    transform: translateY(0) translateX(0) rotate(45deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(150px) translateX(26px) rotate(210deg);
+  }
+  100% {
+    transform: translateY(330px) translateX(-16px) rotate(390deg);
+    opacity: 0;
+  }
 }
 .home-seal {
   display: inline-flex;
@@ -27,10 +99,27 @@
   font-size: 26px;
   font-weight: 700;
   letter-spacing: 4px;
+  border: 2px solid rgba(247, 234, 210, 0.35);
   border-radius: 10px;
   box-shadow: 0 6px 24px rgba(176, 58, 46, 0.45);
   margin-bottom: 20px;
   transform: rotate(-4deg);
+  animation: sealIn 0.7s cubic-bezier(0.2, 1.4, 0.4, 1) both, sealGlow 3s ease-in-out 1s infinite;
+}
+@keyframes sealIn {
+  from {
+    transform: rotate(-16deg) scale(0.3);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(-4deg) scale(1);
+    opacity: 1;
+  }
+}
+@keyframes sealGlow {
+  50% {
+    box-shadow: 0 6px 32px rgba(176, 58, 46, 0.8);
+  }
 }
 .home-hero h1 {
   margin: 0;
@@ -38,9 +127,19 @@
   letter-spacing: 6px;
   font-weight: 700;
   background: linear-gradient(90deg, #f3ece2 20%, #e8c56b 50%, #f3ece2 80%);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  animation: heroShine 5s linear infinite;
+}
+@keyframes heroShine {
+  from {
+    background-position: 120% center;
+  }
+  to {
+    background-position: -80% center;
+  }
 }
 .home-slogan {
   color: #9a8f80;
@@ -112,6 +211,22 @@
   max-width: 860px;
   margin: 0 auto;
   padding: 10px 20px;
+  animation: riseIn 0.55s ease backwards;
+}
+.home-cols {
+  animation: riseIn 0.55s ease 0.08s backwards;
+}
+.home-section:nth-of-type(4) {
+  animation-delay: 0.16s;
+}
+.home-section:nth-of-type(5) {
+  animation-delay: 0.24s;
+}
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
 }
 .home-section h2 {
   font-size: 17px;
@@ -216,6 +331,10 @@
   font-size: 13px;
   cursor: pointer;
   transition: all 0.2s;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .home-regions button:hover {
   border-color: #4a9d8f;

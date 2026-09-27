@@ -32,7 +32,7 @@ interface SimLink {
 }
 
 interface Props {
-  onNavigate: (page: string, query?: string) => void
+  onNavigate: (page: string, param?: string) => void
 }
 
 export default function KnowledgeGraph({ onNavigate }: Props) {
@@ -43,6 +43,10 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
   const [detail, setDetail] = useState<HeritageDetail | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  /** 由 d3 effect 注册：同步节点选中光环（面板内点击也会高亮图上节点） */
+  const ringRef = useRef<(id: string | null) => void>(() => {})
+  /** 当前选中节点 id：effect 内读它而非闭包里的 selected，避免 exhaustive-deps */
+  const selectedIdRef = useRef<string | null>(null)
 
   useEffect(() => {
     fetchFullGraph().then(setData).catch((e) => setError(e.message))
@@ -154,12 +158,12 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
 
     node.on('click', (_event, d) => {
       if (moved) return // 拖动结束的误触，不响应
-      setSelected(d)
-      setDetail(null)
-      if (d.type === 'heritage') {
-        fetchHeritageDetail(d.id).then(setDetail).catch(() => setDetail(null))
-      }
+      selectNode(d)
     })
+
+    // 注册选中光环同步：面板内点击也能点亮对应节点
+    ringRef.current = (id) => node.classed('g-selected', (d) => d.id === id)
+    ringRef.current(selectedIdRef.current)
 
     sim.on('tick', () => {
       link
@@ -175,8 +179,27 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
 
     return () => {
       sim.stop()
+      ringRef.current = () => {}
     }
   }, [data, focusId])
+
+  /** 统一的节点选中入口（d3 点击与面板点击共用） */
+  function selectNode(d: GraphNode) {
+    selectedIdRef.current = d.id
+    setSelected(d)
+    setDetail(null)
+    if (d.type === 'heritage') {
+      fetchHeritageDetail(d.id).then(setDetail).catch(() => setDetail(null))
+    }
+    ringRef.current(d.id)
+  }
+
+  function deselect() {
+    selectedIdRef.current = null
+    setSelected(null)
+    setDetail(null)
+    ringRef.current(null)
+  }
 
   async function focusNode(id: string) {
     if (busy) return
@@ -193,32 +216,41 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
 
   async function resetView() {
     setFocusId(null)
-    setSelected(null)
-    setDetail(null)
+    deselect()
     setData(await fetchFullGraph())
   }
 
   /** 当前视图中与选中节点相连的关系 */
-  const relations: { name: string; relation: string; otherId: string; otherType: string }[] = []
+  const relations: { name: string; relation: string; other: GraphNode }[] = []
   if (selected && data) {
     for (const l of data.links) {
       if (l.source === selected.id) {
         const other = data.nodes.find((n) => n.id === l.target)
-        if (other)
-          relations.push({ name: other.label, relation: l.relation, otherId: other.id, otherType: other.type })
+        if (other) relations.push({ name: other.label, relation: l.relation, other })
       } else if (l.target === selected.id) {
         const other = data.nodes.find((n) => n.id === l.source)
-        if (other)
-          relations.push({ name: other.label, relation: l.relation, otherId: other.id, otherType: other.type })
+        if (other) relations.push({ name: other.label, relation: l.relation, other })
       }
     }
   }
+  const heritageRels = relations.filter((r) => r.other.type === 'heritage')
+
+  /** 关联行点击：项目→知识库详情，地域→地图，类别→知识库筛选，其余→图上选中 */
+  function openRelation(r: { other: GraphNode }) {
+    const t = r.other
+    if (t.type === 'heritage') onNavigate('knowledge', t.id)
+    else if (t.type === 'region') onNavigate('map', t.label)
+    else if (t.type === 'category') onNavigate('knowledge', `kw:${t.label}`)
+    else selectNode(t)
+  }
+
+  const extra = selected?.extra
 
   return (
     <div className="graph-page">
       <header className="graph-header">
         <h1>非遗知识图谱</h1>
-        <p>点击节点查看详细内容与关联 · 拖拽节点调整布局 · 滚轮缩放、拖拽空白平移 · 项目节点可聚焦子图</p>
+        <p>点击节点查看内容 · 主按钮进入对应页面 · 拖拽调整布局 · 滚轮缩放、拖空白平移</p>
         <div className="graph-legend">
           {Object.entries(TYPE_LABEL).map(([type, label]) => (
             <span key={type}>
@@ -249,41 +281,128 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
             <span className="graph-detail-type" style={{ color: TYPE_COLOR[selected.type] }}>
               {TYPE_LABEL[selected.type]}
             </span>
-            <button className="graph-close" onClick={() => setSelected(null)}>
+            <button className="graph-close" onClick={deselect}>
               ×
             </button>
           </div>
 
+          {/* 每类节点都有内容展示 */}
           {selected.type === 'heritage' && (
-            <>
-              {detail && (
-                <div className="graph-detail-info">
-                  <p>{detail.description.slice(0, 120)}…</p>
+            <div className="graph-detail-info">
+              {detail ? (
+                <>
+                  <p>{detail.description.slice(0, 140)}…</p>
                   <span>
-                    {detail.category} · {detail.region}
+                    {detail.category} · {detail.region} · {detail.level}
                   </span>
-                </div>
+                </>
+              ) : (
+                <p className="graph-loading-line">简介加载中…</p>
               )}
-              <div className="graph-detail-actions">
+            </div>
+          )}
+          {selected.type === 'category' && (
+            <div className="graph-detail-info">
+              <p>该类别下收录非遗项目 {heritageRels.length} 项，点下方项目名直达知识库详情。</p>
+            </div>
+          )}
+          {selected.type === 'region' && (
+            <div className="graph-detail-info">
+              <p>该地域收录非遗 {heritageRels.length} 项，可去地图查看分布，或点下方项目直达详情。</p>
+            </div>
+          )}
+          {selected.type === 'person' && (
+            <div className="graph-detail-info">
+              <p>代表性传承人，关联非遗项目 {heritageRels.length} 项，点击查看完整介绍。</p>
+            </div>
+          )}
+          {selected.type === 'work' && (
+            <div className="graph-detail-info">
+              <p>代表性作品，出自以下非遗项目：</p>
+            </div>
+          )}
+          {selected.type === 'source' && (
+            <div className="graph-detail-info">
+              <p>{extra?.title ?? '资料来源'}</p>
+              <span>
+                {extra?.publisher}
+                {extra?.reliability ? ` · 可信度：${extra.reliability}` : ''}
+              </span>
+            </div>
+          )}
+
+          {/* 主操作：进入对应页面 */}
+          <div className="graph-detail-actions">
+            {selected.type === 'heritage' && (
+              <>
+                <button
+                  className="graph-btn primary"
+                  onClick={() => onNavigate('knowledge', selected.id)}
+                >
+                  进入知识库详情 →
+                </button>
                 {focusId !== selected.id && (
-                  <button className="graph-btn primary" onClick={() => focusNode(selected.id)}>
+                  <button className="graph-btn" onClick={() => focusNode(selected.id)}>
                     聚焦子图
                   </button>
                 )}
-                <button className="graph-btn" onClick={() => onNavigate('knowledge')}>
-                  去知识库
-                </button>
-              </div>
-            </>
-          )}
+              </>
+            )}
+            {selected.type === 'category' && (
+              <button
+                className="graph-btn primary"
+                onClick={() => onNavigate('knowledge', `kw:${selected.label}`)}
+              >
+                去知识库筛选 →
+              </button>
+            )}
+            {selected.type === 'region' && (
+              <button
+                className="graph-btn primary"
+                onClick={() => onNavigate('map', selected.label)}
+              >
+                去非遗地图 →
+              </button>
+            )}
+            {(selected.type === 'person' || selected.type === 'work') && (
+              <button className="graph-btn primary" onClick={() => onNavigate('knowledge')}>
+                去知识库浏览 →
+              </button>
+            )}
+            {selected.type === 'source' && extra?.url && (
+              <a
+                className="graph-btn primary graph-btn-link"
+                href={extra.url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                打开原文 →
+              </a>
+            )}
+          </div>
 
+          {/* 关联列表：全部可点击跳转 */}
           <div className="graph-relations">
-            <em>关联 {relations.length} 项</em>
-            {relations.slice(0, 8).map((r, i) => (
-              <div key={i} className="graph-relation-line">
+            <em>关联 {relations.length} 项 · 点击可跳转</em>
+            {relations.slice(0, 10).map((r, i) => (
+              <button
+                key={i}
+                className="graph-relation-line"
+                onClick={() => openRelation(r)}
+                title={
+                  r.other.type === 'heritage'
+                    ? '进入知识库详情'
+                    : r.other.type === 'region'
+                      ? '去非遗地图'
+                      : r.other.type === 'category'
+                        ? '去知识库筛选'
+                        : '在图谱中选中'
+                }
+              >
                 <span className="graph-relation-tag">{r.relation}</span>
                 {r.name}
-              </div>
+                <span className="graph-relation-arrow">→</span>
+              </button>
             ))}
           </div>
         </div>

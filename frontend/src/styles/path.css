@@ -59,11 +59,19 @@
   background: transparent;
   color: #c9bfae;
   cursor: pointer;
+  transition: all 0.2s;
+}
+.path-days button:hover {
+  border-color: #e8c56b;
+  color: #e8c56b;
+  transform: translateY(-2px);
 }
 .path-days button.active {
   background: #b03a2e;
   border-color: #b03a2e;
   color: #fff;
+  animation: labOn 0.3s ease;
+  box-shadow: 0 4px 14px rgba(176, 58, 46, 0.4);
 }
 .path-generate {
   padding: 12px;
@@ -253,6 +261,13 @@
 .task-done span {
   color: #6e655a;
   text-decoration: line-through;
+  animation: taskCheck 0.3s ease;
+}
+@keyframes taskCheck {
+  from {
+    opacity: 0.4;
+    transform: translateX(-4px);
+  }
 }
 .path-node.day-done .path-day-badge {
   background: #4a9d8f;

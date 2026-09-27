@@ -62,11 +62,25 @@
   color: #c9bfae;
   cursor: pointer;
   font-size: 13px;
+  transition: all 0.2s;
+}
+.lab-types button:hover {
+  border-color: #e8c56b;
+  color: #e8c56b;
+  transform: translateY(-2px);
 }
 .lab-types button.active {
   background: #b03a2e;
   border-color: #b03a2e;
   color: #fff;
+  animation: labOn 0.3s ease;
+  box-shadow: 0 4px 14px rgba(176, 58, 46, 0.4);
+}
+@keyframes labOn {
+  from {
+    transform: scale(0.94);
+    opacity: 0.6;
+  }
 }
 .lab-generate {
   padding: 12px;
@@ -77,6 +91,11 @@
   font-size: 15px;
   letter-spacing: 2px;
   cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.lab-generate:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(176, 58, 46, 0.45);
 }
 .lab-generate:disabled {
   opacity: 0.55;

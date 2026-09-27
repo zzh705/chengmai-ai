@@ -42,6 +42,12 @@
   flex-wrap: wrap;
   justify-content: center;
 }
+/* 注册自定义属性，让环形进度可平滑过渡 */
+@property --pct {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
 .ch-ring {
   width: 140px;
   height: 140px;
@@ -54,6 +60,15 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  /* 挂载后由 0 平滑生长到实际正确率 */
+  transition: --pct 1.2s cubic-bezier(0.2, 0.8, 0.3, 1);
+  animation: ringPop 0.5s cubic-bezier(0.2, 1.3, 0.4, 1);
+}
+@keyframes ringPop {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
 }
 .ch-ring-inner {
   width: 108px;
@@ -142,6 +157,39 @@
   filter: none;
   border-color: #e8c56b;
   box-shadow: 0 4px 18px rgba(232, 197, 107, 0.12);
+  animation: badgeIn 0.45s ease backwards;
+}
+.ch-badge:nth-child(2) {
+  animation-delay: 60ms;
+}
+.ch-badge:nth-child(3) {
+  animation-delay: 120ms;
+}
+.ch-badge:nth-child(4) {
+  animation-delay: 180ms;
+}
+.ch-badge:nth-child(5) {
+  animation-delay: 240ms;
+}
+.ch-badge:nth-child(6) {
+  animation-delay: 300ms;
+}
+@keyframes badgeIn {
+  from {
+    transform: scale(0.86);
+    opacity: 0;
+  }
+}
+/* 已获得徽章：图标呼吸闪光 */
+.ch-badge.earned .ch-badge-icon {
+  display: inline-block;
+  animation: iconShine 2.8s ease-in-out infinite;
+}
+@keyframes iconShine {
+  50% {
+    transform: scale(1.12);
+    filter: drop-shadow(0 0 9px rgba(232, 197, 107, 0.95));
+  }
 }
 .ch-badge-icon {
   display: block;
