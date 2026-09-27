@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { sendChat, type Action, type ChatResponse, type Source } from '../api/chat'
+import { fetchLearningPlan, type LearningPlan } from '../api/learning'
 import '../styles/chat.css'
 
 type Mode = 'scholar' | 'inheritor' | 'youth'
@@ -22,6 +23,8 @@ export default function Chat() {
   const [mode, setMode] = useState<Mode>('youth')
   const [loading, setLoading] = useState(false)
   const [sessionId, setSessionId] = useState<string | null>(null)
+  const [plans, setPlans] = useState<Record<number, LearningPlan>>({})
+  const [planLoading, setPlanLoading] = useState<number | null>(null)
   const listRef = useRef<HTMLDivElement>(null)
 
   async function handleSend() {
@@ -44,6 +47,30 @@ export default function Chat() {
       ])
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function handleAction(msgIndex: number, action: Action, data: ChatResponse) {
+    if (action.type !== 'learning_plan') return
+    // 主题优先取知识库关联项，否则回退到该回答之前的用户原话
+    let topic = data.related_items[0]?.name
+    if (!topic) {
+      for (let i = msgIndex - 1; i >= 0; i--) {
+        if (messages[i].role === 'user') {
+          topic = messages[i].content
+          break
+        }
+      }
+    }
+    if (!topic) return
+    setPlanLoading(msgIndex)
+    try {
+      const plan = await fetchLearningPlan(topic, 7)
+      setPlans((prev) => ({ ...prev, [msgIndex]: plan }))
+    } catch (e) {
+      alert(e instanceof Error ? e.message : '生成失败')
+    } finally {
+      setPlanLoading(null)
     }
   }
 
@@ -101,11 +128,36 @@ export default function Chat() {
                 </div>
                 <div className="action-row">
                   {msg.data.actions.map((a: Action) => (
-                    <button key={a.type} className="action-btn">
-                      {a.label}
+                    <button
+                      key={a.type}
+                      className="action-btn"
+                      disabled={planLoading === i}
+                      onClick={() => handleAction(i, a, msg.data!)}
+                    >
+                      {planLoading === i && a.type === 'learning_plan' ? '生成中…' : a.label}
                     </button>
                   ))}
                 </div>
+                {plans[i] && (
+                  <div className="plan-card">
+                    <div className="plan-title">
+                      📅「{plans[i].topic}」7 天学习路线
+                      {plans[i].sources.length > 0 && (
+                        <span className="plan-src">参考知识库：{plans[i].sources.join('、')}</span>
+                      )}
+                    </div>
+                    {plans[i].days.map((d) => (
+                      <div key={d.day} className="plan-day">
+                        <strong>Day {d.day} · {d.title}</strong>
+                        <ul>
+                          {d.tasks.map((t, ti) => (
+                            <li key={ti}>{t}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>

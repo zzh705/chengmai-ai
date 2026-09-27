@@ -168,3 +168,41 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* 学习计划卡片 */
+.plan-card {
+  margin-top: 10px;
+  padding: 14px 16px;
+  max-width: 76%;
+  background: #1b1713;
+  border: 1px solid #e8c56b44;
+  border-radius: 12px;
+  font-size: 14px;
+}
+.plan-title {
+  color: #e8c56b;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.plan-src {
+  display: block;
+  font-size: 12px;
+  color: #9a8f80;
+  font-weight: normal;
+  margin-top: 4px;
+}
+.plan-day {
+  padding: 8px 0;
+  border-top: 1px dashed #3a332c;
+  color: #d8cfc0;
+}
+.plan-day ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  color: #b6ab9a;
+  line-height: 1.7;
+}
+.action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
