@@ -1,0 +1,52 @@
+[
+  {
+    "id": "src_ihchina",
+    "title": "中国非物质文化遗产网 · 国家级非遗项目名录",
+    "publisher": "中国非物质文化遗产网（文化和旅游部主管）",
+    "url": "https://www.ihchina.cn/",
+    "publish_time": "2006-05-20",
+    "accessed_time": "2026-09-27",
+    "license": "官方公开资料（引用需注明来源）",
+    "reliability_level": "official"
+  },
+  {
+    "id": "src_zhwiki",
+    "title": "维基百科中文版 · 相关词条",
+    "publisher": "维基媒体基金会",
+    "url": "https://zh.wikipedia.org/",
+    "publish_time": "持续修订",
+    "accessed_time": "2026-09-27",
+    "license": "CC BY-SA 4.0",
+    "reliability_level": "reference"
+  },
+  {
+    "id": "src_cnfolk",
+    "title": "中国民俗学网 · 民俗文化资料",
+    "publisher": "中国民俗学会",
+    "url": "http://www.chinesefolklore.com.cn/",
+    "publish_time": "持续更新",
+    "accessed_time": "2026-09-27",
+    "license": "学术公开资料",
+    "reliability_level": "academic"
+  },
+  {
+    "id": "src_unesco",
+    "title": "UNESCO 人类非物质文化遗产代表作名录",
+    "publisher": "联合国教科文组织",
+    "url": "https://ich.unesco.org/",
+    "publish_time": "2003-10-17",
+    "accessed_time": "2026-09-27",
+    "license": "官方公开资料",
+    "reliability_level": "official"
+  },
+  {
+    "id": "src_baike",
+    "title": "百科资料 · 非遗项目基础介绍",
+    "publisher": "公开百科平台",
+    "url": "https://baike.baidu.com/",
+    "publish_time": "持续修订",
+    "accessed_time": "2026-09-27",
+    "license": "开放百科（二次核对后使用）",
+    "reliability_level": "auxiliary"
+  }
+]
