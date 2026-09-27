@@ -1,0 +1,163 @@
+/* 非遗活化实验室 */
+.lab-page {
+  height: 100%;
+  overflow-y: auto;
+  background: #14110f;
+  color: #f3ece2;
+  padding-bottom: 60px;
+}
+
+.lab-header {
+  text-align: center;
+  padding: 26px 20px 10px;
+}
+.lab-header h1 {
+  margin: 0;
+  font-size: 24px;
+  letter-spacing: 5px;
+  color: #e8c56b;
+}
+.lab-header p {
+  color: #9a8f80;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.lab-form {
+  max-width: 760px;
+  margin: 16px auto;
+  padding: 20px;
+  background: #1b1713;
+  border: 1px solid #2e2823;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.lab-form select,
+.lab-form textarea {
+  padding: 11px 14px;
+  background: #14110f;
+  border: 1px solid #3a332c;
+  border-radius: 8px;
+  color: #f3ece2;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+}
+.lab-form textarea:focus,
+.lab-form select:focus {
+  border-color: #e8c56b;
+}
+.lab-types {
+  display: flex;
+  gap: 8px;
+}
+.lab-types button {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #3a332c;
+  border-radius: 8px;
+  background: transparent;
+  color: #c9bfae;
+  cursor: pointer;
+  font-size: 13px;
+}
+.lab-types button.active {
+  background: #b03a2e;
+  border-color: #b03a2e;
+  color: #fff;
+}
+.lab-generate {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #b03a2e, #d4763b);
+  color: #fff;
+  font-size: 15px;
+  letter-spacing: 2px;
+  cursor: pointer;
+}
+.lab-generate:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.lab-error {
+  color: #e07a6a;
+  font-size: 13px;
+}
+
+.lab-result {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.lab-result h2 {
+  color: #e8c56b;
+  font-size: 20px;
+  letter-spacing: 1px;
+  margin: 24px 0 8px;
+}
+.lab-sources {
+  font-size: 13px;
+  color: #9a8f80;
+  margin-bottom: 14px;
+}
+
+.lab-guard {
+  background: #2a1a16;
+  border: 1px solid #b03a2e66;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+}
+.lab-guard h3 {
+  color: #e07a6a;
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+.lab-guard ul,
+.lab-grid ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.8;
+  font-size: 14px;
+  color: #d8cfc0;
+}
+
+.lab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.lab-grid section {
+  background: #1b1713;
+  border: 1px solid #2e2823;
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.lab-grid h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: #e8c56b;
+}
+
+.lab-steps {
+  background: #1b1713;
+  border: 1px solid #2e2823;
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+.lab-steps h3 {
+  margin: 0 0 10px;
+  font-size: 15px;
+  color: #e8c56b;
+}
+.lab-steps ol {
+  margin: 0;
+  padding-left: 20px;
+  line-height: 2;
+  font-size: 14px;
+  color: #d8cfc0;
+}
