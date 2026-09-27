@@ -157,7 +157,6 @@
   filter: none;
   border-color: #e8c56b;
   box-shadow: 0 4px 18px rgba(232, 197, 107, 0.12);
-  animation: badgeIn 0.45s ease backwards;
 }
 .ch-badge:nth-child(2) {
   animation-delay: 60ms;
@@ -180,21 +179,15 @@
     opacity: 0;
   }
 }
-/* 已获得徽章：图标呼吸闪光 */
-.ch-badge.earned .ch-badge-icon {
-  display: inline-block;
-  animation: iconShine 2.8s ease-in-out infinite;
+/* 已获得徽章：金边呼吸（无图标，靠光效区分） */
+.ch-badge.earned {
+  animation: badgeIn 0.45s ease backwards, badgeGlow 2.8s ease-in-out 0.6s infinite;
 }
-@keyframes iconShine {
+@keyframes badgeGlow {
   50% {
-    transform: scale(1.12);
-    filter: drop-shadow(0 0 9px rgba(232, 197, 107, 0.95));
+    box-shadow: 0 4px 24px rgba(232, 197, 107, 0.4);
+    border-color: #f0d78f;
   }
-}
-.ch-badge-icon {
-  display: block;
-  font-size: 30px;
-  margin-bottom: 6px;
 }
 .ch-badge strong {
   display: block;

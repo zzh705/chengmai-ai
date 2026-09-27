@@ -10,7 +10,7 @@ export default function ProfilePage() {
     fetchProfile().then(setProfile).catch((e) => setError(e.message))
   }, [])
 
-  if (error) return <div className="pf-page pf-center">⚠️ {error}</div>
+  if (error) return <div className="pf-page pf-center">{error}</div>
   if (!profile) return <div className="pf-page pf-center">档案加载中…</div>
 
   const s = profile.stats
@@ -43,7 +43,7 @@ export default function ProfilePage() {
 
       <div className="pf-grid">
         <section className="pf-card">
-          <h3>💖 兴趣画像</h3>
+          <h3>兴趣画像</h3>
           {profile.interests.length === 0 ? (
             <p className="pf-empty">还没有足迹，先去问问承脉 AI 吧</p>
           ) : (
@@ -65,7 +65,7 @@ export default function ProfilePage() {
         </section>
 
         <section className="pf-card">
-          <h3>👀 浏览过的非遗</h3>
+          <h3>浏览过的非遗</h3>
           {profile.viewed.length === 0 ? (
             <p className="pf-empty">暂无记录</p>
           ) : (
@@ -78,7 +78,7 @@ export default function ProfilePage() {
         </section>
 
         <section className="pf-card">
-          <h3>📅 学习计划</h3>
+          <h3>学习计划</h3>
           {profile.learning_plans.length === 0 ? (
             <p className="pf-empty">暂无记录</p>
           ) : (
@@ -91,7 +91,7 @@ export default function ProfilePage() {
         </section>
 
         <section className="pf-card">
-          <h3>🧪 活化创作</h3>
+          <h3>活化创作</h3>
           {profile.creations.length === 0 ? (
             <p className="pf-empty">暂无记录</p>
           ) : (

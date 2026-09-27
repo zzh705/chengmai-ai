@@ -10,7 +10,7 @@ export default function About() {
       </header>
 
       <section className="ab-card">
-        <h3>🎯 项目简介</h3>
+        <h3>项目简介</h3>
         <p>
           承脉 AI
           面向青少年与海外中文学习者，围绕国家级非物质文化遗产提供"检索问答、知识图谱、非遗地图、学习路径、活化创作、
@@ -21,7 +21,7 @@ export default function About() {
       </section>
 
       <section className="ab-card">
-        <h3>🤖 多智能体架构</h3>
+        <h3>多智能体架构</h3>
         <div className="ab-agents">
           {[
             { n: '意图识别', d: '判断闲聊/检索/任务，分发给下游智能体' },
@@ -40,7 +40,7 @@ export default function About() {
       </section>
 
       <section className="ab-card">
-        <h3>📦 技术栈</h3>
+        <h3>技术栈</h3>
         <div className="ab-tags">
           {[
             'Python 3.11',
@@ -59,7 +59,7 @@ export default function About() {
       </section>
 
       <section className="ab-card">
-        <h3>📚 数据与来源</h3>
+        <h3>数据与来源</h3>
         <p>
           知识库收录 24 项国家级非遗代表性项目（覆盖 15 个省级行政区），结构化字段（简介、文化内涵、技艺工序、
           代表作品、代表性传承人）逐条标注来源（中国非物质文化遗产网、UNESCO、中国民俗学网等），
@@ -69,7 +69,7 @@ export default function About() {
       </section>
 
       <section className="ab-card">
-        <h3>👥 团队分工</h3>
+        <h3>团队分工</h3>
         <div className="ab-team">
           <div>
             <strong>周子昊</strong>

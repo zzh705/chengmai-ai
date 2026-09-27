@@ -8,7 +8,6 @@ interface Props {
 
 interface Badge {
   name: string
-  icon: string
   desc: string
   earned: boolean
 }
@@ -31,19 +30,19 @@ export default function Challenge({ onNavigate }: Props) {
     return () => cancelAnimationFrame(t)
   }, [profile])
 
-  if (error) return <div className="ch-page ch-center">⚠️ {error}</div>
+  if (error) return <div className="ch-page ch-center">{error}</div>
   if (!profile) return <div className="ch-page ch-center">加载中…</div>
 
   const { quiz, stats } = profile
   const pct = Math.round(quiz.accuracy * 100)
 
   const badges: Badge[] = [
-    { icon: '🌱', name: '初识非遗', desc: '浏览 3 项非遗', earned: stats.viewed_items >= 3 },
-    { icon: '📝', name: '勤学好问', desc: '完成 1 份学习计划', earned: stats.learning_plans >= 1 },
-    { icon: '🎯', name: '答题新秀', desc: '累计答题 10 道', earned: quiz.answered >= 10 },
-    { icon: '🏆', name: '非遗达人', desc: '正确率达 80%', earned: quiz.answered >= 5 && quiz.accuracy >= 0.8 },
-    { icon: '💡', name: '创意传承人', desc: '完成 1 次活化创作', earned: stats.creations >= 1 },
-    { icon: '👑', name: '承脉大师', desc: '答题 30 道且正确率 90%', earned: quiz.answered >= 30 && quiz.accuracy >= 0.9 },
+    { name: '初识非遗', desc: '浏览 3 项非遗', earned: stats.viewed_items >= 3 },
+    { name: '勤学好问', desc: '完成 1 份学习计划', earned: stats.learning_plans >= 1 },
+    { name: '答题新秀', desc: '累计答题 10 道', earned: quiz.answered >= 10 },
+    { name: '非遗达人', desc: '正确率达 80%', earned: quiz.answered >= 5 && quiz.accuracy >= 0.8 },
+    { name: '创意传承人', desc: '完成 1 次活化创作', earned: stats.creations >= 1 },
+    { name: '承脉大师', desc: '答题 30 道且正确率 90%', earned: quiz.answered >= 30 && quiz.accuracy >= 0.9 },
   ]
   const earned = badges.filter((b) => b.earned).length
 
@@ -78,16 +77,15 @@ export default function Challenge({ onNavigate }: Props) {
           </div>
         </div>
         <button className="ch-cta" onClick={() => onNavigate('chat', '给我出一套非遗测试题，我要挑战')}>
-          🎯 去答题
+          去答题
         </button>
       </div>
 
       <section className="ch-section">
-        <h2>🏅 传承徽章</h2>
+        <h2>传承徽章</h2>
         <div className="ch-badges">
           {badges.map((b) => (
             <div key={b.name} className={`ch-badge ${b.earned ? 'earned' : ''}`}>
-              <span className="ch-badge-icon">{b.earned ? b.icon : '🔒'}</span>
               <strong>{b.name}</strong>
               <em>{b.desc}</em>
             </div>
@@ -96,7 +94,7 @@ export default function Challenge({ onNavigate }: Props) {
       </section>
 
       <section className="ch-section">
-        <h2>📊 分主题战绩</h2>
+        <h2>分主题战绩</h2>
         {profile.quiz_by_topic.length === 0 ? (
           <p className="ch-empty">还没有答题记录，先去和承脉 AI 答几道题吧</p>
         ) : (
