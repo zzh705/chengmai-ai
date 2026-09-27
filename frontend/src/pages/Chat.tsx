@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { sendChat, type Action, type ChatResponse, type Source } from '../api/chat'
 import { fetchLearningPlan, type LearningPlan } from '../api/learning'
 import { generateQuiz, type QuizResponse } from '../api/quiz'
@@ -20,7 +20,7 @@ interface Message {
   data?: ChatResponse
 }
 
-export default function Chat() {
+export default function Chat({ initialQuery }: { initialQuery?: string }) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [mode, setMode] = useState<Mode>('youth')
@@ -43,8 +43,7 @@ export default function Chat() {
     return undefined
   }
 
-  async function handleSend() {
-    const text = input.trim()
+  async function send(text: string) {
     if (!text || loading) return
     setMessages((prev) => [...prev, { role: 'user', content: text }])
     setInput('')
@@ -68,6 +67,16 @@ export default function Chat() {
     } finally {
       setLoading(false)
     }
+  }
+
+  // 首页搜索框带过来的问题：挂载时自动发送一次
+  useEffect(() => {
+    if (initialQuery) void send(initialQuery)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  async function handleSend() {
+    await send(input.trim())
   }
 
   async function handleAction(msgIndex: number, action: Action, data: ChatResponse) {

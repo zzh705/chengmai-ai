@@ -21,14 +21,42 @@ body {
 
 .app-nav {
   display: flex;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 16px;
   background: #0e0c0a;
   border-bottom: 1px solid #2e2823;
 }
+.app-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: #b03a2e;
+  color: #f7ead2;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border-radius: 7px;
+  cursor: pointer;
+  transform: rotate(-4deg);
+  flex-shrink: 0;
+  box-shadow: 0 3px 12px rgba(176, 58, 46, 0.4);
+  transition: transform 0.2s;
+}
+.app-brand:hover {
+  transform: rotate(0deg) scale(1.06);
+}
+.app-nav-links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 1;
+}
 .app-nav button {
-  padding: 8px 22px;
+  padding: 8px 18px;
   border: 1px solid #3a332c;
   border-radius: 8px;
   background: transparent;
@@ -38,10 +66,15 @@ body {
   cursor: pointer;
   transition: all 0.2s;
 }
+.app-nav button:hover {
+  border-color: #e8c56b;
+  color: #e8c56b;
+}
 .app-nav button.active {
   background: #b03a2e;
   border-color: #b03a2e;
   color: #fff;
+  box-shadow: 0 4px 14px rgba(176, 58, 46, 0.35);
 }
 
 .app-body {
@@ -49,4 +82,59 @@ body {
   min-height: 0;
   display: flex;
   flex-direction: column;
+}
+
+/* 页面切换动效 */
+.page-transition {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  animation: pageIn 0.3s ease;
+}
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-track {
+  background: #0e0c0a;
+}
+::-webkit-scrollbar-thumb {
+  background: #3a332c;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #e8c56b;
+}
+
+::selection {
+  background: rgba(176, 58, 46, 0.6);
+  color: #fff;
+}
+
+@media (max-width: 720px) {
+  .app-nav {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .app-nav-links {
+    gap: 6px;
+  }
+  .app-nav button {
+    padding: 6px 12px;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
 }
