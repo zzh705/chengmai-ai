@@ -74,9 +74,11 @@ function App() {
           ))}
         </div>
       </nav>
+      {/* 路由金线：每次切页重挂载，自左向右扫过后淡出（转场指示器） */}
+      {!splash && <div key={page} className="route-bar" aria-hidden />}
       <main className="app-body">
         <div key={page} className="page-transition">
-          {page === 'home' && <Home onNavigate={navigate} />}
+          {page === 'home' && <Home onNavigate={navigate} entered={!splash} />}
           {page === 'chat' && <Chat initialQuery={chatQuery} />}
           {/* key 随参数重挂载：关键词预填/详情打开都由初始状态承担，避免 effect 同步 setState */}
           {page === 'knowledge' && <Knowledge key={kbParam ?? 'kb-list'} openParam={kbParam} />}

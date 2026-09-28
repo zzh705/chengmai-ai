@@ -10,6 +10,8 @@ import '../styles/home.css'
 
 interface Props {
   onNavigate: (page: string, query?: string) => void
+  /** 开屏是否已结束：控制首页星火粒子的诞生时机 */
+  entered?: boolean
 }
 
 // 模块加载时计算一次今日序号，避免渲染期调用不纯函数
@@ -21,7 +23,7 @@ const DAY_INDEX = (() => {
 // 非遗全景环形图配色（朱红/藤黄/青碧/黛蓝/绛紫/赭石/松绿）
 const VIZ_COLORS = ['#b03a2e', '#e8c56b', '#4a7c6f', '#5a6f9c', '#a45c8a', '#c07b3a', '#6b8f5e']
 
-export default function Home({ onNavigate }: Props) {
+export default function Home({ onNavigate, entered = true }: Props) {
   const [list, setList] = useState<HeritageSummary[]>([])
   const [profile, setProfile] = useState<Profile | null>(null)
   const [question, setQuestion] = useState('')
@@ -90,7 +92,7 @@ export default function Home({ onNavigate }: Props) {
     <div className="home-page" ref={rootRef}>
       {/* Hero：品牌门面 */}
       <section className="home-hero">
-        <EmberCanvas />
+        <EmberCanvas active={entered} />
         <div className="home-petals" aria-hidden>
           {Array.from({ length: 7 }, (_, i) => (
             <span key={i} />
