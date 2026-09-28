@@ -15,11 +15,20 @@ const PROVINCES = [
 /**
  * 从 region 描述中提取省级行政区名。
  * - 含"全国"字样 → '全国'
- * - 否则返回首个命中的省份
+ * - 否则取**字符串中出现位置最早**的那个省份
+ *   （不能按 PROVINCES 数组顺序取首个命中，否则"陕西、河北…"会因数组里河北在前被误判）
  * - 都未命中 → '其他'
  */
 export function extractProvince(region: string): string {
   if (region.includes('全国')) return '全国'
-  const hit = PROVINCES.find((p) => region.includes(p))
-  return hit ?? '其他'
+  let best = '其他'
+  let bestIdx = Infinity
+  for (const p of PROVINCES) {
+    const i = region.indexOf(p)
+    if (i !== -1 && i < bestIdx) {
+      bestIdx = i
+      best = p
+    }
+  }
+  return best
 }

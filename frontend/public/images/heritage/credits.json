@@ -1,26 +1,193 @@
 {
-  "h_suxiu": { "license": "CC BY-SA 4.0", "term": "Suzhou embroidery" },
-  "h_jianzhi": { "license": "CC BY-SA 4.0", "term": "Chinese paper cutting" },
-  "h_jingju": { "license": "CC BY 2.0", "term": "Peking opera" },
-  "h_kunqu": { "license": "CC BY 2.0", "term": "Kunqu opera" },
-  "h_piying": { "license": "CC BY-SA 4.0", "term": "Chinese shadow puppetry" },
-  "h_duanwu": { "license": "CC BY-SA 3.0", "term": "Dragon boat festival China" },
-  "h_cizhou": { "license": "CC BY-SA 3.0", "term": "Cizhou ware" },
-  "h_nianhua": { "license": "Public domain", "term": "Yangliuqing" },
-  "h_guqin": { "license": "CC BY-SA 4.0", "term": "Guqin" },
-  "h_zhuzi": { "license": "Public domain", "term": "bamboo paper making" },
-  "h_jingdezhen": { "license": "CC0", "term": "Jingdezhen porcelain" },
-  "h_xuanzhi": { "license": "CC0", "term": "Xuan paper" },
-  "h_longjing": { "license": "CC BY-SA 4.0", "term": "Longjing tea" },
-  "h_zisha": { "license": "CC0", "term": "Yixing teapot" },
-  "h_shufa": { "license": "Public domain", "term": "Chinese calligraphy" },
-  "h_yueju": { "license": "CC BY 2.0", "term": "Yue opera" },
-  "h_chuanju": { "license": "CC BY-SA 2.5 es", "term": "Sichuan opera" },
-  "h_yueju_gd": { "license": "FAL", "term": "Cantonese opera" },
-  "h_changdiao": { "license": "CC BY-SA 3.0", "term": "Mongolian long song" },
-  "h_weifang": { "license": "CC BY 4.0", "term": "Weifang kite" },
-  "h_tulou": { "license": "CC BY-SA 2.0", "term": "Fujian Tulou" },
-  "h_zhenjiu": { "license": "CC BY-SA 3.0", "term": "acupuncture" },
-  "h_kaoya": { "license": "CC BY 4.0", "term": "Peking duck" },
-  "h_poshui": { "license": "CC BY-SA 3.0", "term": "Dai people water festival" }
+ "h_suxiu": {
+  "license": "CC BY-SA 4.0",
+  "term": "Suzhou embroidery"
+ },
+ "h_jianzhi": {
+  "license": "CC BY-SA 4.0",
+  "term": "Chinese paper cutting"
+ },
+ "h_jingju": {
+  "license": "CC BY 2.0",
+  "term": "Peking opera"
+ },
+ "h_kunqu": {
+  "license": "CC BY 2.0",
+  "term": "Kunqu opera"
+ },
+ "h_piying": {
+  "license": "CC BY-SA 4.0",
+  "term": "Chinese shadow puppetry"
+ },
+ "h_duanwu": {
+  "license": "CC BY-SA 3.0",
+  "term": "Dragon boat festival China"
+ },
+ "h_cizhou": {
+  "license": "CC BY-SA 3.0",
+  "term": "Cizhou ware"
+ },
+ "h_nianhua": {
+  "license": "Public domain",
+  "term": "Yangliuqing"
+ },
+ "h_guqin": {
+  "license": "CC BY-SA 4.0",
+  "term": "Guqin"
+ },
+ "h_zhuzi": {
+  "license": "Public domain",
+  "term": "bamboo paper making"
+ },
+ "h_jingdezhen": {
+  "license": "CC0",
+  "term": "Jingdezhen porcelain"
+ },
+ "h_xuanzhi": {
+  "license": "CC0",
+  "term": "Xuan paper"
+ },
+ "h_longjing": {
+  "license": "CC BY-SA 4.0",
+  "term": "Longjing tea"
+ },
+ "h_zisha": {
+  "license": "CC0",
+  "term": "Yixing teapot"
+ },
+ "h_shufa": {
+  "license": "Public domain",
+  "term": "Chinese calligraphy"
+ },
+ "h_yueju": {
+  "license": "CC BY 2.0",
+  "term": "Yue opera"
+ },
+ "h_chuanju": {
+  "license": "CC BY-SA 2.5 es",
+  "term": "Sichuan opera"
+ },
+ "h_yueju_gd": {
+  "license": "FAL",
+  "term": "Cantonese opera"
+ },
+ "h_changdiao": {
+  "license": "CC BY-SA 3.0",
+  "term": "Mongolian long song"
+ },
+ "h_weifang": {
+  "license": "CC BY 4.0",
+  "term": "Weifang kite"
+ },
+ "h_tulou": {
+  "license": "CC BY-SA 2.0",
+  "term": "Fujian Tulou"
+ },
+ "h_zhenjiu": {
+  "license": "CC BY-SA 3.0",
+  "term": "acupuncture"
+ },
+ "h_kaoya": {
+  "license": "CC BY 4.0",
+  "term": "Peking duck"
+ },
+ "h_poshui": {
+  "license": "CC BY-SA 3.0",
+  "term": "Dai people water festival"
+ },
+ "h_hezhe": {
+  "license": "CC0",
+  "term": "Hezhe fish skin clothing",
+  "title": "File:1875-1900 Hezhe (Nanai) fishskin jacket 01.jpg"
+ },
+ "h_nonglewu": {
+  "license": "CC BY-SA 2.0",
+  "term": "Korean nongak farmer dance",
+  "title": "File:Korean music-Nongak-01.jpg"
+ },
+ "h_xiuyan": {
+  "license": "CC0",
+  "term": "Chinese jade carving sculpture",
+  "title": "File:Yuan Jade Bi with Dragon.jpg"
+ },
+ "h_guxiu": {
+  "license": "CC BY 2.0",
+  "term": "Gu embroidery",
+  "title": "File:Gu embroidery.jpg"
+ },
+ "h_hanxiu": {
+  "license": "Public domain",
+  "term": "Chinese gold thread embroidery",
+  "title": "File:Chinese summer court robe ('dragon robe'), c. 1890s, silk gauze couched in gold thread, East-West Center.jpg"
+ },
+ "h_xiangxiu": {
+  "license": "CC0",
+  "term": "Chinese silk embroidery",
+  "title": "File:Silk Embroidery from China.jpg"
+ },
+ "h_dongda": {
+  "license": "CC BY 2.0",
+  "term": "Dong ethnic choir Guizhou",
+  "title": "File:Chengyang, Dong lady - 27758664508.jpg"
+ },
+ "h_lizu": {
+  "license": "CC BY-SA 4.0",
+  "term": "Li people textile Hainan",
+  "title": "File:Li Textiles.jpg"
+ },
+ "h_tuiuang": {
+  "license": "CC BY-SA 4.0",
+  "term": "Chinese lacquerware box",
+  "title": "File:Western Han lacquerware box 2.JPG"
+ },
+ "h_zhuxian": {
+  "license": "CC0",
+  "term": "Chinese New Year woodblock print",
+  "title": "File:One hundred thirty-five woodblock prints including New Year's pictures (nianhua), door gods, historical figures and Taoist deities MET DP-17327-122.jpg"
+ },
+ "h_laran": {
+  "license": "CC BY-SA 2.0",
+  "term": "Miao batik",
+  "title": "File:Miao batik 苗族蜡染, Guizhou, 2016 (52410714397).jpg"
+ },
+ "h_tangka": {
+  "license": "CC BY-SA 2.5",
+  "term": "Thangka painting",
+  "title": "File:Painting Thangka Lhasa Tibet Luca Galuzzi 2006.jpg"
+ },
+ "h_shanhuaer": {
+  "license": "CC BY-SA 4.0",
+  "term": "Ningxia China landscape",
+  "title": "File:Dreaming a spring flowering in desert.jpg"
+ },
+ "h_mukamu": {
+  "license": "CC0",
+  "term": "Uyghur Muqam",
+  "title": "File:El muqam uyghur del Xinjiang.jpg"
+ },
+ "h_gspiy": {
+  "license": "CC0",
+  "term": "Chinese shadow play puppet",
+  "title": "File:Southern Henan Shadow Puppets.jpg"
+ },
+ "h_hkqingjiao": {
+  "license": "CC BY 2.0",
+  "term": "Cheung Chau Bun Festival",
+  "title": "File:Bun festival Flying colors parade Cheung Chau.jpg"
+ },
+ "h_motauju": {
+  "license": "CC BY-SA 2.0",
+  "term": "Macau city street",
+  "title": "File:Macau City of Dreams (12469699934).jpg"
+ },
+ "h_liangping": {
+  "license": "CC BY-SA 3.0",
+  "term": "Liangping Chongqing county",
+  "title": "File:梁平双桂堂 - panoramio.jpg"
+ },
+ "h_huaer": {
+  "license": "CC BY-SA 3.0",
+  "term": "Qinghai lake landscape",
+  "title": "File:QinghaiHu1.jpg"
+ }
 }
