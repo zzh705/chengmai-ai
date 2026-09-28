@@ -12,7 +12,7 @@ _CACHE_PATH = (
     Path(__file__).resolve().parent.parent.parent.parent
     / "data"
     / "structured"
-    / "embeddings_cache.json"
+    / "embeddings_cache.npz"
 )
 
 _chunks: list[dict] = []
@@ -20,11 +20,12 @@ _vectors: np.ndarray | None = None
 
 
 def _make_chunks(items: list[dict]) -> list[dict]:
-    """把每个非遗项目切块：简介 / 技艺 / 文化内涵 / 冷知识（RAG 检索单元）。"""
+    """把每个非遗项目切块：简介 / 技艺 / 文化内涵 / 冷知识（RAG 检索单元）。
+
+    3250 项索引层已升级为苏绣级叙事（story/timeline/fun_facts），全量纳入。
+    """
     chunks = []
     for item in items:
-        if item.get("tier") == "index":
-            continue  # 索引层（全国名录简述）不进向量库：保检索质量，省重建成本
         for field, label in [
             ("description", "简介"),
             ("craft_process", "技艺"),
@@ -81,24 +82,27 @@ def ensure_index(items: list[dict]) -> None:
 
     model = os.getenv("EMBEDDING_MODEL", "text-embedding-v3")
     if _CACHE_PATH.exists():
-        cache = json.loads(_CACHE_PATH.read_text(encoding="utf-8"))
-        if cache.get("model") == model and cache.get("items_count") == len(items):
-            _chunks = cache["chunks"]
-            _vectors = np.array(cache["vectors"], dtype=np.float32)
-            return
+        with np.load(_CACHE_PATH, allow_pickle=False) as data:
+            if str(data["model"]) == model and int(data["items_count"]) == len(items):
+                _chunks = json.loads(str(data["chunks_json"]))
+                _vectors = data["vectors"].astype(np.float32)
+                return
 
     _chunks = _make_chunks(items)
     if not _chunks:
         _vectors = np.zeros((0, 0), dtype=np.float32)
         return
     _vectors = np.array(embed_texts([c["text"] for c in _chunks]), dtype=np.float32)
-    _CACHE_PATH.write_text(
-        json.dumps(
-            {"model": model, "items_count": len(items), "chunks": _chunks, "vectors": _vectors.tolist()},
-            ensure_ascii=False,
-        ),
-        encoding="utf-8",
-    )
+    tmp = _CACHE_PATH.with_name(_CACHE_PATH.name + ".tmp")
+    with open(tmp, "wb") as fh:
+        np.savez(
+            fh,
+            model=model,
+            items_count=len(items),
+            chunks_json=np.array(json.dumps(_chunks, ensure_ascii=False)),
+            vectors=_vectors,
+        )
+    tmp.replace(_CACHE_PATH)
 
 
 def search(query: str, items: list[dict], top_k: int = 6) -> list[dict]:

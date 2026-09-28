@@ -1,0 +1,4803 @@
+{
+ "h_suxiu": {
+  "status": "done"
+ },
+ "h_jianzhi": {
+  "status": "done"
+ },
+ "h_jingju": {
+  "status": "done"
+ },
+ "h_kunqu": {
+  "status": "done"
+ },
+ "h_piying": {
+  "status": "done"
+ },
+ "h_duanwu": {
+  "status": "done"
+ },
+ "h_cizhou": {
+  "status": "done"
+ },
+ "h_nianhua": {
+  "status": "done"
+ },
+ "h_guqin": {
+  "status": "done"
+ },
+ "h_zhuzi": {
+  "status": "done"
+ },
+ "h_jingdezhen": {
+  "status": "done"
+ },
+ "h_xuanzhi": {
+  "status": "done"
+ },
+ "h_longjing": {
+  "status": "done"
+ },
+ "h_zisha": {
+  "status": "done"
+ },
+ "h_shufa": {
+  "status": "done"
+ },
+ "h_yueju": {
+  "status": "done"
+ },
+ "h_chuanju": {
+  "status": "done"
+ },
+ "h_yueju_gd": {
+  "status": "done"
+ },
+ "h_changdiao": {
+  "status": "done"
+ },
+ "h_weifang": {
+  "status": "done"
+ },
+ "h_tulou": {
+  "status": "done"
+ },
+ "h_zhenjiu": {
+  "status": "done"
+ },
+ "h_kaoya": {
+  "status": "done"
+ },
+ "h_poshui": {
+  "status": "done"
+ },
+ "h_hezhe": {
+  "status": "done"
+ },
+ "h_nonglewu": {
+  "status": "done"
+ },
+ "h_xiuyan": {
+  "status": "done"
+ },
+ "h_guxiu": {
+  "status": "done"
+ },
+ "h_tuiuang": {
+  "status": "done"
+ },
+ "h_zhuxian": {
+  "status": "done"
+ },
+ "h_hanxiu": {
+  "status": "done"
+ },
+ "h_xiangxiu": {
+  "status": "done"
+ },
+ "h_dongda": {
+  "status": "done"
+ },
+ "h_lizu": {
+  "status": "done"
+ },
+ "h_liangping": {
+  "status": "done"
+ },
+ "h_laran": {
+  "status": "done"
+ },
+ "h_tangka": {
+  "status": "done"
+ },
+ "h_huaer": {
+  "status": "done"
+ },
+ "h_shanhuaer": {
+  "status": "done"
+ },
+ "h_mukamu": {
+  "status": "done"
+ },
+ "h_gspiy": {
+  "status": "done"
+ },
+ "h_hkqingjiao": {
+  "status": "done"
+ },
+ "h_motauju": {
+  "status": "done"
+ },
+ "h_tw_budaixi": {
+  "status": "done"
+ },
+ "h_tw_gezaxi": {
+  "status": "done"
+ },
+ "h_tw_fengnianji": {
+  "status": "done"
+ },
+ "h_tw_zhibu": {
+  "status": "done"
+ },
+ "h_tw_luoxiyan": {
+  "status": "done"
+ },
+ "h_tw_meinong_yuzhisan": {
+  "status": "done"
+ },
+ "h_n14244": {
+  "status": "done"
+ },
+ "h_n15333": {
+  "status": "miss",
+  "tried": [
+   "Jiangsu fine embroidery",
+   "Wuxi micro-embroidery"
+  ]
+ },
+ "h_n15334": {
+  "status": "done"
+ },
+ "h_n15335": {
+  "status": "miss",
+  "tried": [
+   "Jiangsu scholar painting embroidery",
+   "Yangzhou embroidery"
+  ]
+ },
+ "h_n15336": {
+  "status": "done"
+ },
+ "h_n13985": {
+  "status": "done"
+ },
+ "h_n15339": {
+  "status": "miss",
+  "tried": [
+   "Bian embroidery",
+   "Kaifeng Song dynasty embroidery"
+  ]
+ },
+ "h_n15342": {
+  "status": "done"
+ },
+ "h_n15343": {
+  "status": "miss",
+  "tried": [
+   "Chaoshan gold-thread embroidery",
+   "Chaozhou embroidery dragon phoenix screen"
+  ]
+ },
+ "h_n15344": {
+  "status": "miss",
+  "tried": [
+   "Ningbo gold-silver embroidery",
+   "Zhejiang ceremonial embroidery"
+  ]
+ },
+ "h_n14196": {
+  "status": "miss",
+  "tried": [
+   "Bortala camel-hair embroidery",
+   "Mongolian embroidery Xinjiang"
+  ]
+ },
+ "h_n14194": {
+  "status": "miss",
+  "tried": [
+   "Manchu embroidery Heilongjiang",
+   "Qipao embroidery border"
+  ]
+ },
+ "h_n13990": {
+  "status": "done"
+ },
+ "h_n15348": {
+  "status": "done"
+ },
+ "h_n15349": {
+  "status": "done"
+ },
+ "h_n15350": {
+  "status": "miss",
+  "tried": [
+   "Sani embroidery Yunnan",
+   "Yi fire torch bag embroidery"
+  ]
+ },
+ "h_n15351": {
+  "status": "miss",
+  "tried": [
+   "Shui ethnic group horsehair embroidery",
+   "Sui people baby carrier embroidery"
+  ]
+ },
+ "h_n15352": {
+  "status": "miss",
+  "tried": [
+   "Pa Yao women's festival costume",
+   "Yao embroidery counted thread"
+  ]
+ },
+ "h_n15353": {
+  "status": "done"
+ },
+ "h_n15354": {
+  "status": "miss",
+  "tried": [
+   "Huangzhong applique thangka",
+   "Qinghai Tibetan Buddhist pile embroidery"
+  ]
+ },
+ "h_n14190": {
+  "status": "miss",
+  "tried": [
+   "Altaysi fabric embroidery",
+   "Uyghur silk embroidery"
+  ]
+ },
+ "h_n15356": {
+  "status": "miss",
+  "tried": [
+   "Kyrghyz yurt door curtain embroidery",
+   "Kyrgyz cross stitch on felt"
+  ]
+ },
+ "h_n14242": {
+  "status": "miss",
+  "tried": [
+   "Sibe tobacco bag silk stitch",
+   "Xibe people pouch embroidery"
+  ]
+ },
+ "h_n15358": {
+  "status": "miss",
+  "tried": [
+   "Tibetan pulu belt embroidery",
+   "Tibetan thangka brocade mounting"
+  ]
+ },
+ "h_n15359": {
+  "status": "miss",
+  "tried": [
+   "Gaoping embroidery",
+   "Shanxi folk embroidery"
+  ]
+ },
+ "h_n15360": {
+  "status": "miss",
+  "tried": [
+   "Chinese ramie cloth embroidery",
+   "Xinyu ramie embroidery"
+  ]
+ },
+ "h_n15361": {
+  "status": "miss",
+  "tried": [
+   "Hong'an double-sided embroidery",
+   "Hubei folk embroidery"
+  ]
+ },
+ "h_n15362": {
+  "status": "miss",
+  "tried": [
+   "Baoji horsehair embroidery",
+   "Xiqin embroidery"
+  ]
+ },
+ "h_n15363": {
+  "status": "miss",
+  "tried": [
+   "Chengcheng鼓肚绣",
+   "Shaanxi folk embroidery"
+  ]
+ },
+ "h_n15364": {
+  "status": "miss",
+  "tried": [
+   "Malu embroidery",
+   "Sichuan folk embroidery"
+  ]
+ },
+ "h_n15365": {
+  "status": "miss",
+  "tried": [
+   "Hubei folk applique",
+   "Yangxin cloth applique"
+  ]
+ },
+ "h_n15366": {
+  "status": "miss",
+  "tried": [
+   "Anhui blue-white embroidery",
+   "Wangjiang cross-stitch"
+  ]
+ },
+ "h_n15367": {
+  "status": "miss",
+  "tried": [
+   "Huangmei tiaohua embroidery",
+   "Hubei folk textile"
+  ]
+ },
+ "h_n15368": {
+  "status": "miss",
+  "tried": [
+   "Huayao tiaohua",
+   "Hunan Yao textile"
+  ]
+ },
+ "h_n15369": {
+  "status": "miss",
+  "tried": [
+   "Miao tiaohua embroidery",
+   "Xiangxi Miao textile"
+  ]
+ },
+ "h_n15370": {
+  "status": "done"
+ },
+ "h_n15371": {
+  "status": "miss",
+  "tried": [
+   "Jiangsu sachet embroidery",
+   "Xuzhou xiangbao"
+  ]
+ },
+ "h_n15372": {
+  "status": "miss",
+  "tried": [
+   "Gansu cloth doll sachet",
+   "Qingyang xiangbao"
+  ]
+ },
+ "h_n14475": {
+  "status": "done"
+ },
+ "h_n15374": {
+  "status": "miss",
+  "tried": [
+   "Hebei rustic cotton fabric",
+   "Weixian handwoven cloth"
+  ]
+ },
+ "h_n15375": {
+  "status": "miss",
+  "tried": [
+   "Chinese handwoven colored cotton cloth",
+   "Nantong sezhī tǔbù"
+  ]
+ },
+ "h_n15376": {
+  "status": "miss",
+  "tried": [
+   "Uyghur Palaz weaving",
+   "Xinjiang wool flatweave"
+  ]
+ },
+ "h_n15377": {
+  "status": "miss",
+  "tried": [
+   "Lisu huocao weaving",
+   "fireweed and hemp cloth"
+  ]
+ },
+ "h_n15378": {
+  "status": "miss",
+  "tried": [
+   "Huang Daopo spinning wheel",
+   "Wunijing cotton textile"
+  ]
+ },
+ "h_n14301": {
+  "status": "done"
+ },
+ "h_n15380": {
+  "status": "done"
+ },
+ "h_n15381": {
+  "status": "done"
+ },
+ "h_n14498": {
+  "status": "miss",
+  "tried": [
+   "Buyi fengxiang yinran",
+   "Chinese pine resin resist dyeing"
+  ]
+ },
+ "h_n14298": {
+  "status": "miss",
+  "tried": [
+   "Hunan blue printed cloth",
+   "Shaoyang indigo resist printing"
+  ]
+ },
+ "h_n15385": {
+  "status": "done"
+ },
+ "h_n15386": {
+  "status": "done"
+ },
+ "h_n15387": {
+  "status": "miss",
+  "tried": [
+   "Chinese gauze fabric",
+   "Hangzhou Luo silk"
+  ]
+ },
+ "h_n15388": {
+  "status": "miss",
+  "tried": [
+   "Chinese silk gauze",
+   "Shuanglin lingjuan"
+  ]
+ },
+ "h_n14486": {
+  "status": "miss",
+  "tried": [
+   "Jiangxi ramie cloth",
+   "Wanzai summer cloth"
+  ]
+ },
+ "h_n14277": {
+  "status": "done"
+ },
+ "h_n15391": {
+  "status": "done"
+ },
+ "h_n15392": {
+  "status": "done"
+ },
+ "h_n14489": {
+  "status": "done"
+ },
+ "h_n15394": {
+  "status": "done"
+ },
+ "h_n15395": {
+  "status": "done"
+ },
+ "h_n15396": {
+  "status": "done"
+ },
+ "h_n14492": {
+  "status": "done"
+ },
+ "h_n15398": {
+  "status": "miss",
+  "tried": [
+   "Shangdang piled brocade",
+   "Shanxi pile silk"
+  ]
+ },
+ "h_n15399": {
+  "status": "miss",
+  "tried": [
+   "Shangdang pile satin",
+   "Shanxi textile relief"
+  ]
+ },
+ "h_n15400": {
+  "status": "miss",
+  "tried": [
+   "Hotan Atles weaving",
+   "Uyghur Etles silk"
+  ]
+ },
+ "h_n15401": {
+  "status": "done"
+ },
+ "h_n15402": {
+  "status": "miss",
+  "tried": [
+   "Uyghur felt rug",
+   "Xinjiang embroidered felt"
+  ]
+ },
+ "h_n15403": {
+  "status": "miss",
+  "tried": [
+   "Chalva weaving",
+   "Yi people wool cape"
+  ]
+ },
+ "h_n15404": {
+  "status": "miss",
+  "tried": [
+   "Kham wool belt",
+   "Tibetan yak hair weaving"
+  ]
+ },
+ "h_n15405": {
+  "status": "miss",
+  "tried": [
+   "Langzhong silk carpet",
+   "Sichuan brocade carpet"
+  ]
+ },
+ "h_n15406": {
+  "status": "done"
+ },
+ "h_n15407": {
+  "status": "done"
+ },
+ "h_n15408": {
+  "status": "miss",
+  "tried": [
+   "Jiaya Tibetan carpet",
+   "Qinghai wool rug"
+  ]
+ },
+ "h_n15409": {
+  "status": "done"
+ },
+ "h_n14289": {
+  "status": "miss",
+  "tried": [
+   "Tibetan bangdian",
+   "Tibetan khatam"
+  ]
+ },
+ "h_n15412": {
+  "status": "miss",
+  "tried": [
+   "Kashgar printed felt",
+   "Uyghur flower felt"
+  ]
+ },
+ "h_n14418": {
+  "status": "done"
+ },
+ "h_n15414": {
+  "status": "done"
+ },
+ "h_n15415": {
+  "status": "miss",
+  "tried": [
+   "Daur boots",
+   "Daur leather vest"
+  ]
+ },
+ "h_n15416": {
+  "status": "miss",
+  "tried": [
+   "Evenki leather gloves",
+   "Evenki reindeer-hide boots"
+  ]
+ },
+ "h_n15417": {
+  "status": "miss",
+  "tried": [
+   "Joseon-style hanbok making in Jilin",
+   "Korean ethnic clothing in Yanbian"
+  ]
+ },
+ "h_n15418": {
+  "status": "miss",
+  "tried": [
+   "Longfeng cheongsam workshop Shanghai",
+   "Shanghai cheongsam craftsmanship"
+  ]
+ },
+ "h_n15419": {
+  "status": "done"
+ },
+ "h_n15420": {
+  "status": "miss",
+  "tried": [
+   "Miao batik Hunan",
+   "Miao broken-thread embroidery"
+  ]
+ },
+ "h_n15421": {
+  "status": "miss",
+  "tried": [
+   "Yao batik Guangxi",
+   "Yao reverse embroidery"
+  ]
+ },
+ "h_n15422": {
+  "status": "miss",
+  "tried": [
+   "Dong bright cloth Guizhou",
+   "Dong pipa collar clothing"
+  ]
+ },
+ "h_n15423": {
+  "status": "miss",
+  "tried": [
+   "Li brocade Hainan",
+   "Li ikat weaving"
+  ]
+ },
+ "h_n15424": {
+  "status": "miss",
+  "tried": [
+   "Yi solar pattern cape",
+   "Yi wool felt Sichuan"
+  ]
+ },
+ "h_n15425": {
+  "status": "miss",
+  "tried": [
+   "Bouyei batik pleated skirt",
+   "Buyi ethnic costume"
+  ]
+ },
+ "h_n15426": {
+  "status": "miss",
+  "tried": [
+   "Lhoba feather headdress",
+   "Lhoba leather robe"
+  ]
+ },
+ "h_n15427": {
+  "status": "done"
+ },
+ "h_n15428": {
+  "status": "miss",
+  "tried": [
+   "Yugur red-tassel hat",
+   "Yugur woven belt"
+  ]
+ },
+ "h_n15429": {
+  "status": "miss",
+  "tried": [
+   "Tu nationality tudar headdress",
+   "Tu people seven-color sleeve"
+  ]
+ },
+ "h_n15430": {
+  "status": "miss",
+  "tried": [
+   "Altaysi silk Uyghur",
+   "Ikat silk dress Uyghur"
+  ]
+ },
+ "h_n15431": {
+  "status": "miss",
+  "tried": [
+   "Kazakh lamb fur robe",
+   "Kazakh wolf-head silver sheath"
+  ]
+ },
+ "h_n15432": {
+  "status": "miss",
+  "tried": [
+   "Tajik black velvet cap",
+   "Tajik eagle flute embroidery"
+  ]
+ },
+ "h_n15433": {
+  "status": "miss",
+  "tried": [
+   "Kyrgyz traditional clothing Kizilsu",
+   "Manas epic embroidery"
+  ]
+ },
+ "h_n14507": {
+  "status": "done"
+ },
+ "h_n15436": {
+  "status": "miss",
+  "tried": [
+   "Beijing sand swallow kite",
+   "Chinese traditional kite making"
+  ]
+ },
+ "h_n15437": {
+  "status": "miss",
+  "tried": [
+   "Chinese silk kite with movable eyes",
+   "Tianjin Wei kite"
+  ]
+ },
+ "h_n15438": {
+  "status": "done"
+ },
+ "h_n15439": {
+  "status": "miss",
+  "tried": [
+   "Lhasa kite",
+   "Tibetan paper kite with horn whistle"
+  ]
+ },
+ "h_n15440": {
+  "status": "miss",
+  "tried": [
+   "Chinese bamboo kite with gourd whistles",
+   "Nantong ban yao kite"
+  ]
+ },
+ "h_n15441": {
+  "status": "miss",
+  "tried": [
+   "Chinese wheat straw basket",
+   "Daming grass weaving"
+  ]
+ },
+ "h_n15442": {
+  "status": "miss",
+  "tried": [
+   "Huangcao weaving",
+   "Xuxing grass weaving"
+  ]
+ },
+ "h_n15443": {
+  "status": "miss",
+  "tried": [
+   "Hukou straw dragon",
+   "Jiangxi straw dragon"
+  ]
+ },
+ "h_n15444": {
+  "status": "miss",
+  "tried": [
+   "Laizhou wheat straw braid",
+   "Shandong straw hat"
+  ]
+ },
+ "h_n15445": {
+  "status": "miss",
+  "tried": [
+   "Guangzong willow weaving",
+   "Hebei willow basket"
+  ]
+ },
+ "h_n15446": {
+  "status": "miss",
+  "tried": [
+   "Guanan willow grain bin",
+   "Hebei willow sieve"
+  ]
+ },
+ "h_n15447": {
+  "status": "miss",
+  "tried": [
+   "Fuyang willow weaving",
+   "Huanggang willow basket"
+  ]
+ },
+ "h_n15448": {
+  "status": "miss",
+  "tried": [
+   "Anhui white willow weaving",
+   "Huqiu willow basket"
+  ]
+ },
+ "h_n15449": {
+  "status": "miss",
+  "tried": [
+   "Anhui shuxi",
+   "Shu County bamboo mat"
+  ]
+ },
+ "h_n15450": {
+  "status": "done"
+ },
+ "h_n15451": {
+  "status": "miss",
+  "tried": [
+   "Jiangxi bamboo screen",
+   "Ruichang bamboo silk painting"
+  ]
+ },
+ "h_n15452": {
+  "status": "miss",
+  "tried": [
+   "Hunan bent bamboo furniture",
+   "Yiyang xiaoyu bamboo stool"
+  ]
+ },
+ "h_n15453": {
+  "status": "miss",
+  "tried": [
+   "Guangxi Maonan wedding hat",
+   "Maonan flower bamboo hat"
+  ]
+ },
+ "h_n15454": {
+  "status": "miss",
+  "tried": [
+   "Chongqing bamboo painting curtain",
+   "Liangping bamboo scroll curtain"
+  ]
+ },
+ "h_n15455": {
+  "status": "miss",
+  "tried": [
+   "Quxian Liu family bamboo painting",
+   "Sichuan fine bamboo silk art"
+  ]
+ },
+ "h_n15456": {
+  "status": "miss",
+  "tried": [
+   "Qingshen bamboo wrapped porcelain",
+   "Sichuan bamboo ceramic vessel"
+  ]
+ },
+ "h_n15457": {
+  "status": "miss",
+  "tried": [
+   "Daoming bamboo architecture",
+   "Sichuan Linpan bamboo structure"
+  ]
+ },
+ "h_n15458": {
+  "status": "done"
+ },
+ "h_n15459": {
+  "status": "done"
+ },
+ "h_n15460": {
+  "status": "miss",
+  "tried": [
+   "Fujian glass filament lantern",
+   "Quanzhou flower lantern"
+  ]
+ },
+ "h_n15461": {
+  "status": "done"
+ },
+ "h_n15462": {
+  "status": "miss",
+  "tried": [
+   "Huangyuan parade lantern",
+   "Qinghai leather shadow lantern"
+  ]
+ },
+ "h_n14170": {
+  "status": "miss",
+  "tried": [
+   "Wheat straw collage",
+   "Zhejiang wheat stalk art"
+  ]
+ },
+ "h_n15464": {
+  "status": "done"
+ },
+ "h_n15466": {
+  "status": "miss",
+  "tried": [
+   "Haipai jade carving",
+   "Shanghai thin-walled jade"
+  ]
+ },
+ "h_n15467": {
+  "status": "done"
+ },
+ "h_n15468": {
+  "status": "miss",
+  "tried": [
+   "Canton jade carving",
+   "Guangzhou jade carving"
+  ]
+ },
+ "h_n15469": {
+  "status": "done"
+ },
+ "h_n15470": {
+  "status": "miss",
+  "tried": [
+   "Fushun coal carving",
+   "jet carving China"
+  ]
+ },
+ "h_n15471": {
+  "status": "done"
+ },
+ "h_n15472": {
+  "status": "miss",
+  "tried": [
+   "Changhua bloodstone carving",
+   "Changhua chicken-blood stone"
+  ]
+ },
+ "h_n15473": {
+  "status": "done"
+ },
+ "h_n15474": {
+  "status": "miss",
+  "tried": [
+   "Hui'an dragon pillar",
+   "Hui'an stone carving"
+  ]
+ },
+ "h_n15475": {
+  "status": "miss",
+  "tried": [
+   "Chrysanthemum stone carving Liuyang",
+   "Hunan chrysanthemum rock"
+  ]
+ },
+ "h_n15476": {
+  "status": "miss",
+  "tried": [
+   "Leizhou stone dog",
+   "Qing dynasty stone dog Guangdong"
+  ]
+ },
+ "h_n15477": {
+  "status": "miss",
+  "tried": [
+   "Fuping stone carving",
+   "Tang dynasty stone lion Shaanxi"
+  ]
+ },
+ "h_n15478": {
+  "status": "miss",
+  "tried": [
+   "Riwoche Monastery stone sutra",
+   "Tibetan stone carving Qinghai"
+  ]
+ },
+ "h_n15479": {
+  "status": "miss",
+  "tried": [
+   "Hui architecture brick relief",
+   "Linxia brick carving"
+  ]
+ },
+ "h_n15480": {
+  "status": "done"
+ },
+ "h_n15481": {
+  "status": "miss",
+  "tried": [
+   "Guyuan brick carving",
+   "Ningxia Hui brick relief"
+  ]
+ },
+ "h_n15482": {
+  "status": "miss",
+  "tried": [
+   "Chinese fossil amber insect inclusion",
+   "Fushun amber carving"
+  ]
+ },
+ "h_n15483": {
+  "status": "done"
+ },
+ "h_n15484": {
+  "status": "done"
+ },
+ "h_n15485": {
+  "status": "miss",
+  "tried": [
+   "Chinese boxwood Buddhist figure",
+   "Yueqing Huangyang wood carving"
+  ]
+ },
+ "h_n15486": {
+  "status": "done"
+ },
+ "h_n15487": {
+  "status": "miss",
+  "tried": [
+   "Wuhan wooden ship model",
+   "Yangtze River traditional boat model"
+  ]
+ },
+ "h_n15488": {
+  "status": "miss",
+  "tried": [
+   "Chinese three-layer hollow carving",
+   "Tongshan wood carving"
+  ]
+ },
+ "h_n14020": {
+  "status": "done"
+ },
+ "h_n15490": {
+  "status": "miss",
+  "tried": [
+   "Hainan Hua Gui wood carving",
+   "Li ethnic temple sculpture"
+  ]
+ },
+ "h_n15491": {
+  "status": "miss",
+  "tried": [
+   "Donggu wood carving",
+   "Jiangxi She ethnic temple sculpture"
+  ]
+ },
+ "h_n15492": {
+  "status": "done"
+ },
+ "h_n15493": {
+  "status": "miss",
+  "tried": [
+   "Chinese softwood relief",
+   "Fuzhou cork painting"
+  ]
+ },
+ "h_n15494": {
+  "status": "miss",
+  "tried": [
+   "Dalian peach pit carving",
+   "Liaoning micro wood carving"
+  ]
+ },
+ "h_n15495": {
+  "status": "miss",
+  "tried": [
+   "Cantonese micro carving",
+   "Guangzhou olive pit carving"
+  ]
+ },
+ "h_n15496": {
+  "status": "miss",
+  "tried": [
+   "Chinese clay figurine",
+   "Tianjin Ni Ren Zhang"
+  ]
+ },
+ "h_n15497": {
+  "status": "miss",
+  "tried": [
+   "Henan clay whistle",
+   "Junxian ni gu gu"
+  ]
+ },
+ "h_n15498": {
+  "status": "miss",
+  "tried": [
+   "Huaiyang Nini Dog",
+   "Taihao Ling mud sculpture"
+  ]
+ },
+ "h_n15499": {
+  "status": "done"
+ },
+ "h_n15500": {
+  "status": "miss",
+  "tried": [
+   "Xiji clay figure",
+   "Yang family clay sculpture Ningxia"
+  ]
+ },
+ "h_n15501": {
+  "status": "done"
+ },
+ "h_n14014": {
+  "status": "done"
+ },
+ "h_n15503": {
+  "status": "miss",
+  "tried": [
+   "Fujian marionette head",
+   "Quanzhou puppet head carving"
+  ]
+ },
+ "h_n15504": {
+  "status": "miss",
+  "tried": [
+   "Baoqing bamboo carving",
+   "Hunan bamboo yellow carving"
+  ]
+ },
+ "h_n15505": {
+  "status": "miss",
+  "tried": [
+   "Changzhou liuqing bamboo carving",
+   "Jiangsu bamboo green skin carving"
+  ]
+ },
+ "h_n15506": {
+  "status": "done"
+ },
+ "h_n15507": {
+  "status": "miss",
+  "tried": [
+   "Huizhou bamboo carving",
+   "Wu Zhaorui bamboo root sculpture"
+  ]
+ },
+ "h_n15508": {
+  "status": "miss",
+  "tried": [
+   "Li Peichu bamboo armrest",
+   "Putian liuqing bamboo carving"
+  ]
+ },
+ "h_n15509": {
+  "status": "miss",
+  "tried": [
+   "Cantonese plaster sculpture",
+   "Chen Clan Academy roof sculpture"
+  ]
+ },
+ "h_n15510": {
+  "status": "miss",
+  "tried": [
+   "Hainan coconut carving",
+   "coconut shell tea scoop"
+  ]
+ },
+ "h_n15511": {
+  "status": "miss",
+  "tried": [
+   "Gansu jade wine cup",
+   "Jiuquan yeguangbei"
+  ]
+ },
+ "h_n15512": {
+  "status": "miss",
+  "tried": [
+   "Jingzuo hardwood furniture",
+   "Longshuncheng rosewood cabinet"
+  ]
+ },
+ "h_n15513": {
+  "status": "miss",
+  "tried": [
+   "Fujian wood carving screen",
+   "Xianyou classical furniture"
+  ]
+ },
+ "h_n15514": {
+  "status": "miss",
+  "tried": [
+   "Cantonese hardwood furniture",
+   "Guangdong rosewood armchair"
+  ]
+ },
+ "h_n15515": {
+  "status": "miss",
+  "tried": [
+   "Suzhou classical garden construction",
+   "Xiangshan carpenters"
+  ]
+ },
+ "h_n15516": {
+  "status": "done"
+ },
+ "h_n15517": {
+  "status": "miss",
+  "tried": [
+   "Hongcun Chengzhitang",
+   "Huizhou architecture"
+  ]
+ },
+ "h_n14681": {
+  "status": "done"
+ },
+ "h_n15519": {
+  "status": "done"
+ },
+ "h_n15520": {
+  "status": "done"
+ },
+ "h_n15521": {
+  "status": "done"
+ },
+ "h_n14312": {
+  "status": "done"
+ },
+ "h_n15523": {
+  "status": "miss",
+  "tried": [
+   "Miao stilt house Leidu",
+   "Qianhu Miao Village architecture"
+  ]
+ },
+ "h_n15524": {
+  "status": "done"
+ },
+ "h_n15525": {
+  "status": "miss",
+  "tried": [
+   "Dunhuang mural restoration",
+   "Mogao Caves conservation"
+  ]
+ },
+ "h_n14732": {
+  "status": "miss",
+  "tried": [
+   "Pengjiazhai stilted buildings",
+   "Tujia stilt house Enshi"
+  ]
+ },
+ "h_n14696": {
+  "status": "done"
+ },
+ "h_n15528": {
+  "status": "miss",
+  "tried": [
+   "Salar bamboo fence house",
+   "Xunhua Salar architecture"
+  ]
+ },
+ "h_n14341": {
+  "status": "done"
+ },
+ "h_n14541": {
+  "status": "done"
+ },
+ "h_n14514": {
+  "status": "miss",
+  "tried": [
+   "Chinese silver teapot craftsmanship",
+   "Shanghai gold and silver filigree"
+  ]
+ },
+ "h_n15532": {
+  "status": "miss",
+  "tried": [
+   "Chinese gold foil hammering",
+   "Nanjing gold leaf making"
+  ]
+ },
+ "h_n15533": {
+  "status": "miss",
+  "tried": [
+   "Heqing silver forging",
+   "Yunnan Bai silver headdress"
+  ]
+ },
+ "h_n15534": {
+  "status": "miss",
+  "tried": [
+   "Chinese She silver filigree",
+   "She ethnic silver phoenix crown"
+  ]
+ },
+ "h_n15535": {
+  "status": "done"
+ },
+ "h_n15536": {
+  "status": "done"
+ },
+ "h_n15537": {
+  "status": "done"
+ },
+ "h_n15538": {
+  "status": "miss",
+  "tried": [
+   "Datong bronze wok",
+   "Datong copper incense burner"
+  ]
+ },
+ "h_n15539": {
+  "status": "miss",
+  "tried": [
+   "Dian copper peacock",
+   "Yunnan speckled copper vase"
+  ]
+ },
+ "h_n15540": {
+  "status": "miss",
+  "tried": [
+   "Wu Tong Zou Yin ink box",
+   "Yunnan black copper silver inlay"
+  ]
+ },
+ "h_n15541": {
+  "status": "done"
+ },
+ "h_n15542": {
+  "status": "miss",
+  "tried": [
+   "Shigatse gold-inlaid copper",
+   "Zaxi Jicai knife scabbard"
+  ]
+ },
+ "h_n15543": {
+  "status": "miss",
+  "tried": [
+   "Anhui iron landscape art",
+   "Wuhu iron painting"
+  ]
+ },
+ "h_n15544": {
+  "status": "miss",
+  "tried": [
+   "Jiangxi tin lantern",
+   "Lianhua tin wine pot"
+  ]
+ },
+ "h_n15545": {
+  "status": "miss",
+  "tried": [
+   "Hebei opera paper cut",
+   "Yuxian paper cutting"
+  ]
+ },
+ "h_n15546": {
+  "status": "miss",
+  "tried": [
+   "Fengning Manchu paper cutting",
+   "Manchu shaman paper cutting Hebei"
+  ]
+ },
+ "h_n15547": {
+  "status": "miss",
+  "tried": [
+   "Guangling colored paper cutting",
+   "Shanxi dyed paper cutting"
+  ]
+ },
+ "h_n15548": {
+  "status": "miss",
+  "tried": [
+   "Jingle paper cutting Shanxi",
+   "Shanxi folk paper cutting"
+  ]
+ },
+ "h_n15549": {
+  "status": "miss",
+  "tried": [
+   "Holin Gol paper cutting",
+   "Inner Mongolia yinke paper cutting"
+  ]
+ },
+ "h_n15550": {
+  "status": "miss",
+  "tried": [
+   "Baotou paper cutting",
+   "Tumote paper cutting"
+  ]
+ },
+ "h_n15551": {
+  "status": "miss",
+  "tried": [
+   "Manchu shaman mamo figure",
+   "Yiwulvshan Manchu paper cutting"
+  ]
+ },
+ "h_n15552": {
+  "status": "miss",
+  "tried": [
+   "Liaoning coastal paper cutting",
+   "Zhuanghe fishing paper cutting"
+  ]
+ },
+ "h_n15553": {
+  "status": "miss",
+  "tried": [
+   "Manchu epic paper cutting",
+   "Xiuyan Manchu paper cutting"
+  ]
+ },
+ "h_n15554": {
+  "status": "miss",
+  "tried": [
+   "Jianping paper-cut",
+   "Liaoxi folk paper-cut"
+  ]
+ },
+ "h_n15555": {
+  "status": "miss",
+  "tried": [
+   "Manchu shaman paper-cut",
+   "Xinbin Manchu paper-cut"
+  ]
+ },
+ "h_n15556": {
+  "status": "miss",
+  "tried": [
+   "Changbaishan Manchu paper-cut",
+   "Manchu shamanic paper charm"
+  ]
+ },
+ "h_n15557": {
+  "status": "miss",
+  "tried": [
+   "Fangzheng paper-cut",
+   "Northeast China folk paper-cut"
+  ]
+ },
+ "h_n15558": {
+  "status": "done"
+ },
+ "h_n15559": {
+  "status": "miss",
+  "tried": [
+   "Fuyang paper-cut",
+   "Northern Anhui folk paper-cut"
+  ]
+ },
+ "h_n15560": {
+  "status": "miss",
+  "tried": [
+   "Fujian folk paper-cut",
+   "Zherong paper-cut"
+  ]
+ },
+ "h_n15561": {
+  "status": "miss",
+  "tried": [
+   "Mazu folk paper-cut",
+   "Zhangpu paper-cut"
+  ]
+ },
+ "h_n15562": {
+  "status": "miss",
+  "tried": [
+   "Fujian wedding paper-cut",
+   "Pucheng paper-cut"
+  ]
+ },
+ "h_n15563": {
+  "status": "miss",
+  "tried": [
+   "Henan window paper-cut",
+   "Lingbao paper-cut"
+  ]
+ },
+ "h_n15564": {
+  "status": "miss",
+  "tried": [
+   "Funiu Mountain folk paper-cut",
+   "Lushi paper-cut"
+  ]
+ },
+ "h_n15565": {
+  "status": "miss",
+  "tried": [
+   "Jiangxi carved paper-cut",
+   "Ruichang paper-cut"
+  ]
+ },
+ "h_n15566": {
+  "status": "miss",
+  "tried": [
+   "Binzhou paper-cut",
+   "Shandong peasant paper-cut"
+  ]
+ },
+ "h_n15567": {
+  "status": "miss",
+  "tried": [
+   "Hubei wedding paper-cut",
+   "Xiaogan carved paper-cut"
+  ]
+ },
+ "h_n15568": {
+  "status": "miss",
+  "tried": [
+   "Ezhou carved paper-cut",
+   "Hubei opera paper-cut"
+  ]
+ },
+ "h_n15569": {
+  "status": "miss",
+  "tried": [
+   "Hubei wedding carved paper",
+   "Xiantao carved paper-cut"
+  ]
+ },
+ "h_n15570": {
+  "status": "miss",
+  "tried": [
+   "Miao ethnic paper凿花",
+   "Tahu paper cutting"
+  ]
+ },
+ "h_n15571": {
+  "status": "miss",
+  "tried": [
+   "Chaozhou multi-color paper cutting",
+   "Foshan copper凿剪纸"
+  ]
+ },
+ "h_n15572": {
+  "status": "miss",
+  "tried": [
+   "Shui ethnic paper cutting",
+   "Shui horsehair embroidery pattern"
+  ]
+ },
+ "h_n15573": {
+  "status": "done"
+ },
+ "h_n15574": {
+  "status": "miss",
+  "tried": [
+   "Chinese folk relief paper cutting",
+   "Xunyi color-pasting paper cutting"
+  ]
+ },
+ "h_n15575": {
+  "status": "miss",
+  "tried": [
+   "Ansai paper cutting",
+   "Shaanxi folk paper cutting"
+  ]
+ },
+ "h_n15576": {
+  "status": "miss",
+  "tried": [
+   "Chinese paper cutting熏样",
+   "Yanchuan paper cutting"
+  ]
+ },
+ "h_n15577": {
+  "status": "miss",
+  "tried": [
+   "Gansu folk paper cutting",
+   "Huining paper cutting"
+  ]
+ },
+ "h_n15578": {
+  "status": "miss",
+  "tried": [
+   "Gansu folk paper cutting",
+   "Qingyang paper cutting"
+  ]
+ },
+ "h_n15579": {
+  "status": "miss",
+  "tried": [
+   "Dingxi paper cutting",
+   "Gansu wedding paper cutting"
+  ]
+ },
+ "h_n15580": {
+  "status": "miss",
+  "tried": [
+   "Hui paper cutting",
+   "Ningxia Islamic paper art"
+  ]
+ },
+ "h_n15581": {
+  "status": "done"
+ },
+ "h_n15582": {
+  "status": "done"
+ },
+ "h_n15583": {
+  "status": "miss",
+  "tried": [
+   "Shandong woodblock print",
+   "Yangjiabu New Year painting"
+  ]
+ },
+ "h_n15584": {
+  "status": "done"
+ },
+ "h_n15585": {
+  "status": "miss",
+  "tried": [
+   "Gaomi puhui painting",
+   "Shandong ash-drawing painting"
+  ]
+ },
+ "h_n15586": {
+  "status": "miss",
+  "tried": [
+   "Zhuxianzhen New Year painting",
+   "Zhuxianzhen woodblock print"
+  ]
+ },
+ "h_n15587": {
+  "status": "miss",
+  "tried": [
+   "Hua County New Year painting",
+   "Shanhua woodblock print"
+  ]
+ },
+ "h_n15588": {
+  "status": "done"
+ },
+ "h_n15589": {
+  "status": "miss",
+  "tried": [
+   "Foshan New Year painting",
+   "Foshan gold-leaf print"
+  ]
+ },
+ "h_n15590": {
+  "status": "miss",
+  "tried": [
+   "Mianzhu New Year painting",
+   "Mianzhu hand-coloring print"
+  ]
+ },
+ "h_n15591": {
+  "status": "miss",
+  "tried": [
+   "Liangping New Year painting",
+   "Liangping mineral-pigment print"
+  ]
+ },
+ "h_n15592": {
+  "status": "miss",
+  "tried": [
+   "Laohekou New Year painting",
+   "Laohekou yangke print"
+  ]
+ },
+ "h_n15593": {
+  "status": "miss",
+  "tried": [
+   "Rebgong thangka",
+   "Thangka painting Rebgong"
+  ]
+ },
+ "h_n15594": {
+  "status": "miss",
+  "tried": [
+   "Qingze school thangka",
+   "Tibetan thangka Sangye Temple"
+  ]
+ },
+ "h_n15595": {
+  "status": "done"
+ },
+ "h_n15596": {
+  "status": "miss",
+  "tried": [
+   "Drigung thangka embroidery",
+   "Tibetan silk embroidery Drigung"
+  ]
+ },
+ "h_n15597": {
+  "status": "done"
+ },
+ "h_n15598": {
+  "status": "done"
+ },
+ "h_n15599": {
+  "status": "done"
+ },
+ "h_n15600": {
+  "status": "done"
+ },
+ "h_n15601": {
+  "status": "done"
+ },
+ "h_n15602": {
+  "status": "miss",
+  "tried": [
+   "Boshan inside painting",
+   "Shandong inside-painted snuff bottle"
+  ]
+ },
+ "h_n15604": {
+  "status": "done"
+ },
+ "h_n15605": {
+  "status": "miss",
+  "tried": [
+   "Xing ware translucent white porcelain",
+   "Xingyao Tang dynasty white cup"
+  ]
+ },
+ "h_n14443": {
+  "status": "done"
+ },
+ "h_n15607": {
+  "status": "miss",
+  "tried": [
+   "Pingding sand pottery",
+   "Shanxi unglazed sand pot"
+  ]
+ },
+ "h_n15608": {
+  "status": "miss",
+  "tried": [
+   "Pingding black-glazed carved pottery",
+   "Shanxi black and white ceramic jar"
+  ]
+ },
+ "h_n15610": {
+  "status": "miss",
+  "tried": [
+   "Juntai glazed flower pot",
+   "Yixing Jun-type pottery"
+  ]
+ },
+ "h_n15611": {
+  "status": "done"
+ },
+ "h_n14702": {
+  "status": "done"
+ },
+ "h_n15613": {
+  "status": "miss",
+  "tried": [
+   "Jieshou Sancai",
+   "Jieshou colored pottery"
+  ]
+ },
+ "h_n15614": {
+  "status": "done"
+ },
+ "h_n15615": {
+  "status": "miss",
+  "tried": [
+   "Dehua blanc de Chine",
+   "He Chaozong Guanyin"
+  ]
+ },
+ "h_n15616": {
+  "status": "done"
+ },
+ "h_n15617": {
+  "status": "done"
+ },
+ "h_n15618": {
+  "status": "done"
+ },
+ "h_n15619": {
+  "status": "done"
+ },
+ "h_n15620": {
+  "status": "done"
+ },
+ "h_n15621": {
+  "status": "miss",
+  "tried": [
+   "Shandong tea dust glaze",
+   "Zibo raindrop glaze"
+  ]
+ },
+ "h_n15622": {
+  "status": "miss",
+  "tried": [
+   "Jun ware rose purple",
+   "Yao bian Jun porcelain"
+  ]
+ },
+ "h_n14705": {
+  "status": "done"
+ },
+ "h_n15624": {
+  "status": "done"
+ },
+ "h_n15625": {
+  "status": "miss",
+  "tried": [
+   "Dangyangyu marbled porcelain",
+   "Jiaotai porcelain Northern Song"
+  ]
+ },
+ "h_n15626": {
+  "status": "done"
+ },
+ "h_n15627": {
+  "status": "done"
+ },
+ "h_n15628": {
+  "status": "done"
+ },
+ "h_n15629": {
+  "status": "miss",
+  "tried": [
+   "Chaozhou porcelain painting",
+   "Teochew famille-rose porcelain"
+  ]
+ },
+ "h_n15630": {
+  "status": "done"
+ },
+ "h_n15631": {
+  "status": "done"
+ },
+ "h_n15632": {
+  "status": "done"
+ },
+ "h_n15633": {
+  "status": "miss",
+  "tried": [
+   "Rongchang clay sculpture",
+   "Rongchang pottery"
+  ]
+ },
+ "h_n15634": {
+  "status": "done"
+ },
+ "h_n15635": {
+  "status": "miss",
+  "tried": [
+   "Dai ethnic pottery",
+   "Yunnan slow-wheel pottery"
+  ]
+ },
+ "h_n15636": {
+  "status": "done"
+ },
+ "h_n15637": {
+  "status": "miss",
+  "tried": [
+   "Chengcheng Yao Tou pottery",
+   "Yaotou ceramics"
+  ]
+ },
+ "h_n15638": {
+  "status": "done"
+ },
+ "h_n14268": {
+  "status": "miss",
+  "tried": [
+   "Uyghur molded pottery",
+   "Yingjisha earthenware"
+  ]
+ },
+ "h_n15640": {
+  "status": "done"
+ },
+ "h_n15641": {
+  "status": "done"
+ },
+ "h_n15642": {
+  "status": "done"
+ },
+ "h_n15643": {
+  "status": "done"
+ },
+ "h_n14398": {
+  "status": "miss",
+  "tried": [
+   "Huizhou ink stick making",
+   "She County ink workshop"
+  ]
+ },
+ "h_n15645": {
+  "status": "miss",
+  "tried": [
+   "Cao Su Gong ink",
+   "Shanghai ink carving"
+  ]
+ },
+ "h_n15648": {
+  "status": "miss",
+  "tried": [
+   "Liansi paper making",
+   "Qianshan bamboo paper"
+  ]
+ },
+ "h_n14378": {
+  "status": "miss",
+  "tried": [
+   "Danzhai bark paper",
+   "Guizhou pi paper"
+  ]
+ },
+ "h_n15650": {
+  "status": "miss",
+  "tried": [
+   "Pingyang hemp paper",
+   "Shanxi ma paper"
+  ]
+ },
+ "h_n15651": {
+  "status": "miss",
+  "tried": [
+   "Chu pi paper making",
+   "Yangxian bark paper"
+  ]
+ },
+ "h_n14386": {
+  "status": "miss",
+  "tried": [
+   "Hotan sangpi paper",
+   "Uyghur mulberry paper"
+  ]
+ },
+ "h_n15653": {
+  "status": "miss",
+  "tried": [
+   "Anhui decorative paper",
+   "Fenla paper"
+  ]
+ },
+ "h_n14383": {
+  "status": "done"
+ },
+ "h_n15655": {
+  "status": "miss",
+  "tried": [
+   "Langdu paper",
+   "Tibetan paper making"
+  ]
+ },
+ "h_n14400": {
+  "status": "done"
+ },
+ "h_n15657": {
+  "status": "miss",
+  "tried": [
+   "Jinxing inkstone",
+   "Lushan inkstone"
+  ]
+ },
+ "h_n15658": {
+  "status": "done"
+ },
+ "h_n15659": {
+  "status": "miss",
+  "tried": [
+   "Tao inkstone",
+   "Zhuoni inkstone"
+  ]
+ },
+ "h_n15660": {
+  "status": "miss",
+  "tried": [
+   "Helan inkstone",
+   "Ningxia inkstone"
+  ]
+ },
+ "h_n15661": {
+  "status": "miss",
+  "tried": [
+   "Hebei inkstone",
+   "Yishui inkstone"
+  ]
+ },
+ "h_n15662": {
+  "status": "miss",
+  "tried": [
+   "Jin Dynasty Chengni inkstone",
+   "Xinjiang County澄泥砚"
+  ]
+ },
+ "h_n15663": {
+  "status": "miss",
+  "tried": [
+   "Palace Museum Songhua inkstone",
+   "Qing dynasty Songhua stone inkstone"
+  ]
+ },
+ "h_n14357": {
+  "status": "done"
+ },
+ "h_n15666": {
+  "status": "done"
+ },
+ "h_n15667": {
+  "status": "miss",
+  "tried": [
+   "Fujian Buddhist lacquer carving",
+   "Xiamen lacquer thread sculpture"
+  ]
+ },
+ "h_n15668": {
+  "status": "miss",
+  "tried": [
+   "Pingyao lacquerware",
+   "Shanxi polished lacquer"
+  ]
+ },
+ "h_n15669": {
+  "status": "miss",
+  "tried": [
+   "Jiangsu mother-of-pearl lacquer",
+   "Yangzhou point螺"
+  ]
+ },
+ "h_n15670": {
+  "status": "miss",
+  "tried": [
+   "Fuzhou bodiless lacquer sculpture",
+   "Fuzhou lacquerware lotus vase"
+  ]
+ },
+ "h_n15671": {
+  "status": "done"
+ },
+ "h_n15672": {
+  "status": "miss",
+  "tried": [
+   "Chinese lacquer with abalone inlay",
+   "Jishan mother-of-pearl lacquer box"
+  ]
+ },
+ "h_n15673": {
+  "status": "miss",
+  "tried": [
+   "Anhui carved lacquer screen",
+   "Huizhou lacquer writing box"
+  ]
+ },
+ "h_n15674": {
+  "status": "miss",
+  "tried": [
+   "Chinese lacquer eggshell inlay box",
+   "Poyang bodiless lacquer Guanyin"
+  ]
+ },
+ "h_n15675": {
+  "status": "miss",
+  "tried": [
+   "Chinese lacquer with silver wire inscription",
+   "Weifang silver-inlaid lacquer box"
+  ]
+ },
+ "h_n15676": {
+  "status": "done"
+ },
+ "h_n15677": {
+  "status": "miss",
+  "tried": [
+   "Chinese lacquer bowl with ox horn powder",
+   "Yangjiang lacquer tea tray"
+  ]
+ },
+ "h_n15678": {
+  "status": "done"
+ },
+ "h_n14552": {
+  "status": "miss",
+  "tried": [
+   "Nuosu lacquer cup",
+   "Yi lacquerware bowl"
+  ]
+ },
+ "h_n15680": {
+  "status": "miss",
+  "tried": [
+   "Chinese wedding lacquer chest",
+   "Ningbo mud-gold lacquer"
+  ]
+ },
+ "h_n15681": {
+  "status": "done"
+ },
+ "h_n14404": {
+  "status": "done"
+ },
+ "h_n15683": {
+  "status": "miss",
+  "tried": [
+   "Bolo woodblock carving",
+   "Tibetan Buddhist scripture block"
+  ]
+ },
+ "h_n15684": {
+  "status": "done"
+ },
+ "h_n15685": {
+  "status": "miss",
+  "tried": [
+   "Fuchun tea dim sum",
+   "Yangzhou five-ding bao"
+  ]
+ },
+ "h_n15686": {
+  "status": "done"
+ },
+ "h_n15687": {
+  "status": "miss",
+  "tried": [
+   "Chinese braised chicken",
+   "Dezhou bajit"
+  ]
+ },
+ "h_n15688": {
+  "status": "miss",
+  "tried": [
+   "Laiwu jiangrou",
+   "Qishi jiangxiangyuan"
+  ]
+ },
+ "h_n15689": {
+  "status": "done"
+ },
+ "h_n15690": {
+  "status": "miss",
+  "tried": [
+   "Daren Tang Shoutao Wan",
+   "Qing dynasty imperial pills"
+  ]
+ },
+ "h_n15691": {
+  "status": "done"
+ },
+ "h_n15692": {
+  "status": "done"
+ },
+ "h_n15693": {
+  "status": "miss",
+  "tried": [
+   "Chinese herbal膏方",
+   "Erxian paste"
+  ]
+ },
+ "h_n15694": {
+  "status": "miss",
+  "tried": [
+   "Dong'e Ejiao traditional production",
+   "Donkey-hide gelatin making process"
+  ]
+ },
+ "h_n15695": {
+  "status": "miss",
+  "tried": [
+   "Chrysanthemum morifolium Huaiju",
+   "Huai medicine processing"
+  ]
+ },
+ "h_n15696": {
+  "status": "miss",
+  "tried": [
+   "Chinese sheng instrument craftsmanship",
+   "Hongyinzhai sheng making"
+  ]
+ },
+ "h_n15697": {
+  "status": "miss",
+  "tried": [
+   "Dunhuang pipa craftsmanship",
+   "Shanghai minzu yueqi making"
+  ]
+ },
+ "h_n15698": {
+  "status": "miss",
+  "tried": [
+   "Mongolian morin khuur making",
+   "Morin khuur horsehead carving"
+  ]
+ },
+ "h_n15699": {
+  "status": "miss",
+  "tried": [
+   "Gayageum making Korea",
+   "Janggu drum construction"
+  ]
+ },
+ "h_n14318": {
+  "status": "miss",
+  "tried": [
+   "Miao Lusheng making",
+   "Nanmu bamboo lusheng"
+  ]
+ },
+ "h_n15701": {
+  "status": "miss",
+  "tried": [
+   "Dranyen making Tibet",
+   "Sang wood dranyen"
+  ]
+ },
+ "h_n15702": {
+  "status": "done"
+ },
+ "h_n14352": {
+  "status": "done"
+ },
+ "h_n15704": {
+  "status": "done"
+ },
+ "h_n15705": {
+  "status": "done"
+ },
+ "h_n15706": {
+  "status": "miss",
+  "tried": [
+   "Chinese jian quenching",
+   "Longquan sword forging"
+  ]
+ },
+ "h_n15707": {
+  "status": "miss",
+  "tried": [
+   "Chinese sword inscription",
+   "Tangxi sword"
+  ]
+ },
+ "h_n14340": {
+  "status": "done"
+ },
+ "h_n14420": {
+  "status": "done"
+ },
+ "h_n15710": {
+  "status": "miss",
+  "tried": [
+   "Hangzhou bamboo fan craftsmanship",
+   "Wangxingji black paper fan"
+  ]
+ },
+ "h_n15711": {
+  "status": "miss",
+  "tried": [
+   "Nanjing bamboo fan craftsmanship",
+   "Rongchang folding fan"
+  ]
+ },
+ "h_n15712": {
+  "status": "done"
+ },
+ "h_n14580": {
+  "status": "miss",
+  "tried": [
+   "Nimu Tibetan incense",
+   "Tibetan incense making"
+  ]
+ },
+ "h_n15714": {
+  "status": "miss",
+  "tried": [
+   "Thangka painting pigments",
+   "Tibetan mineral pigment"
+  ]
+ },
+ "h_n12178": {
+  "status": "miss",
+  "tried": [
+   "Butterfly Mother Miao song",
+   "Miao epic chant"
+  ]
+ },
+ "h_n23632": {
+  "status": "miss",
+  "tried": [
+   "Miao wooden drum ceremony",
+   "Zanwang Miao epic"
+  ]
+ },
+ "h_n12180": {
+  "status": "miss",
+  "tried": [
+   "Bouyei creation epic",
+   "Zhuang Bu Luo Tuo manuscript"
+  ]
+ },
+ "h_n12181": {
+  "status": "miss",
+  "tried": [
+   "Achang ethnic group ritual",
+   "Achang shaman chanting"
+  ]
+ },
+ "h_n12182": {
+  "status": "miss",
+  "tried": [
+   "Lahu creation epic performance",
+   "Lahu ethnic ritual chanting"
+  ]
+ },
+ "h_n12183": {
+  "status": "miss",
+  "tried": [
+   "Miao bamboo marriage chant",
+   "Miao carved bamboo ritual"
+  ]
+ },
+ "h_n12184": {
+  "status": "miss",
+  "tried": [
+   "Suzhou pingtan Bai Snake",
+   "West Lake White Snake opera"
+  ]
+ },
+ "h_n12186": {
+  "status": "miss",
+  "tried": [
+   "Liang Zhu opera performance",
+   "Yixing Shanjuan Cave Liangzhu site"
+  ]
+ },
+ "h_n12192": {
+  "status": "miss",
+  "tried": [
+   "Meng Jiangnu temple Shandong",
+   "Zibo crying spring shrine"
+  ]
+ },
+ "h_n12197": {
+  "status": "miss",
+  "tried": [
+   "Dong Yong stone stele Shanxi",
+   "Nanshui stone carvings Dong Yong"
+  ]
+ },
+ "h_n12204": {
+  "status": "miss",
+  "tried": [
+   "Xishi washing silk stone",
+   "Zhuji Xishi Temple"
+  ]
+ },
+ "h_n12205": {
+  "status": "done"
+ },
+ "h_n12206": {
+  "status": "miss",
+  "tried": [
+   "Changbai Mountain Manchu storytelling",
+   "Manchu Uleben performance"
+  ]
+ },
+ "h_n23633": {
+  "status": "miss",
+  "tried": [
+   "Heilongjiang Sibo storytelling",
+   "Sunwu Manchu village"
+  ]
+ },
+ "h_n12207": {
+  "status": "miss",
+  "tried": [
+   "Hexi Baojuan manuscript",
+   "Zhangye temple chanting"
+  ]
+ },
+ "h_n12209": {
+  "status": "miss",
+  "tried": [
+   "Jiangsu folk chanting",
+   "Jingjiang Baojuan"
+  ]
+ },
+ "h_n12210": {
+  "status": "miss",
+  "tried": [
+   "Gansu folk ritual chanting",
+   "Hexi Baojuan performance"
+  ]
+ },
+ "h_n12211": {
+  "status": "miss",
+  "tried": [
+   "Suzhou storytelling with pipa",
+   "Wu dialect Baojuan"
+  ]
+ },
+ "h_n23634": {
+  "status": "done"
+ },
+ "h_n12212": {
+  "status": "miss",
+  "tried": [
+   "Gengcun village Hebei folk storytelling",
+   "North China oral tradition"
+  ]
+ },
+ "h_n12213": {
+  "status": "miss",
+  "tried": [
+   "Qinba Mountains oral tradition",
+   "Wujiagou village Hubei storytelling"
+  ]
+ },
+ "h_n12214": {
+  "status": "miss",
+  "tried": [
+   "Three Gorges oral narrative",
+   "Xiabao Ping village Hubei storytelling"
+  ]
+ },
+ "h_n12215": {
+  "status": "miss",
+  "tried": [
+   "Sichuan road oral tradition",
+   "Zouma Town Chongqing storytelling"
+  ]
+ },
+ "h_n12216": {
+  "status": "miss",
+  "tried": [
+   "Liaohe River estuary fishing folklore",
+   "Yuyan folk stories Liaoning"
+  ]
+ },
+ "h_n12217": {
+  "status": "miss",
+  "tried": [
+   "Dongmeng oral tradition Liaoning",
+   "Kazuo Mongol folk tales"
+  ]
+ },
+ "h_n12218": {
+  "status": "miss",
+  "tried": [
+   "Liaoning folk tale performance",
+   "Tan Zhenshan storytelling"
+  ]
+ },
+ "h_n12219": {
+  "status": "miss",
+  "tried": [
+   "Hejian Hebei Shijing chanting",
+   "Hejian ge shi"
+  ]
+ },
+ "h_n12220": {
+  "status": "miss",
+  "tried": [
+   "Jiangnan folk singing",
+   "Wu song performance Suzhou"
+  ]
+ },
+ "h_n12223": {
+  "status": "miss",
+  "tried": [
+   "Yizhou folk singing",
+   "Zhuang Liu Sanjie song festival"
+  ]
+ },
+ "h_n12224": {
+  "status": "miss",
+  "tried": [
+   "Hani rice terrace ritual",
+   "Honghe Hani farming song"
+  ]
+ },
+ "h_n12227": {
+  "status": "miss",
+  "tried": [
+   "Kizilsu Kirghiz storytelling",
+   "Manas epic performance Kyrgyz"
+  ]
+ },
+ "h_n12231": {
+  "status": "miss",
+  "tried": [
+   "Bortala Mongol storytelling",
+   "Janggar epic performance"
+  ]
+ },
+ "h_n12233": {
+  "status": "miss",
+  "tried": [
+   "Gesar epic thangka",
+   "Tibetan Gesar storytelling"
+  ]
+ },
+ "h_n12241": {
+  "status": "miss",
+  "tried": [
+   "Sani Yi Ashima song",
+   "Shilin Yi folk poetry"
+  ]
+ },
+ "h_n12242": {
+  "status": "done"
+ },
+ "h_n12243": {
+  "status": "done"
+ },
+ "h_n12244": {
+  "status": "miss",
+  "tried": [
+   "Qinglin Temple riddles",
+   "Yidu folk riddle activity"
+  ]
+ },
+ "h_n12245": {
+  "status": "miss",
+  "tried": [
+   "Chaoshan dialect riddle",
+   "Chenghai lantern riddles"
+  ]
+ },
+ "h_n12246": {
+  "status": "done"
+ },
+ "h_n12247": {
+  "status": "miss",
+  "tried": [
+   "Men Tou Gou river legend",
+   "Yongding River folklore"
+  ]
+ },
+ "h_n12248": {
+  "status": "miss",
+  "tried": [
+   "Beijing Yang family tales",
+   "Tongzhou Mu Guiying legend"
+  ]
+ },
+ "h_n12249": {
+  "status": "miss",
+  "tried": [
+   "Shanxi Yang family storytelling",
+   "Yanmen Pass drum ballad"
+  ]
+ },
+ "h_n12250": {
+  "status": "miss",
+  "tried": [
+   "Jinghai folklore monument",
+   "Yang Qilang tomb Tianjin"
+  ]
+ },
+ "h_n12251": {
+  "status": "done"
+ },
+ "h_n12253": {
+  "status": "miss",
+  "tried": [
+   "Nantianchi Lake in Heshun",
+   "Weaving Girl Platform in Shanxi"
+  ]
+ },
+ "h_n12256": {
+  "status": "done"
+ },
+ "h_n12257": {
+  "status": "done"
+ },
+ "h_n12259": {
+  "status": "miss",
+  "tried": [
+   "Chisong Mountain Taoist temple",
+   "Huang Daxian Temple Lanxi"
+  ]
+ },
+ "h_n12260": {
+  "status": "miss",
+  "tried": [
+   "Guanyin Statue at Puji Temple",
+   "Potala Cave Putuo Mountain"
+  ]
+ },
+ "h_n12261": {
+  "status": "miss",
+  "tried": [
+   "Dongmen Island stone carvings",
+   "Xu Fu Memorial Park Xiangshan"
+  ]
+ },
+ "h_n12265": {
+  "status": "miss",
+  "tried": [
+   "Langya Terrace Qin relics",
+   "Zhifu Island Qin stone inscription"
+  ]
+ },
+ "h_n12266": {
+  "status": "miss",
+  "tried": [
+   "Dingtao Tao Zhu Gong Temple",
+   "Shandong merchant temple"
+  ]
+ },
+ "h_n12268": {
+  "status": "miss",
+  "tried": [
+   "Jiaxiang Han dynasty unicorn relief",
+   "Qufu Confucius Temple Qilin stone"
+  ]
+ },
+ "h_n12270": {
+  "status": "miss",
+  "tried": [
+   "Shandong ancient carpentry tools",
+   "Tengzhou Lu Ban Temple ruins"
+  ]
+ },
+ "h_n12271": {
+  "status": "miss",
+  "tried": [
+   "Dongyue Temple Penglai Eight Immortals carving",
+   "Penglai Pavilion Eight Immortals mural"
+  ]
+ },
+ "h_n12272": {
+  "status": "miss",
+  "tried": [
+   "Pingdu Li Longwang Temple dragon statue",
+   "Shandong folk dragon worship"
+  ]
+ },
+ "h_n12276": {
+  "status": "miss",
+  "tried": [
+   "Qu Yuan Temple Zigui orange tree",
+   "Zigui Dragon Boat Festival ritual"
+  ]
+ },
+ "h_n12277": {
+  "status": "miss",
+  "tried": [
+   "Xingshan Wang Zhaojun memorial site",
+   "Zhaojun Village Xiangxi River stone"
+  ]
+ },
+ "h_n12278": {
+  "status": "miss",
+  "tried": [
+   "Shennongjia Ginkgo biloba medicinal carving",
+   "Shennongjia traditional herbal knowledge"
+  ]
+ },
+ "h_n12280": {
+  "status": "miss",
+  "tried": [
+   "Mulan Temple Yucheng",
+   "Yu Cheng folk storytelling"
+  ]
+ },
+ "h_n12283": {
+  "status": "miss",
+  "tried": [
+   "Bala Gencang story telling",
+   "Khorchin Mongol oral literature"
+  ]
+ },
+ "h_n12284": {
+  "status": "miss",
+  "tried": [
+   "Beipiao folk tales",
+   "Daling River oral tradition"
+  ]
+ },
+ "h_n12285": {
+  "status": "miss",
+  "tried": [
+   "He Tu Ala shaman stories",
+   "Manchu folk tales Xinbin"
+  ]
+ },
+ "h_n12286": {
+  "status": "miss",
+  "tried": [
+   "Shaoxing Qingteng storytelling",
+   "Xu Wen-chang folk tales"
+  ]
+ },
+ "h_n12287": {
+  "status": "miss",
+  "tried": [
+   "Laoshan Taoist folklore",
+   "Qingdao coastal legends"
+  ]
+ },
+ "h_n12288": {
+  "status": "miss",
+  "tried": [
+   "Qingjiang River oral tradition",
+   "Tujia Duzhenwan stories"
+  ]
+ },
+ "h_n12289": {
+  "status": "miss",
+  "tried": [
+   "Huai River creation myth",
+   "Pangu Temple Tongbai"
+  ]
+ },
+ "h_n12291": {
+  "status": "miss",
+  "tried": [
+   "Shao Yuan myth landscape",
+   "Wangwu Mountain rock formation"
+  ]
+ },
+ "h_n12292": {
+  "status": "miss",
+  "tried": [
+   "Gada Meilin epic performance",
+   "Mongolian horsehead fiddle storytelling"
+  ]
+ },
+ "h_n12293": {
+  "status": "done"
+ },
+ "h_n12294": {
+  "status": "done"
+ },
+ "h_n12295": {
+  "status": "miss",
+  "tried": [
+   "Bouyei antiphonal singing",
+   "Buyi Pan Ge festival"
+  ]
+ },
+ "h_n12296": {
+  "status": "miss",
+  "tried": [
+   "Meige Yi epic chanting",
+   "Yi shaman firepit ritual"
+  ]
+ },
+ "h_n12297": {
+  "status": "miss",
+  "tried": [
+   "Cham Yi creation epic",
+   "Luo Luo Po ethnic ritual"
+  ]
+ },
+ "h_n12298": {
+  "status": "miss",
+  "tried": [
+   "Dagu Deleng De'ang epic",
+   "Deang tea ceremony chanting"
+  ]
+ },
+ "h_n12299": {
+  "status": "miss",
+  "tried": [
+   "Hani Bema chanting",
+   "Hani ethnic group fire pit ceremony"
+  ]
+ },
+ "h_n12300": {
+  "status": "miss",
+  "tried": [
+   "Baiyejing manuscript Dai",
+   "Dai Lue epic chanting"
+  ]
+ },
+ "h_n12301": {
+  "status": "miss",
+  "tried": [
+   "Hezhou Hua'er singing",
+   "Hui ethnic narrative poem"
+  ]
+ },
+ "h_n12302": {
+  "status": "miss",
+  "tried": [
+   "Kangbari epic performance",
+   "Tibetan Amdo Zhongken"
+  ]
+ },
+ "h_n12303": {
+  "status": "miss",
+  "tried": [
+   "Mongolian Khalkha epic Qinghai",
+   "Tuqshur musical instrument"
+  ]
+ },
+ "h_n12304": {
+  "status": "miss",
+  "tried": [
+   "Rawap instrument Uyghur",
+   "Uyghur Dastan performance"
+  ]
+ },
+ "h_n12305": {
+  "status": "done"
+ },
+ "h_n12308": {
+  "status": "miss",
+  "tried": [
+   "Miao ancient song performance",
+   "Miao ethnic narrative song"
+  ]
+ },
+ "h_n12310": {
+  "status": "miss",
+  "tried": [
+   "Cangyuan Wa village firelight ceremony",
+   "Wa people ritual chanting"
+  ]
+ },
+ "h_n12312": {
+  "status": "miss",
+  "tried": [
+   "Liangshan Yi Bi mo ritual drumming",
+   "Yi people firelight debate"
+  ]
+ },
+ "h_n12313": {
+  "status": "miss",
+  "tried": [
+   "Miao Jiali ritual chanting",
+   "Qiandongnan Miao stilt house oral tradition"
+  ]
+ },
+ "h_n12314": {
+  "status": "miss",
+  "tried": [
+   "Huangnan Tibetan marriage ritual",
+   "Tibetan wedding eighteen praises"
+  ]
+ },
+ "h_n12315": {
+  "status": "miss",
+  "tried": [
+   "Beijing hutong children rhymes",
+   "Peking dialect nursery rhyme performance"
+  ]
+ },
+ "h_n12316": {
+  "status": "miss",
+  "tried": [
+   "Fujian southern Fujian folk song children",
+   "Minnan nursery rhyme Quanzhou"
+  ]
+ },
+ "h_n12317": {
+  "status": "miss",
+  "tried": [
+   "Shaoxing Wu dialect nursery rhyme",
+   "Zhejiang canal children singing"
+  ]
+ },
+ "h_n23636": {
+  "status": "miss",
+  "tried": [
+   "Dongba ritual chant influence nursery rhyme",
+   "Naxi children song Lijiang"
+  ]
+ },
+ "h_n12318": {
+  "status": "miss",
+  "tried": [
+   "Anhui Tongcheng dialect folk music",
+   "Tongcheng folk song performance"
+  ]
+ },
+ "h_n12319": {
+  "status": "miss",
+  "tried": [
+   "Tujia Timu song ritual",
+   "Tujia shaman singing in Hunan"
+  ]
+ },
+ "h_n12320": {
+  "status": "miss",
+  "tried": [
+   "Leizhou Peninsula market singing",
+   "Leizhou folk song performance"
+  ]
+ },
+ "h_n12321": {
+  "status": "miss",
+  "tried": [
+   "Zhuang Liao song performance",
+   "Zhuang folk singing at song fair"
+  ]
+ },
+ "h_n12323": {
+  "status": "miss",
+  "tried": [
+   "Kyrgyz oral satire in Kizilsu",
+   "Kyrgyzstan Yolong performance"
+  ]
+ },
+ "h_n12324": {
+  "status": "miss",
+  "tried": [
+   "Shanxi Wanrong dialect jokes",
+   "Wanrong county folk humor"
+  ]
+ },
+ "h_n12325": {
+  "status": "done"
+ },
+ "h_n12326": {
+  "status": "miss",
+  "tried": [
+   "Cao Xueqin legend Beijing Haidian",
+   "Xiangshan Cao Xueqin residence site"
+  ]
+ },
+ "h_n12336": {
+  "status": "miss",
+  "tried": [
+   "Huanghe River滩 folk storytelling",
+   "Zhuangzi Temple Dongming"
+  ]
+ },
+ "h_n12337": {
+  "status": "miss",
+  "tried": [
+   "Liu Yi legend Shandong folk opera",
+   "Weishan Lake dragon girl stone carving"
+  ]
+ },
+ "h_n12338": {
+  "status": "miss",
+  "tried": [
+   "Dongshan Mountain Chan Buddhism relics",
+   "Wuzu Temple Huangmei stone steps"
+  ]
+ },
+ "h_n23638": {
+  "status": "miss",
+  "tried": [
+   "Cangfo Gorge Lingnan folklore",
+   "Guoen Temple Liuzu Temple Guangdong"
+  ]
+ },
+ "h_n12339": {
+  "status": "miss",
+  "tried": [
+   "Budai Monk Xuedou Temple",
+   "Fenghua Maitreya folk festival"
+  ]
+ },
+ "h_n12340": {
+  "status": "done"
+ },
+ "h_n12341": {
+  "status": "miss",
+  "tried": [
+   "Su Dongpo West Lake legend stone tablet",
+   "Sudi causeway Hangzhou folklore"
+  ]
+ },
+ "h_n12343": {
+  "status": "miss",
+  "tried": [
+   "Lanting Calligraphy Festival Shaoxing",
+   "Wang Xizhi Goose Pond stele"
+  ]
+ },
+ "h_n12344": {
+  "status": "miss",
+  "tried": [
+   "Qichun Li Shizhen Temple",
+   "Qishan Mountain medicinal herbs"
+  ]
+ },
+ "h_n12345": {
+  "status": "miss",
+  "tried": [
+   "Cai Lun memorial site Yangxian",
+   "Longting paper making"
+  ]
+ },
+ "h_n12346": {
+  "status": "miss",
+  "tried": [
+   "Caozhou peony garden",
+   "Heze tree peony cultivation"
+  ]
+ },
+ "h_n12347": {
+  "status": "done"
+ },
+ "h_n12348": {
+  "status": "done"
+ },
+ "h_n12349": {
+  "status": "miss",
+  "tried": [
+   "Langke Mountain chess rock",
+   "Quzhou Langke legend site"
+  ]
+ },
+ "h_n12351": {
+  "status": "miss",
+  "tried": [
+   "Lhoba Aba Danie epic",
+   "Mêdog Lhoba oral tradition"
+  ]
+ },
+ "h_n12352": {
+  "status": "miss",
+  "tried": [
+   "Amdo Tibetan mountain deity",
+   "Amnye Machen mountain thangka"
+  ]
+ },
+ "h_n12353": {
+  "status": "done"
+ },
+ "h_n12354": {
+  "status": "miss",
+  "tried": [
+   "Changtang pastoral life",
+   "Gyalyi County Tibetan folk tales"
+  ]
+ },
+ "h_n12355": {
+  "status": "miss",
+  "tried": [
+   "East China Sea marine folklore",
+   "Zhoushan fishing village storytelling"
+  ]
+ },
+ "h_n12357": {
+  "status": "miss",
+  "tried": [
+   "Tujia crying wedding song",
+   "Xiangxi Tujia stilt house"
+  ]
+ },
+ "h_n12358": {
+  "status": "miss",
+  "tried": [
+   "Poya Ge Shu",
+   "Zhuang love songs pictographs"
+  ]
+ },
+ "h_n12359": {
+  "status": "done"
+ },
+ "h_n23639": {
+  "status": "miss",
+  "tried": [
+   "Qilian Mountains Mongolian ritual",
+   "Subei Mongol praise poetry"
+  ]
+ },
+ "h_n12362": {
+  "status": "miss",
+  "tried": [
+   "Darkness Transmission Hubei",
+   "Shennongjia funeral drumming"
+  ]
+ },
+ "h_n12364": {
+  "status": "miss",
+  "tried": [
+   "Horqin Mongolian oral poetry",
+   "Mongolian epic recitation"
+  ]
+ },
+ "h_n12365": {
+  "status": "miss",
+  "tried": [
+   "Bouyei Yao shaman reciting epic",
+   "Buyeo Yao Muluotuo ritual"
+  ]
+ },
+ "h_n12366": {
+  "status": "miss",
+  "tried": [
+   "Miao epic recitation Guizhou",
+   "Yalu Wang Miao funeral chant"
+  ]
+ },
+ "h_n12367": {
+  "status": "miss",
+  "tried": [
+   "Jingpo Zhaiva chanting",
+   "Nau Lao Jingpo epic"
+  ]
+ },
+ "h_n12368": {
+  "status": "miss",
+  "tried": [
+   "Achang creation song",
+   "Luchuan Achang ritual singing"
+  ]
+ },
+ "h_n12369": {
+  "status": "miss",
+  "tried": [
+   "Honghe Yi fire festival song",
+   "Yi Axi Xianji chant"
+  ]
+ },
+ "h_n12370": {
+  "status": "miss",
+  "tried": [
+   "Qiang Ge Dazhan ritual chant",
+   "Qiang shaman drumming"
+  ]
+ },
+ "h_n12371": {
+  "status": "miss",
+  "tried": [
+   "Kashgar honey fried dough",
+   "Uyghur qaqqaq"
+  ]
+ },
+ "h_n12372": {
+  "status": "miss",
+  "tried": [
+   "Tujia ancient song manuscript",
+   "Youyang Tujia folk song performance"
+  ]
+ },
+ "h_n12373": {
+  "status": "miss",
+  "tried": [
+   "Huyan Shanghai dialect manuscript",
+   "Shanghai folk proverb book"
+  ]
+ },
+ "h_n12374": {
+  "status": "miss",
+  "tried": [
+   "Northern Shaanxi folk proverb performance",
+   "Shaanxi loess plateau farming proverb"
+  ]
+ },
+ "h_n23640": {
+  "status": "miss",
+  "tried": [
+   "Kazakh nomadic life proverb illustration",
+   "Kazakh proverb manuscript"
+  ]
+ },
+ "h_n12375": {
+  "status": "done"
+ },
+ "h_n12376": {
+  "status": "miss",
+  "tried": [
+   "Guiguzi legend site in She County",
+   "Yunmeng Mountain Guiguzi folklore"
+  ]
+ },
+ "h_n12377": {
+  "status": "miss",
+  "tried": [
+   "Donghai Xiaofu legend illustration",
+   "Lianyungang Xiaofu Temple site"
+  ]
+ },
+ "h_n12378": {
+  "status": "miss",
+  "tried": [
+   "Liu Ruan legend TianTai Mountain",
+   "Tiantai Shan Liu Ruan Temple site"
+  ]
+ },
+ "h_n12379": {
+  "status": "miss",
+  "tried": [
+   "Jiao Liu legend site",
+   "Xiao Shi Town Anhui"
+  ]
+ },
+ "h_n12381": {
+  "status": "miss",
+  "tried": [
+   "Laozi Temple ruins",
+   "Taijigong Temple Guoyang"
+  ]
+ },
+ "h_n12383": {
+  "status": "miss",
+  "tried": [
+   "Chen San Wu Niang opera",
+   "Licheng opera print"
+  ]
+ },
+ "h_n12384": {
+  "status": "miss",
+  "tried": [
+   "Hu Yiyang Temple Chengyang",
+   "Qing dynasty Hu Yiyang stele"
+  ]
+ },
+ "h_n12385": {
+  "status": "miss",
+  "tried": [
+   "Meng Miao Mengmu Hall",
+   "Mengmu story stone tablet"
+  ]
+ },
+ "h_n12386": {
+  "status": "miss",
+  "tried": [
+   "Hetu Luoshu stele Luoyang",
+   "Yellow River Mengjin ferry"
+  ]
+ },
+ "h_n12387": {
+  "status": "miss",
+  "tried": [
+   "Qi County Henan sky worry festival",
+   "Qixian paper cutting bowl"
+  ]
+ },
+ "h_n12388": {
+  "status": "miss",
+  "tried": [
+   "Ancient Longzhong Nanyang",
+   "Zhuge Liang thatched cottage"
+  ]
+ },
+ "h_n12389": {
+  "status": "done"
+ },
+ "h_n12390": {
+  "status": "miss",
+  "tried": [
+   "Shijing recitation Fangxian",
+   "Yin Jifu Temple Fangxian"
+  ]
+ },
+ "h_n12391": {
+  "status": "miss",
+  "tried": [
+   "Juying Spring Chenzhou",
+   "Suxian Ling Taoist temple"
+  ]
+ },
+ "h_n12392": {
+  "status": "done"
+ },
+ "h_n12394": {
+  "status": "miss",
+  "tried": [
+   "Cangjie Temple Baishui",
+   "Cangjie four-eyes statue"
+  ]
+ },
+ "h_n12395": {
+  "status": "miss",
+  "tried": [
+   "Luotuo Spring Xunhua",
+   "Salar ethnic group street mosque"
+  ]
+ },
+ "h_n12396": {
+  "status": "miss",
+  "tried": [
+   "Hui folk tale Yinchuan",
+   "Ningxia Hui storytelling"
+  ]
+ },
+ "h_n12397": {
+  "status": "miss",
+  "tried": [
+   "Guangchanhou Temple Xiyang",
+   "Zhao Guangyuan medicine stele"
+  ]
+ },
+ "h_n12398": {
+  "status": "miss",
+  "tried": [
+   "Jiangxi folk storytelling woodblock print",
+   "Jishui county tea house storytelling"
+  ]
+ },
+ "h_n12399": {
+  "status": "miss",
+  "tried": [
+   "Baise Zhuang folk song manuscript",
+   "Zhuang brocade bainiao yi"
+  ]
+ },
+ "h_n12400": {
+  "status": "miss",
+  "tried": [
+   "Nasreddin Afanti manuscript Xinjiang",
+   "Uyghur storytelling Kashgar"
+  ]
+ },
+ "h_n12401": {
+  "status": "miss",
+  "tried": [
+   "Guangyang town Chongqing storytelling",
+   "Yangtze River dock folklore Sichuan"
+  ]
+ },
+ "h_n12402": {
+  "status": "miss",
+  "tried": [
+   "Kunlun Mountains ancient petroglyph",
+   "Xiwangmu rock painting Xinjiang"
+  ]
+ },
+ "h_n12403": {
+  "status": "miss",
+  "tried": [
+   "Miao-Yao ritual manuscript Hunan",
+   "Yao Panwang Festival singing"
+  ]
+ },
+ "h_n12404": {
+  "status": "miss",
+  "tried": [
+   "Liangshan Yi fire hearth ritual",
+   "Yi Ma Mu folk song manuscript"
+  ]
+ },
+ "h_n12405": {
+  "status": "done"
+ },
+ "h_n12406": {
+  "status": "miss",
+  "tried": [
+   "Qijia Yanxi epic performance",
+   "Tu people shaman ritual"
+  ]
+ },
+ "h_n12407": {
+  "status": "miss",
+  "tried": [
+   "Changshan house-raising ceremony",
+   "Zhejiang folk acclamation ritual"
+  ]
+ },
+ "h_n23436": {
+  "status": "miss",
+  "tried": [
+   "Badaoshu temple complex",
+   "Xishan mountain folklore Beijing"
+  ]
+ },
+ "h_n23437": {
+  "status": "miss",
+  "tried": [
+   "Gouzi town folklore Henan",
+   "Xuanzang birthplace Luoyang"
+  ]
+ },
+ "h_n23438": {
+  "status": "miss",
+  "tried": [
+   "Nvwa Mountain Hubei",
+   "Shennongjia Nvwa temple"
+  ]
+ },
+ "h_n23439": {
+  "status": "miss",
+  "tried": [
+   "Laosicheng Tujia ritual",
+   "Tujia shaman oral tradition"
+  ]
+ },
+ "h_n23440": {
+  "status": "done"
+ },
+ "h_n23441": {
+  "status": "miss",
+  "tried": [
+   "Hanzhong Zhang Qian folklore",
+   "Zhang Qian tomb Hanzhong"
+  ]
+ },
+ "h_n23442": {
+  "status": "miss",
+  "tried": [
+   "Amdo Tibetan mountain worship",
+   "Nianbao Yuze Mountain ritual"
+  ]
+ },
+ "h_n23443": {
+  "status": "miss",
+  "tried": [
+   "Evenk reindeer herding story telling",
+   "Oroqen firelight oral tradition"
+  ]
+ },
+ "h_n23444": {
+  "status": "miss",
+  "tried": [
+   "Bao Zheng folk opera Anhui",
+   "Hefei Bao Gong Temple storytelling"
+  ]
+ },
+ "h_n23445": {
+  "status": "miss",
+  "tried": [
+   "Mulao Yifan Festival singing",
+   "Mulao bamboo divination"
+  ]
+ },
+ "h_n23446": {
+  "status": "miss",
+  "tried": [
+   "Leishan drum society ceremony",
+   "Miao Bat Diox song"
+  ]
+ },
+ "h_n23447": {
+  "status": "miss",
+  "tried": [
+   "Dema Jianshou epic",
+   "Kham Tibetan backstrap loom"
+  ]
+ },
+ "h_n12408": {
+  "status": "miss",
+  "tried": [
+   "Shanxi flower song",
+   "Zuoquan Kaohua Diao"
+  ]
+ },
+ "h_n12409": {
+  "status": "done"
+ },
+ "h_n12413": {
+  "status": "miss",
+  "tried": [
+   "Bargu Mongolian long song performance",
+   "Bargu pastoral singing"
+  ]
+ },
+ "h_n23641": {
+  "status": "miss",
+  "tried": [
+   "Ujimqin Mongolian long song",
+   "Ujimqin pastoral singing"
+  ]
+ },
+ "h_n12414": {
+  "status": "miss",
+  "tried": [
+   "Khöömei singer in Mongolia",
+   "Mongolian throat singing performance"
+  ]
+ },
+ "h_n12416": {
+  "status": "miss",
+  "tried": [
+   "Dangtu folk song performance",
+   "Jiangnan rice planting song"
+  ]
+ },
+ "h_n12417": {
+  "status": "miss",
+  "tried": [
+   "Anhui lake folk music",
+   "Chaohu fishing song"
+  ]
+ },
+ "h_n12418": {
+  "status": "done"
+ },
+ "h_n12421": {
+  "status": "miss",
+  "tried": [
+   "Gannan Hakka folk music",
+   "Xingguo mountain song"
+  ]
+ },
+ "h_n12422": {
+  "status": "miss",
+  "tried": [
+   "Chu culture music Hubei",
+   "Xingshan folk song"
+  ]
+ },
+ "h_n12423": {
+  "status": "miss",
+  "tried": [
+   "Sangzhi Bai ethnic folk song performance",
+   "Sangzhi folk song notation manuscript"
+  ]
+ },
+ "h_n12424": {
+  "status": "miss",
+  "tried": [
+   "Hakka mountain song manuscript Meizhou",
+   "Meizhou Hakka hill song performance"
+  ]
+ },
+ "h_n12425": {
+  "status": "miss",
+  "tried": [
+   "Xiangshan dialect water song performance",
+   "Zhongshan boat people folk song"
+  ]
+ },
+ "h_n12426": {
+  "status": "miss",
+  "tried": [
+   "Hainanese folk song manuscript",
+   "Yazhou folk song performance Sanya"
+  ]
+ },
+ "h_n12428": {
+  "status": "miss",
+  "tried": [
+   "Danzhou diaosheng performance",
+   "Hainan folk circle dance"
+  ]
+ },
+ "h_n12429": {
+  "status": "miss",
+  "tried": [
+   "Shizhu Tujia Luor Diao",
+   "Tujia mountain song performance"
+  ]
+ },
+ "h_n12430": {
+  "status": "miss",
+  "tried": [
+   "Bashan porter song performance",
+   "Sichuan mountain porter folk song"
+  ]
+ },
+ "h_n12431": {
+  "status": "miss",
+  "tried": [
+   "Lisu folk song performance Nujiang",
+   "Lisu mu gua epic singing"
+  ]
+ },
+ "h_n12433": {
+  "status": "miss",
+  "tried": [
+   "Hanjiang River folk music Shaanxi",
+   "Ziyang folk song performance"
+  ]
+ },
+ "h_n12434": {
+  "status": "miss",
+  "tried": [
+   "Sunnan Yugur Autonomous County",
+   "Yugur folk song performance"
+  ]
+ },
+ "h_n12436": {
+  "status": "miss",
+  "tried": [
+   "Kangle County Gansu",
+   "Lianhuashan Hua'er festival"
+  ]
+ },
+ "h_n12437": {
+  "status": "done"
+ },
+ "h_n12435": {
+  "status": "done"
+ },
+ "h_n12438": {
+  "status": "done"
+ },
+ "h_n12441": {
+  "status": "done"
+ },
+ "h_n12439": {
+  "status": "done"
+ },
+ "h_n12440": {
+  "status": "miss",
+  "tried": [
+   "Qili Temple hot spring festival",
+   "Qinghai Hua'er singing at spring"
+  ]
+ },
+ "h_n12442": {
+  "status": "miss",
+  "tried": [
+   "Ningxia mountain Hua'er performance",
+   "Xiji County Hui folk singing"
+  ]
+ },
+ "h_n12443": {
+  "status": "miss",
+  "tried": [
+   "Changji Hua'er festival with Dutar",
+   "Xinjiang Hui Hua'er singing"
+  ]
+ },
+ "h_n12445": {
+  "status": "miss",
+  "tried": [
+   "Gansu Guanshan ancient road singing",
+   "Zhangjiachuan Hui Hua'er performance"
+  ]
+ },
+ "h_n12446": {
+  "status": "miss",
+  "tried": [
+   "Amdo Tibetan Layi singing",
+   "Qinghai Tibetan pastoral love song"
+  ]
+ },
+ "h_n12447": {
+  "status": "miss",
+  "tried": [
+   "Nagqu Tibetan Layi singing",
+   "Tibetan nomadic love song Nagqu"
+  ]
+ },
+ "h_n12448": {
+  "status": "miss",
+  "tried": [
+   "Liaozhai Liqu performance",
+   "Zibo folk opera Pu Songling"
+  ]
+ },
+ "h_n12449": {
+  "status": "miss",
+  "tried": [
+   "Hunan Miao multi-voice folk song",
+   "Jingzhou Miao Gezheng singing"
+  ]
+ },
+ "h_n12450": {
+  "status": "miss",
+  "tried": [
+   "Chuanjiang haozi",
+   "Sichuan river boatmen"
+  ]
+ },
+ "h_n12452": {
+  "status": "miss",
+  "tried": [
+   "Nanxi haozi",
+   "Qianjiang Miao labor song"
+  ]
+ },
+ "h_n12453": {
+  "status": "miss",
+  "tried": [
+   "Banan rice planting song",
+   "Mutong shange"
+  ]
+ },
+ "h_n12454": {
+  "status": "miss",
+  "tried": [
+   "Chuanbei hao cao luogu",
+   "Nanchong farming drum"
+  ]
+ },
+ "h_n12455": {
+  "status": "miss",
+  "tried": [
+   "Jiangxi farming drum song",
+   "Wuning dagu ge"
+  ]
+ },
+ "h_n12456": {
+  "status": "miss",
+  "tried": [
+   "Yichang hao cao luogu",
+   "Yiling rice field drumming"
+  ]
+ },
+ "h_n12459": {
+  "status": "miss",
+  "tried": [
+   "Wufeng Tujia hao cao luogu",
+   "Yichang mountain farming drum"
+  ]
+ },
+ "h_n12457": {
+  "status": "miss",
+  "tried": [
+   "Xingshan hao cao luogu",
+   "Zhaojun hometown farming song"
+  ]
+ },
+ "h_n12460": {
+  "status": "miss",
+  "tried": [
+   "Tujia farming drumming",
+   "Xuan'en Tujia hao cao luo gu"
+  ]
+ },
+ "h_n12458": {
+  "status": "miss",
+  "tried": [
+   "Changyang Tujia hao cao luo gu",
+   "Qingjiang farming songs"
+  ]
+ },
+ "h_n12461": {
+  "status": "miss",
+  "tried": [
+   "Sichuan Eastern Tujia hao cao luo gu",
+   "Wanyuan farming ritual music"
+  ]
+ },
+ "h_n12462": {
+  "status": "miss",
+  "tried": [
+   "Huai River rice planting songs",
+   "Jinhu Yangge"
+  ]
+ },
+ "h_n12469": {
+  "status": "miss",
+  "tried": [
+   "Dong pipa song",
+   "Kam people lute singing"
+  ]
+ },
+ "h_n12471": {
+  "status": "miss",
+  "tried": [
+   "Hani multi-part singing",
+   "Yuanyang terraced field songs"
+  ]
+ },
+ "h_n12472": {
+  "status": "miss",
+  "tried": [
+   "Choird Mongolian throat singing",
+   "Mongolian choral singing"
+  ]
+ },
+ "h_n12474": {
+  "status": "miss",
+  "tried": [
+   "Fuchuan Yao folk singing",
+   "Yao butterfly song"
+  ]
+ },
+ "h_n12473": {
+  "status": "miss",
+  "tried": [
+   "Baise Tianlin Zhuang folk song",
+   "Zhuang San Sheng Bu Min Ge"
+  ]
+ },
+ "h_n12476": {
+  "status": "miss",
+  "tried": [
+   "Maoxian Qiang people singing",
+   "Qiang multi-voice folk song"
+  ]
+ },
+ "h_n12475": {
+  "status": "miss",
+  "tried": [
+   "Baoxing Qiang-Tibetan folk music",
+   "Qiaoqi Tibetan multi-voice song"
+  ]
+ },
+ "h_n12478": {
+  "status": "miss",
+  "tried": [
+   "Miao multi-voice folk song",
+   "Qiandongnan Miao women singing"
+  ]
+ },
+ "h_n12479": {
+  "status": "miss",
+  "tried": [
+   "Abaga Choor",
+   "Mongolian throat singing with long song"
+  ]
+ },
+ "h_n12480": {
+  "status": "miss",
+  "tried": [
+   "Almei Qiang multi-voice song",
+   "Maoxian Qiang sacrificial song"
+  ]
+ },
+ "h_n12481": {
+  "status": "done"
+ },
+ "h_n12482": {
+  "status": "miss",
+  "tried": [
+   "Heiyi Zhuang antiphonal singing",
+   "Napo Zhuang folk song"
+  ]
+ },
+ "h_n12483": {
+  "status": "done"
+ },
+ "h_n12486": {
+  "status": "miss",
+  "tried": [
+   "Songxian Guan Qinpu",
+   "Yushan qin school"
+  ]
+ },
+ "h_n12488": {
+  "status": "miss",
+  "tried": [
+   "Guangling qin school",
+   "Jiaoan Qinpu"
+  ]
+ },
+ "h_n12485": {
+  "status": "miss",
+  "tried": [
+   "Jinling qin school",
+   "Xie Lin Taigu Yinyi"
+  ]
+ },
+ "h_n12490": {
+  "status": "done"
+ },
+ "h_n12491": {
+  "status": "miss",
+  "tried": [
+   "Changmen Yuan guqin",
+   "Zhucheng guqin school"
+  ]
+ },
+ "h_n12492": {
+  "status": "miss",
+  "tried": [
+   "Lingnan guqin school",
+   "Wu Xueshan Fang Qinpu"
+  ]
+ },
+ "h_n12495": {
+  "status": "done"
+ },
+ "h_n23643": {
+  "status": "miss",
+  "tried": [
+   "Fuxin Mongolian horse-head fiddle",
+   "Mongoljin Morin khuur"
+  ]
+ },
+ "h_n12497": {
+  "status": "done"
+ },
+ "h_n12501": {
+  "status": "miss",
+  "tried": [
+   "Henan suona",
+   "Xiangcheng suona band"
+  ]
+ },
+ "h_n12503": {
+  "status": "miss",
+  "tried": [
+   "Hebei suona flower blowing",
+   "Tangshan hua chui"
+  ]
+ },
+ "h_n12504": {
+  "status": "miss",
+  "tried": [
+   "Fengning suona ensemble",
+   "Manchu Chaozi Hui"
+  ]
+ },
+ "h_n12505": {
+  "status": "miss",
+  "tried": [
+   "Jinbei guchui",
+   "Shanxi suona ensemble"
+  ]
+ },
+ "h_n12507": {
+  "status": "miss",
+  "tried": [
+   "Shangdang bayin hui",
+   "Shanxi eight-tone ensemble"
+  ]
+ },
+ "h_n12506": {
+  "status": "miss",
+  "tried": [
+   "Shangdang yuehu band",
+   "Shanxi suona funeral music"
+  ]
+ },
+ "h_n12509": {
+  "status": "miss",
+  "tried": [
+   "Dandong drum music",
+   "Liaodong suona ensemble"
+  ]
+ },
+ "h_n12510": {
+  "status": "miss",
+  "tried": [
+   "Yang family suona band",
+   "Yian Heilongjiang folk music"
+  ]
+ },
+ "h_n12511": {
+  "status": "miss",
+  "tried": [
+   "Ganxu suona duo",
+   "Yudu gongpo chui"
+  ]
+ },
+ "h_n12512": {
+  "status": "miss",
+  "tried": [
+   "Jiangxi suona drum music",
+   "Wanzai deshenggu"
+  ]
+ },
+ "h_n12513": {
+  "status": "miss",
+  "tried": [
+   "Shandong suona school",
+   "Zoucheng pingpai guchuile"
+  ]
+ },
+ "h_n12516": {
+  "status": "miss",
+  "tried": [
+   "Baokang Hubei folk music",
+   "Jushui wuyin suona"
+  ]
+ },
+ "h_n12515": {
+  "status": "miss",
+  "tried": [
+   "Shennongjia suona",
+   "Wuyin luhua"
+  ]
+ },
+ "h_n12514": {
+  "status": "miss",
+  "tried": [
+   "Hubei funeral suona",
+   "Yuan'an Wuyin suona"
+  ]
+ },
+ "h_n12517": {
+  "status": "miss",
+  "tried": [
+   "Longhui wedding suona",
+   "Qingshan suona Hunan"
+  ]
+ },
+ "h_n12518": {
+  "status": "miss",
+  "tried": [
+   "Sichuan folk suona ensemble",
+   "Yongchuan suona Chongqing"
+  ]
+ },
+ "h_n12519": {
+  "status": "miss",
+  "tried": [
+   "Shaanbei double suona",
+   "Suide suona Shaanxi"
+  ]
+ },
+ "h_n12521": {
+  "status": "miss",
+  "tried": [
+   "Jiangsu suona ensemble",
+   "Xuzhou guchuile"
+  ]
+ },
+ "h_n12522": {
+  "status": "miss",
+  "tried": [
+   "Anhui opera imitation suona",
+   "Dangshan kaxi suona"
+  ]
+ },
+ "h_n12523": {
+  "status": "miss",
+  "tried": [
+   "Changting gongma suona",
+   "Hakka ritual suona"
+  ]
+ },
+ "h_n12524": {
+  "status": "miss",
+  "tried": [
+   "Linxian large suona",
+   "Shanxi Taoist suona"
+  ]
+ },
+ "h_n12525": {
+  "status": "miss",
+  "tried": [
+   "Bolin suona",
+   "Lingbi suona making"
+  ]
+ },
+ "h_n23644": {
+  "status": "done"
+ },
+ "h_n23645": {
+  "status": "miss",
+  "tried": [
+   "Shaanxi suona procession",
+   "Zichang suona"
+  ]
+ },
+ "h_n12526": {
+  "status": "miss",
+  "tried": [
+   "Qiang bamboo flute",
+   "Qiang flute"
+  ]
+ },
+ "h_n12527": {
+  "status": "miss",
+  "tried": [
+   "Liaoning drum music",
+   "Northeast Chinese wind ensemble"
+  ]
+ },
+ "h_n12529": {
+  "status": "done"
+ },
+ "h_n12532": {
+  "status": "miss",
+  "tried": [
+   "Haizhou Wuda Gongdiao",
+   "Lianyungang narrative singing"
+  ]
+ },
+ "h_n12533": {
+  "status": "miss",
+  "tried": [
+   "Shengzhou chuida",
+   "Zhejiang folk wind percussion"
+  ]
+ },
+ "h_n12534": {
+  "status": "miss",
+  "tried": [
+   "Zhejiang fishing ritual music",
+   "Zhoushan gonggu"
+  ]
+ },
+ "h_n12536": {
+  "status": "miss",
+  "tried": [
+   "Tingzhou ten-piece ensemble",
+   "Western Fujian Hakka shifan music"
+  ]
+ },
+ "h_n12535": {
+  "status": "miss",
+  "tried": [
+   "Chating shifan music",
+   "Fuzhou douguan ensemble"
+  ]
+ },
+ "h_n12537": {
+  "status": "miss",
+  "tried": [
+   "Chuzhou shifan luogu",
+   "Huai'an temple festival music"
+  ]
+ },
+ "h_n12538": {
+  "status": "miss",
+  "tried": [
+   "Shaobo xiao paizi",
+   "Yangzhou small shifan music"
+  ]
+ },
+ "h_n12539": {
+  "status": "miss",
+  "tried": [
+   "Louta fine shifan",
+   "Xiaoshan silk-and-bamboo music"
+  ]
+ },
+ "h_n12540": {
+  "status": "miss",
+  "tried": [
+   "Lishui opera instrumental music",
+   "Suichang Kunqu shifan"
+  ]
+ },
+ "h_n12541": {
+  "status": "miss",
+  "tried": [
+   "Huiyang shiyin",
+   "Putian octagonal qin music"
+  ]
+ },
+ "h_n12542": {
+  "status": "done"
+ },
+ "h_n12543": {
+  "status": "miss",
+  "tried": [
+   "Hainan Bayin ensemble",
+   "Wenchang folk music"
+  ]
+ },
+ "h_n12544": {
+  "status": "miss",
+  "tried": [
+   "Lushanxi drum and wind music",
+   "Shandong suona ensemble"
+  ]
+ },
+ "h_n12548": {
+  "status": "miss",
+  "tried": [
+   "Bantou qu performance",
+   "Nanyang zheng music"
+  ]
+ },
+ "h_n12549": {
+  "status": "miss",
+  "tried": [
+   "Three Gorges folk ensemble",
+   "Yichang sizhu music"
+  ]
+ },
+ "h_n12550": {
+  "status": "miss",
+  "tried": [
+   "Hubei wedding funeral music",
+   "Zhijiang folk percussion"
+  ]
+ },
+ "h_n12551": {
+  "status": "done"
+ },
+ "h_n12554": {
+  "status": "done"
+ },
+ "h_n12555": {
+  "status": "miss",
+  "tried": [
+   "Guangdong Han music ensemble",
+   "Meizhou Hakka string music"
+  ]
+ },
+ "h_n12557": {
+  "status": "miss",
+  "tried": [
+   "Jielong suona ensemble",
+   "Qijiang folk wind and percussion"
+  ]
+ },
+ "h_n12556": {
+  "status": "miss",
+  "tried": [
+   "Jinqiao suona ensemble",
+   "Yongchuan folk percussion"
+  ]
+ },
+ "h_n12558": {
+  "status": "miss",
+  "tried": [
+   "Guangxi bayin ensemble",
+   "Yangshuo riverboat music"
+  ]
+ },
+ "h_n12559": {
+  "status": "miss",
+  "tried": [
+   "Chongqing folk drum ensemble",
+   "Liangping Laizi Luogu"
+  ]
+ },
+ "h_n12560": {
+  "status": "miss",
+  "tried": [
+   "Tujia dalouzi ensemble",
+   "Xiangxi Tujia percussion"
+  ]
+ },
+ "h_n12564": {
+  "status": "miss",
+  "tried": [
+   "Guan County folk wind ensemble",
+   "Hebei guchuile"
+  ]
+ },
+ "h_n12565": {
+  "status": "done"
+ },
+ "h_n12566": {
+  "status": "miss",
+  "tried": [
+   "Jiangzhou drum music performance",
+   "Xinjiang County drum ensemble"
+  ]
+ },
+ "h_n12567": {
+  "status": "miss",
+  "tried": [
+   "Shangdang Bayinyue performance",
+   "Shanxi folk wind ensemble"
+  ]
+ },
+ "h_n12569": {
+  "status": "miss",
+  "tried": [
+   "Jizhong shengguan yue",
+   "Qujiaying music ensemble"
+  ]
+ },
+ "h_n12568": {
+  "status": "miss",
+  "tried": [
+   "Gaoluo village music",
+   "Hebei shengguan yue"
+  ]
+ },
+ "h_n12570": {
+  "status": "miss",
+  "tried": [
+   "Gaoqiao village music",
+   "Jizhong shengguan yue ensemble"
+  ]
+ },
+ "h_n12571": {
+  "status": "miss",
+  "tried": [
+   "Hebei traditional shengguan",
+   "Shengfang town music"
+  ]
+ },
+ "h_n12572": {
+  "status": "miss",
+  "tried": [
+   "Baimiao village music",
+   "Beijing shengguan yue"
+  ]
+ },
+ "h_n12575": {
+  "status": "miss",
+  "tried": [
+   "Hebei shengguan yue",
+   "Xiong County ancient music"
+  ]
+ },
+ "h_n12581": {
+  "status": "miss",
+  "tried": [
+   "Hebei shengguan yue",
+   "Xiaofengcun music society"
+  ]
+ },
+ "h_n12583": {
+  "status": "miss",
+  "tried": [
+   "Hebei shengguan yue",
+   "Zhangzhuang village music society"
+  ]
+ },
+ "h_n12578": {
+  "status": "miss",
+  "tried": [
+   "Hebei shengguan yue",
+   "Junlu village music society"
+  ]
+ },
+ "h_n12579": {
+  "status": "miss",
+  "tried": [
+   "Dongzhangwu village music society",
+   "Hebei shengguan yue"
+  ]
+ },
+ "h_n12580": {
+  "status": "miss",
+  "tried": [
+   "Hebei Buddhist shengguan",
+   "Nanxiangkou Fanbei music"
+  ]
+ },
+ "h_n12582": {
+  "status": "miss",
+  "tried": [
+   "Hebei shengguan yue",
+   "Lidongzhuang old music society"
+  ]
+ },
+ "h_n12577": {
+  "status": "miss",
+  "tried": [
+   "Hebei guanzi music",
+   "Xinan village music society"
+  ]
+ },
+ "h_n12573": {
+  "status": "miss",
+  "tried": [
+   "Baiyangdian shengguan yue",
+   "Quantou village music society"
+  ]
+ },
+ "h_n12574": {
+  "status": "miss",
+  "tried": [
+   "Donghan Village Shifan music",
+   "Hebei Shifan banner procession"
+  ]
+ },
+ "h_n12576": {
+  "status": "miss",
+  "tried": [
+   "Hebei Guanzi and Suona ensemble",
+   "Ziwei Chui Ge performance"
+  ]
+ },
+ "h_n12584": {
+  "status": "miss",
+  "tried": [
+   "Buyei bronze drum music",
+   "Guizhou Tonggu Twelve Tunes"
+  ]
+ },
+ "h_n12586": {
+  "status": "miss",
+  "tried": [
+   "Hejiaying Gule ensemble",
+   "Xi'an Drum Music score"
+  ]
+ },
+ "h_n12587": {
+  "status": "miss",
+  "tried": [
+   "Lantian Puhua Shuihui music",
+   "Water Land Ritual music Shaanxi"
+  ]
+ },
+ "h_n12588": {
+  "status": "miss",
+  "tried": [
+   "Hui Muslim ritual music Ningxia",
+   "Ningxia Suona for Eid"
+  ]
+ },
+ "h_n12589": {
+  "status": "miss",
+  "tried": [
+   "Shanxi copper luo ensemble",
+   "Wenshui Bizi music"
+  ]
+ },
+ "h_n12590": {
+  "status": "miss",
+  "tried": [
+   "Ming dynasty guan music",
+   "Zhihua Temple Beijing music"
+  ]
+ },
+ "h_n12591": {
+  "status": "miss",
+  "tried": [
+   "Pusading Temple sutra chanting",
+   "Wutai Shan Buddhist music performance"
+  ]
+ },
+ "h_n12592": {
+  "status": "miss",
+  "tried": [
+   "Anshan Buddhist orchestra",
+   "Qianshan Temple Buddhist music"
+  ]
+ },
+ "h_n12593": {
+  "status": "miss",
+  "tried": [
+   "Suzhou Daoist ritual music",
+   "Xuanmiao Guan Taoist music"
+  ]
+ },
+ "h_n12594": {
+  "status": "miss",
+  "tried": [
+   "Wudang Mountain Taoist music",
+   "Zixiao Palace ritual music"
+  ]
+ },
+ "h_n12595": {
+  "status": "miss",
+  "tried": [
+   "Kashgar Muqam musicians",
+   "Twelve Muqam performance"
+  ]
+ },
+ "h_n12596": {
+  "status": "miss",
+  "tried": [
+   "Grape Valley Uyghur music",
+   "Turpan Muqam performance"
+  ]
+ },
+ "h_n12597": {
+  "status": "done"
+ },
+ "h_n12598": {
+  "status": "done"
+ },
+ "h_n12600": {
+  "status": "miss",
+  "tried": [
+   "Nanyin gongche notation",
+   "Nanyin performance Quanzhou"
+  ]
+ },
+ "h_n20112": {
+  "status": "miss",
+  "tried": [
+   "Nanyin upper four instruments",
+   "Quanzhou Nanyin ensemble"
+  ]
+ },
+ "h_n20113": {
+  "status": "miss",
+  "tried": [
+   "Gulangyu Nanyin manuscript",
+   "Xiamen Nanyin performance"
+  ]
+ },
+ "h_n12601": {
+  "status": "miss",
+  "tried": [
+   "Beiguan Quanzhou",
+   "Fujian Beiguan ensemble"
+  ]
+ },
+ "h_n12603": {
+  "status": "miss",
+  "tried": [
+   "Shaanbei folk song performance",
+   "Xintianyou singing in Shaanxi"
+  ]
+ },
+ "h_n12604": {
+  "status": "miss",
+  "tried": [
+   "Changli folk song",
+   "Luanhe boat song"
+  ]
+ },
+ "h_n12605": {
+  "status": "miss",
+  "tried": [
+   "Gaoyou folk song",
+   "Li Xia He water song"
+  ]
+ },
+ "h_n12606": {
+  "status": "miss",
+  "tried": [
+   "Huaihe River folk music",
+   "Wuhe folk song"
+  ]
+ },
+ "h_n12607": {
+  "status": "miss",
+  "tried": [
+   "Anhui folk song performance",
+   "Dabie Mountains tea picking song"
+  ]
+ },
+ "h_n12608": {
+  "status": "miss",
+  "tried": [
+   "Anhui Huangshan folk music",
+   "Huizhou folk song performance"
+  ]
+ },
+ "h_n12609": {
+  "status": "done"
+ },
+ "h_n12610": {
+  "status": "done"
+ },
+ "h_n12327": {
+  "status": "done",
+  "tried": [
+   "Khitan origin legend",
+   "Pingquan Liao River confluence"
+  ]
+ },
+ "h_n12328": {
+  "status": "miss",
+  "tried": [
+   "Cangshan Temple Zhao Wu",
+   "Zhao Shi Gu Er opera"
+  ]
+ },
+ "h_n15664": {
+  "status": "done",
+  "tried": [
+   "Lu'an seal paste",
+   "Shanghai seal ink making"
+  ]
+ },
+ "h_n12329": {
+  "status": "miss",
+  "tried": [
+   "Baima Temple Qingshui County",
+   "Longqu Canal Tang dynasty"
+  ]
+ },
+ "h_n12330": {
+  "status": "miss",
+  "tried": [
+   "Mingtiao Ridge Yao culture",
+   "Yuncheng Yanchi salt flowers"
+  ]
+ },
+ "h_n12333": {
+  "status": "miss",
+  "tried": [
+   "Beichuan Qiang ethnic folklore",
+   "Shinu Mountain Yu the Great"
+  ]
+ },
+ "h_n23637": {
+  "status": "miss",
+  "tried": [
+   "Gui Mountain Yu the Great tablet",
+   "Yu Gong Bei Wuhan"
+  ]
+ },
+ "h_n12334": {
+  "status": "miss",
+  "tried": [
+   "Fangfeng bone stone",
+   "Fengfeng Shrine Deqing"
+  ]
+ },
+ "h_n12335": {
+  "status": "miss",
+  "tried": [
+   "Miao ethnic storytelling",
+   "Panhu legend oral performance"
+  ]
+ },
+ "h_n12487": {
+  "status": "miss",
+  "tried": [
+   "Meian guqin school performance",
+   "Nantong guqin playing"
+  ]
+ },
+ "h_n12611": {
+  "status": "miss",
+  "tried": [
+   "Jingzhou traditional music",
+   "Mashan folk song"
+  ]
+ },
+ "h_n12612": {
+  "status": "miss",
+  "tried": [
+   "Hubei labor song",
+   "Qianjiang water wheel song"
+  ]
+ },
+ "h_n12613": {
+  "status": "miss",
+  "tried": [
+   "Lvjiahe folk song",
+   "Wudang Mountain ritual song"
+  ]
+ },
+ "h_n12614": {
+  "status": "miss",
+  "tried": [
+   "Tujia Miao folk music",
+   "Xiushan folk song"
+  ]
+ },
+ "h_n12615": {
+  "status": "miss",
+  "tried": [
+   "Apen River folk singing",
+   "Youyang Tujia wedding song"
+  ]
+ },
+ "h_n12616": {
+  "status": "miss",
+  "tried": [
+   "Jiashan rice field song",
+   "Wu dialect folk singing"
+  ]
+ },
+ "h_n12617": {
+  "status": "miss",
+  "tried": [
+   "Bashan porter song",
+   "Daba Mountains folk music"
+  ]
+ },
+ "h_n12618": {
+  "status": "miss",
+  "tried": [
+   "Nanping folk tune",
+   "Qiang and Tibetan border music"
+  ]
+ },
+ "h_n12619": {
+  "status": "miss",
+  "tried": [
+   "Anhua tea picking song",
+   "Xuefeng Mountains labor chant"
+  ]
+ },
+ "h_n12620": {
+  "status": "miss",
+  "tried": [
+   "Jianghan Plain water field work",
+   "Jianli rice planting song"
+  ]
+ },
+ "h_n12621": {
+  "status": "miss",
+  "tried": [
+   "Hohhot mountain song",
+   "Tumote Left Banner herding song"
+  ]
+ },
+ "h_n12623": {
+  "status": "miss",
+  "tried": [
+   "Manhan tune",
+   "Ordos Yellow River folk music"
+  ]
+ },
+ "h_n12625": {
+  "status": "miss",
+  "tried": [
+   "Haimen shange performance",
+   "Nantong folk song Jiangsu"
+  ]
+ },
+ "h_n12624": {
+  "status": "miss",
+  "tried": [
+   "Fulao dialect folk singing Huizhou",
+   "Huidong fishing song performance"
+  ]
+ },
+ "h_n12626": {
+  "status": "miss",
+  "tried": [
+   "Meishan folk singing performance",
+   "Xinhua mountain song Hunan"
+  ]
+ },
+ "h_n12628": {
+  "status": "miss",
+  "tried": [
+   "Donghai fishing work song",
+   "Zhoushan fishing haozi"
+  ]
+ },
+ "h_n12629": {
+  "status": "miss",
+  "tried": [
+   "Changdao fishing haozi",
+   "Shandong marine work song"
+  ]
+ },
+ "h_n12630": {
+  "status": "miss",
+  "tried": [
+   "Changhai fishing haozi",
+   "Liaoning marine work song"
+  ]
+ },
+ "h_n12627": {
+  "status": "done",
+  "tried": [
+   "Yaoan bazikang performance",
+   "Yunnan Han folk song"
+  ]
+ },
+ "h_n12631": {
+  "status": "miss",
+  "tried": [
+   "Ningbo marine work song",
+   "Xiangshan fishing haozi"
+  ]
+ },
+ "h_n12632": {
+  "status": "miss",
+  "tried": [
+   "Huanghe haozi performance",
+   "Yellow River dike construction 1950s"
+  ]
+ },
+ "h_n12634": {
+  "status": "miss",
+  "tried": [
+   "Xiajiang haozi performance",
+   "Yangtze River Gorges boatmen pulling raft"
+  ]
+ },
+ "h_n12637": {
+  "status": "miss",
+  "tried": [
+   "Youshui River Tujia boatmen",
+   "Yuxi boatman haozi"
+  ]
+ },
+ "h_n12639": {
+  "status": "miss",
+  "tried": [
+   "Shanghai dockworkers hauling cargo 1930s",
+   "Shanghai gangway haozi"
+  ]
+ },
+ "h_n12641": {
+  "status": "miss",
+  "tried": [
+   "Daxing'anling loggers in snow",
+   "Ergun forest haozi"
+  ]
+ },
+ "h_n12640": {
+  "status": "miss",
+  "tried": [
+   "Changbaishan loggers hauling timber",
+   "Manchurian forest haozi"
+  ]
+ },
+ "h_n12642": {
+  "status": "miss",
+  "tried": [
+   "Liangping Taoist procession palanquin",
+   "Sichuan抬儿调"
+  ]
+ },
+ "h_n12643": {
+  "status": "miss",
+  "tried": [
+   "Three Gorges carrying haozi",
+   "Wushan Longgupo porters"
+  ]
+ },
+ "h_n12644": {
+  "status": "miss",
+  "tried": [
+   "Bamboo paper making Sichuan",
+   "Chengdu plain folk work song"
+  ]
+ },
+ "h_n12646": {
+  "status": "miss",
+  "tried": [
+   "Lunan Wudaiao performance",
+   "Shandong folk silk music"
+  ]
+ },
+ "h_n12647": {
+  "status": "miss",
+  "tried": [
+   "Hubei Han River folk music",
+   "Laohokou silk string music"
+  ]
+ },
+ "h_n12648": {
+  "status": "miss",
+  "tried": [
+   "Horqin narrative folk song",
+   "Mongolian horsehead fiddle singing"
+  ]
+ },
+ "h_n12649": {
+  "status": "miss",
+  "tried": [
+   "Mongolian wedding song Inner Mongolia",
+   "Ordos short tune folk song"
+  ]
+ },
+ "h_n12651": {
+  "status": "miss",
+  "tried": [
+   "Dongmeng folk song Liaoning",
+   "Fuxin Mongolian short tune"
+  ]
+ },
+ "h_n12650": {
+  "status": "miss",
+  "tried": [
+   "Mongolian court ritual music",
+   "Ordos Gurug song"
+  ]
+ },
+ "h_n12652": {
+  "status": "miss",
+  "tried": [
+   "Qian Gorlos Mongolian folk song",
+   "Songnen Plain fishing song"
+  ]
+ },
+ "h_n12654": {
+  "status": "miss",
+  "tried": [
+   "Qinghai Mongol folk music",
+   "Tobshuur playing in Haixi"
+  ]
+ },
+ "h_n12653": {
+  "status": "miss",
+  "tried": [
+   "Bayannur Inner Mongolia pastoral singing",
+   "Urad Mongol folk song performance"
+  ]
+ },
+ "h_n23646": {
+  "status": "miss",
+  "tried": [
+   "Alxa Mongol epic singing",
+   "Oirat folk song performance"
+  ]
+ }
+}
