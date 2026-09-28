@@ -20,6 +20,7 @@ export default function Path() {
   const [goal, setGoal] = useState<PlanGoal>('understand')
   const [minutes, setMinutes] = useState(60)
   const [loading, setLoading] = useState(false)
+  const [stage, setStage] = useState(-1)
   const [plan, setPlan] = useState<LearningPlan | null>(null)
   const [checks, setChecks] = useState<Record<string, boolean>>(() => {
     try {
@@ -68,6 +69,8 @@ export default function Path() {
     if (!topic.trim() || loading) return
     setLoading(true)
     setError('')
+    setStage(0)
+    const timers = [700, 1600].map((ms, i) => window.setTimeout(() => setStage(i + 1), ms))
     try {
       const p = await fetchLearningPlan(topic.trim(), { days, goal, dailyMinutes: minutes })
       setPlan(p)
@@ -75,6 +78,8 @@ export default function Path() {
     } catch (e) {
       setError(e instanceof Error ? e.message : '生成失败')
     } finally {
+      timers.forEach(window.clearTimeout)
+      setStage(-1)
       setLoading(false)
     }
   }
@@ -154,15 +159,30 @@ export default function Path() {
         <button className="path-generate" onClick={handleGenerate} disabled={loading}>
           {loading ? '规划中…' : '生成学习路线'}
         </button>
+        {loading && (
+          <div className="path-stages">
+            {['读取主题资料', '编排学习节奏', '撰写每日任务'].map((s2, i) => (
+              <span key={s2} className={i <= stage ? 'on' : ''}>
+                <i>{String(i + 1).padStart(2, '0')}</i>
+                {s2}
+              </span>
+            ))}
+          </div>
+        )}
         {error && <div className="path-error">{error}</div>}
       </div>
 
       {plan && (
         <div className="path-result reveal">
-          <h2>
-            「{plan.topic}」{plan.days.length} 天学习路线
-            {plan.sources.length > 0 && <span className="path-src">参考：{plan.sources.join('、')}</span>}
-          </h2>
+          <div className="path-result-head">
+            <span className="path-kicker">学习路线 · PLAN</span>
+            <h2>
+              「{plan.topic}」{plan.days.length} 天学习路线
+            </h2>
+            {plan.sources.length > 0 && (
+              <div className="path-src">参考知识库 · {plan.sources.join('、')}</div>
+            )}
+          </div>
 
           <div className="path-progress">
             <div className="path-progress-bar">
@@ -182,7 +202,7 @@ export default function Path() {
               const dayDone = dayKeys.every((k) => checks[k])
               return (
                 <div key={d.day} className={`path-node ${dayDone ? 'day-done' : ''}`}>
-                  <div className="path-day-badge">{dayDone ? '✓' : `D${d.day}`}</div>
+                  <div className="path-day-badge">{dayDone ? '毕' : String(d.day).padStart(2, '0')}</div>
                   <div className="path-day-body">
                     <strong>{d.title}</strong>
                     <ul>

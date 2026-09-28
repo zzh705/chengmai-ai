@@ -65,6 +65,7 @@ export default function Lab() {
   const [style, setStyle] = useState<CreationStyle>('guochao')
   const [audience, setAudience] = useState<Audience>('campus')
   const [loading, setLoading] = useState(false)
+  const [stage, setStage] = useState(-1)
   const [result, setResult] = useState<CreationResponse | null>(null)
   const [history, setHistory] = useState<HistoryItem[]>(loadHistory)
   const [error, setError] = useState('')
@@ -89,6 +90,9 @@ export default function Lab() {
     if (!heritage || !requirement.trim() || loading) return
     setLoading(true)
     setError('')
+    setStage(0)
+    // 阶段反馈与真实请求并行推进，等待期不再是一段空白
+    const timers = [800, 1800].map((ms, i) => window.setTimeout(() => setStage(i + 1), ms))
     try {
       const name = list.find((h) => h.id === heritage)?.name ?? heritage
       const resp = await generateCreation(name, requirement.trim(), {
@@ -115,6 +119,8 @@ export default function Lab() {
     } catch (e) {
       setError(e instanceof Error ? e.message : '生成失败')
     } finally {
+      timers.forEach(window.clearTimeout)
+      setStage(-1)
       setLoading(false)
     }
   }
@@ -212,6 +218,16 @@ export default function Lab() {
           )}
         </div>
         {error && <div className="lab-error">{error}</div>}
+        {loading && (
+          <div className="lab-stages">
+            {['检索文化依据', '对齐传统语义', '生成创意方案'].map((s2, i) => (
+              <span key={s2} className={i <= stage ? 'on' : ''}>
+                <i>{String(i + 1).padStart(2, '0')}</i>
+                {s2}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 历史方案 */}
@@ -265,6 +281,7 @@ export default function Lab() {
 
           <div className="lab-grid">
             <section className="reveal">
+              <span className="lab-sec-no">01</span>
               <h3>传统元素</h3>
               <ul>
                 {r.traditional_elements.map((x, i) => (
@@ -273,6 +290,7 @@ export default function Lab() {
               </ul>
             </section>
             <section className="reveal">
+              <span className="lab-sec-no">02</span>
               <h3>现代载体</h3>
               <ul>
                 {r.modern_carrier.map((x, i) => (
@@ -281,6 +299,7 @@ export default function Lab() {
               </ul>
             </section>
             <section className="reveal">
+              <span className="lab-sec-no">03</span>
               <h3>传播方式</h3>
               <ul>
                 {r.spread_channels.map((x, i) => (
@@ -289,6 +308,7 @@ export default function Lab() {
               </ul>
             </section>
             <section className="reveal">
+              <span className="lab-sec-no">04</span>
               <h3>AI 可辅助</h3>
               <ul>
                 {r.ai_parts.map((x, i) => (

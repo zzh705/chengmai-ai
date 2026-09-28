@@ -467,3 +467,49 @@
   color: #6e655a;
   font-size: 11px;
 }
+
+/* ===== 回答排版升级：阶段反馈 + 章节序号 ===== */
+.lab-stages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin-top: 14px;
+}
+.lab-stages span {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: #6e655a;
+  transition: color 0.3s;
+}
+.lab-stages span i {
+  font-style: normal;
+  font-family: Georgia, serif;
+  font-size: 12px;
+  color: #4a4137;
+  transition: color 0.3s;
+}
+.lab-stages span.on {
+  color: #e8c56b;
+}
+.lab-stages span.on i {
+  color: #b03a2e;
+}
+.lab-stages span.on::after {
+  content: '';
+  display: inline-block;
+  width: 26px;
+  height: 1px;
+  background: #e8c56b88;
+  transform: translate(-8px, -4px);
+}
+.lab-sec-no {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: #b03a2e;
+  margin-bottom: 6px;
+}
