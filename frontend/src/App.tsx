@@ -121,7 +121,9 @@ function App() {
           {page === 'home' && <Home onNavigate={navigate} entered={!splash} />}
           {page === 'chat' && <Chat initialQuery={chatQuery} />}
           {/* key 随参数重挂载：关键词预填/详情打开都由初始状态承担，避免 effect 同步 setState */}
-          {page === 'knowledge' && <Knowledge key={kbParam ?? 'kb-list'} openParam={kbParam} />}
+          {page === 'knowledge' && (
+            <Knowledge key={kbParam ?? 'kb-list'} openParam={kbParam} onNavigate={navigate} />
+          )}
           {page === 'graph' && <KnowledgeGraph onNavigate={navigate} />}
           {page === 'map' && <MapPage onNavigate={navigate} openRegion={mapParam} />}
           {page === 'path' && <Path />}

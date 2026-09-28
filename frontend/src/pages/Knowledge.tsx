@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   fetchHeritageDetail,
   fetchHeritageList,
@@ -7,6 +7,8 @@ import {
   type WowNumber,
 } from '../api/heritage'
 import { recordProgress } from '../api/progress'
+import { startAmbient, stopAmbient } from '../utils/ambient'
+import { speechSupported, speak, stopSpeaking } from '../utils/speech'
 import Cover from '../components/Cover'
 import { useRevealGroup } from '../hooks/useReveal'
 import '../styles/knowledge.css'
@@ -40,7 +42,13 @@ function WowNum({ value, suffix, label }: WowNumber) {
   )
 }
 
-export default function Knowledge({ openParam }: { openParam?: string }) {
+export default function Knowledge({
+  openParam,
+  onNavigate,
+}: {
+  openParam?: string
+  onNavigate?: (page: string, query?: string) => void
+}) {
   const [list, setList] = useState<HeritageSummary[]>([])
   const [detail, setDetail] = useState<HeritageDetail | null>(null)
   const [credits, setCredits] = useState<Record<string, Credit>>({})
@@ -48,9 +56,23 @@ export default function Knowledge({ openParam }: { openParam?: string }) {
   const [keyword, setKeyword] = useState(() =>
     openParam?.startsWith('kw:') ? openParam.slice(3) : '',
   )
+  const [cat, setCat] = useState('全部')
   const [error, setError] = useState('')
+  // 语音讲解 / 背景音（懒初始化：SSR 不存在，浏览器支持即可见入口）
+  const [canSpeech] = useState(() => speechSupported())
+  const [speaking, setSpeaking] = useState(false)
+  const [bgm, setBgm] = useState(false)
   const pageRef = useRef<HTMLDivElement>(null)
   const detailRef = useRevealGroup<HTMLDivElement>([detail?.id])
+
+  // 离开页面时停掉朗读与背景音，避免后台出声
+  useEffect(
+    () => () => {
+      stopSpeaking()
+      stopAmbient()
+    },
+    [],
+  )
 
   useEffect(() => {
     fetchHeritageList().then(setList).catch((e) => setError(e.message))
@@ -80,6 +102,8 @@ export default function Knowledge({ openParam }: { openParam?: string }) {
   }, [openParam])
 
   async function open(id: string) {
+    stopSpeaking()
+    setSpeaking(false)
     try {
       const d = await fetchHeritageDetail(id)
       setDetail(d)
@@ -90,15 +114,63 @@ export default function Knowledge({ openParam }: { openParam?: string }) {
     }
   }
 
+  // 听讲解：朗读钩子 + 故事（无故事时读简介），随时可停
+  function toggleListen() {
+    if (!detail) return
+    if (speaking) {
+      stopSpeaking()
+      setSpeaking(false)
+      return
+    }
+    const narration = [detail.hook, detail.story || detail.description]
+      .filter(Boolean)
+      .join('。')
+    const started = speak(narration, () => setSpeaking(false))
+    setSpeaking(started)
+  }
+
+  function toggleBgm() {
+    if (bgm) {
+      stopAmbient()
+      setBgm(false)
+    } else {
+      setBgm(startAmbient())
+    }
+  }
+
   const filtered = list.filter(
     (h) =>
-      h.name.includes(keyword) ||
-      h.category.includes(keyword) ||
-      h.region.includes(keyword),
+      (cat === '全部' || h.category.split(' · ')[0] === cat) &&
+      (h.name.includes(keyword) ||
+        h.category.includes(keyword) ||
+        h.region.includes(keyword)),
   )
+
+  // 类别筛选芯片（全部 + 各大类）
+  const cats = useMemo(() => {
+    const set = new Set(list.map((h) => h.category.split(' · ')[0]))
+    return ['全部', ...set]
+  }, [list])
 
   if (detail) {
     const credit = credits[detail.id]
+    const cat0 = detail.category.split(' · ')[0]
+    // 相关推荐：同类别优先，不足则同地域补足，最多三张
+    const related = (() => {
+      const sameCat = list.filter(
+        (h) => h.id !== detail.id && h.category.split(' · ')[0] === cat0,
+      )
+      const sameRegion =
+        sameCat.length >= 3
+          ? []
+          : list.filter(
+              (h) =>
+                h.id !== detail.id &&
+                !sameCat.some((s) => s.id === h.id) &&
+                h.region.includes(detail.region.split('（')[0].slice(0, 2)),
+            )
+      return [...sameCat, ...sameRegion].slice(0, 3)
+    })()
     return (
       <div className="kb-page" ref={pageRef}>
         <div className="kb-detail" ref={detailRef}>
@@ -117,6 +189,27 @@ export default function Knowledge({ openParam }: { openParam?: string }) {
           </h1>
           <div className="kb-meta">
             {detail.category} · {detail.region} · {detail.era}
+          </div>
+
+          {/* 聆听条：语音讲解 + 背景音 + 深入追问 AI（全部文字按钮，无小图标） */}
+          <div className="kb-audio">
+            {canSpeech && (
+              <button className={speaking ? 'on' : ''} onClick={toggleListen}>
+                {speaking ? '停止朗读' : '听讲解'}
+              </button>
+            )}
+            <button className={bgm ? 'on' : ''} onClick={toggleBgm}>
+              {bgm ? '背景音 · 开' : '背景音 · 关'}
+            </button>
+            {onNavigate && (
+              <button
+                className="kb-audio-ai"
+                onClick={() => onNavigate('chat', `深入讲讲${detail.name}`)}
+              >
+                让承脉 AI 继续讲
+              </button>
+            )}
+            {speaking && <span className="kb-audio-hint">正在为你朗读钩子与故事</span>}
           </div>
 
           {/* 悬念钩子：详情页第一记视觉重拳 */}
@@ -159,7 +252,7 @@ export default function Knowledge({ openParam }: { openParam?: string }) {
 
           <section className="reveal">
             <h3>项目简介</h3>
-            <p>{detail.description}</p>
+            <p className="kb-lede">{detail.description}</p>
           </section>
 
           {/* 冷知识：让人好奇的"你知道吗" */}
@@ -213,6 +306,24 @@ export default function Knowledge({ openParam }: { openParam?: string }) {
               ))}
             </ul>
           </section>
+
+          {/* 相关推荐：把一次阅读延展成一次探索 */}
+          {related.length > 0 && (
+            <section className="reveal kb-related">
+              <h3>顺着这条线索</h3>
+              <div className="kb-related-row">
+                {related.map((h) => (
+                  <button key={h.id} className="kb-related-card" onClick={() => open(h.id)}>
+                    <Cover item={h} className="kb-related-img" />
+                    <strong>{h.name}</strong>
+                    <span>
+                      {h.category.split(' · ')[0]} · {h.region.split('（')[0]}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       </div>
     )
@@ -228,6 +339,20 @@ export default function Knowledge({ openParam }: { openParam?: string }) {
           onChange={(e) => setKeyword(e.target.value)}
           placeholder="搜索名称 / 类别 / 地域…"
         />
+        {/* 类别筛选：全部 + 各大类 */}
+        {list.length > 0 && (
+          <div className="kb-chips">
+            {cats.map((c) => (
+              <button
+                key={c}
+                className={cat === c ? 'on' : ''}
+                onClick={() => setCat(c)}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+        )}
       </header>
       {error && <div className="kb-error">{error}</div>}
       <div className="kb-cards">
