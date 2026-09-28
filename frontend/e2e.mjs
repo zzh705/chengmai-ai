@@ -12,10 +12,13 @@ page.on('pageerror', (e) => errors.push(String(e)))
 
 const shot = async (name) => page.screenshot({ path: `/tmp/shots/${name}.png` })
 
-// 1. 首页动效
+// 1. 首页动效 + 地域 chip 按省份归一
 await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
 await page.waitForTimeout(1200)
 await shot('新-首页')
+const chipTexts = await page.locator('.home-regions button').allTextContents()
+const chipMax = Math.max(0, ...chipTexts.map((t) => t.trim().length))
+console.log('region chips:', chipTexts.length, '| 最长文案', chipMax, '字 |', chipTexts.slice(0, 6).map((t) => t.trim()).join(' / '))
 
 // 2. 图谱：点地域节点 → 面板 → 去地图
 await page.click('nav button:has-text("知识图谱")')
@@ -92,7 +95,67 @@ const personBody = await page.textContent('.graph-detail-info')
 console.log('person panel:', personBody?.trim().slice(0, 50))
 await shot('新-图谱-传承人面板')
 
-// 7. 挑战页环形进度
+// 7. 图谱：hover 高亮邻居 / 图例隐藏 / 缩放控件
+await page.click('nav button:has-text("知识图谱")')
+await page.waitForSelector('g.g-node', { timeout: 8000 })
+await page.waitForTimeout(2500)
+// 先取消前一步的选中，避免"选中高亮"干扰 hover 断言
+if (await page.locator('.graph-close').count()) {
+  await page.click('.graph-close')
+  await page.waitForTimeout(300)
+}
+const hoverRes = await page.evaluate(() => {
+  const n = [...document.querySelectorAll('g.g-node')].find(
+    (el) => el.getAttribute('class').includes('g-heritage'),
+  )
+  if (!n) return null
+  n.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }))
+  const dimmed = document.querySelectorAll('g.g-node.g-dim').length
+  n.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }))
+  const cleared = document.querySelectorAll('g.g-node.g-dim').length
+  return { dimmed, cleared }
+})
+console.log('hover 高亮：变暗', hoverRes?.dimmed, '个节点 → 移开后剩', hoverRes?.cleared, '个')
+await page.evaluate(() => {
+  const n = [...document.querySelectorAll('g.g-node')].find((el) =>
+    el.getAttribute('class').includes('g-heritage'),
+  )
+  n?.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }))
+})
+await shot('新-图谱-hover高亮')
+await page.evaluate(() => {
+  document.querySelectorAll('g.g-node').forEach((el) =>
+    el.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true })),
+  )
+})
+
+const visible = () =>
+  page.evaluate(
+    () =>
+      [...document.querySelectorAll('g.g-node')].filter(
+        (el) => getComputedStyle(el).display !== 'none',
+      ).length,
+  )
+const before = await visible()
+await page.click('.graph-legend-item:has-text("作品")')
+await page.waitForTimeout(350)
+const after = await visible()
+console.log('图例隐藏「作品」:', before, '→', after, '个可见节点')
+await shot('新-图谱-图例隐藏')
+await page.click('.graph-legend-item:has-text("作品")')
+await page.waitForTimeout(350)
+
+const t0 = await page.evaluate(() => document.querySelector('.graph-svg > g').getAttribute('transform'))
+await page.locator('.graph-zoom button').first().click()
+await page.waitForTimeout(600)
+const t1 = await page.evaluate(() => document.querySelector('.graph-svg > g').getAttribute('transform'))
+console.log('缩放控件生效:', t0 !== t1, '|', t0, '→', t1)
+await page.locator('.graph-zoom button').nth(2).click()
+await page.waitForTimeout(600)
+const t2 = await page.evaluate(() => document.querySelector('.graph-svg > g').getAttribute('transform'))
+console.log('复位视图生效:', t2 === 'translate(0,0) scale(1)' || t2 === null || t2 === 'translate(0,0)', '|', t2)
+
+// 8. 挑战页环形进度
 await page.click('nav button:has-text("非遗挑战")')
 await page.waitForTimeout(1600)
 await shot('新-挑战-环形进度')

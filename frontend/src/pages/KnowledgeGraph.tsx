@@ -43,8 +43,15 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
   const [detail, setDetail] = useState<HeritageDetail | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
-  /** 由 d3 effect 注册：同步节点选中光环（面板内点击也会高亮图上节点） */
-  const ringRef = useRef<(id: string | null) => void>(() => {})
+  /** 已隐藏的节点类型（图例开关），ref 供 d3 读取、state 驱动图例样式 */
+  const [hidden, setHidden] = useState<string[]>([])
+  const hiddenRef = useRef<Set<string>>(new Set())
+  /** d3 effect 注册：重算高亮/显隐（hover、选中、图例切换共用） */
+  const applyRef = useRef<() => void>(() => {})
+  /** 缩放控件（＋ − 复位） */
+  const zoomRef = useRef<{ in: () => void; out: () => void; reset: () => void } | null>(null)
+  /** hover 中的节点 id：effect 内读它，避免 exhaustive-deps */
+  const hoverIdRef = useRef<string | null>(null)
   /** 当前选中节点 id：effect 内读它而非闭包里的 selected，避免 exhaustive-deps */
   const selectedIdRef = useRef<string | null>(null)
 
@@ -67,6 +74,21 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
     }))
     const links: SimLink[] = data.links.map((l) => ({ ...l }))
 
+    // 邻接表：hover/选中高亮时用它找出该节点的所有关联。
+    // 此刻 source/target 还是字符串 id（forceLink 尚未跑），用 idOf 兼容两种形态
+    const idOf = (v: string | SimNode) => (typeof v === 'string' ? v : v.id)
+    const typeById = new Map<string, string>()
+    const neighbors = new Map<string, Set<string>>()
+    for (const n of nodes) typeById.set(n.id, n.type)
+    for (const l of links) {
+      const s = idOf(l.source)
+      const t = idOf(l.target)
+      if (!neighbors.has(s)) neighbors.set(s, new Set())
+      if (!neighbors.has(t)) neighbors.set(t, new Set())
+      neighbors.get(s)!.add(t)
+      neighbors.get(t)!.add(s)
+    }
+
     const rootG = svg.append('g')
 
     // 滚轮缩放 + 拖空白平移（节点自身拖拽不受影响）
@@ -75,6 +97,14 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
       .scaleExtent([0.35, 3])
       .on('zoom', (event) => rootG.attr('transform', event.transform))
     svg.call(zoom).on('dblclick.zoom', null)
+    // 重建画布时回到初始视图，避免沿用上一视图的缩放态造成跳变
+    svg.call(zoom.transform as never, d3.zoomIdentity)
+
+    zoomRef.current = {
+      in: () => svg.transition().duration(240).call(zoom.scaleBy as never, 1.4),
+      out: () => svg.transition().duration(240).call(zoom.scaleBy as never, 1 / 1.4),
+      reset: () => svg.transition().duration(320).call(zoom.transform as never, d3.zoomIdentity),
+    }
 
     const sim = d3
       .forceSimulation(nodes)
@@ -161,9 +191,51 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
       selectNode(d)
     })
 
-    // 注册选中光环同步：面板内点击也能点亮对应节点
-    ringRef.current = (id) => node.classed('g-selected', (d) => d.id === id)
-    ringRef.current(selectedIdRef.current)
+    /** 高亮/显隐总控：hover 或选中某节点时点亮其邻居、淡出无关；并应用图例隐藏 */
+    function applyState() {
+      const focus = hoverIdRef.current ?? selectedIdRef.current
+      const hid = hiddenRef.current
+      const keep = focus ? new Set([focus, ...(neighbors.get(focus) ?? [])]) : null
+
+      node
+        .style('display', (d) => (hid.has(d.type) ? 'none' : null))
+        .classed('g-dim', (d) => (keep ? !keep.has(d.id) : false))
+        .classed('g-selected', (d) => d.id === selectedIdRef.current)
+
+      link
+        .style('display', (d) => {
+          return hid.has(typeById.get(idOf(d.source))!) ||
+            hid.has(typeById.get(idOf(d.target))!)
+            ? 'none'
+            : null
+        })
+        .classed('g-dim', (d) => {
+          if (!keep) return false
+          // 只要有一端不在高亮子图里，这条边就属于"无关"
+          return !keep.has(idOf(d.source)) || !keep.has(idOf(d.target))
+        })
+
+      relLabel.style('display', (d) => {
+        if (!focusId) return 'none'
+        return hid.has(typeById.get(idOf(d.source))!) ||
+          hid.has(typeById.get(idOf(d.target))!)
+          ? 'none'
+          : null
+      })
+    }
+
+    node
+      .on('mouseenter', (_event, d) => {
+        hoverIdRef.current = d.id
+        applyState()
+      })
+      .on('mouseleave', () => {
+        hoverIdRef.current = null
+        applyState()
+      })
+
+    applyRef.current = applyState
+    applyState()
 
     sim.on('tick', () => {
       link
@@ -179,7 +251,8 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
 
     return () => {
       sim.stop()
-      ringRef.current = () => {}
+      applyRef.current = () => {}
+      zoomRef.current = null
     }
   }, [data, focusId])
 
@@ -191,14 +264,24 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
     if (d.type === 'heritage') {
       fetchHeritageDetail(d.id).then(setDetail).catch(() => setDetail(null))
     }
-    ringRef.current(d.id)
+    applyRef.current()
   }
 
   function deselect() {
     selectedIdRef.current = null
     setSelected(null)
     setDetail(null)
-    ringRef.current(null)
+    applyRef.current()
+  }
+
+  /** 图例开关：隐藏/显示某类节点（不重建模拟，位置不跳） */
+  function toggleType(type: string) {
+    const next = new Set(hiddenRef.current)
+    if (next.has(type)) next.delete(type)
+    else next.add(type)
+    hiddenRef.current = next
+    setHidden([...next])
+    applyRef.current()
   }
 
   async function focusNode(id: string) {
@@ -250,13 +333,18 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
     <div className="graph-page">
       <header className="graph-header">
         <h1>非遗知识图谱</h1>
-        <p>点击节点查看内容 · 主按钮进入对应页面 · 拖拽调整布局 · 滚轮缩放、拖空白平移</p>
+        <p>悬停高亮关联 · 点击节点查看内容并进入对应页面 · 拖拽调整布局 · 滚轮或右侧按钮缩放 · 点图例可隐藏类型</p>
         <div className="graph-legend">
           {Object.entries(TYPE_LABEL).map(([type, label]) => (
-            <span key={type}>
+            <button
+              key={type}
+              className={`graph-legend-item ${hidden.includes(type) ? 'is-off' : ''}`}
+              onClick={() => toggleType(type)}
+              title={hidden.includes(type) ? `显示${label}` : `隐藏${label}`}
+            >
               <i style={{ background: TYPE_COLOR[type] }} />
               {label}
-            </span>
+            </button>
           ))}
           {focusId && (
             <button className="graph-reset" onClick={resetView}>
@@ -273,6 +361,19 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
       {error && <div className="graph-error">{error}</div>}
       {!data && !error && <div className="graph-loading">图谱加载中…</div>}
       <svg ref={svgRef} className="graph-svg" />
+
+      {/* 缩放控件 */}
+      <div className="graph-zoom">
+        <button onClick={() => zoomRef.current?.in()} title="放大">
+          ＋
+        </button>
+        <button onClick={() => zoomRef.current?.out()} title="缩小">
+          －
+        </button>
+        <button onClick={() => zoomRef.current?.reset()} title="复位视图">
+          ⤢
+        </button>
+      </div>
 
       {selected && (
         <div className="graph-detail">

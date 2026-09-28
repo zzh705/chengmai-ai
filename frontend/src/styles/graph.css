@@ -47,8 +47,34 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  margin-right: 5px;
   vertical-align: middle;
+}
+/* 图例项：点击隐藏/显示该类型节点 */
+.graph-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 11px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.graph-legend-item:hover {
+  border-color: rgba(232, 197, 107, 0.5);
+  background: rgba(255, 255, 255, 0.05);
+}
+.graph-legend-item.is-off {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+.graph-legend-item.is-off i {
+  filter: grayscale(1);
 }
 .graph-reset {
   padding: 4px 12px;
@@ -70,12 +96,43 @@
   min-height: 0;
 }
 
+/* 缩放控件：左侧垂直居中，避开右下角详情面板 */
+.graph-zoom {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 5;
+}
+.graph-zoom button {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #3a332c;
+  border-radius: 9px;
+  background: rgba(27, 23, 19, 0.85);
+  backdrop-filter: blur(4px);
+  color: #c9bfae;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.graph-zoom button:hover {
+  border-color: #e8c56b;
+  color: #e8c56b;
+  transform: translateX(2px);
+}
+
 .g-link {
   stroke-width: 1.2px;
   opacity: 0.65;
   /* 连线流动：虚线沿方向滚动，图谱整体有"呼吸感" */
   stroke-dasharray: 5 5;
   animation: g-flow 1.6s linear infinite;
+  transition: opacity 0.2s ease;
 }
 @keyframes g-flow {
   to {
@@ -85,12 +142,23 @@
 
 .g-node {
   cursor: pointer;
-  animation: g-fade 0.5s ease both;
+  /* backwards：入场后把 opacity 交还给 CSS，g-dim 才能生效 */
+  animation: g-fade 0.5s ease backwards;
+  transition: opacity 0.2s ease;
 }
 @keyframes g-fade {
   from {
     opacity: 0;
   }
+}
+
+/* hover/选中时淡出无关节点与连线，突出关系子图 */
+.g-node.g-dim {
+  opacity: 0.12;
+}
+.g-link.g-dim {
+  opacity: 0.05;
+  stroke-dasharray: 2 6;
 }
 
 .g-node > circle {

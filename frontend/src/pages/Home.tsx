@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { fetchHeritageList, type HeritageSummary } from '../api/heritage'
 import { fetchProfile, type Profile } from '../api/progress'
+import { extractProvince } from '../utils/geo'
 import '../styles/home.css'
 
 interface Props {
@@ -29,10 +30,13 @@ export default function Home({ onNavigate }: Props) {
   const featured = list[dayIndex]
   const recommended = list.slice(0).filter((h) => h !== featured).slice(0, 3)
 
-  // 地域探索：按 region 聚合
+  // 地域探索：region 描述五花八门（含省市、含流派说明），按省份归一聚合
   const regions = useMemo(() => {
     const m = new Map<string, number>()
-    list.forEach((h) => m.set(h.region, (m.get(h.region) ?? 0) + 1))
+    list.forEach((h) => {
+      const p = extractProvince(h.region)
+      m.set(p, (m.get(p) ?? 0) + 1)
+    })
     return [...m.entries()].sort((a, b) => b[1] - a[1])
   }, [list])
 
@@ -115,7 +119,7 @@ export default function Home({ onNavigate }: Props) {
           <h2>🗺️ 地域探索</h2>
           <div className="home-regions">
             {regions.map(([r, n]) => (
-              <button key={r} onClick={() => onNavigate('knowledge', `kw:${r.split('（')[0]}`)}>
+              <button key={r} onClick={() => onNavigate('knowledge', `kw:${r}`)}>
                 {r} <em>{n}</em>
               </button>
             ))}
