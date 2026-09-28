@@ -7,6 +7,15 @@ export interface HeritageSummary {
   region: string
   level: string
   image: string
+  /** 一句话悬念钩子（卡片展示） */
+  hook: string
+}
+
+/** 详情页数字亮点 */
+export interface WowNumber {
+  value: number
+  suffix: string
+  label: string
 }
 
 export async function fetchHeritageList(): Promise<HeritageSummary[]> {
@@ -23,6 +32,10 @@ export interface HeritageDetail extends HeritageSummary {
   representative_works: string[]
   representative_inheritors: string[]
   sources: { id: string; title: string; publisher: string; url: string; reliability_level: string }[]
+  /** 冷知识（详情页"你知道吗"卡片） */
+  fun_facts: string[]
+  /** 数字亮点 */
+  wow_numbers: WowNumber[]
 }
 
 export async function fetchHeritageDetail(id: string): Promise<HeritageDetail> {

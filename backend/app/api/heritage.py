@@ -19,6 +19,7 @@ def list_heritage() -> list[HeritageSummary]:
             region=item["region"],
             level=item["level"],
             image=f"images/heritage/{item['id']}.jpg",
+            hook=item.get("hook", ""),
         )
         for item in _load_items()
     ]

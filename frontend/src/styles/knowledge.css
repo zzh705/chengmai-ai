@@ -127,10 +127,24 @@
   color: #c9bfae;
   margin-bottom: 4px;
 }
-.kb-card-region {
-  font-size: 12px;
-  color: #9a8f80;
+/* 卡片悬念钩子：让人忍不住点进去 */
+.kb-card-hook {
+  font-size: 12.5px;
+  font-style: italic;
+  line-height: 1.55;
+  color: #a89a84;
   margin-bottom: 8px;
+  padding-left: 8px;
+  border-left: 2px solid #b03a2e;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.2s;
+}
+.kb-card:hover .kb-card-hook {
+  color: #e8c56b;
 }
 .kb-card-level {
   font-size: 11px;
@@ -243,4 +257,144 @@
 .kb-sources li {
   color: #b6ab9a;
   font-size: 13px;
+}
+
+/* 悬念钩子大字 */
+.kb-hook {
+  text-align: center;
+  font-size: 23px;
+  line-height: 1.7;
+  letter-spacing: 1px;
+  color: #f3ece2;
+  padding: 24px 22px;
+  margin: 0 0 14px;
+  background:
+    radial-gradient(120px 60px at 0% 0%, rgba(232, 197, 107, 0.12), transparent),
+    linear-gradient(135deg, rgba(232, 197, 107, 0.06), rgba(176, 58, 46, 0.1));
+  border: 1px solid rgba(232, 197, 107, 0.4);
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+  animation: hookIn 0.7s ease 0.1s backwards;
+}
+@keyframes hookIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* 数字亮点条：滚动计数的大字 */
+.kb-wow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.kb-wow-item {
+  background: #1b1713;
+  border: 1px solid #2e2823;
+  border-radius: 12px;
+  padding: 16px 8px;
+  text-align: center;
+  animation: riseIn 0.5s ease backwards;
+}
+.kb-wow-item:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.kb-wow-item:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.kb-wow-item em {
+  display: block;
+  font-style: normal;
+  font-size: 33px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #e8c56b;
+}
+.kb-wow-item em i {
+  font-style: normal;
+  font-size: 14px;
+  font-weight: 600;
+  margin-left: 3px;
+  color: #c9a85c;
+}
+.kb-wow-item span {
+  display: block;
+  font-size: 11.5px;
+  color: #9a8f80;
+  margin-top: 6px;
+}
+
+/* 冷知识卡：你知道吗 */
+.kb-facts {
+  background: linear-gradient(140deg, #1d1810 0%, #241a12 55%, #1a1512 100%);
+  border: 1px solid rgba(232, 197, 107, 0.4);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 26px rgba(232, 197, 107, 0.07);
+}
+.kb-facts::before {
+  content: '';
+  position: absolute;
+  top: -44px;
+  right: -44px;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle, rgba(232, 197, 107, 0.16), transparent 70%);
+  pointer-events: none;
+}
+.kb-facts-title {
+  font-size: 15px;
+  color: #e8c56b;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+}
+.kb-facts ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.kb-facts li {
+  display: flex;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: #e6ddcd;
+  animation: factIn 0.5s ease backwards;
+}
+@keyframes factIn {
+  from {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+}
+.kb-facts-dot {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #b03a2e;
+  color: #f7ead2;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 3px;
+}
+@media (max-width: 720px) {
+  .kb-hook {
+    font-size: 18px;
+    padding: 18px 14px;
+  }
+  .kb-wow-item em {
+    font-size: 25px;
+  }
 }

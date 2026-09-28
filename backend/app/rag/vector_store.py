@@ -20,7 +20,7 @@ _vectors: np.ndarray | None = None
 
 
 def _make_chunks(items: list[dict]) -> list[dict]:
-    """把每个非遗项目切成 3 块：描述 / 技艺 / 文化内涵（RAG 的检索单元）。"""
+    """把每个非遗项目切块：简介 / 技艺 / 文化内涵 / 冷知识（RAG 检索单元）。"""
     chunks = []
     for item in items:
         for field, label in [
@@ -38,6 +38,21 @@ def _make_chunks(items: list[dict]) -> list[dict]:
                         "text": text,
                     }
                 )
+        # 冷知识块：钩子 + fun_facts（让"有什么冷知识"类提问能命中）
+        facts = item.get("fun_facts") or []
+        if facts:
+            hook = item.get("hook", "")
+            text = "\n".join(f"· {x}" for x in facts)
+            if hook:
+                text = f"· {hook}\n{text}"
+            chunks.append(
+                {
+                    "item_id": item["id"],
+                    "item_name": item["name"],
+                    "label": "冷知识",
+                    "text": text,
+                }
+            )
     return chunks
 
 

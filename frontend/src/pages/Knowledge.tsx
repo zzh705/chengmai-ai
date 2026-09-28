@@ -4,12 +4,38 @@ import {
   fetchHeritageList,
   type HeritageDetail,
   type HeritageSummary,
+  type WowNumber,
 } from '../api/heritage'
 import Cover from '../components/Cover'
 import '../styles/knowledge.css'
 
 interface Credit {
   license?: string
+}
+
+/** 数字亮点：挂载后 0 → value 缓动滚动（easeOutCubic） */
+function WowNum({ value, suffix, label }: WowNumber) {
+  const [n, setN] = useState(0)
+  useEffect(() => {
+    let raf = 0
+    const t0 = performance.now()
+    const tick = (t: number) => {
+      const p = Math.min(1, (t - t0) / 900)
+      setN(Math.round(value * (1 - Math.pow(1 - p, 3))))
+      if (p < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [value])
+  return (
+    <div className="kb-wow-item">
+      <em>
+        {n}
+        <i>{suffix}</i>
+      </em>
+      <span>{label}</span>
+    </div>
+  )
 }
 
 export default function Knowledge({ openParam }: { openParam?: string }) {
@@ -87,10 +113,38 @@ export default function Knowledge({ openParam }: { openParam?: string }) {
             {detail.category} · {detail.region} · {detail.era}
           </div>
 
+          {/* 悬念钩子：详情页第一记视觉重拳 */}
+          {detail.hook && <div className="kb-hook">「{detail.hook}」</div>}
+
+          {/* 数字亮点：滚动计数大字 */}
+          {detail.wow_numbers.length > 0 && (
+            <div className="kb-wow">
+              {detail.wow_numbers.map((w, i) => (
+                <WowNum key={i} {...w} />
+              ))}
+            </div>
+          )}
+
           <section>
             <h3>项目简介</h3>
             <p>{detail.description}</p>
           </section>
+
+          {/* 冷知识：让人好奇的"你知道吗" */}
+          {detail.fun_facts.length > 0 && (
+            <div className="kb-facts">
+              <div className="kb-facts-title">💡 你知道吗</div>
+              <ul>
+                {detail.fun_facts.map((f, i) => (
+                  <li key={i} style={{ animationDelay: `${0.15 + i * 0.14}s` }}>
+                    <span className="kb-facts-dot">{i + 1}</span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           <section>
             <h3>文化内涵</h3>
             <p>{detail.cultural_meaning}</p>
@@ -163,8 +217,10 @@ export default function Knowledge({ openParam }: { openParam?: string }) {
             <Cover item={h} className="kb-card-cover" />
             <div className="kb-card-body">
               <div className="kb-card-name">{h.name}</div>
-              <div className="kb-card-cat">{h.category}</div>
-              <div className="kb-card-region">{h.region.split('（')[0]}</div>
+              {h.hook && <div className="kb-card-hook">{h.hook}</div>}
+              <div className="kb-card-cat">
+                {h.category.split(' · ')[0]} · {h.region.split('（')[0]}
+              </div>
               <div className="kb-card-level">{h.level}</div>
             </div>
           </div>

@@ -50,6 +50,24 @@ const kwValue = await page.inputValue('.kb-header input')
 console.log('knowledge keyword prefilled:', kwValue, 'cards:', await page.locator('.kb-card').count())
 await shot('新-知识库-类别筛选')
 
+// 2b. 知识库：卡片悬念钩子 + 详情三件套（钩子大字/数字滚动/你知道吗）
+const hooked = await page.locator('.kb-card-hook').count()
+const cardTotal = await page.locator('.kb-card').count()
+console.log('kb hook on cards:', hooked, '/', cardTotal)
+await page.click('.kb-card >> nth=0')
+await page.waitForSelector('.kb-hook', { timeout: 5000 })
+await page.waitForTimeout(1300)
+const freshDetail = await page.evaluate(() => ({
+  hook: document.querySelector('.kb-hook')?.textContent?.trim().slice(0, 24) ?? '',
+  wow: [...document.querySelectorAll('.kb-wow-item em')].map((e) => e.textContent.trim()),
+  facts: document.querySelectorAll('.kb-facts li').length,
+  factsTitle: document.querySelector('.kb-facts-title')?.textContent?.trim() ?? '',
+}))
+console.log('detail fresh:', JSON.stringify(freshDetail))
+await shot('新-知识库-详情三件套')
+await page.click('.kb-back')
+await page.waitForSelector('.kb-cards', { timeout: 3000 })
+
 // 3. 图谱：地域节点 → 去地图
 await page.click('nav button:has-text("知识图谱")')
 await page.waitForSelector('g.g-node', { timeout: 8000 })
