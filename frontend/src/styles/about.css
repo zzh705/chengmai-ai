@@ -43,7 +43,7 @@
   margin: 14px auto;
   background: #1b1713;
   border: 1px solid #2e2823;
-  border-radius: 14px;
+  border-radius: 12px;
   padding: 20px 24px;
   scroll-margin-top: 64px;
 }
@@ -214,7 +214,6 @@
 .ab-list li {
   background: #14110f;
   border: 1px solid #2e2823;
-  border-left: 3px solid #b03a2e;
   border-radius: 8px;
   padding: 11px 14px;
   font-size: 13.5px;

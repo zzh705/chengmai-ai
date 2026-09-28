@@ -74,7 +74,7 @@ export default function About() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
-  const num = (v: number) => (ready ? String(v) : '—')
+  const num = (v: number) => (ready ? String(v) : '0')
 
   return (
     <div className="ab-page" ref={rootRef}>
@@ -103,19 +103,19 @@ export default function About() {
         </p>
         <div className="ab-nums">
           <div>
-            <em>{ready ? <CountUp value={stat.items} /> : "—"}</em>
+            <em>{ready ? <CountUp value={stat.items} /> : "0"}</em>
             <span>国家级非遗项目</span>
           </div>
           <div>
-            <em>{ready ? <CountUp value={stat.provs} /> : "—"}</em>
+            <em>{ready ? <CountUp value={stat.provs} /> : "0"}</em>
             <span>覆盖省级行政区</span>
           </div>
           <div>
-            <em>{ready ? <CountUp value={stat.nodes} /> : "—"}</em>
+            <em>{ready ? <CountUp value={stat.nodes} /> : "0"}</em>
             <span>图谱节点</span>
           </div>
           <div>
-            <em>{ready ? <CountUp value={stat.links} /> : "—"}</em>
+            <em>{ready ? <CountUp value={stat.links} /> : "0"}</em>
             <span>知识关系</span>
           </div>
         </div>
@@ -128,7 +128,7 @@ export default function About() {
             <strong>可溯源</strong>
             <span>
               回答必附来源与证据分，知识库逐条标注中国非物质文化遗产网、UNESCO
-              等权威出处——先解决“信不信”，再谈“好不好玩”。
+              等权威出处：先解决“信不信”，再谈“好不好玩”。
             </span>
           </div>
           <div>
@@ -179,7 +179,7 @@ export default function About() {
             ↓
           </div>
           <div className="ab-flow-row">
-            <span className="ab-flow-node out">结构化知识库 · 来源库 · 用户进度</span>
+            <span className="ab-flow-node out">结构化知识库、来源库、用户进度</span>
           </div>
         </div>
         <p className="ab-flow-note">
@@ -318,7 +318,7 @@ export default function About() {
           </li>
           <li>
             <span className="tl-when">阶段三</span>
-            <strong>图谱 · 地图 · 视觉语言</strong>
+            <strong>图谱、地图、视觉语言</strong>
             <span>知识图谱与跨页联动、非遗地图可视化、回纹金线中国风设计体系</span>
           </li>
           <li>

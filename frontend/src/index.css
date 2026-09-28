@@ -11,6 +11,7 @@ body {
 
 #root {
   height: 100vh;
+  height: 100dvh;
 }
 
 .app-shell {
@@ -289,6 +290,18 @@ body {
   color: #fff;
 }
 
+/* 桌面窄宽（1024-1240）：收紧导航间距，保证 10 项仍在单行内（不折行） */
+@media (max-width: 1240px) {
+  .app-nav button {
+    padding: 6px 10px;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+  .app-nav-links {
+    gap: 4px;
+  }
+}
+
 @media (max-width: 720px) {
   .app-nav {
     flex-wrap: wrap;
@@ -359,11 +372,9 @@ body {
 .app-shell.entered .home-hero .home-chips {
   animation: heroEnter 0.75s cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
 }
-/* h1/印章自带循环动画（heroShine/sealGlow），与入场动画复合列出，避免被覆盖 */
+/* h1 入场延迟单独微调（渐变流光已按反 AI-tell 规则改为纯色） */
 .app-shell.entered .home-hero h1 {
-  animation:
-    heroEnter 0.75s cubic-bezier(0.2, 0.8, 0.3, 1) 0.12s backwards,
-    heroShine 5s linear 0.87s infinite;
+  animation: heroEnter 0.75s cubic-bezier(0.2, 0.8, 0.3, 1) 0.12s backwards;
 }
 .app-shell.entered .home-hero .home-seal {
   animation:

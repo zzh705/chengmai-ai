@@ -100,9 +100,13 @@ export default function Home({ onNavigate, entered = true }: Props) {
         </div>
         <div className="home-seal">承脉</div>
         <h1>让千年非遗，被这一代人接住</h1>
-        <p className="home-slogan">
-          CHENGMAI · 非遗多智能体系统 —— 检索问答 · 知识图谱 · 学习路径 · 活化创作
-        </p>
+        <p className="home-slogan">CHENGMAI · 非遗多智能体系统</p>
+        <div className="home-slogan-feats" aria-label="核心功能">
+          <span>检索问答</span>
+          <span>知识图谱</span>
+          <span>学习路径</span>
+          <span>活化创作</span>
+        </div>
 
         <div className="home-ask">
           <input
@@ -161,7 +165,10 @@ export default function Home({ onNavigate, entered = true }: Props) {
             <div className="home-today-main">
               <h3>{featured.name}</h3>
               <p>
-                {featured.category} · {featured.region} · {featured.level}
+                <span>{featured.category}</span>
+                <span>
+                  {featured.region} · {featured.level}
+                </span>
               </p>
             </div>
             <span className="home-today-cta">查看详情 →</span>
@@ -304,7 +311,7 @@ export default function Home({ onNavigate, entered = true }: Props) {
             <strong>
               {profile && profile.quiz.answered > 0
                 ? `${Math.round(profile.quiz.accuracy * 100)}%`
-                : '—'}
+                : '0%'}
             </strong>
             <span>测验正确率</span>
           </div>
@@ -319,7 +326,7 @@ export default function Home({ onNavigate, entered = true }: Props) {
       </section>
 
       <footer className="home-footer">
-        承脉 AI · 非遗多智能体系统 —— 面向文化理解与传播的 AI Agent 设计
+        承脉 AI · 非遗多智能体系统，面向文化理解与传播的 AI Agent 设计
       </footer>
     </div>
   )

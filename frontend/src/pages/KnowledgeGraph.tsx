@@ -333,7 +333,7 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
     <div className="graph-page">
       <header className="graph-header">
         <h1>非遗知识图谱</h1>
-        <p>悬停高亮关联 · 点击节点查看内容并进入对应页面 · 拖拽调整布局 · 滚轮或右侧按钮缩放 · 点图例可隐藏类型</p>
+        <p>悬停高亮关联；点击节点查看内容并进入对应页面；拖拽调整布局；滚轮或右侧按钮缩放；点图例可隐藏类型</p>
         <div className="graph-legend">
           {Object.entries(TYPE_LABEL).map(([type, label]) => (
             <button

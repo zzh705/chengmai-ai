@@ -130,7 +130,7 @@ export default function Lab() {
     <div className="lab-page" ref={rootRef}>
       <header className="lab-header">
         <h1>非遗活化实验室</h1>
-        <p>先检索传统文化依据，再生成现代化方案 —— 创新不越界</p>
+        <p>先检索传统文化依据，再生成现代化方案：创新不越界</p>
       </header>
 
       <div className="lab-form">

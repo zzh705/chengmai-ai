@@ -166,7 +166,7 @@ export default function Path() {
 
           <div className="path-progress">
             <div className="path-progress-bar">
-              <div className="path-progress-fill" style={{ width: `${progress.pct}%` }} />
+              <div className="path-progress-fill" style={{ '--x': progress.pct / 100 } as React.CSSProperties} />
             </div>
             <span>
               已完成 {progress.done}/{progress.total} 项（{progress.pct}%）

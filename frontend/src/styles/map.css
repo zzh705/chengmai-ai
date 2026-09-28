@@ -92,7 +92,7 @@
 }
 .map-filters button em {
   font-style: normal;
-  color: #6e655a;
+  color: #a89a86; /* AA: 小字需 4.5:1，原 #6e655a 在深色底仅 ~3.1 */
   margin-left: 3px;
 }
 .map-filters button:hover {

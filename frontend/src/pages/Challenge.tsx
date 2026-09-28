@@ -150,7 +150,7 @@ export default function Challenge({ onNavigate }: Props) {
       <div className="ch-hero">
         <div className="ch-ring" style={{ '--pct': shownPct } as React.CSSProperties}>
           <div className="ch-ring-inner">
-            <strong>{quiz.answered > 0 ? `${pct}%` : '—'}</strong>
+            <strong>{quiz.answered > 0 ? `${pct}%` : '0%'}</strong>
             <span>正确率</span>
           </div>
         </div>
@@ -179,7 +179,7 @@ export default function Challenge({ onNavigate }: Props) {
               <span>{rank.exp} EXP</span>
             </div>
             <div className="ch-rank-bar">
-              <i style={{ width: `${rankShown}%` }} />
+              <i style={{ '--x': rankShown / 100 } as React.CSSProperties} />
             </div>
           </div>
         )}
@@ -199,7 +199,7 @@ export default function Challenge({ onNavigate }: Props) {
         <div className="ch-daily-body">
           {!q && !qLoading && !qError && (
             <p className="ch-daily-hint">
-              今日主题「{dailyTopic}」—— 点右上角抽题，AI 从知识库现场出题，答完立即判分并计入档案。
+              今日主题「{dailyTopic}」：点右上角抽题，AI 从知识库现场出题，答完立即判分并计入档案。
             </p>
           )}
           {qLoading && (
@@ -265,7 +265,7 @@ export default function Challenge({ onNavigate }: Props) {
                 <span className="ch-badge-flag">已解锁</span>
               ) : (
                 <div className="ch-badge-prog">
-                  <i style={{ width: `${b.pct}%` }} />
+                  <i style={{ '--x': b.pct / 100 } as React.CSSProperties} />
                   <span>{b.pct}%</span>
                 </div>
               )}
@@ -283,7 +283,7 @@ export default function Challenge({ onNavigate }: Props) {
             <div key={t.topic} className="ch-topic">
               <span className="ch-topic-name">{t.topic}</span>
               <div className="ch-topic-bar">
-                <div className="ch-topic-fill" style={{ width: `${t.accuracy * 100}%` }} />
+                <div className="ch-topic-fill" style={{ '--x': t.accuracy } as React.CSSProperties} />
               </div>
               <span className="ch-topic-stat">
                 {Math.round(t.accuracy * 100)}% · {t.correct}/{t.answered}

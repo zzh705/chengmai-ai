@@ -122,7 +122,7 @@ export default function ProfilePage() {
             <span>{rank.pct}%</span>
           </div>
           <div className="pf-hero-exp-bar">
-            <i style={{ width: `${rankShown}%` }} />
+            <i style={{ '--x': rankShown / 100 } as React.CSSProperties} />
           </div>
         </div>
       </div>
@@ -145,9 +145,9 @@ export default function ProfilePage() {
             {profile.quiz.answered > 0 ? (
               <CountUp value={Math.round(profile.quiz.accuracy * 100)} />
             ) : (
-              '—'
+              '0'
             )}
-            {profile.quiz.answered > 0 && '%'}
+            %
           </strong>
           <span>测验正确率（{profile.quiz.answered} 题）</span>
         </div>
