@@ -18,6 +18,8 @@ export interface Profile {
   quiz_by_topic: { topic: string; answered: number; correct: number; accuracy: number }[]
   creations: { topic: string; ts: string }[]
   interests: { category: string; count: number }[]
+  /** 最近足迹（新的在前），档案页时间轴用 */
+  recent_events: { type: string; name: string; ts: string }[]
 }
 
 /** 匿名用户 ID：首次生成后存 localStorage，保证档案可跨会话延续 */

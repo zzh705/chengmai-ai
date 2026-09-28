@@ -6,6 +6,7 @@ import {
   type HeritageSummary,
   type WowNumber,
 } from '../api/heritage'
+import { recordProgress } from '../api/progress'
 import Cover from '../components/Cover'
 import '../styles/knowledge.css'
 
@@ -65,6 +66,7 @@ export default function Knowledge({ openParam }: { openParam?: string }) {
       .then((d) => {
         if (cancelled) return
         setDetail(d)
+        recordProgress('view', { id: d.id, name: d.name })
         if (pageRef.current) pageRef.current.scrollTop = 0
       })
       .catch((e) => {
@@ -77,7 +79,9 @@ export default function Knowledge({ openParam }: { openParam?: string }) {
 
   async function open(id: string) {
     try {
-      setDetail(await fetchHeritageDetail(id))
+      const d = await fetchHeritageDetail(id)
+      setDetail(d)
+      recordProgress('view', { id: d.id, name: d.name })
       if (pageRef.current) pageRef.current.scrollTop = 0
     } catch (e) {
       setError(e instanceof Error ? e.message : '加载失败')

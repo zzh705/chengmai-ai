@@ -117,3 +117,202 @@
   height: 100%;
   background: linear-gradient(90deg, #b03a2e, #e8c56b);
 }
+
+/* 传承人名片卡 */
+.pf-hero-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  background:
+    radial-gradient(240px 120px at 0% 0%, rgba(232, 197, 107, 0.12), transparent),
+    linear-gradient(135deg, #1d1810 0%, #241a12 55%, #1a1512 100%);
+  border: 1px solid rgba(232, 197, 107, 0.45);
+  border-radius: 16px;
+  padding: 22px 26px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  animation: riseIn 0.6s ease backwards;
+}
+.pf-hero-seal {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border: 2px solid #b03a2e;
+  border-radius: 10px;
+  color: #b03a2e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  transform: rotate(-7deg);
+  box-shadow: 0 6px 18px rgba(176, 58, 46, 0.3);
+}
+.pf-hero-main {
+  flex: 1;
+  min-width: 0;
+}
+.pf-hero-lv {
+  display: inline-block;
+  font-size: 11.5px;
+  color: #14110f;
+  background: #e8c56b;
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.pf-hero-main h2 {
+  margin: 6px 0 4px;
+  font-size: 24px;
+  color: #f3ece2;
+  letter-spacing: 4px;
+}
+.pf-hero-main p {
+  margin: 0;
+  font-size: 12.5px;
+  color: #9a8f80;
+}
+.pf-hero-exp {
+  flex: none;
+  width: min(260px, 34%);
+}
+.pf-hero-exp-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: #c9a85c;
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
+.pf-hero-exp-bar {
+  height: 12px;
+  background: #14110f;
+  border: 1px solid #3a332c;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.pf-hero-exp-bar i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #8f3529, #e8c56b);
+  border-radius: 8px;
+  transition: width 0.9s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+@media (max-width: 720px) {
+  .pf-hero-card {
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 18px;
+  }
+  .pf-hero-exp {
+    width: 100%;
+  }
+}
+
+/* 足迹时间线 */
+.pf-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 6px;
+  position: relative;
+}
+.pf-timeline::before {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  background: linear-gradient(#e8c56b44, #b03a2e44);
+}
+.pf-timeline li {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 7px 0 7px 24px;
+  font-size: 12.5px;
+  animation: factIn 0.45s ease backwards;
+}
+.pf-tl-dot {
+  position: absolute;
+  left: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #14110f;
+  border: 2px solid #e8c56b;
+  transition: box-shadow 0.2s;
+}
+.pf-timeline li:hover .pf-tl-dot {
+  box-shadow: 0 0 10px rgba(232, 197, 107, 0.7);
+}
+.pf-tl-label {
+  color: #e8c56b;
+  border: 1px solid #e8c56b44;
+  border-radius: 999px;
+  padding: 1px 8px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.pf-tl-name {
+  color: #d8cfc0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pf-tl-ts {
+  color: #6e655a;
+  font-size: 11px;
+  white-space: nowrap;
+}
+@media (max-width: 720px) {
+  .pf-timeline li {
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+  }
+  .pf-tl-ts {
+    grid-column: 2;
+  }
+}
+
+/* 兴趣雷达图 */
+.pf-radar {
+  width: 100%;
+  max-width: 300px;
+  display: block;
+  margin: 0 auto;
+  animation: radarIn 0.7s ease;
+}
+@keyframes radarIn {
+  from {
+    opacity: 0;
+    transform: scale(0.7) rotate(-16deg);
+  }
+}
+.pf-radar-ring {
+  fill: none;
+  stroke: #3a332c;
+  stroke-width: 1;
+}
+.pf-radar-axis {
+  stroke: #3a332c;
+  stroke-width: 1;
+}
+.pf-radar-shape {
+  fill: rgba(232, 197, 107, 0.26);
+  stroke: #e8c56b;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 6px rgba(232, 197, 107, 0.35));
+}
+.pf-radar-label {
+  fill: #9a8f80;
+  font-size: 11px;
+}

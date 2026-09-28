@@ -47,7 +47,7 @@ def profile(user_id: str) -> dict:
         if et == "view" and e["item_id"]:
             v = viewed.setdefault(e["item_id"], {"item_id": e["item_id"], "name": e["item_name"], "count": 0})
             v["count"] += 1
-            category_counts[_category_of(e["item_id"])] += 1
+            category_counts[_category_of(e["item_id"]).split(" · ")[0]] += 1
         elif et == "learning_plan":
             plan_topics.append({"topic": e["item_name"], "ts": e["ts"]})
         elif et == "creation":
@@ -69,7 +69,7 @@ def profile(user_id: str) -> dict:
         [{"category": c, "count": n} for c, n in category_counts.items()],
         key=lambda x: x["count"],
         reverse=True,
-    )[:3]
+    )[:6]
 
     return {
         "user_id": user_id,
@@ -85,4 +85,9 @@ def profile(user_id: str) -> dict:
         "quiz_by_topic": sorted(quiz_by_topic.values(), key=lambda x: x["answered"], reverse=True),
         "creations": creations[-10:],
         "interests": interests,
+        # 最近足迹时间线（新的在前，档案页时间轴用）
+        "recent_events": [
+            {"type": e["event_type"], "name": e["item_name"] or "", "ts": e["ts"]}
+            for e in events[-12:]
+        ][::-1],
     }
