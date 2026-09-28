@@ -10,16 +10,18 @@ from app.utils.json_parse import extract_json
 _SYSTEM = (
     "你是「承脉 AI 活化实验室」的创意策划师。你必须先尊重传统文化语义，再谈创新。\n"
     "只输出 JSON，不要任何解释文字，格式：\n"
-    '{"title": "创意主题",'
+    '{"title": "创意主题", "slogan": "一句传播口号",'
     ' "traditional_elements": ["传统元素1"],'
     ' "modern_carrier": ["现代载体1"],'
     ' "spread_channels": ["传播方式1"],'
     ' "ai_parts": ["AI辅助部分1"],'
     ' "steps": ["可实施步骤1"],'
     ' "guardrails": ["不能随意改变的文化语义1"]}\n'
-    "要求：guardrails 必须基于检索资料明确指出该非遗的核心文化语义（如符号寓意、"
-    "工序禁忌）；steps 必须拆成 4-6 个独立数组元素（禁止合并成一条），每条不超过 50 字；"
-    "traditional_elements/modern_carrier/spread_channels/ai_parts 各 3-5 条。"
+    "要求：title 要有画面感与记忆点（可对仗、可悬念，18 字内）；slogan 不超过 16 字、"
+    "能直接印在海报/包装上；guardrails 必须基于检索资料明确指出该非遗的核心文化语义"
+    "（如符号寓意、工序禁忌）；steps 必须拆成 4-6 个独立数组元素（禁止合并成一条），"
+    "每条不超过 50 字；traditional_elements/modern_carrier/spread_channels/ai_parts 各 3-5 条，"
+    "每条具体到可执行（写明对象、场景或数量），禁止'加大宣传''提升影响'这类空话。"
 )
 
 _OUTPUT_HINT = {
@@ -47,11 +49,18 @@ def generate_creation(req: CreationRequest) -> tuple[CreationResult, list[str]]:
     items = knowledge_search(f"{req.heritage} {req.requirement}", top_k=2)
     context = ""
     if items:
-        context = "\n".join(
-            f"- {it['name']}：{it['description']}\n  文化内涵：{it['cultural_meaning']}\n  技艺：{it['craft_process']}"
-            for it in items
-        )
-        context = f"\n【知识库检索资料（必须依据）】\n{context}"
+        blocks = []
+        for it in items:
+            block = (
+                f"- {it['name']}：{it['description']}\n"
+                f"  文化内涵：{it['cultural_meaning']}\n  技艺：{it['craft_process']}"
+            )
+            if it.get("story"):
+                block += f"\n  一分钟讲述：{it['story']}"
+            if it.get("hook"):
+                block += f"\n  悬念钩子：{it['hook']}"
+            blocks.append(block)
+        context = f"\n【知识库检索资料（必须依据）】\n" + "\n".join(blocks)
 
     user_prompt = (
         f"非遗项目：{req.heritage}\n"
@@ -62,7 +71,8 @@ def generate_creation(req: CreationRequest) -> tuple[CreationResult, list[str]]:
         f"{context}\n"
         "流程：先从资料中提炼传统元素与不可改变的文化语义，再设计现代化落地方案。\n"
         "字段含义：\n"
-        "- title：一句话创意主题\n"
+        "- title：一句话创意主题（有画面感/记忆点）\n"
+        "- slogan：一句传播口号，≤16字，可直接印在海报上\n"
         "- traditional_elements：资料中该非遗的传统元素\n"
         "- modern_carrier：落地的现代载体（如校园活动/文创/小程序）\n"
         "- spread_channels：传播渠道\n"

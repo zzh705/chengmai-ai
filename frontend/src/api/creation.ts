@@ -2,6 +2,7 @@
 
 export interface CreationResult {
   title: string
+  slogan?: string
   traditional_elements: string[]
   modern_carrier: string[]
   spread_channels: string[]

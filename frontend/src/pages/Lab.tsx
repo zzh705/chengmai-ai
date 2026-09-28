@@ -237,6 +237,7 @@ export default function Lab() {
               {STYLES.find((x) => x.key === style)?.label}
             </span>
             <h2>{r.title}</h2>
+            {r.slogan && <div className="lab-slogan">「{r.slogan}」</div>}
             {result.sources.length > 0 && (
               <div className="lab-sources">文化依据 · {result.sources.join('、')}</div>
             )}

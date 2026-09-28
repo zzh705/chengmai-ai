@@ -13,6 +13,7 @@ class CreationRequest(BaseModel):
 
 class CreationResult(BaseModel):
     title: str = Field(description="创意主题")
+    slogan: str = Field(default="", description="一句传播口号（可直接印在物料上）")
     traditional_elements: list[str] = Field(default_factory=list, description="用到的传统元素")
     modern_carrier: list[str] = Field(default_factory=list, description="现代载体")
     spread_channels: list[str] = Field(default_factory=list, description="传播方式")
