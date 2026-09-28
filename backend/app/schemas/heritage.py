@@ -30,6 +30,7 @@ class HeritageDetail(BaseModel):
     sources: list[dict]
     # 新颖介绍三件套（老数据缺失时用默认值兜底）
     hook: str = ""
+    tier: str = "deep"  # deep=深读档案 / index=全国名录索引（前端按此降级展示）
     fun_facts: list[str] = []
     wow_numbers: list[dict] = []
     # 沉浸阅读：一分钟讲述 + 大事年表

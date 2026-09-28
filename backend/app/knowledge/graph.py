@@ -29,6 +29,31 @@ def _strip_paren(text: str) -> str:
     return "".join(out).strip()
 
 
+# 34 个省级行政区简称（与前端 geo.ts 同口径）
+_PROV_SHORT = [
+    "北京", "天津", "上海", "重庆",
+    "内蒙古", "广西", "西藏", "宁夏", "新疆", "香港", "澳门",
+    "河北", "山西", "辽宁", "吉林", "黑龙江",
+    "江苏", "浙江", "安徽", "福建", "江西", "山东",
+    "河南", "湖北", "湖南", "广东", "海南",
+    "四川", "贵州", "云南", "陕西", "甘肃", "青海",
+    "台湾",
+]
+
+
+def _norm_prov(text: str) -> str | None:
+    """把 region/province 描述归到省级简称。
+
+    名录里部分行的 province 字段是申报单位（企业/协会/剧团），
+    逐段扫描省份名可把这类行归位；实在找不到省份则返回 None（不进聚合）。
+    """
+    for seg in text.split("，"):
+        for p in _PROV_SHORT:
+            if p in seg:
+                return p
+    return None
+
+
 @lru_cache(maxsize=1)
 def _load_items() -> list[dict]:
     return json.loads((_DATA_DIR / "heritage_items.json").read_text(encoding="utf-8"))
@@ -109,10 +134,11 @@ def build_graph() -> dict:
     for item in _load_items():
         if item.get("tier") != "index":
             continue
-        prov = (item.get("province") or item.get("region", "")).split("，")[0].strip()
+        raw_prov = item.get("province") or item.get("region", "")
+        prov = _norm_prov(raw_prov)
         cat1 = item["category"].split("·")[0].strip()
         if not prov or not cat1:
-            continue
+            continue  # 申报单位是协会/企业等非地域行，无法归省则不进省级聚合
         prov_count[prov] = prov_count.get(prov, 0) + 1
         cat_count[cat1] = cat_count.get(cat1, 0) + 1
         pair_count[(cat1, prov)] = pair_count.get((cat1, prov), 0) + 1
