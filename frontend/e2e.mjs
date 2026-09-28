@@ -62,6 +62,10 @@ const freshDetail = await page.evaluate(() => ({
   wow: [...document.querySelectorAll('.kb-wow-item em')].map((e) => e.textContent.trim()),
   facts: document.querySelectorAll('.kb-facts li').length,
   factsTitle: document.querySelector('.kb-facts-title')?.textContent?.trim() ?? '',
+  story: document.querySelector('.kb-story p')?.textContent?.trim().length ?? 0,
+  storyTitle: document.querySelector('.kb-story-title')?.textContent?.trim() ?? '',
+  tlNodes: document.querySelectorAll('.kb-tl-node').length,
+  tlYears: [...document.querySelectorAll('.kb-tl-year')].map((e) => e.textContent.trim()),
 }))
 console.log('detail fresh:', JSON.stringify(freshDetail))
 await shot('新-知识库-详情三件套')

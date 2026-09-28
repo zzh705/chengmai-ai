@@ -31,3 +31,6 @@ class HeritageDetail(BaseModel):
     hook: str = ""
     fun_facts: list[str] = []
     wow_numbers: list[dict] = []
+    # 沉浸阅读：一分钟讲述 + 大事年表
+    story: str = ""
+    timeline: list[dict] = []

@@ -12,6 +12,11 @@ export interface HeritageSummary {
 }
 
 /** 详情页数字亮点 */
+export interface TimelineEvent {
+  year: string
+  event: string
+}
+
 export interface WowNumber {
   value: number
   suffix: string
@@ -34,6 +39,8 @@ export interface HeritageDetail extends HeritageSummary {
   sources: { id: string; title: string; publisher: string; url: string; reliability_level: string }[]
   /** 冷知识（详情页"你知道吗"卡片） */
   fun_facts: string[]
+  story: string
+  timeline: TimelineEvent[]
   /** 数字亮点 */
   wow_numbers: WowNumber[]
 }

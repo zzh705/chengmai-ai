@@ -38,6 +38,21 @@ def _make_chunks(items: list[dict]) -> list[dict]:
                         "text": text,
                     }
                 )
+        # 一分钟讲述 + 大事年表（叙事性检索块，"讲讲来龙去脉"类提问命中）
+        story = item.get("story", "")
+        if story:
+            tl = item.get("timeline") or []
+            if tl:
+                years = "；".join(f"{t.get('year', '')}：{t.get('event', '')}" for t in tl)
+                story = f"{story}\n大事年表：{years}"
+            chunks.append(
+                {
+                    "item_id": item["id"],
+                    "item_name": item["name"],
+                    "label": "一分钟认识",
+                    "text": story,
+                }
+            )
         # 冷知识块：钩子 + fun_facts（让"有什么冷知识"类提问能命中）
         facts = item.get("fun_facts") or []
         if facts:

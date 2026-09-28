@@ -131,6 +131,32 @@ export default function Knowledge({ openParam }: { openParam?: string }) {
             </div>
           )}
 
+          {/* 一分钟讲述：叙事性沉浸阅读 */}
+          {detail.story && (
+            <div className="kb-story reveal">
+              <div className="kb-story-title">
+                一分钟认识<span>{detail.name}</span>
+              </div>
+              <p>{detail.story}</p>
+            </div>
+          )}
+
+          {/* 大事年表：横向时间轴，节点逐个点亮 */}
+          {detail.timeline.length > 0 && (
+            <div className="kb-timeline reveal">
+              <div className="kb-timeline-title">大事年表</div>
+              <div className="kb-tl-track">
+                {detail.timeline.map((t, i) => (
+                  <div key={i} className="kb-tl-node" style={{ animationDelay: `${0.18 + i * 0.22}s` }}>
+                    <span className="kb-tl-year">{t.year}</span>
+                    <span className="kb-tl-dot" />
+                    <span className="kb-tl-event">{t.event}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <section className="reveal">
             <h3>项目简介</h3>
             <p>{detail.description}</p>
