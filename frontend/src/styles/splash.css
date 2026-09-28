@@ -1,0 +1,150 @@
+/* 开屏仪式动画 */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: radial-gradient(ellipse at center, #191410 0%, #0e0c0a 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  animation: splashOut 0.5s ease 2.9s forwards;
+}
+@keyframes splashOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+.splash-stage {
+  position: relative;
+  width: min(460px, 82vw);
+  height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 卷轴金线：从中心向两侧展开 */
+.splash-line {
+  position: absolute;
+  top: 96px;
+  left: 50%;
+  height: 2px;
+  width: 0;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, #e8c56b 15%, #e8c56b 85%, transparent);
+  animation: lineGrow 0.8s cubic-bezier(0.2, 0.9, 0.3, 1) 0.15s forwards;
+}
+@keyframes lineGrow {
+  to {
+    width: 100%;
+  }
+}
+
+/* 品牌字：由模糊收拢显现 */
+.splash-word {
+  font-size: 64px;
+  font-weight: 700;
+  letter-spacing: 26px;
+  text-indent: 26px;
+  color: #f3ece2;
+  opacity: 0;
+  filter: blur(10px);
+  transform: scale(1.15);
+  animation: wordIn 0.9s ease 0.75s forwards;
+}
+@keyframes wordIn {
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+}
+
+/* 印章：从高处落下盖章，落地轻震 */
+.splash-seal {
+  position: absolute;
+  top: 34px;
+  right: 40px;
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #b03a2e;
+  color: #f7ead2;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  border-radius: 7px;
+  opacity: 0;
+  transform: translateY(-70px) scale(1.9) rotate(-14deg);
+  box-shadow: 0 10px 30px rgba(176, 58, 46, 0.5);
+  animation: sealDrop 0.55s cubic-bezier(0.3, 1.4, 0.5, 1) 1.6s forwards;
+}
+@keyframes sealDrop {
+  60% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(-7deg);
+  }
+  78% {
+    transform: translateY(4px) scale(0.96) rotate(-7deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(-7deg);
+  }
+}
+
+/* 副标题 */
+.splash-sub {
+  margin-top: 74px;
+  font-size: 13px;
+  letter-spacing: 10px;
+  text-indent: 10px;
+  color: #9a8f80;
+  opacity: 0;
+  animation: subIn 0.7s ease 2.15s forwards;
+}
+@keyframes subIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.splash-skip {
+  position: absolute;
+  right: 26px;
+  bottom: 24px;
+  background: none;
+  border: 1px solid #3a332c;
+  color: #9a8f80;
+  font-size: 12.5px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0;
+  animation: subIn 0.5s ease 1.2s forwards;
+}
+.splash-skip:hover {
+  border-color: #e8c56b;
+  color: #e8c56b;
+}
+
+/* 星火粒子层（首页 Hero 背景） */
+.ember-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}

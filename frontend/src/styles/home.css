@@ -17,6 +17,11 @@
   padding: 56px 20px 30px;
   animation: homeFade 0.6s ease;
 }
+/* 星火粒子铺底：其余内容统一抬一层，保证文字可读 */
+.home-hero > *:not(.ember-canvas) {
+  position: relative;
+  z-index: 1;
+}
 /* 飘落花瓣（中国元素点缀） */
 .home-petals {
   position: absolute;

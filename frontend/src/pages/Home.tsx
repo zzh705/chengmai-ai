@@ -3,6 +3,7 @@ import { fetchHeritageList, type HeritageSummary } from '../api/heritage'
 import { fetchProfile, type Profile } from '../api/progress'
 import { extractProvince } from '../utils/geo'
 import Cover from '../components/Cover'
+import EmberCanvas from '../components/EmberCanvas'
 import '../styles/home.css'
 
 interface Props {
@@ -51,6 +52,7 @@ export default function Home({ onNavigate }: Props) {
     <div className="home-page">
       {/* Hero：品牌门面 */}
       <section className="home-hero">
+        <EmberCanvas />
         <div className="home-petals" aria-hidden>
           {Array.from({ length: 7 }, (_, i) => (
             <span key={i} />

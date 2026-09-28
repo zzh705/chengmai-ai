@@ -12,8 +12,12 @@ page.on('pageerror', (e) => errors.push(String(e)))
 
 const shot = async (name) => page.screenshot({ path: `/tmp/shots/${name}.png` })
 
-// 1. 首页动效 + 地域 chip 按省份归一
+// 1. 开屏仪式动画 → 跳过 → 首页动效 + 地域 chip 按省份归一
 await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
+const splashShown = await page.locator('.splash').count()
+await page.click('.splash-skip').catch(() => {})
+await page.waitForSelector('.splash', { state: 'detached', timeout: 4000 }).catch(() => {})
+console.log('开屏动画:', splashShown ? '已播放（点击可跳过）' : '未出现')
 await page.waitForTimeout(1200)
 await shot('新-首页')
 const chipTexts = await page.locator('.home-regions button').allTextContents()

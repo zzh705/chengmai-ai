@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Splash from './components/Splash'
 import About from './pages/About'
 import Chat from './pages/Chat'
 import Challenge from './pages/Challenge'
@@ -36,6 +37,8 @@ const NAV: { key: Page; label: string }[] = [
 ]
 
 function App() {
+  // 开屏仪式动画：App 挂载播一次（路由切换不重播），点击/跳过/3.4s 自动结束
+  const [splash, setSplash] = useState(true)
   const [page, setPage] = useState<Page>('home')
   const [chatQuery, setChatQuery] = useState<string | undefined>(undefined)
   const [kbParam, setKbParam] = useState<string | undefined>(undefined)
@@ -54,6 +57,7 @@ function App() {
 
   return (
     <div className="app-shell">
+      {splash && <Splash onDone={() => setSplash(false)} />}
       <nav className="app-nav">
         <span className="app-brand" onClick={() => navigate('home')}>
           承脉
