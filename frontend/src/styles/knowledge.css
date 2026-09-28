@@ -106,6 +106,22 @@
   color: #e8c56b;
   margin-bottom: 6px;
 }
+/* 首屏骨架卡：与 kb-card 同形状，数据到达前占位（shimmer 在 index.css 的 .skeleton） */
+.kb-card-skeleton {
+  cursor: default;
+  pointer-events: none;
+}
+.kb-skeleton-cover {
+  height: 132px;
+  border-radius: 0;
+}
+.kb-skeleton-line {
+  height: 12px;
+  margin-bottom: 9px;
+}
+.kb-skeleton-line:last-child {
+  margin-bottom: 0;
+}
 .kb-card-cat {
   font-size: 13px;
   color: #c9bfae;

@@ -145,6 +145,29 @@ body {
   user-select: none;
 }
 
+/* 骨架屏：数据到达前占位，避免首屏空白/跳动（全站共享） */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #1b1713 20%,
+    #2a241e 45%,
+    #352e26 50%,
+    #2a241e 55%,
+    #1b1713 80%
+  );
+  background-size: 220% 100%;
+  animation: skeletonShimmer 1.5s ease-in-out infinite;
+  border-radius: 8px;
+}
+@keyframes skeletonShimmer {
+  from {
+    background-position: 120% 0;
+  }
+  to {
+    background-position: -120% 0;
+  }
+}
+
 /* 滚动条 */
 ::-webkit-scrollbar {
   width: 9px;

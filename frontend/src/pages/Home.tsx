@@ -82,6 +82,30 @@ export default function Home({ onNavigate }: Props) {
 
       {error && <div className="home-error">⚠️ {error}</div>}
 
+      {/* 数据未到时的骨架占位：形状与真实区块一致，数据到达即无缝替换 */}
+      {list.length === 0 && !error && (
+        <>
+          <section className="home-section">
+            <h2>🌸 今日非遗</h2>
+            <div className="home-today skeleton home-skel-today" aria-hidden />
+          </section>
+          <section className="home-cols">
+            <div className="home-section">
+              <h2>✨ AI 推荐</h2>
+              <div className="home-recs" aria-hidden>
+                <div className="home-rec skeleton home-skel-rec" />
+                <div className="home-rec skeleton home-skel-rec" />
+                <div className="home-rec skeleton home-skel-rec" />
+              </div>
+            </div>
+            <div className="home-section">
+              <h2>🗺️ 地域探索</h2>
+              <div className="home-regions skeleton home-skel-regions" aria-hidden />
+            </div>
+          </section>
+        </>
+      )}
+
       {/* 今日非遗 */}
       {featured && (
         <section className="home-section">

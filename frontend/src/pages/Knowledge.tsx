@@ -145,6 +145,19 @@ export default function Knowledge({ openParam }: { openParam?: string }) {
       </header>
       {error && <div className="kb-error">{error}</div>}
       <div className="kb-cards">
+        {/* 数据未到时用骨架卡占位，形状与真实卡片一致，避免首屏空白 */}
+        {list.length === 0 &&
+          !error &&
+          Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="kb-card kb-card-skeleton" aria-hidden>
+              <div className="skeleton kb-skeleton-cover" />
+              <div className="kb-card-body">
+                <div className="skeleton kb-skeleton-line" style={{ width: '72%' }} />
+                <div className="skeleton kb-skeleton-line" style={{ width: '46%' }} />
+                <div className="skeleton kb-skeleton-line" style={{ width: '62%' }} />
+              </div>
+            </div>
+          ))}
         {filtered.map((h) => (
           <div key={h.id} className="kb-card" onClick={() => open(h.id)}>
             <Cover item={h} className="kb-card-cover" />
@@ -156,7 +169,7 @@ export default function Knowledge({ openParam }: { openParam?: string }) {
             </div>
           </div>
         ))}
-        {filtered.length === 0 && !error && (
+        {filtered.length === 0 && !error && list.length > 0 && (
           <div className="kb-empty">没有匹配的项目</div>
         )}
       </div>

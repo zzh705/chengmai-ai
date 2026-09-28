@@ -371,6 +371,18 @@
   flex-wrap: wrap;
   gap: 8px;
 }
+/* 首屏骨架占位：尺寸对齐真实区块，数据到达即无缝替换 */
+.home-skel-today {
+  height: 150px;
+  border: 1px solid #3a332c;
+}
+.home-skel-rec {
+  height: 72px;
+}
+.home-skel-regions {
+  height: 76px;
+  display: block;
+}
 .home-regions button {
   padding: 8px 14px;
   border: 1px solid #2e2823;
