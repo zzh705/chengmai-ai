@@ -23,6 +23,16 @@ const DAY_INDEX = (() => {
 // 非遗全景环形图配色（朱红/藤黄/青碧/黛蓝/绛紫/赭石/松绿）
 const VIZ_COLORS = ['#b03a2e', '#e8c56b', '#4a7c6f', '#5a6f9c', '#a45c8a', '#c07b3a', '#6b8f5e']
 
+// 探索矩阵：首页功能总入口（序号+文字，不用小图标）
+const GATES = [
+  { page: 'knowledge', title: '非遗知识库', desc: '43 项国家级非遗全景档案，故事、工序、谱系一次读透' },
+  { page: 'map', title: '非遗地图', desc: '沿华夏地理看非遗分布，按省按类自由探索' },
+  { page: 'graph', title: '知识图谱', desc: '项目、人物、地域交织的关系网络，可缩放漫游' },
+  { page: 'path', title: '学习路径', desc: '输入主题即得七日精进路线，逐日推进' },
+  { page: 'lab', title: '活化实验室', desc: '让老手艺走进今天：文创、活动、短视频方案即刻生成' },
+  { page: 'challenge', title: '非遗挑战', desc: '三题快问快答，检验功底、收集徽章' },
+]
+
 export default function Home({ onNavigate, entered = true }: Props) {
   const [list, setList] = useState<HeritageSummary[]>([])
   const [profile, setProfile] = useState<Profile | null>(null)
@@ -39,7 +49,24 @@ export default function Home({ onNavigate, entered = true }: Props) {
   // 今日非遗：按日期轮换，每天换一个
   const dayIndex = list.length ? DAY_INDEX % list.length : 0
   const featured = list[dayIndex]
-  const recommended = list.slice(0).filter((h) => h !== featured).slice(0, 3)
+  const recommended = useMemo(
+    () => list.filter((h) => h !== featured).slice(0, 3),
+    [list, featured],
+  )
+
+  // 一分钟认识：避开今日与推荐位，按天轮换三张故事卡
+  const storyPicks = useMemo(() => {
+    const pool = list.filter(
+      (h) => h.hook && h !== featured && !recommended.some((r) => r.id === h.id),
+    )
+    if (pool.length === 0) return []
+    const picks: HeritageSummary[] = []
+    for (let i = 0; picks.length < 3 && i < pool.length * 3; i++) {
+      const cand = pool[(DAY_INDEX * 3 + i * 7) % pool.length]
+      if (!picks.some((p) => p.id === cand.id)) picks.push(cand)
+    }
+    return picks
+  }, [list, featured, recommended])
 
   // 地域探索：与地图同口径 —— 含「全国」只记全国；否则该省出现即计入
   // （多省项目如"陕西、河北唐山…"会同时给相关省份计数，避免首页与地图数字打架）
@@ -88,6 +115,13 @@ export default function Home({ onNavigate, entered = true }: Props) {
     onNavigate('chat', q)
   }
 
+  // 随手漫游：随机进入一件非遗的详情
+  function randomRoam() {
+    if (list.length === 0) return
+    const pick = list[Math.floor(Math.random() * list.length)]
+    onNavigate('knowledge', pick.id)
+  }
+
   return (
     <div className="home-page" ref={rootRef}>
       {/* Hero：品牌门面 */}
@@ -127,6 +161,30 @@ export default function Home({ onNavigate, entered = true }: Props) {
       </section>
 
       {error && <div className="home-error">{error}</div>}
+
+      {/* 探索矩阵：全站功能入口 */}
+      <section className="home-section reveal">
+        <div className="home-sec-head">
+          <h2>开始探索</h2>
+          <button className="home-roam" onClick={randomRoam}>
+            随手漫游一件非遗
+          </button>
+        </div>
+        <div className="home-gates">
+          {GATES.map((g, i) => (
+            <button
+              key={g.page}
+              className="home-gate"
+              onClick={() => onNavigate(g.page)}
+            >
+              <span className="home-gate-no">{String(i + 1).padStart(2, '0')}</span>
+              <strong>{g.title}</strong>
+              <p>{g.desc}</p>
+              <span className="home-gate-go">进入</span>
+            </button>
+          ))}
+        </div>
+      </section>
 
       {/* 数据未到时的骨架占位：形状与真实区块一致，数据到达即无缝替换 */}
       {list.length === 0 && !error && (
@@ -172,6 +230,35 @@ export default function Home({ onNavigate, entered = true }: Props) {
               </p>
             </div>
             <span className="home-today-cta">查看详情 →</span>
+          </div>
+        </section>
+      )}
+
+      {/* 一分钟认识：故事钩子卡 */}
+      {storyPicks.length > 0 && (
+        <section className="home-section reveal">
+          <div className="home-sec-head">
+            <h2>一分钟认识</h2>
+            <span className="home-sec-note">从一个悬念，走进一项非遗</span>
+          </div>
+          <div className="home-stories">
+            {storyPicks.map((h) => (
+              <article
+                key={h.id}
+                className="home-story"
+                onClick={() => onNavigate('knowledge', h.id)}
+              >
+                <Cover item={h} className="home-story-img" />
+                <div className="home-story-txt">
+                  <span className="home-story-cat">{h.category.split(' · ')[0]}</span>
+                  <p className="home-story-hook">「{h.hook}」</p>
+                  <span className="home-story-foot">
+                    {h.name} · {h.region}
+                    <em>读下去 →</em>
+                  </span>
+                </div>
+              </article>
+            ))}
           </div>
         </section>
       )}
