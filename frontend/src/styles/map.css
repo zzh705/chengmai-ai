@@ -405,3 +405,261 @@
   border-color: #e8c56b;
   color: #e8c56b;
 }
+
+/* ===== 地图扩充：视图工具条 / 方格视图 / 省域巡礼 / 面板深挖 ===== */
+.map-tools {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1160px;
+  margin: 14px auto 10px;
+  padding: 0 20px;
+}
+.map-views {
+  display: flex;
+  border: 1px solid #3a332c;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.map-views button {
+  border: none;
+  background: none;
+  color: #c9bfae;
+  padding: 7px 22px;
+  font-size: 13px;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+.map-views button.active {
+  background: #b03a2e;
+  color: #fff;
+}
+.map-random {
+  background: none;
+  border: 1px solid #3a332c;
+  border-radius: 999px;
+  color: #e8c56b;
+  padding: 7px 18px;
+  font-size: 13px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.map-random:hover {
+  border-color: #e8c56b;
+  background: #e8c56b14;
+}
+
+/* 方格视图：报纸天气图式省块 */
+.map-grid-wrap {
+  position: relative;
+  min-width: 0;
+  flex: 1;
+  padding: 6px 2px;
+}
+.map-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+}
+.map-tile {
+  aspect-ratio: 1;
+  border: 1px solid #2e2823;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  color: #d8cfc0;
+  font-family: inherit;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+.map-tile span {
+  font-size: 12.5px;
+  letter-spacing: 1px;
+}
+.map-tile em {
+  font-style: normal;
+  font-size: 11px;
+  color: #e8c56b;
+}
+.map-tile.no-data {
+  color: #6e655a;
+}
+.map-tile.no-data em {
+  color: #6e655a;
+}
+.map-tile:hover {
+  transform: translateY(-3px);
+  border-color: #e8c56b;
+  z-index: 1;
+}
+.map-tile.is-selected {
+  border-color: #e8c56b;
+  box-shadow: 0 0 0 2px #e8c56b44;
+}
+.map-tip-grid {
+  position: absolute;
+  top: auto;
+  bottom: 64px;
+}
+
+/* 省域巡礼 */
+.map-tour {
+  max-width: 1160px;
+  margin: 26px auto 0;
+  padding: 0 20px;
+}
+.map-tour-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.map-tour-head h3 {
+  margin: 0;
+  font-size: 15px;
+  letter-spacing: 3px;
+  color: #e8c56b;
+}
+.map-tour-head span {
+  font-size: 12.5px;
+  color: #9a8f80;
+  letter-spacing: 1px;
+}
+.map-tour-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+}
+.map-tour-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: #1b1713;
+  border: 1px solid #2e2823;
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.25s, transform 0.25s, background 0.25s;
+}
+.map-tour-card:hover {
+  border-color: #e8c56b;
+  transform: translateY(-3px);
+}
+.map-tour-card.active {
+  border-color: #e8c56b;
+  background: #211a15;
+}
+.map-tour-no {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-family: 'Songti SC', 'Noto Serif SC', serif;
+  font-size: 13px;
+  color: #b03a2e;
+  letter-spacing: 1px;
+}
+.map-tour-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border: none;
+  border-radius: 7px;
+}
+.map-tour-card strong {
+  color: #f3ece2;
+  font-size: 14.5px;
+  text-align: left;
+  font-weight: 600;
+}
+.map-tour-meta {
+  color: #9a8f80;
+  font-size: 11.5px;
+  text-align: left;
+}
+
+/* 面板深挖：类别构成 + 下一站 */
+.map-prov-info {
+  margin: 4px 0 16px;
+}
+.map-prov-line {
+  margin: 0 0 10px;
+  color: #c9bfae;
+  font-size: 13.5px;
+  letter-spacing: 1px;
+}
+.map-prov-cats {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  max-width: 460px;
+}
+.map-prov-cat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+  color: #b6ab9a;
+}
+.map-prov-cat > span:first-child {
+  width: 64px;
+  flex: none;
+}
+.map-prov-cat .rank-bar {
+  flex: 1;
+}
+.map-prov-cat em {
+  font-style: normal;
+  width: 22px;
+  text-align: right;
+  color: #e8c56b;
+}
+.map-next {
+  display: block;
+  margin: 16px auto 0;
+  background: none;
+  border: 1px dashed #4a4137;
+  border-radius: 999px;
+  color: #c9bfae;
+  padding: 9px 22px;
+  font-size: 13px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.map-next:hover {
+  border-color: #e8c56b;
+  color: #e8c56b;
+}
+
+@media (max-width: 900px) {
+  .map-tour-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .map-grid {
+    gap: 4px;
+  }
+  .map-tile span {
+    font-size: 11px;
+  }
+}
+@media (max-width: 560px) {
+  .map-tour-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .map-tile span {
+    font-size: 9.5px;
+    letter-spacing: 0;
+  }
+  .map-tools {
+    padding: 0 12px;
+  }
+}
