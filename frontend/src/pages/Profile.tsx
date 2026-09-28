@@ -71,6 +71,66 @@ function Radar({ data }: { data: { category: string; count: number }[] }) {
   )
 }
 
+/** 近 28 天足迹热力：按周分组的日历格（本周超出今天的格子留空） */
+function Heat({ activity }: { activity: { date: string; count: number }[] }) {
+  const map = new Map(activity.map((a) => [a.date, a.count]))
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const start = new Date(today)
+  start.setDate(start.getDate() - 27)
+  const gridStart = new Date(start)
+  gridStart.setDate(start.getDate() - ((start.getDay() + 6) % 7))
+  const end = new Date(today)
+  end.setDate(today.getDate() + (6 - ((today.getDay() + 6) % 7)))
+  const fmt = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  const cells: { ds: string; n: number; future: boolean }[] = []
+  const cur = new Date(gridStart)
+  while (cur <= end) {
+    cells.push({ ds: fmt(cur), n: map.get(fmt(cur)) ?? 0, future: cur > today })
+    cur.setDate(cur.getDate() + 1)
+  }
+  const weeks: (typeof cells)[] = []
+  for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7))
+  const total = activity.reduce((s, a) => s + a.count, 0)
+  const lvl = (n: number) => (n === 0 ? '' : n === 1 ? 'l1' : n <= 3 ? 'l2' : 'l3')
+
+  return (
+    <div className="pf-heat-wrap">
+      <div className="pf-heat-head">
+        <span>近 28 天足迹</span>
+        <em>{total} 次互动</em>
+      </div>
+      <div className="pf-heat">
+        <div className="pf-heat-weekdays" aria-hidden>
+          {['一', '二', '三', '四', '五', '六', '日'].map((d) => (
+            <span key={d}>{d}</span>
+          ))}
+        </div>
+        {weeks.map((week, wi) => (
+          <div key={wi} className="pf-heat-week" style={{ animationDelay: `${wi * 0.05}s` }}>
+            {week.map((c) => (
+              <i
+                key={c.ds}
+                className={`pf-heat-cell ${c.future ? 'fut' : lvl(c.n)}`}
+                title={`${c.ds}${c.future ? '' : ` · ${c.n} 次`}`}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+      <div className="pf-heat-legend">
+        <span>少</span>
+        <i className="" />
+        <i className="l1" />
+        <i className="l2" />
+        <i className="l3" />
+        <span>多</span>
+      </div>
+    </div>
+  )
+}
+
 export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [error, setError] = useState('')
@@ -127,6 +187,29 @@ export default function ProfilePage() {
         </div>
       </div>
 
+      {/* 称号之路：十级称号一览，当前级高亮 */}
+      <div className="pf-block">
+        <section className="pf-card">
+          <div className="pf-card-head">
+            <h3>称号之路</h3>
+            <span>
+              当前 · {rank.title}（Lv.{rank.level}）
+            </span>
+          </div>
+          <div className="pf-ladder">
+            {TITLES.map((t, i) => (
+              <span
+                key={t}
+                className={`pf-ladder-step ${i < rank.level - 1 ? 'done' : i === rank.level - 1 ? 'now' : ''}`}
+              >
+                <i>{i + 1}</i>
+                <em>{t}</em>
+              </span>
+            ))}
+          </div>
+        </section>
+      </div>
+
       <div className="pf-stats">
         <div className="pf-stat">
           <strong>
@@ -159,6 +242,13 @@ export default function ProfilePage() {
         </div>
       </div>
 
+      {/* 近 28 天足迹热力日历 */}
+      <div className="pf-block">
+        <section className="pf-card">
+          <Heat activity={profile.activity} />
+        </section>
+      </div>
+
       <div className="pf-grid">
         {/* 足迹时间线 */}
         <section className="pf-card pf-timeline-card">
@@ -186,6 +276,31 @@ export default function ProfilePage() {
             <p className="pf-empty">还没有足迹，先去问问承脉 AI 吧</p>
           ) : (
             <Radar data={profile.interests} />
+          )}
+        </section>
+
+        <section className="pf-card">
+          <h3>答题分析</h3>
+          {profile.quiz_by_topic.length === 0 ? (
+            <p className="pf-empty">还没有答题记录，去挑战页来一题吧</p>
+          ) : (
+            <>
+              <p className="pf-quiz-sum">
+                累计 {profile.quiz.answered} 题 · 答对 {profile.quiz.correct} 题 · 正确率{' '}
+                {Math.round(profile.quiz.accuracy * 100)}%
+              </p>
+              {profile.quiz_by_topic.map((t) => (
+                <div key={t.topic} className="pf-topic">
+                  <span className="pf-topic-name">{t.topic}</span>
+                  <span className="pf-topic-bar">
+                    <i style={{ '--x': t.accuracy } as React.CSSProperties} />
+                  </span>
+                  <em>
+                    {Math.round(t.accuracy * 100)}% · {t.correct}/{t.answered}
+                  </em>
+                </div>
+              ))}
+            </>
           )}
         </section>
 

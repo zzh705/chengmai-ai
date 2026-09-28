@@ -71,6 +71,17 @@ def profile(user_id: str) -> dict:
         reverse=True,
     )[:6]
 
+    # 近 28 天足迹热力：档案页日历用（按天聚合全部事件）
+    day_counts: dict[str, int] = defaultdict(int)
+    for e in events:
+        day_counts[e["ts"][:10]] += 1
+    cutoff = time.strftime("%Y-%m-%d", time.localtime(time.time() - 27 * 86400))
+    activity = [
+        {"date": d, "count": n}
+        for d, n in sorted(day_counts.items())
+        if cutoff <= d <= time.strftime("%Y-%m-%d")
+    ]
+
     return {
         "user_id": user_id,
         "stats": {
@@ -85,6 +96,7 @@ def profile(user_id: str) -> dict:
         "quiz_by_topic": sorted(quiz_by_topic.values(), key=lambda x: x["answered"], reverse=True),
         "creations": creations[-10:],
         "interests": interests,
+        "activity": activity,
         # 最近足迹时间线（新的在前，档案页时间轴用）
         "recent_events": [
             {"type": e["event_type"], "name": e["item_name"] or "", "ts": e["ts"]}

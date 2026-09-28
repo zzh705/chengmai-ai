@@ -18,6 +18,8 @@ export interface Profile {
   quiz_by_topic: { topic: string; answered: number; correct: number; accuracy: number }[]
   creations: { topic: string; ts: string }[]
   interests: { category: string; count: number }[]
+  /** 近 28 天足迹（按天聚合的事件数，档案页热力日历用） */
+  activity: { date: string; count: number }[]
   /** 最近足迹（新的在前），档案页时间轴用 */
   recent_events: { type: string; name: string; ts: string }[]
 }

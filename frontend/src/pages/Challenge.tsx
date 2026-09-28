@@ -23,6 +23,34 @@ const DAY_INDEX = (() => {
   return Math.floor((Date.now() - start.getTime()) / 86400000)
 })()
 
+const dayStr = (d = new Date()) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+
+function loadJSON<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key)
+    return raw ? (JSON.parse(raw) as T) : fallback
+  } catch {
+    return fallback
+  }
+}
+const saveJSON = (key: string, val: unknown) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(val))
+  } catch {
+    /* 存储满/隐私模式：静默 */
+  }
+}
+
+/** 错题本条目（本地留存，便于复盘） */
+interface WrongQ {
+  topic: string
+  q: string
+  options: string[]
+  answer: string
+  exp: string
+}
+
 export default function Challenge({ onNavigate }: Props) {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [list, setList] = useState<HeritageSummary[]>([])
@@ -36,6 +64,12 @@ export default function Challenge({ onNavigate }: Props) {
   const [qLoading, setQLoading] = useState(false)
   const [qError, setQError] = useState('')
   const [picked, setPicked] = useState<string | null>(null)
+
+  // 连对 / 本周打卡 / 错题本（本地持久化）
+  const [streak, setStreak] = useState(() => loadJSON('ch_streak', 0))
+  const [days, setDays] = useState<string[]>(() => loadJSON('ch_days', [] as string[]))
+  const [wrongs, setWrongs] = useState<WrongQ[]>(() => loadJSON('ch_wrongs', [] as WrongQ[]))
+  const [openWrong, setOpenWrong] = useState<string | null>(null)
 
   useEffect(() => {
     fetchProfile().then(setProfile).catch((e) => setError(e.message))
@@ -83,9 +117,54 @@ export default function Challenge({ onNavigate }: Props) {
     setPicked(opt)
     const correct = opt === q.answer
     recordProgress('quiz_answer', { name: dailyTopic }, { correct, question: q.question })
+    if (correct) {
+      const ns = streak + 1
+      setStreak(ns)
+      saveJSON('ch_streak', ns)
+      const d = dayStr()
+      if (!days.includes(d)) {
+        const next = [...days, d].slice(-60)
+        setDays(next)
+        saveJSON('ch_days', next)
+      }
+    } else {
+      setStreak(0)
+      saveJSON('ch_streak', 0)
+      if (!wrongs.some((w) => w.q === q.question)) {
+        const next: WrongQ[] = [
+          { topic: dailyTopic, q: q.question, options: q.options, answer: q.answer, exp: q.explanation },
+          ...wrongs,
+        ].slice(0, 20)
+        setWrongs(next)
+        saveJSON('ch_wrongs', next)
+      }
+    }
     // 即时刷新档案：正确率/等级条随答题变化
     fetchProfile().then(setProfile).catch(() => {})
   }
+
+  function removeWrong(qText: string) {
+    const next = wrongs.filter((w) => w.q !== qText)
+    setWrongs(next)
+    saveJSON('ch_wrongs', next)
+    setOpenWrong(null)
+  }
+
+  /** 本周一至周日的打卡情况 */
+  const week = (() => {
+    const today = new Date()
+    const dow = (today.getDay() + 6) % 7
+    const labels = ['一', '二', '三', '四', '五', '六', '日']
+    const out: { ds: string; label: string; date: number; done: boolean; today: boolean }[] = []
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(today)
+      d.setDate(today.getDate() - dow + i)
+      const ds = dayStr(d)
+      out.push({ ds, label: labels[i], date: d.getDate(), done: days.includes(ds), today: ds === dayStr() })
+    }
+    return out
+  })()
+  const weekDone = week.filter((d) => d.done).length
 
   if (error) return <div className="ch-page ch-center">{error}</div>
   if (!profile) return <div className="ch-page ch-center">加载中…</div>
@@ -164,6 +243,10 @@ export default function Challenge({ onNavigate }: Props) {
             <span>答对</span>
           </div>
           <div>
+            <strong className={streak > 1 ? 'hot' : ''}>{streak}</strong>
+            <span>连对</span>
+          </div>
+          <div>
             <strong>
               {earned}/{badges.length}
             </strong>
@@ -187,6 +270,25 @@ export default function Challenge({ onNavigate }: Props) {
           去答题
         </button>
       </div>
+
+      {/* 本周打卡：连续传承的仪式感 */}
+      <section className="ch-section">
+        <div className="ch-week-head">
+          <h2>本周打卡</h2>
+          <span>
+            {weekDone}/7 天{streak > 1 ? ` · 连对 ×${streak}` : ''}
+          </span>
+        </div>
+        <div className="ch-week">
+          {week.map((d) => (
+            <div key={d.ds} className={`ch-week-day ${d.done ? 'on' : ''} ${d.today ? 'today' : ''}`}>
+              <i>{d.label}</i>
+              <b>{String(d.date).padStart(2, '0')}</b>
+              <em>{d.done ? '已打卡' : d.today ? '今日' : '—'}</em>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* 每日一题：AI 即时出题、即答即评 */}
       <section className="ch-section">
@@ -241,13 +343,54 @@ export default function Challenge({ onNavigate }: Props) {
               </div>
               {picked && (
                 <div className={`ch-q-result ${picked === q.answer ? 'ok' : 'no'}`}>
-                  <strong>{picked === q.answer ? '答对了 · EXP +6' : '答错了，看看解析'}</strong>
+                  <strong>
+                    {picked === q.answer
+                      ? `答对了 · EXP +6${streak > 1 ? ` · 连对 ×${streak}` : ''}`
+                      : '答错了，已收进错题本'}
+                  </strong>
                   <span>{q.explanation}</span>
                 </div>
               )}
             </div>
           )}
         </div>
+      </section>
+
+      {/* 错题本：答错的题自动收录，可复盘与移除 */}
+      <section className="ch-section">
+        <div className="ch-week-head">
+          <h2>错题本</h2>
+          <span>{wrongs.length > 0 ? `${wrongs.length} 道待复盘` : '暂无错题'}</span>
+        </div>
+        {wrongs.length === 0 ? (
+          <p className="ch-empty">还没有错题，答错了会自动收进这里</p>
+        ) : (
+          wrongs.map((w) => (
+            <div key={w.q} className={`ch-wrong ${openWrong === w.q ? 'open' : ''}`}>
+              <button className="ch-wrong-head" onClick={() => setOpenWrong(openWrong === w.q ? null : w.q)}>
+                <span className="ch-wrong-topic">{w.topic}</span>
+                <span className="ch-wrong-q">{w.q}</span>
+                <em>{openWrong === w.q ? '收起' : '复盘'}</em>
+              </button>
+              {openWrong === w.q && (
+                <div className="ch-wrong-body">
+                  <div className="ch-wrong-opts">
+                    {w.options.map((o) => (
+                      <span key={o} className={o === w.answer ? 'right' : ''}>
+                        {o}
+                        {o === w.answer ? '（正解）' : ''}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="ch-wrong-exp">{w.exp}</p>
+                  <button className="ch-wrong-ok" onClick={() => removeWrong(w.q)}>
+                    已掌握 · 移出错题本
+                  </button>
+                </div>
+              )}
+            </div>
+          ))
+        )}
       </section>
 
       <section className="ch-section">

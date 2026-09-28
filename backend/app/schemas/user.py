@@ -25,4 +25,5 @@ class ProfileResponse(BaseModel):
     quiz_by_topic: list[dict]
     creations: list[dict]
     interests: list[dict]
+    activity: list[dict] = []
     recent_events: list[dict] = []
