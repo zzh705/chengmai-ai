@@ -45,6 +45,7 @@
   border: 1px solid #2e2823;
   border-radius: 14px;
   padding: 20px 24px;
+  scroll-margin-top: 64px;
 }
 .ab-card h3 {
   margin: 0 0 12px;
@@ -57,6 +58,249 @@
   line-height: 2;
   font-size: 14px;
   color: #d8cfc0;
+}
+
+/* 吸顶目录 */
+.ab-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(20, 17, 15, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid #2e2823;
+}
+.ab-nav button {
+  background: #1b1713;
+  border: 1px solid #2e2823;
+  color: #c9bfae;
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ab-nav button:hover {
+  border-color: #e8c56b;
+  color: #e8c56b;
+}
+
+/* 关键数字 */
+.ab-nums {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 16px;
+}
+.ab-nums div {
+  background: #14110f;
+  border: 1px solid #2e2823;
+  border-radius: 10px;
+  padding: 12px 8px;
+  text-align: center;
+}
+.ab-nums em {
+  display: block;
+  font-style: normal;
+  font-size: 28px;
+  font-weight: 700;
+  color: #e8c56b;
+}
+.ab-nums span {
+  font-size: 11px;
+  color: #9a8f80;
+}
+@media (max-width: 640px) {
+  .ab-nums {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 设计理念 */
+.ab-idea {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+.ab-idea div {
+  background: #14110f;
+  border: 1px solid #2e2823;
+  border-radius: 10px;
+  padding: 14px;
+}
+.ab-idea strong {
+  display: block;
+  color: #e8c56b;
+  font-size: 15px;
+  letter-spacing: 3px;
+  margin-bottom: 8px;
+}
+.ab-idea span {
+  font-size: 12.5px;
+  color: #9a8f80;
+  line-height: 1.8;
+}
+
+/* 系统架构流程图 */
+.ab-flow {
+  background: #14110f;
+  border: 1px solid #2e2823;
+  border-radius: 10px;
+  padding: 18px 14px;
+}
+.ab-flow-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ab-flow-node {
+  font-size: 12.5px;
+  color: #d8cfc0;
+  background: #1b1713;
+  border: 1px solid #3a332c;
+  border-radius: 8px;
+  padding: 8px 14px;
+}
+.ab-flow-node.in {
+  border-color: #4a6b52;
+  color: #9fc9a8;
+}
+.ab-flow-node.gate {
+  border-color: #e8c56b;
+  color: #e8c56b;
+}
+.ab-flow-node.base {
+  border-color: #4a5a7a;
+  color: #a9bfe0;
+}
+.ab-flow-node.out {
+  border-color: #b03a2e;
+  color: #e5a094;
+}
+.ab-flow-arrow {
+  text-align: center;
+  color: #4a413a;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.ab-flow-note {
+  margin-top: 12px;
+  font-size: 13px;
+}
+.ab-flow-note code,
+.ab-list code {
+  background: #14110f;
+  border: 1px solid #2e2823;
+  border-radius: 5px;
+  padding: 1px 7px;
+  color: #e8c56b;
+  font-size: 12px;
+}
+
+/* 要点列表 */
+.ab-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ab-list li {
+  background: #14110f;
+  border: 1px solid #2e2823;
+  border-left: 3px solid #b03a2e;
+  border-radius: 8px;
+  padding: 11px 14px;
+  font-size: 13.5px;
+  line-height: 1.9;
+  color: #d8cfc0;
+}
+.ab-list strong {
+  color: #e8c56b;
+}
+
+/* 测试与质量 */
+.ab-quality {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.ab-quality div {
+  background: #14110f;
+  border: 1px solid #2e2823;
+  border-radius: 10px;
+  padding: 14px 8px;
+  text-align: center;
+}
+.ab-quality em {
+  display: block;
+  font-style: normal;
+  font-size: 24px;
+  font-weight: 700;
+  color: #e8c56b;
+}
+.ab-quality span {
+  font-size: 11.5px;
+  color: #9a8f80;
+}
+.ab-quality-note {
+  margin-top: 12px;
+  font-size: 13px;
+}
+@media (max-width: 640px) {
+  .ab-quality {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 里程碑 */
+.ab-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 18px;
+  border-left: 2px solid #3a332c;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ab-timeline li {
+  position: relative;
+}
+.ab-timeline li::before {
+  content: '';
+  position: absolute;
+  left: -25px;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #b03a2e;
+  border: 2px solid #14110f;
+  box-shadow: 0 0 0 2px rgba(232, 197, 107, 0.35);
+}
+.tl-when {
+  display: block;
+  font-size: 11.5px;
+  color: #6e655a;
+  letter-spacing: 2px;
+  margin-bottom: 3px;
+}
+.ab-timeline strong {
+  display: block;
+  color: #f3ece2;
+  font-size: 14.5px;
+  margin-bottom: 4px;
+}
+.ab-timeline li > span:last-child {
+  font-size: 13px;
+  color: #9a8f80;
+  line-height: 1.8;
 }
 
 .ab-agents {
