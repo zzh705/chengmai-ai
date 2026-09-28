@@ -133,7 +133,7 @@ export default function Knowledge({ openParam }: { openParam?: string }) {
           {/* 冷知识：让人好奇的"你知道吗" */}
           {detail.fun_facts.length > 0 && (
             <div className="kb-facts">
-              <div className="kb-facts-title">💡 你知道吗</div>
+              <div className="kb-facts-title">你知道吗</div>
               <ul>
                 {detail.fun_facts.map((f, i) => (
                   <li key={i} style={{ animationDelay: `${0.15 + i * 0.14}s` }}>

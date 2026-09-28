@@ -3,6 +3,7 @@
   position: fixed;
   inset: 0;
   z-index: 100;
+  transition: opacity 0.34s ease;
   background: radial-gradient(ellipse at center, #191410 0%, #0e0c0a 70%);
   display: flex;
   align-items: center;
@@ -166,4 +167,14 @@
     letter-spacing: 6px;
     text-indent: 6px;
   }
+}
+
+/* 退场：整体淡出 + 舞台微微推近，与首页 hero 浮现无缝衔接 */
+.splash.leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+.splash.leaving .splash-stage {
+  transform: scale(1.05);
+  transition: transform 0.34s ease;
 }

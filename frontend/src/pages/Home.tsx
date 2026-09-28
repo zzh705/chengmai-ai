@@ -117,18 +117,18 @@ export default function Home({ onNavigate }: Props) {
         </div>
       </section>
 
-      {error && <div className="home-error">⚠️ {error}</div>}
+      {error && <div className="home-error">{error}</div>}
 
       {/* 数据未到时的骨架占位：形状与真实区块一致，数据到达即无缝替换 */}
       {list.length === 0 && !error && (
         <>
           <section className="home-section">
-            <h2>🌸 今日非遗</h2>
+            <h2>今日非遗</h2>
             <div className="home-today skeleton home-skel-today" aria-hidden />
           </section>
           <section className="home-cols">
             <div className="home-section">
-              <h2>✨ AI 推荐</h2>
+              <h2>AI 推荐</h2>
               <div className="home-recs" aria-hidden>
                 <div className="home-rec skeleton home-skel-rec" />
                 <div className="home-rec skeleton home-skel-rec" />
@@ -136,7 +136,7 @@ export default function Home({ onNavigate }: Props) {
               </div>
             </div>
             <div className="home-section">
-              <h2>🗺️ 地域探索</h2>
+              <h2>地域探索</h2>
               <div className="home-regions skeleton home-skel-regions" aria-hidden />
             </div>
           </section>
@@ -146,7 +146,7 @@ export default function Home({ onNavigate }: Props) {
       {/* 今日非遗 */}
       {featured && (
         <section className="home-section">
-          <h2>🌸 今日非遗</h2>
+          <h2>今日非遗</h2>
           <div
             className="home-today"
             onClick={() => onNavigate('knowledge', featured.id)}
@@ -167,7 +167,7 @@ export default function Home({ onNavigate }: Props) {
       {/* AI 推荐 + 地域探索 双栏 */}
       <section className="home-cols">
         <div className="home-section">
-          <h2>✨ AI 推荐</h2>
+          <h2>AI 推荐</h2>
           <div className="home-recs">
             {recommended.map((h) => (
               <div key={h.id} className="home-rec" onClick={() => onNavigate('knowledge', h.id)}>
@@ -182,7 +182,7 @@ export default function Home({ onNavigate }: Props) {
         </div>
 
         <div className="home-section">
-          <h2>🗺️ 地域探索</h2>
+          <h2>地域探索</h2>
           <div className="home-regions">
             {regions.map(([r, n]) => (
               <button key={r} onClick={() => onNavigate('knowledge', `kw:${r}`)}>
@@ -196,7 +196,7 @@ export default function Home({ onNavigate }: Props) {
       {/* 非遗全景数据屏：类别环形 + 省份排行 + 关键数字 */}
       {list.length > 0 && topProvs.length > 0 && (
         <section className="home-section home-viz">
-          <h2>📊 非遗全景</h2>
+          <h2>非遗全景</h2>
           <div className="viz-grid">
             <div className="viz-donut-col">
               <div className="viz-donut-wrap">
@@ -283,7 +283,7 @@ export default function Home({ onNavigate }: Props) {
 
       {/* 学习进度 */}
       <section className="home-section">
-        <h2>📈 我的学习进度</h2>
+        <h2>我的学习进度</h2>
         <div className="home-progress">
           <div className="home-prog-item">
             <strong>{profile?.stats.viewed_items ?? 0}</strong>

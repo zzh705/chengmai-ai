@@ -56,7 +56,7 @@ function App() {
   }
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${splash ? 'pre-splash' : 'entered'}`}>
       {splash && <Splash onDone={() => setSplash(false)} />}
       <nav className="app-nav">
         <span className="app-brand" onClick={() => navigate('home')}>

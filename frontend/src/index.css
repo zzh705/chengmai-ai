@@ -243,3 +243,57 @@ body {
     letter-spacing: 3px;
   }
 }
+
+/* 开屏 → 首页衔接：开屏淡出时，hero 元素由 blur+上浮依次浮现，粒子延后淡入 */
+.app-shell.pre-splash .home-hero .home-seal,
+.app-shell.pre-splash .home-hero h1,
+.app-shell.pre-splash .home-hero .home-slogan,
+.app-shell.pre-splash .home-hero .home-ask,
+.app-shell.pre-splash .home-hero .home-chips {
+  opacity: 0;
+}
+/* 印章自带 sealIn 动画会压过 opacity 声明，开屏期间直接掐掉动画 */
+.app-shell.pre-splash .home-hero .home-seal {
+  animation: none;
+}
+.app-shell.pre-splash .ember-canvas {
+  opacity: 0;
+}
+.app-shell.entered .home-hero .home-seal,
+.app-shell.entered .home-hero h1,
+.app-shell.entered .home-hero .home-slogan,
+.app-shell.entered .home-hero .home-ask,
+.app-shell.entered .home-hero .home-chips {
+  animation: heroEnter 0.75s cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+}
+/* h1/印章自带循环动画（heroShine/sealGlow），与入场动画复合列出，避免被覆盖 */
+.app-shell.entered .home-hero h1 {
+  animation:
+    heroEnter 0.75s cubic-bezier(0.2, 0.8, 0.3, 1) 0.12s backwards,
+    heroShine 5s linear 0.87s infinite;
+}
+.app-shell.entered .home-hero .home-seal {
+  animation:
+    heroEnter 0.65s cubic-bezier(0.2, 0.8, 0.3, 1) 0.04s backwards,
+    sealGlow 3s ease-in-out 0.7s infinite;
+}
+.app-shell.entered .home-hero .home-slogan {
+  animation-delay: 0.2s;
+}
+.app-shell.entered .home-hero .home-ask {
+  animation-delay: 0.28s;
+}
+.app-shell.entered .home-hero .home-chips {
+  animation-delay: 0.36s;
+}
+.app-shell.entered .ember-canvas {
+  opacity: 1;
+  transition: opacity 0.9s ease 0.3s;
+}
+@keyframes heroEnter {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+    filter: blur(8px);
+  }
+}
