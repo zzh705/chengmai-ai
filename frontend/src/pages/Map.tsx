@@ -86,7 +86,10 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
       .map((f) => {
         const full = f.properties?.name ?? ''
         const key = provKey(full)
-        const items = key ? filtered.filter((h) => h.region.includes(key)) : []
+        // 含「全国」的流布项不计入单省（与首页地域聚合同口径）
+        const items = key
+          ? filtered.filter((h) => h.region.includes(key) && !h.region.includes('全国'))
+          : []
         return {
           name: full,
           key,
@@ -102,7 +105,11 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
   const maxCount = Math.max(1, ...provinces.map((p) => p.count))
   const covered = provinces.filter((p) => p.count > 0).length
   // 排行榜：Top 8（受当前筛选影响，点击即选中该省）
-  const ranking = [...provinces].filter((p) => p.count > 0).sort((a, b) => b.count - a.count).slice(0, 8)
+  const ranking = [...provinces]
+    .filter((p) => p.count > 0)
+    // 次级键按省名排序，保证与首页 TOP5 同分时顺序一致
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, 'zh'))
+    .slice(0, 8)
 
   // 选中兼容：图谱地域节点可能是"江苏省苏州市"这类全称，用省 key 前缀匹配
   const selectedProv = provinces.find(

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { fetchHeritageList, type HeritageSummary } from '../api/heritage'
 import { fetchProfile, type Profile } from '../api/progress'
-import { extractProvince } from '../utils/geo'
+import { PROVINCES } from '../utils/geo'
 import Cover from '../components/Cover'
 import EmberCanvas from '../components/EmberCanvas'
 import '../styles/home.css'
@@ -16,11 +16,15 @@ const DAY_INDEX = (() => {
   return Math.floor((Date.now() - start.getTime()) / 86400000)
 })()
 
+// 非遗全景环形图配色（朱红/藤黄/青碧/黛蓝/绛紫/赭石/松绿）
+const VIZ_COLORS = ['#b03a2e', '#e8c56b', '#4a7c6f', '#5a6f9c', '#a45c8a', '#c07b3a', '#6b8f5e']
+
 export default function Home({ onNavigate }: Props) {
   const [list, setList] = useState<HeritageSummary[]>([])
   const [profile, setProfile] = useState<Profile | null>(null)
   const [question, setQuestion] = useState('')
   const [error, setError] = useState('')
+  const [hoverSeg, setHoverSeg] = useState<string | null>(null)
 
   useEffect(() => {
     fetchHeritageList().then(setList).catch((e) => setError(e.message))
@@ -32,15 +36,46 @@ export default function Home({ onNavigate }: Props) {
   const featured = list[dayIndex]
   const recommended = list.slice(0).filter((h) => h !== featured).slice(0, 3)
 
-  // 地域探索：region 描述五花八门（含省市、含流派说明），按省份归一聚合
+  // 地域探索：与地图同口径 —— 含「全国」只记全国；否则该省出现即计入
+  // （多省项目如"陕西、河北唐山…"会同时给相关省份计数，避免首页与地图数字打架）
   const regions = useMemo(() => {
     const m = new Map<string, number>()
     list.forEach((h) => {
-      const p = extractProvince(h.region)
-      m.set(p, (m.get(p) ?? 0) + 1)
+      if (h.region.includes('全国')) {
+        m.set('全国', (m.get('全国') ?? 0) + 1)
+        return
+      }
+      const hits = PROVINCES.filter((p) => h.region.includes(p))
+      if (hits.length === 0) m.set('其他', (m.get('其他') ?? 0) + 1)
+      hits.forEach((p) => m.set(p, (m.get(p) ?? 0) + 1))
     })
-    return [...m.entries()].sort((a, b) => b[1] - a[1])
+    return [...m.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'zh'))
   }, [list])
+
+  // 非遗全景：类别环形分段（按计数降序，前缀和决定每段起始角）
+  const catSegs = useMemo(() => {
+    const m = new Map<string, number>()
+    list.forEach((h) => {
+      const c = h.category.split(' · ')[0]
+      m.set(c, (m.get(c) ?? 0) + 1)
+    })
+    const total = Math.max(1, list.length)
+    const entries = [...m.entries()].sort((a, b) => b[1] - a[1])
+    const fracs = entries.map(([, count]) => count / total)
+    // 纯函数前缀和：starts[i] = fracs[0..i-1] 之和（避免可变累加触发 lint）
+    const starts = fracs.map((_, i) => fracs.slice(0, i).reduce((a, b) => a + b, 0))
+    return entries.map(([name, count], i) => ({
+      name,
+      count,
+      frac: fracs[i],
+      start: starts[i],
+    }))
+  }, [list])
+
+  const topProvs = regions.filter(([r]) => r !== '全国' && r !== '其他').slice(0, 5)
+  const coveredProvs = regions.filter(([r]) => r !== '全国' && r !== '其他').length
+  // 悬停的类别（null = 显示总览）
+  const hoveredCat = catSegs.find((s) => s.name === hoverSeg) ?? null
 
   function askAI() {
     const q = question.trim()
@@ -157,6 +192,94 @@ export default function Home({ onNavigate }: Props) {
           </div>
         </div>
       </section>
+
+      {/* 非遗全景数据屏：类别环形 + 省份排行 + 关键数字 */}
+      {list.length > 0 && topProvs.length > 0 && (
+        <section className="home-section home-viz">
+          <h2>📊 非遗全景</h2>
+          <div className="viz-grid">
+            <div className="viz-donut-col">
+              <div className="viz-donut-wrap">
+                <svg
+                  viewBox="0 0 140 140"
+                  className="viz-donut"
+                  onMouseLeave={() => setHoverSeg(null)}
+                >
+                  {catSegs.map((s, i) => {
+                    const C = 2 * Math.PI * 54
+                    return (
+                      <circle
+                        key={s.name}
+                        cx={70}
+                        cy={70}
+                        r={54}
+                        fill="none"
+                        stroke={VIZ_COLORS[i % VIZ_COLORS.length]}
+                        strokeWidth={hoverSeg && hoverSeg !== s.name ? 13 : 18}
+                        strokeDasharray={`${s.frac * C} ${C - s.frac * C}`}
+                        strokeDashoffset={-s.start * C}
+                        transform="rotate(-90 70 70)"
+                        onMouseEnter={() => setHoverSeg(s.name)}
+                        onClick={() => onNavigate('knowledge', `kw:${s.name}`)}
+                      />
+                    )
+                  })}
+                </svg>
+                <div className="viz-donut-center">
+                  <strong>{hoveredCat ? hoveredCat.name : `${catSegs.length} 大类`}</strong>
+                  <span>
+                    {hoveredCat ? `${hoveredCat.count} 项 · 点击查看` : `${list.length} 项收录`}
+                  </span>
+                </div>
+              </div>
+              <ul className="viz-legend">
+                {catSegs.map((s, i) => (
+                  <li
+                    key={s.name}
+                    className={hoverSeg === s.name ? 'active' : ''}
+                    onMouseEnter={() => setHoverSeg(s.name)}
+                    onMouseLeave={() => setHoverSeg(null)}
+                    onClick={() => onNavigate('knowledge', `kw:${s.name}`)}
+                  >
+                    <i style={{ background: VIZ_COLORS[i % VIZ_COLORS.length] }} />
+                    <span>{s.name}</span>
+                    <em>{s.count}</em>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="viz-rank">
+              <h4>省份 TOP 5</h4>
+              <ul>
+                {topProvs.map(([r, n]) => (
+                  <li key={r} onClick={() => onNavigate('knowledge', `kw:${r}`)}>
+                    <span className="viz-rank-name">{r}</span>
+                    <span className="viz-rank-bar">
+                      <i style={{ width: `${(n / topProvs[0][1]) * 100}%` }} />
+                    </span>
+                    <em>{n}</em>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="viz-nums">
+              {[
+                { n: list.length, l: '收录项目' },
+                { n: coveredProvs, l: '覆盖省级行政区' },
+                { n: catSegs.length, l: '非遗大类' },
+                { n: list.filter((h) => h.image).length, l: '自由版权配图' },
+              ].map((v) => (
+                <div key={v.l}>
+                  <em>{v.n}</em>
+                  <span>{v.l}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* 学习进度 */}
       <section className="home-section">
