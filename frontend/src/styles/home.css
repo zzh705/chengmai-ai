@@ -673,3 +673,29 @@
     transform: none;
   }
 }
+
+/* 小屏首页：收紧首屏留白 */
+@media (max-width: 720px) {
+  .home-hero {
+    padding: 34px 14px 22px;
+  }
+  .home-hero h1 {
+    font-size: 21px;
+    letter-spacing: 3px;
+  }
+  .home-slogan {
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+  .home-seal {
+    width: 54px;
+    height: 54px;
+    font-size: 17px;
+  }
+  .viz-grid {
+    padding: 14px;
+  }
+  .home-today {
+    padding: 12px;
+  }
+}

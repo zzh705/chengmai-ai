@@ -210,3 +210,36 @@ body {
     letter-spacing: 1px;
   }
 }
+
+/* 移动端（比赛材料附二维码，评委可能手机访问） */
+@media (max-width: 720px) {
+  /* 导航改为横向滑动，避免 10 项折成 3 行挤占首屏 */
+  .app-nav {
+    gap: 10px;
+    padding: 8px 10px;
+  }
+  .app-nav-links {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+  }
+  .app-nav-links::-webkit-scrollbar {
+    display: none;
+  }
+  .app-nav button {
+    flex: none;
+    padding: 6px 12px;
+    font-size: 12.5px;
+    letter-spacing: 1px;
+  }
+  .app-body {
+    padding: 0 12px;
+  }
+  .app-body h1 {
+    font-size: 20px;
+    letter-spacing: 3px;
+  }
+}
