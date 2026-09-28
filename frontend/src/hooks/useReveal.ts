@@ -20,8 +20,16 @@ export function useRevealGroup<T extends HTMLElement = HTMLDivElement>(deps: unk
       },
       { threshold: 0.1, rootMargin: '0px 0px -24px 0px' },
     )
-    root.querySelectorAll('.reveal:not(.revealed)').forEach((el) => io.observe(el))
-    return () => io.disconnect()
+    const collect = () =>
+      root.querySelectorAll('.reveal:not(.revealed)').forEach((el) => io.observe(el))
+    collect()
+    // 异步渲染出的区块（如实验室结果、路径规划）也要被观察
+    const mo = new MutationObserver(collect)
+    mo.observe(root, { childList: true, subtree: true })
+    return () => {
+      mo.disconnect()
+      io.disconnect()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps)
   return ref

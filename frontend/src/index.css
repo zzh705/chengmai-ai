@@ -367,3 +367,36 @@ body {
     transition: none;
   }
 }
+
+/* 主行动按钮：悬停流光扫过（轻量、不改布局） */
+.home-ask button,
+.lab-generate,
+.path-generate,
+.chat-input button,
+.graph-btn.primary {
+  position: relative;
+  overflow: hidden;
+}
+.home-ask button:not(:disabled)::after,
+.lab-generate:not(:disabled)::after,
+.path-generate:not(:disabled)::after,
+.chat-input button:not(:disabled)::after,
+.graph-btn.primary:not(:disabled)::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -40%;
+  width: 34%;
+  height: 200%;
+  background: linear-gradient(100deg, transparent, rgba(255, 244, 220, 0.32), transparent);
+  transform: rotate(16deg) translateX(-140%);
+  transition: transform 0.75s cubic-bezier(0.3, 0.6, 0.2, 1);
+  pointer-events: none;
+}
+.home-ask button:hover:not(:disabled)::after,
+.lab-generate:hover:not(:disabled)::after,
+.path-generate:hover:not(:disabled)::after,
+.chat-input button:hover:not(:disabled)::after,
+.graph-btn.primary:hover:not(:disabled)::after {
+  transform: rotate(16deg) translateX(460%);
+}

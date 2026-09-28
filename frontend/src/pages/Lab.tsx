@@ -230,14 +230,20 @@ export default function Lab() {
       )}
 
       {r && result && (
-        <div className="lab-result">
-          <h2>{r.title}</h2>
-          {result.sources.length > 0 && (
-            <div className="lab-sources">📚 文化依据：{result.sources.join('、')}</div>
-          )}
+        <div className="lab-result" key={r.title}>
+          <div className="lab-result-head">
+            <span className="lab-result-kicker">
+              活化方案 · {OUTPUT_TYPES.find((t) => t.key === outputType)?.label} ·{' '}
+              {STYLES.find((x) => x.key === style)?.label}
+            </span>
+            <h2>{r.title}</h2>
+            {result.sources.length > 0 && (
+              <div className="lab-sources">文化依据 · {result.sources.join('、')}</div>
+            )}
+          </div>
 
           <section className="lab-guard reveal">
-            <h3>⚠ 文化护栏 · 不可随意改变的语义</h3>
+            <h3>文化护栏 · 不可随意改变的语义</h3>
             <ul>
               {r.guardrails.map((g, i) => (
                 <li key={i}>{g}</li>
@@ -247,7 +253,7 @@ export default function Lab() {
 
           <div className="lab-grid">
             <section className="reveal">
-              <h3>🎭 传统元素</h3>
+              <h3>传统元素</h3>
               <ul>
                 {r.traditional_elements.map((x, i) => (
                   <li key={i}>{x}</li>
@@ -255,7 +261,7 @@ export default function Lab() {
               </ul>
             </section>
             <section className="reveal">
-              <h3>📦 现代载体</h3>
+              <h3>现代载体</h3>
               <ul>
                 {r.modern_carrier.map((x, i) => (
                   <li key={i}>{x}</li>
@@ -263,7 +269,7 @@ export default function Lab() {
               </ul>
             </section>
             <section className="reveal">
-              <h3>📢 传播方式</h3>
+              <h3>传播方式</h3>
               <ul>
                 {r.spread_channels.map((x, i) => (
                   <li key={i}>{x}</li>
@@ -271,7 +277,7 @@ export default function Lab() {
               </ul>
             </section>
             <section className="reveal">
-              <h3>🤖 AI 可辅助</h3>
+              <h3>AI 可辅助</h3>
               <ul>
                 {r.ai_parts.map((x, i) => (
                   <li key={i}>{x}</li>
@@ -281,7 +287,7 @@ export default function Lab() {
           </div>
 
           <section className="lab-steps reveal">
-            <h3>🗺 可实施步骤</h3>
+            <h3>可实施步骤</h3>
             <ol>
               {r.steps.map((s, i) => (
                 <li key={i}>{s}</li>
