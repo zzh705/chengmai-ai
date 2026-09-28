@@ -31,4 +31,4 @@ Thumbs.db
 # ===== 日志 =====
 *.log
 logs/
-data/structured/embeddings_cache.json
+data/structured/embeddings_cache.*
