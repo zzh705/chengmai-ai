@@ -57,6 +57,8 @@ def build_graph() -> dict:
 
     sources = _load_sources()
     for item in _load_items():
+        if item.get("tier") == "index":
+            continue  # 索引层不进图谱（见下方省级聚合），避免数千节点挤爆力导向图
         add_node(
             item["id"],
             item["name"],
@@ -96,6 +98,44 @@ def build_graph() -> dict:
                 }
             add_node(sid, _SOURCE_LABEL.get(sid, sid), "source", extra)
             add_link(item["id"], sid, "引用")
+
+    # —— 索引层聚合：全国在册条目按「省级行政区 × 大类」汇入图谱 ——
+    # 每省聚成一个 region 节点（带在册计数），大类节点挂全国计数，
+    # 大类 → 省份连「多见于」边（取该大类在册最多的 6 省），既展示全国
+    # 覆盖又不引入数千个具体项目节点。
+    prov_count: dict[str, int] = {}
+    pair_count: dict[tuple[str, str], int] = {}
+    cat_count: dict[str, int] = {}
+    for item in _load_items():
+        if item.get("tier") != "index":
+            continue
+        prov = (item.get("province") or item.get("region", "")).split("，")[0].strip()
+        cat1 = item["category"].split("·")[0].strip()
+        if not prov or not cat1:
+            continue
+        prov_count[prov] = prov_count.get(prov, 0) + 1
+        cat_count[cat1] = cat_count.get(cat1, 0) + 1
+        pair_count[(cat1, prov)] = pair_count.get((cat1, prov), 0) + 1
+
+    for prov, n in prov_count.items():
+        rid = f"region::{prov}"
+        if rid in nodes:
+            nodes[rid].setdefault("extra", {})["total"] = str(n)
+        else:
+            add_node(rid, prov, "region", {"total": str(n)})
+    for cat1, n in cat_count.items():
+        cid = f"cat::{cat1}"
+        if cid in nodes:
+            nodes[cid].setdefault("extra", {})["total"] = str(n)
+        else:
+            add_node(cid, cat1, "category", {"total": str(n)})
+    by_cat: dict[str, list[tuple[str, int]]] = {}
+    for (cat1, prov), n in pair_count.items():
+        by_cat.setdefault(cat1, []).append((prov, n))
+    for cat1, rows in by_cat.items():
+        for prov, n in sorted(rows, key=lambda x: -x[1])[:6]:
+            if n >= 5:
+                add_link(f"cat::{cat1}", f"region::{prov}", "多见于")
 
     return {"nodes": list(nodes.values()), "links": links}
 

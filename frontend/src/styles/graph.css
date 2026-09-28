@@ -131,7 +131,11 @@
   opacity: 0.65;
   /* 连线流动：虚线沿方向滚动，图谱整体有"呼吸感" */
   stroke-dasharray: 5 5;
-  animation: g-flow 1.6s linear infinite;
+  /* 开场：连线按序号错峰浮现（网状织就感），随后进入流动态 */
+  animation: g-flow 1.6s linear 0.4s infinite, g-fade 0.9s ease backwards;
+  animation-delay:
+    calc(0.4s + min(calc(var(--i, 0) * 7ms), 2.2s)),
+    calc(0.4s + min(calc(var(--i, 0) * 7ms), 2.2s));
   transition: opacity 0.2s ease;
 }
 @keyframes g-flow {
@@ -142,13 +146,20 @@
 
 .g-node {
   cursor: pointer;
-  /* backwards：入场后把 opacity 交还给 CSS，g-dim 才能生效 */
-  animation: g-fade 0.5s ease backwards;
+  /* backwards：入场后把 opacity 交还给 CSS，g-dim 才能生效；--i 错峰 */
+  animation: g-fade 0.7s ease backwards;
+  animation-delay: min(calc(var(--i, 0) * 7ms), 3s);
   transition: opacity 0.2s ease;
 }
 @keyframes g-fade {
   from {
     opacity: 0;
+  }
+}
+@keyframes g-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.25);
   }
 }
 
@@ -165,16 +176,22 @@
   transform-box: fill-box;
   transform-origin: center;
   transition: transform 0.2s ease, filter 0.2s ease;
+  /* 开场：圆点从中心弹出，与节点淡入同拍错峰 */
+  animation: g-pop 0.6s cubic-bezier(0.2, 0.75, 0.25, 1) backwards;
+  animation-delay: min(calc(var(--i, 0) * 7ms), 3s);
 }
 .g-node:hover > circle {
   transform: scale(1.25);
   filter: brightness(1.4);
 }
 
-/* 非遗项目节点：金色呼吸光晕 */
+/* 非遗项目节点：金色呼吸光晕（叠加在开场弹出之后） */
 .g-heritage > circle {
   filter: drop-shadow(0 0 6px rgba(232, 197, 107, 0.6));
-  animation: g-breathe 2.6s ease-in-out infinite;
+  animation:
+    g-pop 0.6s cubic-bezier(0.2, 0.75, 0.25, 1) backwards,
+    g-breathe 2.6s ease-in-out 1.4s infinite;
+  animation-delay: min(calc(var(--i, 0) * 7ms), 3s), 1.4s;
 }
 @keyframes g-breathe {
   50% {
@@ -208,6 +225,16 @@
   stroke: #14110f;
   stroke-width: 3px;
   pointer-events: none;
+  /* 开场：标签晚于节点浮现，避免一上来就糊版 */
+  animation: g-fade 0.7s ease backwards;
+  animation-delay: calc(1.15s + min(calc(var(--i, 0) * 5ms), 2s));
+}
+/* 缩放 LOD：拉远收起全部标签，拉近展开全部，中景维持默认（仅项目名） */
+.g-far .g-label {
+  display: none !important;
+}
+.g-near .g-label {
+  display: block !important;
 }
 
 .graph-loading,

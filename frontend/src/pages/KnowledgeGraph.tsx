@@ -22,7 +22,10 @@ const TYPE_LABEL: Record<string, string> = {
   source: '资料来源',
 }
 
-interface SimNode extends GraphNode, d3.SimulationNodeDatum {}
+interface SimNode extends GraphNode, d3.SimulationNodeDatum {
+  /** 数据序号：驱动入场错峰动画（CSS --i） */
+  i: number
+}
 
 /** D3 力模拟会把 source/target 从字符串原地替换成节点对象，故声明为联合类型 */
 interface SimLink {
@@ -68,11 +71,12 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
     const height = svgRef.current.clientHeight
     const nodes: SimNode[] = data.nodes.map((n, i) => ({
       ...n,
+      i,
       // 确定性初始位置：全部落在视口中心附近，避免从 (0,0) 散开跑出画布
       x: width / 2 + Math.cos(i * 2.4) * (40 + (i % 5) * 26),
       y: height / 2 + Math.sin(i * 2.4) * (40 + (i % 5) * 26),
     }))
-    const links: SimLink[] = data.links.map((l) => ({ ...l }))
+    const links: (SimLink & { i: number })[] = data.links.map((l, i) => ({ ...l, i }))
 
     // 邻接表：hover/选中高亮时用它找出该节点的所有关联。
     // 此刻 source/target 还是字符串 id（forceLink 尚未跑），用 idOf 兼容两种形态
@@ -95,7 +99,12 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
     const zoom = d3
       .zoom<SVGSVGElement, unknown>()
       .scaleExtent([0.35, 3])
-      .on('zoom', (event) => rootG.attr('transform', event.transform))
+      .on('zoom', (event) => {
+        rootG.attr('transform', event.transform)
+        // 缩放分级显隐标签（LOD）：拉远收起全部、拉近展开全部，中景维持默认
+        const k = event.transform.k
+        rootG.classed('g-far', k < 0.72).classed('g-near', k > 1.4)
+      })
     svg.call(zoom).on('dblclick.zoom', null)
     // 重建画布时回到初始视图，避免沿用上一视图的缩放态造成跳变
     svg.call(zoom.transform as never, d3.zoomIdentity)
@@ -108,6 +117,8 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
 
     const sim = d3
       .forceSimulation(nodes)
+      // 收敛放慢：开场「网状生长」状态多停留几秒，过渡更从容
+      .alphaDecay(0.015)
       .force(
         'link',
         d3
@@ -129,6 +140,7 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
       .join('line')
       .attr('class', 'g-link')
       .attr('stroke', '#4a4137')
+      .style('--i', (d) => d.i)
 
     // 聚焦子图时显示关系标签（全图 240 条边会拥挤，仅聚焦时展示）
     const relLabel = rootG
@@ -148,6 +160,7 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
       .data(nodes)
       .join('g')
       .attr('class', (d) => `g-node g-${d.type}`)
+      .style('--i', (d) => d.i)
       .call(
         d3
           .drag<any, SimNode>()
@@ -404,12 +417,20 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
           )}
           {selected.type === 'category' && (
             <div className="graph-detail-info">
-              <p>该类别下收录非遗项目 {heritageRels.length} 项，点下方项目名直达知识库详情。</p>
+              <p>
+                该类别深读档案 {heritageRels.length} 份
+                {selected.extra?.total ? `，全国名录在册 ${selected.extra.total} 项` : ''}
+                ，点下方项目名直达知识库详情。
+              </p>
             </div>
           )}
           {selected.type === 'region' && (
             <div className="graph-detail-info">
-              <p>该地域收录非遗 {heritageRels.length} 项，可去地图查看分布，或点下方项目直达详情。</p>
+              <p>
+                该地域深读档案 {heritageRels.length} 份
+                {selected.extra?.total ? `，全国名录在册 ${selected.extra.total} 项` : ''}
+                ，可去地图查看分布，或点下方项目直达详情。
+              </p>
             </div>
           )}
           {selected.type === 'person' && (

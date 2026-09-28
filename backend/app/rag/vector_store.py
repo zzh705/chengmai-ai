@@ -23,6 +23,8 @@ def _make_chunks(items: list[dict]) -> list[dict]:
     """把每个非遗项目切块：简介 / 技艺 / 文化内涵 / 冷知识（RAG 检索单元）。"""
     chunks = []
     for item in items:
+        if item.get("tier") == "index":
+            continue  # 索引层（全国名录简述）不进向量库：保检索质量，省重建成本
         for field, label in [
             ("description", "简介"),
             ("craft_process", "技艺"),
