@@ -151,7 +151,7 @@ export default function Challenge({ onNavigate }: Props) {
   }
 
   /** 本周一至周日的打卡情况 */
-  const week = (() => {
+  const week = useMemo(() => {
     const today = new Date()
     const dow = (today.getDay() + 6) % 7
     const labels = ['一', '二', '三', '四', '五', '六', '日']
@@ -163,7 +163,7 @@ export default function Challenge({ onNavigate }: Props) {
       out.push({ ds, label: labels[i], date: d.getDate(), done: days.includes(ds), today: ds === dayStr() })
     }
     return out
-  })()
+  }, [days])
   const weekDone = week.filter((d) => d.done).length
 
   if (error) return <div className="ch-page ch-center">{error}</div>
@@ -284,7 +284,7 @@ export default function Challenge({ onNavigate }: Props) {
             <div key={d.ds} className={`ch-week-day ${d.done ? 'on' : ''} ${d.today ? 'today' : ''}`}>
               <i>{d.label}</i>
               <b>{String(d.date).padStart(2, '0')}</b>
-              <em>{d.done ? '已打卡' : d.today ? '今日' : '—'}</em>
+              <em>{d.done ? '已打卡' : d.today ? '今日' : '-'}</em>
             </div>
           ))}
         </div>

@@ -1,4 +1,4 @@
-/* 承脉 AI 对话页 —— 编辑式回答排版 + 文档型证据区 */
+/* 承脉 AI 对话页 / 编辑式回答排版 + 文档型证据区 */
 .chat-page {
   display: flex;
   flex-direction: column;
@@ -8,7 +8,30 @@
   margin: 0 auto;
   background: #14110f;
   color: #f3ece2;
-  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-family: var(--font-sans);
+  --mode: #e8c56b;
+}
+/* 模式配色：学者=青瓷 / 传承人=窑火 / 青年=藤金，特写与页签随模式换气质 */
+.chat-page[data-mode='scholar'] {
+  --mode: #8fb3a7;
+  --msc-a: #e7ede9;
+  --msc-b: #b3c2bb;
+  --msc-glow: rgba(143, 179, 167, 0.1);
+  --msc-accent: #8fb3a7;
+}
+.chat-page[data-mode='inheritor'] {
+  --mode: #cf7a45;
+  --msc-a: #f5e2bd;
+  --msc-b: #d99a5f;
+  --msc-glow: rgba(217, 141, 85, 0.12);
+  --msc-accent: #d98d55;
+}
+.chat-page[data-mode='youth'] {
+  --mode: #e8c56b;
+  --msc-a: #f7e5b0;
+  --msc-b: #e0a76a;
+  --msc-glow: rgba(232, 197, 107, 0.12);
+  --msc-accent: #e8c56b;
 }
 
 .chat-header {
@@ -18,8 +41,8 @@
 }
 .chat-header h1 {
   margin: 0;
-  font-size: 28px;
-  letter-spacing: 6px;
+
+
   color: #e8c56b;
 }
 .chat-header p {
@@ -44,9 +67,10 @@
   transition: all 0.2s;
 }
 .mode-tabs button.active {
-  background: #b03a2e;
-  border-color: #b03a2e;
-  color: #fff;
+  background: var(--mode);
+  border-color: var(--mode);
+  color: #14110f;
+  font-weight: 600;
 }
 
 .chat-list {
@@ -64,35 +88,25 @@
   min-height: 430px;
   padding: 44px 40px;
   border: 1px solid #2e2823;
-  border-radius: 20px;
+  border-radius: 12px;
   background:
     radial-gradient(110% 85% at 90% 10%, var(--msc-glow, rgba(232, 197, 107, 0.07)), transparent 62%),
     linear-gradient(180deg, #1a1613 0%, #14110f 75%);
-  animation: mscIn 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation: mscIn 0.45s ease both;
 }
+/* 切模式：整卡淡化入场，文案错峰淡入，剪影随后浮现（不做横移） */
 @keyframes mscIn {
   from {
     opacity: 0;
-    transform: translateX(calc(var(--dir) * 26px));
   }
 }
-.m-scholar {
-  --msc-a: #e7ede9;
-  --msc-b: #b3c2bb;
-  --msc-glow: rgba(176, 200, 190, 0.09);
-  --msc-accent: #a8bdb2;
-}
-.m-inheritor {
-  --msc-a: #f5e2bd;
-  --msc-b: #cfa06a;
-  --msc-glow: rgba(214, 164, 100, 0.1);
-  --msc-accent: #d9a96a;
-}
-.m-youth {
-  --msc-a: #f7e5b0;
-  --msc-b: #e0a76a;
-  --msc-glow: rgba(232, 197, 107, 0.12);
-  --msc-accent: #e8c56b;
+/* 特写入场由全局转场时序接管：vt-running 期间 animation-delay 统一 0.5s（=VT 时长），
+   快照定格 from 态、VT 结束正好接续淡入；切模式时无 vt-running，按 --d 错峰即时播 */
+@keyframes mscText {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
 }
 
 .msc-copy {
@@ -102,22 +116,28 @@
 }
 .msc-kanji {
   writing-mode: vertical-rl;
-  font-family: 'Songti SC', 'SimSun', serif;
+  font-family: var(--font-serif);
   font-size: 46px;
   letter-spacing: 0.32em;
   color: var(--msc-accent);
   line-height: 1;
   padding-top: 6px;
   padding-right: 18px;
-  border-right: 1px solid rgba(232, 197, 107, 0.28);
+  border-right: 1px solid color-mix(in srgb, var(--msc-accent) 32%, transparent);
+  --d: 0.06s;
+  animation: mscText 0.5s both;
+  animation-delay: var(--d);
 }
 .msc-body h2 {
   margin: 0 0 14px;
-  font-family: 'Songti SC', 'SimSun', serif;
-  font-size: 30px;
+  font-family: var(--font-serif);
+  font-size: 22px;
   font-weight: 600;
   letter-spacing: 4px;
   color: #f3ece2;
+  --d: 0.12s;
+  animation: mscText 0.5s both;
+  animation-delay: var(--d);
 }
 .msc-body h2 em {
   margin-left: 10px;
@@ -133,11 +153,17 @@
   font-size: 14px;
   line-height: 2;
   color: #c9bfae;
+  --d: 0.18s;
+  animation: mscText 0.5s both;
+  animation-delay: var(--d);
 }
 .msc-points {
   margin: 0 0 20px;
   padding: 0;
   list-style: none;
+  --d: 0.24s;
+  animation: mscText 0.5s both;
+  animation-delay: var(--d);
 }
 .msc-points li {
   display: flex;
@@ -146,7 +172,7 @@
   margin-bottom: 9px;
 }
 .msc-points i {
-  font-family: 'Songti SC', 'SimSun', serif;
+  font-family: var(--font-serif);
   font-style: normal;
   font-size: 13px;
   color: var(--msc-accent);
@@ -159,15 +185,20 @@
 }
 .msc-hint {
   margin: 0;
-  font-family: 'Kaiti SC', 'KaiTi', serif;
+  font-family: var(--font-kai);
   font-size: 14px;
   color: var(--msc-accent);
   letter-spacing: 1px;
+  --d: 0.3s;
+  animation: mscText 0.5s both;
+  animation-delay: var(--d);
 }
 .msc-scene {
   justify-self: center;
   width: min(380px, 100%);
-  animation: mscScene 0.7s ease both;
+  --d: 0.08s;
+  animation: mscScene 0.65s ease both;
+  animation-delay: var(--d);
 }
 @keyframes mscScene {
   from {
@@ -265,7 +296,7 @@
 .bubble.user .bubble-content {
   max-width: 76%;
   padding: 11px 16px;
-  border-radius: 14px;
+  border-radius: 12px;
   border-bottom-right-radius: 4px;
   background: #b03a2e;
   color: #fff;
@@ -291,7 +322,7 @@
 }
 .bubble.assistant .bubble-content h4 {
   margin: 1.3em 0 0.55em;
-  font-family: 'Songti SC', 'Noto Serif SC', serif;
+  font-family: var(--font-serif);
   font-size: 17px;
   font-weight: 600;
   color: #e8c56b;
@@ -299,6 +330,26 @@
 }
 .bubble.assistant .bubble-content h4:first-child {
   margin-top: 0;
+}
+.bubble.assistant .bubble-content h5 {
+  margin: 1.1em 0 0.45em;
+  font-size: 15px;
+  font-weight: 600;
+  color: #d8cfc0;
+  letter-spacing: 1px;
+}
+.bubble.assistant .bubble-content .inline-code {
+  padding: 1px 6px;
+  border: 1px solid #3a332c;
+  border-radius: 5px;
+  background: #1b1713;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 0.86em;
+  color: #e8c56b;
+}
+.bubble.assistant .bubble-content em {
+  font-style: normal;
+  color: var(--mode);
 }
 .bubble.assistant .bubble-content ul,
 .bubble.assistant .bubble-content ol {
@@ -314,7 +365,7 @@
 }
 .bubble.assistant .bubble-content ol li::marker {
   color: #e8c56b;
-  font-family: 'Songti SC', serif;
+  font-family: var(--font-serif);
 }
 .bubble.assistant .bubble-content strong {
   color: #f3ece2;
@@ -337,19 +388,60 @@
     visibility: hidden;
   }
 }
+/* 等待态：墨点呼吸 + 说明文字，收到正文后整体淡化为回答 */
 .thinking {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   color: #9a8f80;
   font-size: 14px;
   letter-spacing: 2px;
-  animation: thinkPulse 1.4s ease-in-out infinite;
+  animation: thinkIn 0.4s ease both;
 }
-@keyframes thinkPulse {
-  0%,
-  100% {
-    opacity: 0.45;
+@keyframes thinkIn {
+  from {
+    opacity: 0;
+    filter: blur(3px);
   }
-  50% {
+}
+.think-dots {
+  display: inline-flex;
+  gap: 4px;
+}
+.think-dots b {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--mode);
+  animation: dotWave 1.2s ease-in-out infinite;
+}
+.think-dots b:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.think-dots b:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes dotWave {
+  0%,
+  60%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  30% {
     opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+/* 回答入场：从等待态淡入成文字 */
+.answer-text {
+  animation: answerIn 0.55s ease both;
+}
+@keyframes answerIn {
+  from {
+    opacity: 0;
+    filter: blur(4px);
+    transform: translateY(4px);
   }
 }
 
@@ -368,14 +460,14 @@
   display: flex;
   align-items: baseline;
   gap: 10px;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 3px;
   color: #9a8f80;
   margin-bottom: 8px;
 }
 .meta-label-note {
   letter-spacing: 0;
-  color: #6e655a;
+  color: #a89a86;
 }
 .source-item {
   display: flex;
@@ -390,7 +482,7 @@
 .source-no {
   flex: none;
   width: 18px;
-  font-family: 'Songti SC', serif;
+  font-family: var(--font-serif);
   color: #e8c56b;
 }
 .source-title {
@@ -399,7 +491,7 @@
 .source-pub {
   margin-left: auto;
   flex: none;
-  color: #6e655a;
+  color: #a89a86;
   font-size: 12px;
 }
 .meta-stats {
@@ -462,11 +554,10 @@
   flex: 1;
   padding: 12px 16px;
   border: 1px solid #3a332c;
-  border-radius: 10px;
+  border-radius: 8px;
   background: #1b1713;
   color: #f3ece2;
   font-size: 15px;
-  outline: none;
 }
 .chat-input input:focus {
   border-color: #e8c56b;
@@ -474,7 +565,7 @@
 .chat-input button {
   padding: 0 26px;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   background: #b03a2e;
   color: #fff;
   font-size: 15px;
@@ -487,7 +578,7 @@
 
 /* 生成卡片（路线 / 测验 / 故事）：统一文档卡 */
 .card-overline {
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 3px;
   color: #9a8f80;
   margin-bottom: 6px;
@@ -504,7 +595,7 @@
 }
 .plan-title {
   color: #f3ece2;
-  font-family: 'Songti SC', 'Noto Serif SC', serif;
+  font-family: var(--font-serif);
   font-size: 16.5px;
   font-weight: 600;
   letter-spacing: 1px;
@@ -633,7 +724,7 @@
 .story-section strong {
   display: block;
   color: #e8c56b;
-  font-family: 'Songti SC', 'Noto Serif SC', serif;
+  font-family: var(--font-serif);
   font-size: 15px;
   font-weight: 600;
   margin-bottom: 4px;

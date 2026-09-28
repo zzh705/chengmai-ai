@@ -79,7 +79,7 @@
   font-size: 17px;
   font-weight: 700;
   letter-spacing: 2px;
-  border-radius: 7px;
+  border-radius: 8px;
   opacity: 0;
   transform: translateY(-70px) scale(1.9) rotate(-14deg);
   box-shadow: 0 10px 30px rgba(176, 58, 46, 0.5);

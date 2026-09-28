@@ -34,7 +34,7 @@
 }
 .ab-rail-mark {
   writing-mode: vertical-rl;
-  font-family: 'Songti SC', 'SimSun', serif;
+  font-family: var(--font-serif);
   font-size: 24px;
   letter-spacing: 0.34em;
   color: rgba(232, 197, 107, 0.52);
@@ -45,17 +45,17 @@
 .ab-rail-mark-sm {
   font-size: 14px;
   padding: 8px 5px;
-  color: rgba(232, 197, 107, 0.38);
+  color: rgba(232, 197, 107, 0.78);
 }
 .ab-rail-text {
   writing-mode: vertical-rl;
-  font-family: 'Songti SC', 'SimSun', serif;
+  font-family: var(--font-serif);
   font-size: 13px;
   letter-spacing: 0.46em;
-  color: #7a6c5b;
+  color: #948978;
 }
 .ab-rail-text-dim {
-  color: #5d5348;
+  color: #8a7f70;
 }
 .ab-rail-line {
   flex: 1;
@@ -78,15 +78,15 @@
   font-size: 22px;
   font-weight: 700;
   letter-spacing: 3px;
-  border-radius: 9px;
+  border-radius: 12px;
   transform: rotate(-4deg);
   box-shadow: 0 6px 22px rgba(176, 58, 46, 0.45);
   margin-bottom: 16px;
 }
 .ab-header h1 {
   margin: 0;
-  font-size: 26px;
-  letter-spacing: 6px;
+
+
   color: #e8c56b;
 }
 .ab-header p {
@@ -177,7 +177,7 @@
 .ab-nums div {
   background: #14110f;
   border: 1px solid #2e2823;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 12px 8px;
   text-align: center;
 }
@@ -189,7 +189,7 @@
   color: #e8c56b;
 }
 .ab-nums span {
-  font-size: 11px;
+  font-size: 12px;
   color: #9a8f80;
 }
 @media (max-width: 640px) {
@@ -207,7 +207,7 @@
 .ab-idea div {
   background: #14110f;
   border: 1px solid #2e2823;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 14px;
 }
 .ab-idea strong {
@@ -227,7 +227,7 @@
 .ab-flow {
   background: #14110f;
   border: 1px solid #2e2823;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 18px 14px;
 }
 .ab-flow-row {
@@ -262,7 +262,7 @@
 }
 .ab-flow-arrow {
   text-align: center;
-  color: #4a413a;
+  color: #948978;
   font-size: 14px;
   line-height: 1.6;
 }
@@ -311,7 +311,7 @@
 .ab-quality div {
   background: #14110f;
   border: 1px solid #2e2823;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 14px 8px;
   text-align: center;
 }
@@ -323,7 +323,7 @@
   color: #e8c56b;
 }
 .ab-quality span {
-  font-size: 11.5px;
+  font-size: 12px;
   color: #9a8f80;
 }
 .ab-quality-note {
@@ -363,8 +363,8 @@
 }
 .tl-when {
   display: block;
-  font-size: 11.5px;
-  color: #6e655a;
+  font-size: 12px;
+  color: #a89a86;
   letter-spacing: 2px;
   margin-bottom: 3px;
 }
@@ -388,7 +388,7 @@
 .ab-agent {
   background: #14110f;
   border: 1px solid #2e2823;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 12px 14px;
 }
 .ab-agent strong {
@@ -425,7 +425,7 @@
 .ab-team div {
   background: #14110f;
   border: 1px solid #2e2823;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 16px;
 }
 .ab-team strong {
@@ -438,10 +438,19 @@
   font-size: 13px;
   color: #9a8f80;
 }
+.ab-team-school {
+  margin: -2px 0 14px;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: #c9bfae;
+}
+.ab-advisors div {
+  padding: 14px 16px;
+}
 
 .ab-footer {
   text-align: center;
-  color: #4a413a;
+  color: #948978;
   font-size: 12px;
   letter-spacing: 3px;
   margin-top: 30px;
@@ -459,7 +468,7 @@
 }
 .ab-why-kicker {
   display: inline-block;
-  font-size: 11.5px;
+  font-size: 12px;
   letter-spacing: 4px;
   color: #9a8f80;
   border: 1px solid #3a332c;
@@ -468,7 +477,7 @@
   margin-bottom: 22px;
 }
 .ab-why-lines p {
-  font-family: 'Songti SC', 'Noto Serif SC', serif;
+  font-family: var(--font-serif);
   font-size: 16.5px;
   line-height: 2.15;
   color: #d8cfc0;
@@ -508,8 +517,8 @@
 }
 .ab-why-lights-head em {
   font-style: normal;
-  font-size: 11.5px;
-  color: #6e655a;
+  font-size: 12px;
+  color: #a89a86;
   letter-spacing: 1px;
 }
 .ab-lights {
@@ -558,14 +567,14 @@
 .ab-why-lights-note {
   margin-top: 16px !important;
   font-size: 12.5px !important;
-  color: #6e655a !important;
+  color: #a89a86 !important;
   line-height: 1.9 !important;
   text-align: center;
 }
 .ab-why-sign {
   margin: 26px 0 4px;
   text-align: right;
-  font-family: 'STKaiti', 'Kaiti SC', serif;
+  font-family: var(--font-kai);
   font-size: 14.5px;
   color: #9a8f80;
   letter-spacing: 3px;
@@ -583,5 +592,22 @@
   .ab-why-lights-head {
     flex-direction: column;
     gap: 4px;
+  }
+}
+
+/* 中文正文行长上限：正文/列表控制在 ~34 字以内（原 46-55 字/行） */
+.ab-card > p,
+.ab-why-lines p,
+.ab-list li {
+  max-width: 34em;
+}
+
+/* 窄屏时卡片贴边：回纹角饰右伸 7px 会把 .ab-page 撑出 6px 内部横向溢出，收进来 */
+@media (max-width: 900px) {
+  .ab-card::before {
+    left: 0;
+  }
+  .ab-card::after {
+    right: 0;
   }
 }

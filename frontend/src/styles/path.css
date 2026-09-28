@@ -13,8 +13,8 @@
 }
 .path-header h1 {
   margin: 0;
-  font-size: 24px;
-  letter-spacing: 5px;
+
+
   color: #e8c56b;
 }
 .path-header p {
@@ -42,7 +42,6 @@
   border-radius: 8px;
   color: #f3ece2;
   font-size: 14px;
-  outline: none;
 }
 .path-form input:focus {
   border-color: #e8c56b;
@@ -186,8 +185,8 @@
 }
 .path-goals button em {
   font-style: normal;
-  font-size: 10px;
-  color: #6e655a;
+  font-size: 12px;
+  color: #a89a86;
 }
 .path-goals button.active {
   background: #b03a2e;
@@ -195,7 +194,7 @@
   color: #fff;
 }
 .path-goals button.active em {
-  color: #f0c9c2;
+  color: #fff;
 }
 
 /* 进度条 */
@@ -226,7 +225,7 @@
 .path-reset {
   padding: 5px 12px;
   border: 1px solid #3a332c;
-  border-radius: 7px;
+  border-radius: 8px;
   background: transparent;
   color: #9a8f80;
   font-size: 12px;
@@ -262,7 +261,7 @@
   flex-shrink: 0;
 }
 .task-done span {
-  color: #6e655a;
+  color: #a89a86;
   text-decoration: line-through;
   animation: taskCheck 0.3s ease;
 }
@@ -302,12 +301,12 @@
   gap: 8px;
   font-size: 13px;
   letter-spacing: 2px;
-  color: #6e655a;
+  color: #a89a86;
   transition: color 0.3s;
 }
 .path-stages span i {
   font-style: normal;
-  font-family: Georgia, serif;
+  font-family: var(--font-display);
   font-size: 12px;
   color: #4a4137;
   transition: color 0.3s;
@@ -331,7 +330,7 @@
 }
 .path-kicker {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 4px;
   color: #b03a2e;
   margin-bottom: 6px;
@@ -345,6 +344,6 @@
   letter-spacing: 1px;
 }
 .path-day-badge {
-  font-family: Georgia, 'Songti SC', serif;
+  font-family: var(--font-display);
   letter-spacing: 1px;
 }

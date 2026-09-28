@@ -13,8 +13,8 @@
 }
 .lab-header h1 {
   margin: 0;
-  font-size: 24px;
-  letter-spacing: 5px;
+
+
   color: #e8c56b;
 }
 .lab-header p {
@@ -43,7 +43,6 @@
   color: #f3ece2;
   font-size: 14px;
   font-family: inherit;
-  outline: none;
 }
 .lab-form textarea:focus,
 .lab-form select:focus {
@@ -174,7 +173,7 @@
   position: relative;
   z-index: 1;
   margin: -2px 0 12px;
-  font-family: Georgia, 'STKaiti', serif;
+  font-family: var(--font-display);
   font-size: 19px;
   font-style: italic;
   color: #e8c56b;
@@ -360,7 +359,7 @@
   background: #14100c;
   border: 1px solid rgba(232, 197, 107, 0.55);
   color: #e8c56b;
-  font-family: Georgia, serif;
+  font-family: var(--font-display);
   font-size: 14px;
   font-weight: 700;
   box-shadow: 0 0 14px rgba(232, 197, 107, 0.18);
@@ -434,8 +433,8 @@
 }
 .lab-history h3 em {
   font-style: normal;
-  font-size: 11px;
-  color: #6e655a;
+  font-size: 12px;
+  color: #a89a86;
 }
 .lab-history-list {
   display: flex;
@@ -446,7 +445,7 @@
   text-align: left;
   background: #1b1713;
   border: 1px solid #2e2823;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 10px 14px;
   cursor: pointer;
   transition: all 0.2s;
@@ -464,8 +463,8 @@
   font-weight: 600;
 }
 .lab-history-list span {
-  color: #6e655a;
-  font-size: 11px;
+  color: #a89a86;
+  font-size: 12px;
 }
 
 /* ===== 回答排版升级：阶段反馈 + 章节序号 ===== */
@@ -481,12 +480,12 @@
   gap: 8px;
   font-size: 13px;
   letter-spacing: 2px;
-  color: #6e655a;
+  color: #a89a86;
   transition: color 0.3s;
 }
 .lab-stages span i {
   font-style: normal;
-  font-family: Georgia, serif;
+  font-family: var(--font-display);
   font-size: 12px;
   color: #4a4137;
   transition: color 0.3s;
@@ -507,7 +506,7 @@
 }
 .lab-sec-no {
   display: block;
-  font-family: Georgia, serif;
+  font-family: var(--font-display);
   font-size: 12px;
   letter-spacing: 3px;
   color: #b03a2e;

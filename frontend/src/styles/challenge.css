@@ -18,8 +18,8 @@
 }
 .ch-header h1 {
   margin: 0;
-  font-size: 24px;
-  letter-spacing: 5px;
+
+
   color: #e8c56b;
 }
 .ch-header p {
@@ -132,7 +132,7 @@
   margin: 24px 0 14px;
 }
 .ch-empty {
-  color: #6e655a;
+  color: #a89a86;
   font-size: 14px;
 }
 
@@ -148,13 +148,9 @@
   border-radius: 12px;
   padding: 16px 12px;
   text-align: center;
-  opacity: 0.5;
-  filter: grayscale(1);
-  transition: all 0.25s;
+  transition: border-color 0.25s, box-shadow 0.25s;
 }
 .ch-badge.earned {
-  opacity: 1;
-  filter: none;
   border-color: #e8c56b;
   box-shadow: 0 4px 18px rgba(232, 197, 107, 0.12);
 }
@@ -197,7 +193,7 @@
 }
 .ch-badge em {
   font-style: normal;
-  font-size: 11px;
+  font-size: 12px;
   color: #9a8f80;
 }
 
@@ -255,7 +251,7 @@
   letter-spacing: 1px;
 }
 .ch-rank-head span {
-  font-size: 11.5px;
+  font-size: 12px;
   color: #9a8f80;
 }
 .ch-rank-bar {
@@ -325,7 +321,7 @@
 }
 .ch-q-sk-opt {
   height: 42px;
-  border-radius: 10px;
+  border-radius: 12px;
 }
 .ch-q-error {
   margin: 0;
@@ -363,7 +359,7 @@
   border: 1px solid #3a332c;
   background: #1b1713;
   color: #d8cfc0;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 11px 14px;
   font-size: 14px;
   line-height: 1.6;
@@ -411,7 +407,7 @@
   gap: 5px;
   margin-top: 13px;
   padding: 11px 13px;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 13.5px;
   line-height: 1.7;
   animation: riseIn 0.4s ease 0.15s backwards;
@@ -445,7 +441,7 @@
   box-shadow: 0 0 18px rgba(232, 197, 107, 0.14);
 }
 .ch-badge-flag {
-  font-size: 11px;
+  font-size: 12px;
   color: #e8c56b;
   letter-spacing: 2px;
 }
@@ -466,7 +462,7 @@
   transition: transform 0.8s ease;
 }
 .ch-badge-prog span {
-  font-size: 10.5px;
+  font-size: 12px;
   color: #9a8f80;
   min-width: 30px;
   text-align: right;
@@ -495,7 +491,7 @@
   margin-bottom: 0;
 }
 .ch-week-head span {
-  font-size: 11.5px;
+  font-size: 12px;
   color: #9a8f80;
   letter-spacing: 1px;
 }
@@ -509,7 +505,7 @@
   text-align: center;
   padding: 10px 2px 9px;
   border: 1px solid #2e2823;
-  border-radius: 10px;
+  border-radius: 12px;
   background: #1b1713;
   transition: border-color 0.2s, transform 0.2s;
 }
@@ -519,8 +515,8 @@
 .ch-week-day i {
   display: block;
   font-style: normal;
-  font-size: 10.5px;
-  color: #6e655a;
+  font-size: 12px;
+  color: #a89a86;
 }
 .ch-week-day b {
   display: block;
@@ -533,9 +529,9 @@
 .ch-week-day em {
   display: block;
   font-style: normal;
-  font-size: 9.5px;
+  font-size: 12px;
   margin-top: 3px;
-  color: #4f473d;
+  color: #a89a86;
 }
 .ch-week-day.on {
   border-color: rgba(232, 197, 107, 0.55);
@@ -554,13 +550,13 @@
   color: #d8cfc0;
 }
 .ch-week-day.today em {
-  color: #b03a2e;
+  color: #e07a6a;
 }
 
 /* 错题本 */
 .ch-wrong {
   border: 1px solid #2e2823;
-  border-radius: 10px;
+  border-radius: 12px;
   background: #1b1713;
   margin-bottom: 8px;
   overflow: hidden;
@@ -583,7 +579,7 @@
 }
 .ch-wrong-topic {
   flex: none;
-  font-size: 10.5px;
+  font-size: 12px;
   color: #e8c56b;
   border: 1px solid #e8c56b44;
   border-radius: 999px;
@@ -602,7 +598,7 @@
 .ch-wrong-head em {
   flex: none;
   font-style: normal;
-  font-size: 11.5px;
+  font-size: 12px;
   color: #9a8f80;
   letter-spacing: 1px;
 }
@@ -660,6 +656,11 @@
     padding: 8px 1px;
   }
   .ch-week-day em {
-    font-size: 9px;
+    font-size: 12px;
   }
+}
+
+/* 中文正文行长上限：每日一题提示原为 53 字/行 */
+.ch-daily-hint {
+  max-width: 34em;
 }

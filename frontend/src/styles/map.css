@@ -12,8 +12,8 @@
 }
 .map-header h1 {
   margin: 0;
-  font-size: 24px;
-  letter-spacing: 5px;
+
+
   color: #e8c56b;
 }
 .map-header p {
@@ -39,7 +39,7 @@
 .map-stat {
   background: linear-gradient(160deg, #1d1814, #171310);
   border: 1px solid #2e2823;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 10px 12px;
   text-align: center;
   animation: riseIn 0.5s ease backwards;
@@ -198,7 +198,7 @@
   display: block;
 }
 .map-legend-note {
-  color: #6e655a;
+  color: #a89a86;
 }
 
 /* 悬停提示卡 */
@@ -338,7 +338,7 @@
   margin: 14px 0 10px;
 }
 .map-empty {
-  color: #6e655a;
+  color: #a89a86;
   font-size: 13px;
 }
 .map-items {
@@ -352,7 +352,7 @@
   align-items: center;
   background: #1b1713;
   border: 1px solid #2e2823;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 10px 12px;
   cursor: pointer;
   transition: all 0.2s;
@@ -483,14 +483,14 @@
 }
 .map-tile em {
   font-style: normal;
-  font-size: 11px;
+  font-size: 12px;
   color: #e8c56b;
 }
 .map-tile.no-data {
-  color: #6e655a;
+  color: #a89a86;
 }
 .map-tile.no-data em {
-  color: #6e655a;
+  color: #a89a86;
 }
 .map-tile:hover {
   transform: translateY(-3px);
@@ -543,7 +543,7 @@
   gap: 6px;
   background: #1b1713;
   border: 1px solid #2e2823;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 10px;
   cursor: pointer;
   font-family: inherit;
@@ -561,9 +561,9 @@
   position: absolute;
   top: 14px;
   right: 16px;
-  font-family: 'Songti SC', 'Noto Serif SC', serif;
+  font-family: var(--font-serif);
   font-size: 13px;
-  color: #b03a2e;
+  color: #e8c56b;
   letter-spacing: 1px;
 }
 .map-tour-img {
@@ -572,7 +572,7 @@
   aspect-ratio: 4 / 3;
   object-fit: cover;
   border: none;
-  border-radius: 7px;
+  border-radius: 8px;
 }
 .map-tour-card strong {
   color: #f3ece2;
@@ -582,7 +582,7 @@
 }
 .map-tour-meta {
   color: #9a8f80;
-  font-size: 11.5px;
+  font-size: 12px;
   text-align: left;
 }
 
@@ -648,7 +648,7 @@
     gap: 4px;
   }
   .map-tile span {
-    font-size: 11px;
+    font-size: 12px;
   }
 }
 @media (max-width: 560px) {
@@ -656,7 +656,7 @@
     grid-template-columns: repeat(2, 1fr);
   }
   .map-tile span {
-    font-size: 9.5px;
+    font-size: 12px;
     letter-spacing: 0;
   }
   .map-tools {

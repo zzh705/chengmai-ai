@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { fetchProfile, type Profile } from '../api/progress'
 import CountUp from '../components/CountUp'
 import { calcRank, TITLES } from '../utils/rank'
@@ -73,26 +73,29 @@ function Radar({ data }: { data: { category: string; count: number }[] }) {
 
 /** 近 28 天足迹热力：按周分组的日历格（本周超出今天的格子留空） */
 function Heat({ activity }: { activity: { date: string; count: number }[] }) {
-  const map = new Map(activity.map((a) => [a.date, a.count]))
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const start = new Date(today)
-  start.setDate(start.getDate() - 27)
-  const gridStart = new Date(start)
-  gridStart.setDate(start.getDate() - ((start.getDay() + 6) % 7))
-  const end = new Date(today)
-  end.setDate(today.getDate() + (6 - ((today.getDay() + 6) % 7)))
-  const fmt = (d: Date) =>
-    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-  const cells: { ds: string; n: number; future: boolean }[] = []
-  const cur = new Date(gridStart)
-  while (cur <= end) {
-    cells.push({ ds: fmt(cur), n: map.get(fmt(cur)) ?? 0, future: cur > today })
-    cur.setDate(cur.getDate() + 1)
-  }
-  const weeks: (typeof cells)[] = []
-  for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7))
-  const total = activity.reduce((s, a) => s + a.count, 0)
+  const { weeks, total } = useMemo(() => {
+    const map = new Map(activity.map((a) => [a.date, a.count]))
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const start = new Date(today)
+    start.setDate(start.getDate() - 27)
+    const gridStart = new Date(start)
+    gridStart.setDate(start.getDate() - ((start.getDay() + 6) % 7))
+    const end = new Date(today)
+    end.setDate(today.getDate() + (6 - ((today.getDay() + 6) % 7)))
+    const fmt = (d: Date) =>
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+    const cells: { ds: string; n: number; future: boolean }[] = []
+    const cur = new Date(gridStart)
+    while (cur <= end) {
+      cells.push({ ds: fmt(cur), n: map.get(fmt(cur)) ?? 0, future: cur > today })
+      cur.setDate(cur.getDate() + 1)
+    }
+    const weeks: (typeof cells)[] = []
+    for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7))
+    const total = activity.reduce((s, a) => s + a.count, 0)
+    return { cells, weeks, total }
+  }, [activity])
   const lvl = (n: number) => (n === 0 ? '' : n === 1 ? 'l1' : n <= 3 ? 'l2' : 'l3')
 
   return (

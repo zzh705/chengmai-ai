@@ -19,8 +19,8 @@
 }
 .pf-header h1 {
   margin: 0;
-  font-size: 24px;
-  letter-spacing: 5px;
+
+
   color: #e8c56b;
 }
 .pf-header p {
@@ -74,7 +74,7 @@
   color: #e8c56b;
 }
 .pf-empty {
-  color: #6e655a;
+  color: #a89a86;
   font-size: 13px;
 }
 .pf-line {
@@ -86,7 +86,7 @@
   color: #d8cfc0;
 }
 .pf-line span {
-  color: #6e655a;
+  color: #a89a86;
   font-size: 12px;
 }
 
@@ -139,7 +139,7 @@
   width: 64px;
   height: 64px;
   border: 2px solid #b03a2e;
-  border-radius: 10px;
+  border-radius: 12px;
   color: #b03a2e;
   display: flex;
   align-items: center;
@@ -156,7 +156,7 @@
 }
 .pf-hero-lv {
   display: inline-block;
-  font-size: 11.5px;
+  font-size: 12px;
   color: #14110f;
   background: #e8c56b;
   border-radius: 999px;
@@ -182,7 +182,7 @@
 .pf-hero-exp-head {
   display: flex;
   justify-content: space-between;
-  font-size: 11.5px;
+  font-size: 12px;
   color: #c9a85c;
   margin-bottom: 6px;
   letter-spacing: 1px;
@@ -261,7 +261,7 @@
   border: 1px solid #e8c56b44;
   border-radius: 999px;
   padding: 1px 8px;
-  font-size: 11px;
+  font-size: 12px;
   white-space: nowrap;
 }
 .pf-tl-name {
@@ -271,8 +271,8 @@
   white-space: nowrap;
 }
 .pf-tl-ts {
-  color: #6e655a;
-  font-size: 11px;
+  color: #a89a86;
+  font-size: 12px;
   white-space: nowrap;
 }
 @media (max-width: 720px) {
@@ -317,7 +317,7 @@
 }
 .pf-radar-label {
   fill: #9a8f80;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 /* 区块包裹（860 对齐 + 上下留白） */
@@ -337,7 +337,7 @@
   margin: 0;
 }
 .pf-card-head span {
-  font-size: 11.5px;
+  font-size: 12px;
   color: #9a8f80;
   letter-spacing: 1px;
 }
@@ -356,15 +356,15 @@
   text-align: center;
   padding: 10px 6px 9px;
   border: 1px solid #2e2823;
-  border-radius: 9px;
+  border-radius: 12px;
   background: #16130f;
   transition: border-color 0.25s, transform 0.25s;
 }
 .pf-ladder-step i {
   display: block;
   font-style: normal;
-  font-size: 10.5px;
-  color: #6e655a;
+  font-size: 12px;
+  color: #a89a86;
   letter-spacing: 1px;
 }
 .pf-ladder-step em {
@@ -372,7 +372,7 @@
   font-style: normal;
   font-size: 12px;
   margin-top: 4px;
-  color: #6e655a;
+  color: #a89a86;
   white-space: nowrap;
 }
 .pf-ladder-step.done {
@@ -417,7 +417,7 @@
 }
 .pf-heat-head em {
   font-style: normal;
-  font-size: 11.5px;
+  font-size: 12px;
   color: #9a8f80;
   letter-spacing: 1px;
 }
@@ -429,8 +429,8 @@
   display: grid;
   grid-template-rows: repeat(7, 1fr);
   gap: 5px;
-  font-size: 10px;
-  color: #6e655a;
+  font-size: 12px;
+  color: #a89a86;
 }
 .pf-heat-weekdays span {
   display: flex;
@@ -479,8 +479,8 @@
   align-items: center;
   gap: 5px;
   margin-top: 10px;
-  font-size: 10.5px;
-  color: #6e655a;
+  font-size: 12px;
+  color: #a89a86;
 }
 .pf-heat-legend i {
   width: 12px;
@@ -536,7 +536,15 @@
 }
 .pf-topic em {
   font-style: normal;
-  font-size: 11.5px;
-  color: #6e655a;
+  font-size: 12px;
+  color: #a89a86;
   white-space: nowrap;
+}
+
+/* 移动端称号阶梯：改纵向换行，避免 746px 内容被裁在 288px 视口外 */
+@media (max-width: 720px) {
+  .pf-ladder {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
 }

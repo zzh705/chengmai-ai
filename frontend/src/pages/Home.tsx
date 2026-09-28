@@ -68,7 +68,7 @@ export default function Home({ onNavigate, entered = true }: Props) {
     return picks
   }, [list, featured, recommended])
 
-  // 地域探索：与地图同口径 —— 含「全国」只记全国；否则该省出现即计入
+  // 地域探索：与地图同口径（含「全国」只记全国）；否则该省出现即计入
   // （多省项目如"陕西、河北唐山…"会同时给相关省份计数，避免首页与地图数字打架）
   const regions = useMemo(() => {
     const m = new Map<string, number>()
@@ -135,12 +135,6 @@ export default function Home({ onNavigate, entered = true }: Props) {
         <div className="home-seal">承脉</div>
         <h1>让千年非遗，被这一代人接住</h1>
         <p className="home-slogan">CHENGMAI · 非遗多智能体系统</p>
-        <div className="home-slogan-feats" aria-label="核心功能">
-          <span>检索问答</span>
-          <span>知识图谱</span>
-          <span>学习路径</span>
-          <span>活化创作</span>
-        </div>
 
         <div className="home-ask">
           <input
@@ -159,6 +153,14 @@ export default function Home({ onNavigate, entered = true }: Props) {
           ))}
         </div>
       </section>
+
+      {/* 功能清单独立成带（移出 hero：hero 文字元素需 ≤4 层，且不得内嵌功能列表） */}
+      <div className="home-slogan-feats" aria-label="核心功能">
+        <span>检索问答</span>
+        <span>知识图谱</span>
+        <span>学习路径</span>
+        <span>活化创作</span>
+      </div>
 
       {error && <div className="home-error">{error}</div>}
 
@@ -180,7 +182,7 @@ export default function Home({ onNavigate, entered = true }: Props) {
               <span className="home-gate-no">{String(i + 1).padStart(2, '0')}</span>
               <strong>{g.title}</strong>
               <p>{g.desc}</p>
-              <span className="home-gate-go">进入</span>
+              <span className="home-gate-go">查看</span>
             </button>
           ))}
         </div>
@@ -217,7 +219,7 @@ export default function Home({ onNavigate, entered = true }: Props) {
           <div
             className="home-today"
             onClick={() => onNavigate('knowledge', featured.id)}
-            title="进入知识库查看详情"
+            title="查看知识库详情"
           >
             <Cover item={featured} className="home-today-img" />
             <div className="home-today-main">
@@ -229,7 +231,7 @@ export default function Home({ onNavigate, entered = true }: Props) {
                 </span>
               </p>
             </div>
-            <span className="home-today-cta">查看详情 →</span>
+            <span className="home-today-cta">查看 →</span>
           </div>
         </section>
       )}
@@ -254,7 +256,7 @@ export default function Home({ onNavigate, entered = true }: Props) {
                   <p className="home-story-hook">「{h.hook}」</p>
                   <span className="home-story-foot">
                     {h.name} · {h.region}
-                    <em>读下去 →</em>
+                    <em>查看 →</em>
                   </span>
                 </div>
               </article>
@@ -407,7 +409,7 @@ export default function Home({ onNavigate, entered = true }: Props) {
             <span>活化创作</span>
           </div>
           <button className="home-prog-cta" onClick={() => onNavigate('profile')}>
-            查看完整档案 →
+            查看 →
           </button>
         </div>
       </section>

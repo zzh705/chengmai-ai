@@ -65,39 +65,59 @@ interface Message {
   streaming?: boolean
 }
 
-/** 轻量排版：标题 / 列表 / 段落 / 强调，让长回答像文档而非聊天串 */
+/** 轻量排版：标题 / 列表 / 段落 / 强调，让长回答像文档而非聊天串。
+ *  同时兜底清洗 LLM 常见的 Markdown 残留：分隔线（*** / ---）、孤立的 # 与 **。 */
+type Seg = { t: 'h4' | 'h5' | 'ul' | 'ol' | 'p'; lines: string[] }
+
 function renderProse(text: string): React.ReactNode {
   const blocks = cleanLLM(text)
     .split(/\n{2,}/)
     .map((b) => b.trim())
-    .filter(Boolean)
-  return blocks.map((b, i) => {
-    const lines = b.split('\n')
-    const heading = b.match(/^(#{1,4})\s+(.+)$/)
-    if (heading && lines.length === 1) {
-      return <h4 key={i}>{inline(heading[2])}</h4>
+    .filter((b) => b && !/^(-{3,}|\*{3,}|_{3,})$/.test(b))
+
+  const segs: Seg[] = []
+  for (const b of blocks) {
+    for (const raw of b.split('\n')) {
+      const line = raw.trim()
+      if (!line || /^(-{3,}|\*{3,}|_{3,})$/.test(line)) continue
+      const heading = line.match(/^(#{1,6})\s+(.+)$/)
+      const kind: Seg['t'] = heading
+        ? heading[1].length <= 2
+          ? 'h4'
+          : 'h5'
+        : /^\s*[-*]\s+/.test(line)
+          ? 'ul'
+          : /^\s*\d+[.、)]\s*/.test(line)
+            ? 'ol'
+            : 'p'
+      const top = segs[segs.length - 1]
+      if (top && top.t === kind) top.lines.push(line)
+      else segs.push({ t: kind, lines: [line] })
     }
-    if (lines.every((l) => /^\s*[-*]\s+/.test(l))) {
+  }
+
+  return segs.map((seg, i) => {
+    if (seg.t === 'h4') return <h4 key={i}>{inline(seg.lines[0].replace(/^#{1,6}\s+/, ''))}</h4>
+    if (seg.t === 'h5') return <h5 key={i}>{inline(seg.lines[0].replace(/^#{1,6}\s+/, ''))}</h5>
+    if (seg.t === 'ul')
       return (
         <ul key={i}>
-          {lines.map((l, j) => (
+          {seg.lines.map((l, j) => (
             <li key={j}>{inline(l.replace(/^\s*[-*]\s+/, ''))}</li>
           ))}
         </ul>
       )
-    }
-    if (lines.length > 1 && lines.every((l) => /^\s*\d+[.、)]\s*/.test(l))) {
+    if (seg.t === 'ol')
       return (
         <ol key={i}>
-          {lines.map((l, j) => (
+          {seg.lines.map((l, j) => (
             <li key={j}>{inline(l.replace(/^\s*\d+[.、)]\s*/, ''))}</li>
           ))}
         </ol>
       )
-    }
     return (
       <p key={i}>
-        {lines.map((l, j) => (
+        {seg.lines.map((l, j) => (
           <Fragment key={j}>
             {j > 0 && <br />}
             {inline(l)}
@@ -109,14 +129,34 @@ function renderProse(text: string): React.ReactNode {
 }
 
 function inline(text: string): React.ReactNode {
-  if (!text.includes('**')) return text
-  return text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
-    part.startsWith('**') && part.endsWith('**') && part.length > 4 ? (
-      <strong key={i}>{part.slice(2, -2)}</strong>
-    ) : (
-      <Fragment key={i}>{part}</Fragment>
-    ),
-  )
+  let s = text
+  const nodes: React.ReactNode[] = []
+  if (!/(\*\*|__|\*|`)/.test(s)) return s
+  // 依次抽出 粗体 / 行内代码 / 斜体，剩余孤立标记直接剥掉
+  const token = /(\*\*[^*]+\*\*|__[^_]+__|`[^`]+`|\*[^*\n]+\*)/g
+  let last = 0
+  let m: RegExpExecArray | null
+  while ((m = token.exec(s))) {
+    if (m.index > last) nodes.push(fixups(s.slice(last, m.index)))
+    const part = m[0]
+    if (part.startsWith('**') || part.startsWith('__'))
+      nodes.push(<strong key={m.index}>{part.slice(2, -2)}</strong>)
+    else if (part.startsWith('`'))
+      nodes.push(
+        <code key={m.index} className="inline-code">
+          {part.slice(1, -1)}
+        </code>,
+      )
+    else nodes.push(<em key={m.index}>{part.slice(1, -1)}</em>)
+    last = m.index + part.length
+  }
+  if (last < s.length) nodes.push(fixups(s.slice(last)))
+  return nodes
+}
+
+/** 残留的 ** / * 标记（未配对的）直接剥掉，避免原样露出 */
+function fixups(text: string): string {
+  return text.replace(/\*{1,2}/g, '')
 }
 
 function metaFrom(m: ChatMeta): ChatResponse {
@@ -230,6 +270,11 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
     }
     return 'youth'
   })
+  /**
+   * 特写入场交给全局转场时序：vt-running 期间入场动画统一推迟 0.5s（=VT 时长），
+   * 快照里特写处于 from 态（旧页在其位置溶解），VT 结束正好接续淡入，无缝且不闪。
+   * 手动切模式无 vt-running，按自身 --d 错峰即时播放。
+   */
   /** 模式切换方向（正=向右），驱动特写卡入场方位 */
   const modeDirRef = useRef(1)
   const [loading, setLoading] = useState(false)
@@ -387,7 +432,7 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
   }
 
   return (
-    <div className="chat-page">
+    <div className="chat-page" data-mode={mode}>
       <header className="chat-header">
         <h1>承脉 AI</h1>
         <p>让 AI 读懂非遗，让年轻人成为传承者</p>
@@ -408,7 +453,7 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
       <div className="chat-list" ref={listRef}>
         {messages.length === 0 && (
           <div
-            className={`mode-showcase m-${mode}`}
+            className="mode-showcase"
             key={mode}
             style={{ '--dir': modeDirRef.current } as React.CSSProperties}
           >
@@ -446,11 +491,18 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
               <div className="answer">
                 <div className={`bubble-content${msg.streaming && !msg.content ? ' waiting' : ''}`}>
                   {msg.content ? (
-                    renderProse(msg.content)
-                  ) : msg.data ? (
-                    '正在组织回答…'
+                    <div className="answer-text" key="text">
+                      {renderProse(msg.content)}
+                    </div>
                   ) : (
-                    <span className="thinking">检索知识库并核对来源</span>
+                    <span className="thinking" key="think">
+                      <i className="think-dots" aria-hidden>
+                        <b />
+                        <b />
+                        <b />
+                      </i>
+                      {msg.data ? '正在组织回答…' : '检索知识库并核对来源'}
+                    </span>
                   )}
                 </div>
 

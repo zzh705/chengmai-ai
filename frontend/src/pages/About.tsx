@@ -16,6 +16,7 @@ const SECTIONS = [
   ['quality', '测试'],
   ['timeline', '里程碑'],
   ['team', '团队'],
+  ['advisor', '指导老师'],
 ] as const
 
 const AGENTS = [
@@ -44,11 +45,11 @@ const TECH = [
 /** 初心叙事：逐行浮现（c 为强调行样式名） */
 const WHY_LINES: { t: string; c?: string }[] = [
   { t: '有些东西，是在没有人注意的时候消失的。' },
-  { t: '没有告别，也没有掌声。只有一位老师傅轻轻关上了身后的门——而门后面，是一千年。' },
+  { t: '没有告别，也没有掌声。只有一位老师傅轻轻关上了身后的门。门后面，是一千年。' },
   { t: '名录上的一行字，背后也许只剩最后一位还会这门手艺的人。他没有学生，也没有第二段人生，可以再教一遍。' },
   { t: '我们做承脉 AI，是害怕这种安静。', c: 'turn' },
   { t: '怕它消失得太体面、太沉默，沉默到我们后来才想起来：曾经有人用了一生，只为把一样东西交出去。' },
-  { t: '于是我们把它放到这代人每天都在的地方——问一句就有答案，走一步就有记录，动一次手就能留下作品。', c: 'turn' },
+  { t: '于是我们把它放到这代人每天都在的地方：问一句就有答案，走一步就有记录，动一次手就能留下作品。', c: 'turn' },
   { t: '让非遗重新被人看见、被人问起、被人拿去用。' },
   { t: '传承不是把过去供起来，而是让它还有明天。', c: 'last' },
 ]
@@ -127,7 +128,7 @@ export default function About() {
 
       {/* 初心：动情叙事 + 灯阵（非文字表达） */}
       <section className="ab-card ab-why reveal" id="why">
-        <span className="ab-why-kicker">写在最前面 · 初心</span>
+        <span className="ab-why-kicker">初心</span>
         <div className="ab-why-lines">
           {WHY_LINES.map((l, i) => (
             <p
@@ -149,7 +150,7 @@ export default function About() {
             </em>
           </div>
           <div className="ab-lights">
-            {Array.from({ length: stat.deep || 43 }, (_, i) => (
+            {Array.from({ length: stat.deep }, (_, i) => (
               <i
                 key={i}
                 title={names[i] ?? '国家级非物质文化遗产'}
@@ -158,7 +159,7 @@ export default function About() {
             ))}
           </div>
           <p className="ab-why-lights-note">
-            名字被问起一次，灯就亮一分。它们还在亮着——这是一件值得守的事。
+            名字被问起一次，灯就亮一分。它们还在亮着，这是一件值得守的事。
           </p>
         </div>
 
@@ -319,7 +320,8 @@ export default function About() {
           <strong>{num(stat.provs)}</strong> 个省级行政区、7
           个非遗大类），结构化字段（简介、文化内涵、技艺工序、代表作品、代表性传承人）
           逐条标注来源（中国非物质文化遗产网、UNESCO、中国民俗学网等），
-          并配有来自 Wikimedia Commons 的自由许可图片；回答中以「来源」与「证据分」
+          实拍图取自 Wikimedia Commons 并附许可，未匹配到实拍图的条目使用程序生成的传统纹样字卡；
+          回答中以「来源」与「证据分」
           双重呈现可信度。数据仅用于教学演示，正式发布前将按赛制要求做权威信源核验。
         </p>
       </section>
@@ -329,8 +331,10 @@ export default function About() {
         <ul className="ab-list">
           <li>
             <strong>图片版权：</strong>
-            全部配图来自 Wikimedia Commons，许可为 CC0 / CC BY / CC BY-SA / Public
-            Domain，逐张记录于 <code>credits.json</code>（含许可与原始文件名）。
+            实拍图来自 Wikimedia Commons，许可为 CC0 / CC BY / CC BY-SA / Public
+            Domain / OGDL-Taiwan-1.0 等，逐张记录于 <code>credits.json</code>
+            （含许可与原始文件名）；未匹配到实拍图的条目，封面为本项目程序生成的传统纹样字卡
+            （回纹、挑花格、旋纹等，不含第三方素材与人名信息）。
           </li>
           <li>
             <strong>数据来源：</strong>
@@ -379,26 +383,26 @@ export default function About() {
         <h3>里程碑</h3>
         <ul className="ab-timeline">
           <li>
-            <span className="tl-when">阶段一</span>
+            <span className="tl-when">起步</span>
             <strong>工程骨架与知识底座</strong>
             <span>FastAPI + React 骨架、检索问答与来源引用、知识库首批内容与配图</span>
           </li>
           <li>
-            <span className="tl-when">阶段二</span>
+            <span className="tl-when">扩展</span>
             <strong>多智能体与学习系统</strong>
             <span>意图路由、学习路径、活化创作、知识挑战、进度与传承档案</span>
           </li>
           <li>
-            <span className="tl-when">阶段三</span>
+            <span className="tl-when">可视化</span>
             <strong>图谱、地图、视觉语言</strong>
             <span>知识图谱与跨页联动、非遗地图可视化、回纹金线中国风设计体系</span>
           </li>
           <li>
-            <span className="tl-when">阶段四</span>
+            <span className="tl-when">打磨</span>
             <strong>铺满全国与体验打磨</strong>
             <span>
-              知识库扩至 {stat.items || '43'} 项覆盖 {stat.provs || '33'}
-              省级行政区、地图数据大屏、骨架屏与端到端回归
+              知识库扩至 {ready ? num(stat.items) : '…'} 项覆盖{' '}
+              {ready ? num(stat.provs) : '…'} 省级行政区、地图数据大屏、骨架屏与端到端回归
             </span>
           </li>
         </ul>
@@ -406,6 +410,7 @@ export default function About() {
 
       <section className="ab-card reveal" id="team">
         <h3>团队分工</h3>
+        <p className="ab-team-school">北京科技大学天津学院 · 软件工程专业</p>
         <div className="ab-team">
           <div>
             <strong>周子昊</strong>
@@ -418,6 +423,20 @@ export default function About() {
           <div>
             <strong>李思雨</strong>
             <span>知识库内容编校与来源核验 / 用户体验测试 / 演示与汇报材料</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="ab-card reveal" id="advisor">
+        <h3>指导老师</h3>
+        <div className="ab-team ab-advisors">
+          <div>
+            <strong>赵米傲</strong>
+            <span>人工智能学院 · 人工智能 · 讲师</span>
+          </div>
+          <div>
+            <strong>于静</strong>
+            <span>人工智能学院 · 计算机科学与技术 · 教授</span>
           </div>
         </div>
       </section>

@@ -113,13 +113,10 @@ function App() {
       const t = doc.startViewTransition?.(() => flushSync(apply))
       // 转场结束后留 0.75s 余量（入场动画时长 ≤0.7s），等动画播完再撤销延迟，
       // 避免 animation-delay 回跳导致已播内容闪变
-      t?.finished
-        .then(() => {
-          vtCleanupTimer = setTimeout(() => setVtRunning(false), 750)
-        })
-        .catch(() => {
-          vtCleanupTimer = setTimeout(() => setVtRunning(false), 750)
-        })
+      const onFinished = () => {
+        vtCleanupTimer = setTimeout(() => setVtRunning(false), 750)
+      }
+      t?.finished.then(onFinished).catch(onFinished)
       if (!t) {
         apply()
         setVtRunning(false)
@@ -132,7 +129,11 @@ function App() {
   return (
     <div className={`app-shell ${splash ? 'pre-splash' : 'entered'}`}>
       {splash && <Splash onDone={() => setSplash(false)} />}
-      <nav className="app-nav">
+      {/* 无障碍：键盘用户首焦点直达主内容，跳过 10 项导航 */}
+      <a className="skip-link" href="#main-content">
+        跳到主要内容
+      </a>
+      <nav className="app-nav" aria-label="主导航">
         <span className="app-brand" onClick={() => navigate('home')}>
           承脉
         </span>
@@ -141,6 +142,7 @@ function App() {
             <button
               key={n.key}
               className={page === n.key ? 'active' : ''}
+              aria-current={page === n.key ? 'page' : undefined}
               onClick={() => navigate(n.key)}
             >
               {n.label}
@@ -158,7 +160,7 @@ function App() {
           <i />
         </div>
       )}
-      <main className="app-body">
+      <main className="app-body" id="main-content" tabIndex={-1}>
         <div key={page} className="page-transition">
           {page === 'home' && <Home onNavigate={navigate} entered={!splash} />}
           {page === 'chat' && <Chat initialQuery={chatQuery} />}

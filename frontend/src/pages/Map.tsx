@@ -332,7 +332,7 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
                   onClick={() => t.count > 0 && setSelected(isSelected(t) ? null : t.key)}
                 >
                   <span>{t.key}</span>
-                  <em>{t.count > 0 ? t.count : '—'}</em>
+                  <em>{t.count > 0 ? t.count : '-'}</em>
                 </button>
               ))}
             </div>

@@ -3,10 +3,29 @@
   box-sizing: border-box;
 }
 
+:root {
+  /* 字体令牌：全站只用「黑体正文 / 宋体衬线 / 楷体点缀」三套，不再散落 6 种写法 */
+  --font-sans: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-serif: 'Songti SC', 'Noto Serif SC', serif;
+  --font-display: Georgia, 'Songti SC', serif;
+  --font-kai: 'Kaiti SC', 'KaiTi', 'STKaiti', serif;
+}
+
 body {
   margin: 0;
   background: #14110f;
-  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-family: var(--font-sans);
+}
+
+/* 表单控件与按钮必须继承字体栈，否则 Chrome 会回落到 UA 默认 Arial（数字/拉丁与正文不一致）；
+   font-size 同样收敛到 14px，去掉 UA 的 13.3333px 痕迹（各页 class 仍可覆盖） */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 14px;
+  color: inherit;
 }
 
 #root {
@@ -88,12 +107,7 @@ body {
   border-color: #b03a2e;
   color: #fff;
   box-shadow: 0 4px 14px rgba(176, 58, 46, 0.35);
-  animation: navPulse 2.6s ease-in-out infinite;
-}
-@keyframes navPulse {
-  50% {
-    box-shadow: 0 4px 20px rgba(176, 58, 46, 0.6);
-  }
+  animation: none;
 }
 
 .app-body {
@@ -145,7 +159,7 @@ body {
   animation-duration: var(--vt-dur, 0.5s);
   animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-/* 旧页保持不透明并轻微推近（新页在其上入场），避免背景透色 */
+/* 旧页与新页同时长、同缓动互补溶解（经典 dissolve）：背景同色不闪暗、不做双重曝光糊叠 */
 ::view-transition-old(page-area) {
   animation-name: vtPageOut;
 }
@@ -155,6 +169,7 @@ body {
 @keyframes vtPageOut {
   to {
     transform: scale(1.03);
+    opacity: 0;
   }
 }
 /* 五种页面风味：沉静淡入 / 展卷上浮 / 入舆横移 / 墨晕化开 / 上榜轻抬 */
@@ -240,6 +255,13 @@ body {
     transform: scaleX(1);
     opacity: 0;
   }
+}
+
+/* 页面主标题：全站统一规格（正文页 26px / 移动 20px，hero 另行覆盖），
+   各页 CSS 不再各自声明字号与字距，避免 34/28/26/24/22px 五套并存 */
+.app-body h1 {
+  font-size: 26px;
+  letter-spacing: 5px;
 }
 
 /* 页面主标题下的金色饰线（卷轴感），标题居中故饰线居中 */
@@ -389,6 +411,81 @@ body {
   }
 }
 
+/* ===== 键盘可达性：统一金环焦点指示（替代 6 处 input/select 的 outline:none） ===== */
+:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: 2px;
+}
+
+/* 跳到主内容：仅在获得键盘焦点时出现，鼠标不可见 */
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 90;
+  padding: 10px 16px;
+  background: #e8c56b;
+  color: #14110f;
+  font-size: 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+.skip-link:focus {
+  transform: none;
+}
+
+/* ===== 点击目标：桌面 ≥36px、移动 ≥44px（iOS 指尖规范） ===== */
+.app-nav button,
+.home-chips button,
+.home-roam,
+.home-prog-cta,
+.home-regions button,
+.kb-chips button,
+.kb-audio button,
+.kb-more,
+.ab-nav button,
+.map-filters button,
+.map-random,
+.map-next,
+.map-views button,
+.lab-presets button,
+  .mode-tabs button,
+.graph-legend-item,
+.graph-zoom button,
+.path-days button,
+.path-goals button,
+.lab-types button,
+.ch-daily-refresh {
+  min-height: 36px;
+}
+
+@media (max-width: 720px) {
+  .app-nav button,
+  .home-chips button,
+  .home-roam,
+  .home-prog-cta,
+  .home-regions button,
+  .kb-chips button,
+  .kb-audio button,
+  .kb-more,
+  .ab-nav button,
+  .map-filters button,
+  .map-random,
+  .map-next,
+  .map-views button,
+  .lab-presets button,
+  .mode-tabs button,
+  .graph-legend-item,
+  .graph-zoom button,
+  .path-days button,
+  .path-goals button,
+  .lab-types button,
+  .ch-daily-refresh {
+    min-height: 44px;
+  }
+}
+
 /* 开屏 → 首页衔接：开屏淡出时，hero 元素由 blur+上浮依次浮现，粒子延后淡入 */
 .app-shell.pre-splash .home-hero .home-seal,
 .app-shell.pre-splash .home-hero h1,
@@ -530,5 +627,19 @@ body {
 @media (max-width: 760px) {
   .zh-corner {
     display: none;
+  }
+}
+
+/* ===== reduced-motion 兜底：全站无限动画（navPulse/petalFall/sealGlow/ladderPulse/
+   badgeGlow/lightBreath 等）在用户偏好减少动效时一律降为瞬时静止。
+   仅作用于 reduce 媒体查询，不影响 View Transitions（reduce 下 has-vt 本就不启用），
+   且 .vt-running 的 animation-delay: .5s !important 特异性更高，时序保持原样。 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
