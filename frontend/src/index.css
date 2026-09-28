@@ -145,8 +145,15 @@ body {
   user-select: none;
 }
 
-/* 骨架屏：数据到达前占位，避免首屏空白/跳动（全站共享） */
-.skeleton {
+/* 全站通用上浮入场（home/map/各区块共用；定义集中在此） */
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+/* 骨架屏：数据到达前占位，避免首屏空白/跳动（全站共享） */.skeleton {
   background: linear-gradient(
     90deg,
     #1b1713 20%,

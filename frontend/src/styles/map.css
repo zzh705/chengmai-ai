@@ -27,11 +27,105 @@
   padding: 12px;
 }
 
-.map-wrap {
-  position: relative;
+/* 全局统计条 */
+.map-stats {
   max-width: 900px;
+  margin: 14px auto 0;
+  padding: 0 16px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.map-stat {
+  background: linear-gradient(160deg, #1d1814, #171310);
+  border: 1px solid #2e2823;
+  border-radius: 10px;
+  padding: 10px 12px;
+  text-align: center;
+  animation: riseIn 0.5s ease backwards;
+}
+.map-stat:nth-child(2) {
+  animation-delay: 0.06s;
+}
+.map-stat:nth-child(3) {
+  animation-delay: 0.12s;
+}
+.map-stat:nth-child(4) {
+  animation-delay: 0.18s;
+}
+.map-stat em {
+  display: block;
+  font-style: normal;
+  font-size: 26px;
+  font-weight: 700;
+  color: #e8c56b;
+  letter-spacing: 1px;
+}
+.map-stat span {
+  font-size: 12px;
+  color: #9a8f80;
+}
+@media (max-width: 720px) {
+  .map-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 类别筛选 chips */
+.map-filters {
+  max-width: 900px;
+  margin: 14px auto 0;
+  padding: 0 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.map-filters button {
+  background: #1b1713;
+  border: 1px solid #2e2823;
+  color: #c9bfae;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.map-filters button em {
+  font-style: normal;
+  color: #6e655a;
+  margin-left: 3px;
+}
+.map-filters button:hover {
+  border-color: #e8c56b;
+  color: #f3ece2;
+}
+.map-filters button.active {
+  background: rgba(176, 58, 46, 0.25);
+  border-color: #e8c56b;
+  color: #e8c56b;
+}
+.map-filters button.active em {
+  color: #e8c56b;
+}
+
+/* 地图 + 右侧数据栏 */
+.map-main {
+  max-width: 1160px;
   margin: 8px auto 0;
   padding: 0 16px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 18px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .map-main {
+    grid-template-columns: 1fr;
+  }
+}
+.map-wrap {
+  position: relative;
+  min-width: 0;
 }
 .map-svg {
   width: 100%;
@@ -67,46 +161,173 @@
 .map-prov:not(.has-items):hover {
   stroke: #0e0c0a;
   stroke-width: 1.2;
+  filter: none;
+}
+/* 有数据省份的热力填充随筛选平滑过渡 */
+.map-prov {
+  transition:
+    fill 0.35s ease,
+    opacity 0.15s,
+    stroke 0.15s,
+    filter 0.2s;
 }
 
+/* 色阶图例 */
 .map-legend {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 8px;
   color: #9a8f80;
   font-size: 12px;
   margin-top: 4px;
 }
-.map-dot {
-  width: 14px;
-  height: 14px;
+.map-legend-label {
+  letter-spacing: 1px;
+}
+.map-scale {
+  display: inline-flex;
+  border: 1px solid #2e2823;
   border-radius: 4px;
-  display: inline-block;
+  overflow: hidden;
 }
-.map-dot.low {
-  background: #241f1b;
-  margin-left: 10px;
+.map-scale i {
+  width: 26px;
+  height: 13px;
+  display: block;
 }
-.map-dot.high {
-  background: rgba(176, 58, 46, 1);
+.map-legend-note {
+  color: #6e655a;
 }
 
+/* 悬停提示卡 */
 .map-tip {
   position: absolute;
   top: 8px;
-  right: 26px;
-  background: #1b1713;
+  right: 12px;
+  background: rgba(27, 23, 19, 0.95);
   border: 1px solid #e8c56b;
   color: #e8c56b;
-  padding: 6px 12px;
+  padding: 8px 12px;
   border-radius: 8px;
   font-size: 13px;
   pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 260px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  animation: tipIn 0.15s ease;
+}
+@keyframes tipIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+.map-tip strong {
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+.map-tip span {
+  color: #c9bfae;
+  font-size: 12px;
+}
+
+/* 右侧数据栏 */
+.map-side {
+  background: #171310;
+  border: 1px solid #2e2823;
+  border-radius: 12px;
+  padding: 14px 16px;
+  animation: riseIn 0.55s ease 0.15s backwards;
+}
+.map-side h3 {
+  font-size: 13px;
+  color: #e8c56b;
+  letter-spacing: 3px;
+  margin: 0 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #2e2823;
+}
+.map-side h3:not(:first-child) {
+  margin-top: 18px;
+}
+.map-rank {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.map-rank li,
+.map-cat {
+  display: grid;
+  grid-template-columns: 62px 1fr 24px;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 2px 4px;
+  transition: background 0.15s;
+}
+.map-rank li:hover,
+.map-cat:hover {
+  background: rgba(232, 197, 107, 0.08);
+}
+.map-rank li.active {
+  background: rgba(176, 58, 46, 0.22);
+}
+.map-cat.active {
+  background: rgba(176, 58, 46, 0.22);
+}
+.rank-name {
+  color: #c9bfae;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rank-bar {
+  height: 8px;
+  background: #241f1b;
+  border-radius: 4px;
+  overflow: hidden;
+  display: block;
+}
+.rank-bar i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #8f3529, #d0553f);
+  border-radius: 4px;
+  transform-origin: left center;
+  animation: barGrow 0.6s cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+}
+@keyframes barGrow {
+  from {
+    transform: scaleX(0);
+  }
+}
+.map-rank em,
+.map-cat em {
+  font-style: normal;
+  color: #e8c56b;
+  text-align: right;
+}
+.map-cats {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.map-cat {
+  grid-template-columns: 74px 1fr 24px;
+  color: #c9bfae;
 }
 
 .map-panel {
-  max-width: 900px;
+  max-width: 1160px;
   margin: 6px auto;
   padding: 0 16px;
 }
@@ -122,14 +343,17 @@
 }
 .map-items {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 10px;
 }
 .map-item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
   background: #1b1713;
   border: 1px solid #2e2823;
   border-radius: 10px;
-  padding: 12px 14px;
+  padding: 10px 12px;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -137,13 +361,47 @@
   border-color: #e8c56b;
   transform: translateY(-2px);
 }
-.map-item strong {
-  display: block;
+.map-item-img {
+  width: 58px;
+  height: 58px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex: none;
+  border: 1px solid #2e2823;
+  transition: transform 0.3s ease;
+}
+.map-item:hover .map-item-img {
+  transform: scale(1.06);
+}
+.map-item-txt {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.map-item-txt strong {
   color: #f3ece2;
   font-size: 15px;
-  margin-bottom: 4px;
 }
-.map-item span {
+.map-item-txt span {
   color: #9a8f80;
   font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.map-all {
+  margin-top: 12px;
+  background: none;
+  border: 1px dashed #4a423a;
+  color: #c9bfae;
+  font-size: 13px;
+  padding: 9px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.map-all:hover {
+  border-color: #e8c56b;
+  color: #e8c56b;
 }

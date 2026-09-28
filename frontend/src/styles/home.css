@@ -222,12 +222,7 @@
 .home-section:nth-of-type(5) {
   animation-delay: 0.24s;
 }
-@keyframes riseIn {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-}
+/* riseIn keyframe 定义在 index.css（全站共享入场动效） */
 .home-section h2 {
   font-size: 17px;
   letter-spacing: 3px;

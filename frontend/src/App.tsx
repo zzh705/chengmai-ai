@@ -6,7 +6,7 @@ import Home from './pages/Home'
 import Knowledge from './pages/Knowledge'
 import KnowledgeGraph from './pages/KnowledgeGraph'
 import Lab from './pages/Lab'
-import Map from './pages/Map'
+import MapPage from './pages/Map'
 import Path from './pages/Path'
 import ProfilePage from './pages/Profile'
 
@@ -77,7 +77,7 @@ function App() {
           {/* key 随参数重挂载：关键词预填/详情打开都由初始状态承担，避免 effect 同步 setState */}
           {page === 'knowledge' && <Knowledge key={kbParam ?? 'kb-list'} openParam={kbParam} />}
           {page === 'graph' && <KnowledgeGraph onNavigate={navigate} />}
-          {page === 'map' && <Map onNavigate={navigate} openRegion={mapParam} />}
+          {page === 'map' && <MapPage onNavigate={navigate} openRegion={mapParam} />}
           {page === 'path' && <Path />}
           {page === 'lab' && <Lab />}
           {page === 'challenge' && <Challenge onNavigate={navigate} />}
