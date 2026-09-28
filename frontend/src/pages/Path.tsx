@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { fetchHeritageList, type HeritageSummary } from '../api/heritage'
 import { fetchLearningPlan, type LearningPlan, type PlanGoal } from '../api/learning'
 import { recordProgress } from '../api/progress'
+import { useRevealGroup } from '../hooks/useReveal'
 import '../styles/path.css'
 
 const DAYS = [3, 7, 14]
@@ -28,6 +29,7 @@ export default function Path() {
     }
   })
   const [error, setError] = useState('')
+  const rootRef = useRevealGroup<HTMLDivElement>([plan?.topic])
 
   useEffect(() => {
     fetchHeritageList()
@@ -85,7 +87,7 @@ export default function Path() {
   }
 
   return (
-    <div className="path-page">
+    <div className="path-page" ref={rootRef}>
       <header className="path-header">
         <h1>AI 学习路径</h1>
         <p>选定主题、目标与时长，生成循序渐进、可勾选打卡的传承学习计划</p>
@@ -156,7 +158,7 @@ export default function Path() {
       </div>
 
       {plan && (
-        <div className="path-result">
+        <div className="path-result reveal">
           <h2>
             「{plan.topic}」{plan.days.length} 天学习路线
             {plan.sources.length > 0 && <span className="path-src">参考：{plan.sources.join('、')}</span>}

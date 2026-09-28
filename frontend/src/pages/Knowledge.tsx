@@ -8,6 +8,7 @@ import {
 } from '../api/heritage'
 import { recordProgress } from '../api/progress'
 import Cover from '../components/Cover'
+import { useRevealGroup } from '../hooks/useReveal'
 import '../styles/knowledge.css'
 
 interface Credit {
@@ -49,6 +50,7 @@ export default function Knowledge({ openParam }: { openParam?: string }) {
   )
   const [error, setError] = useState('')
   const pageRef = useRef<HTMLDivElement>(null)
+  const detailRef = useRevealGroup<HTMLDivElement>([detail?.id])
 
   useEffect(() => {
     fetchHeritageList().then(setList).catch((e) => setError(e.message))
@@ -99,7 +101,7 @@ export default function Knowledge({ openParam }: { openParam?: string }) {
     const credit = credits[detail.id]
     return (
       <div className="kb-page" ref={pageRef}>
-        <div className="kb-detail">
+        <div className="kb-detail" ref={detailRef}>
           <button className="kb-back" onClick={() => setDetail(null)}>
             ← 返回列表
           </button>
@@ -129,7 +131,7 @@ export default function Knowledge({ openParam }: { openParam?: string }) {
             </div>
           )}
 
-          <section>
+          <section className="reveal">
             <h3>项目简介</h3>
             <p>{detail.description}</p>
           </section>
@@ -149,16 +151,16 @@ export default function Knowledge({ openParam }: { openParam?: string }) {
             </div>
           )}
 
-          <section>
+          <section className="reveal">
             <h3>文化内涵</h3>
             <p>{detail.cultural_meaning}</p>
           </section>
-          <section>
+          <section className="reveal">
             <h3>技艺工序</h3>
             <p>{detail.craft_process}</p>
           </section>
           <div className="kb-grid">
-            <section>
+            <section className="reveal">
               <h3>代表作品</h3>
               <ul>
                 {detail.representative_works.map((w, i) => (
@@ -166,7 +168,7 @@ export default function Knowledge({ openParam }: { openParam?: string }) {
                 ))}
               </ul>
             </section>
-            <section>
+            <section className="reveal">
               <h3>代表性传承人</h3>
               <ul>
                 {detail.representative_inheritors.map((p, i) => (
@@ -175,7 +177,7 @@ export default function Knowledge({ openParam }: { openParam?: string }) {
               </ul>
             </section>
           </div>
-          <section>
+          <section className="reveal">
             <h3>资料来源</h3>
             <ul className="kb-sources">
               {detail.sources.map((s) => (

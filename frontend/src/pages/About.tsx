@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import CountUp from '../components/CountUp'
+import { useRevealGroup } from '../hooks/useReveal'
 import { fetchHeritageList } from '../api/heritage'
 import { extractProvince } from '../utils/geo'
 import '../styles/about.css'
@@ -42,6 +44,7 @@ export default function About() {
   // 关键数字实时拉取：数据更新后页面无需改代码
   const [stat, setStat] = useState({ items: 0, provs: 0, nodes: 0, links: 0 })
   const [ready, setReady] = useState(false)
+  const rootRef = useRevealGroup<HTMLDivElement>([ready])
 
   useEffect(() => {
     Promise.all([
@@ -74,7 +77,7 @@ export default function About() {
   const num = (v: number) => (ready ? String(v) : '—')
 
   return (
-    <div className="ab-page">
+    <div className="ab-page" ref={rootRef}>
       <header className="ab-header" id="intro">
         <div className="ab-seal">承脉</div>
         <h1>关于承脉 AI</h1>
@@ -90,7 +93,7 @@ export default function About() {
         ))}
       </nav>
 
-      <section className="ab-card ab-intro">
+      <section className="ab-card reveal ab-intro">
         <h3>项目简介</h3>
         <p>
           承脉 AI
@@ -100,25 +103,25 @@ export default function About() {
         </p>
         <div className="ab-nums">
           <div>
-            <em>{num(stat.items)}</em>
+            <em>{ready ? <CountUp value={stat.items} /> : "—"}</em>
             <span>国家级非遗项目</span>
           </div>
           <div>
-            <em>{num(stat.provs)}</em>
+            <em>{ready ? <CountUp value={stat.provs} /> : "—"}</em>
             <span>覆盖省级行政区</span>
           </div>
           <div>
-            <em>{num(stat.nodes)}</em>
+            <em>{ready ? <CountUp value={stat.nodes} /> : "—"}</em>
             <span>图谱节点</span>
           </div>
           <div>
-            <em>{num(stat.links)}</em>
+            <em>{ready ? <CountUp value={stat.links} /> : "—"}</em>
             <span>知识关系</span>
           </div>
         </div>
       </section>
 
-      <section className="ab-card" id="idea">
+      <section className="ab-card reveal" id="idea">
         <h3>设计理念</h3>
         <div className="ab-idea">
           <div>
@@ -145,7 +148,7 @@ export default function About() {
         </div>
       </section>
 
-      <section className="ab-card" id="arch">
+      <section className="ab-card reveal" id="arch">
         <h3>系统架构</h3>
         <div className="ab-flow">
           <div className="ab-flow-row">
@@ -185,7 +188,7 @@ export default function About() {
         </p>
       </section>
 
-      <section className="ab-card">
+      <section className="ab-card reveal">
         <h3>多智能体架构</h3>
         <div className="ab-agents">
           {AGENTS.map((a) => (
@@ -197,7 +200,7 @@ export default function About() {
         </div>
       </section>
 
-      <section className="ab-card" id="ai">
+      <section className="ab-card reveal" id="ai">
         <h3>AI 使用说明与防幻觉设计</h3>
         <ul className="ab-list">
           <li>
@@ -228,7 +231,7 @@ export default function About() {
         </ul>
       </section>
 
-      <section className="ab-card">
+      <section className="ab-card reveal">
         <h3>技术栈</h3>
         <div className="ab-tags">
           {TECH.map((t) => (
@@ -237,7 +240,7 @@ export default function About() {
         </div>
       </section>
 
-      <section className="ab-card" id="data">
+      <section className="ab-card reveal" id="data">
         <h3>数据与来源</h3>
         <p>
           知识库收录 <strong>{num(stat.items)}</strong> 项国家级非遗代表性项目（覆盖{' '}
@@ -249,7 +252,7 @@ export default function About() {
         </p>
       </section>
 
-      <section className="ab-card">
+      <section className="ab-card reveal">
         <h3>合规与开源说明</h3>
         <ul className="ab-list">
           <li>
@@ -274,7 +277,7 @@ export default function About() {
         </ul>
       </section>
 
-      <section className="ab-card" id="quality">
+      <section className="ab-card reveal" id="quality">
         <h3>测试与质量</h3>
         <div className="ab-quality">
           <div>
@@ -300,7 +303,7 @@ export default function About() {
         </p>
       </section>
 
-      <section className="ab-card" id="timeline">
+      <section className="ab-card reveal" id="timeline">
         <h3>里程碑</h3>
         <ul className="ab-timeline">
           <li>
@@ -329,7 +332,7 @@ export default function About() {
         </ul>
       </section>
 
-      <section className="ab-card" id="team">
+      <section className="ab-card reveal" id="team">
         <h3>团队分工</h3>
         <div className="ab-team">
           <div>

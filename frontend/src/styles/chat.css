@@ -291,3 +291,14 @@
   line-height: 1.7;
   color: #b6ab9a;
 }
+
+/* 消息气泡入场 */
+.bubble {
+  animation: bubbleIn 0.42s cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+}
+@keyframes bubbleIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+}

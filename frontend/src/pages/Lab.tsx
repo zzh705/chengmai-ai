@@ -8,6 +8,7 @@ import {
 } from '../api/creation'
 import { fetchHeritageList, type HeritageSummary } from '../api/heritage'
 import { recordProgress } from '../api/progress'
+import { useRevealGroup } from '../hooks/useReveal'
 import '../styles/lab.css'
 
 const OUTPUT_TYPES: { key: OutputType; label: string }[] = [
@@ -56,6 +57,7 @@ function loadHistory(): HistoryItem[] {
 }
 
 export default function Lab() {
+  const rootRef = useRevealGroup<HTMLDivElement>()
   const [list, setList] = useState<HeritageSummary[]>([])
   const [heritage, setHeritage] = useState('')
   const [requirement, setRequirement] = useState('')
@@ -117,7 +119,7 @@ export default function Lab() {
   const r = result?.result
 
   return (
-    <div className="lab-page">
+    <div className="lab-page" ref={rootRef}>
       <header className="lab-header">
         <h1>非遗活化实验室</h1>
         <p>先检索传统文化依据，再生成现代化方案 —— 创新不越界</p>
@@ -234,7 +236,7 @@ export default function Lab() {
             <div className="lab-sources">📚 文化依据：{result.sources.join('、')}</div>
           )}
 
-          <section className="lab-guard">
+          <section className="lab-guard reveal">
             <h3>⚠ 文化护栏 · 不可随意改变的语义</h3>
             <ul>
               {r.guardrails.map((g, i) => (
@@ -244,7 +246,7 @@ export default function Lab() {
           </section>
 
           <div className="lab-grid">
-            <section>
+            <section className="reveal">
               <h3>🎭 传统元素</h3>
               <ul>
                 {r.traditional_elements.map((x, i) => (
@@ -252,7 +254,7 @@ export default function Lab() {
                 ))}
               </ul>
             </section>
-            <section>
+            <section className="reveal">
               <h3>📦 现代载体</h3>
               <ul>
                 {r.modern_carrier.map((x, i) => (
@@ -260,7 +262,7 @@ export default function Lab() {
                 ))}
               </ul>
             </section>
-            <section>
+            <section className="reveal">
               <h3>📢 传播方式</h3>
               <ul>
                 {r.spread_channels.map((x, i) => (
@@ -268,7 +270,7 @@ export default function Lab() {
                 ))}
               </ul>
             </section>
-            <section>
+            <section className="reveal">
               <h3>🤖 AI 可辅助</h3>
               <ul>
                 {r.ai_parts.map((x, i) => (
@@ -278,7 +280,7 @@ export default function Lab() {
             </section>
           </div>
 
-          <section className="lab-steps">
+          <section className="lab-steps reveal">
             <h3>🗺 可实施步骤</h3>
             <ol>
               {r.steps.map((s, i) => (

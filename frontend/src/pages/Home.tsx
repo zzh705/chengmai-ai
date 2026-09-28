@@ -3,7 +3,9 @@ import { fetchHeritageList, type HeritageSummary } from '../api/heritage'
 import { fetchProfile, type Profile } from '../api/progress'
 import { PROVINCES } from '../utils/geo'
 import Cover from '../components/Cover'
+import CountUp from '../components/CountUp'
 import EmberCanvas from '../components/EmberCanvas'
+import { useRevealGroup } from '../hooks/useReveal'
 import '../styles/home.css'
 
 interface Props {
@@ -25,6 +27,7 @@ export default function Home({ onNavigate }: Props) {
   const [question, setQuestion] = useState('')
   const [error, setError] = useState('')
   const [hoverSeg, setHoverSeg] = useState<string | null>(null)
+  const rootRef = useRevealGroup<HTMLDivElement>([list.length])
 
   useEffect(() => {
     fetchHeritageList().then(setList).catch((e) => setError(e.message))
@@ -84,7 +87,7 @@ export default function Home({ onNavigate }: Props) {
   }
 
   return (
-    <div className="home-page">
+    <div className="home-page" ref={rootRef}>
       {/* Hero：品牌门面 */}
       <section className="home-hero">
         <EmberCanvas />
@@ -122,11 +125,11 @@ export default function Home({ onNavigate }: Props) {
       {/* 数据未到时的骨架占位：形状与真实区块一致，数据到达即无缝替换 */}
       {list.length === 0 && !error && (
         <>
-          <section className="home-section">
+          <section className="home-section reveal">
             <h2>今日非遗</h2>
             <div className="home-today skeleton home-skel-today" aria-hidden />
           </section>
-          <section className="home-cols">
+          <section className="home-cols reveal">
             <div className="home-section">
               <h2>AI 推荐</h2>
               <div className="home-recs" aria-hidden>
@@ -145,7 +148,7 @@ export default function Home({ onNavigate }: Props) {
 
       {/* 今日非遗 */}
       {featured && (
-        <section className="home-section">
+        <section className="home-section reveal">
           <h2>今日非遗</h2>
           <div
             className="home-today"
@@ -165,7 +168,7 @@ export default function Home({ onNavigate }: Props) {
       )}
 
       {/* AI 推荐 + 地域探索 双栏 */}
-      <section className="home-cols">
+      <section className="home-cols reveal">
         <div className="home-section">
           <h2>AI 推荐</h2>
           <div className="home-recs">
@@ -195,7 +198,7 @@ export default function Home({ onNavigate }: Props) {
 
       {/* 非遗全景数据屏：类别环形 + 省份排行 + 关键数字 */}
       {list.length > 0 && topProvs.length > 0 && (
-        <section className="home-section home-viz">
+        <section className="home-section home-viz reveal">
           <h2>非遗全景</h2>
           <div className="viz-grid">
             <div className="viz-donut-col">
@@ -272,7 +275,9 @@ export default function Home({ onNavigate }: Props) {
                 { n: list.filter((h) => h.image).length, l: '自由版权配图' },
               ].map((v) => (
                 <div key={v.l}>
-                  <em>{v.n}</em>
+                  <em>
+                    <CountUp value={v.n} />
+                  </em>
                   <span>{v.l}</span>
                 </div>
               ))}
@@ -282,7 +287,7 @@ export default function Home({ onNavigate }: Props) {
       )}
 
       {/* 学习进度 */}
-      <section className="home-section">
+      <section className="home-section reveal">
         <h2>我的学习进度</h2>
         <div className="home-progress">
           <div className="home-prog-item">
