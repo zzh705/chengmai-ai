@@ -1,30 +1,29 @@
-/* 知识图谱页 */
+/* 知识图谱页 · 星空星座图 */
 .graph-page {
   display: flex;
   flex-direction: column;
   height: 100%;
   color: #f3ece2;
   position: relative;
-  /* 星尘 + 中心青晕背景，让图谱页更有纵深 */
+  /* 夜空：深处一点青晕，靠 canvas 星尘造纵深，不堆装饰 */
   background:
-    radial-gradient(1.5px 1.5px at 18% 28%, rgba(232, 197, 107, 0.4), transparent),
-    radial-gradient(1px 1px at 72% 62%, rgba(232, 197, 107, 0.28), transparent),
-    radial-gradient(2px 2px at 42% 82%, rgba(176, 58, 46, 0.45), transparent),
-    radial-gradient(1px 1px at 86% 22%, rgba(232, 197, 107, 0.32), transparent),
-    radial-gradient(1px 1px at 8% 70%, rgba(122, 167, 224, 0.3), transparent),
-    radial-gradient(ellipse 55% 45% at 50% 45%, rgba(74, 157, 143, 0.07), transparent),
+    radial-gradient(ellipse 60% 50% at 50% 42%, rgba(74, 157, 143, 0.06), transparent),
     #14110f;
+  overflow: hidden;
 }
 
 .graph-header {
-  padding: 20px 24px 12px;
+  padding: 18px 24px 10px;
   border-bottom: 1px solid #2e2823;
   text-align: center;
+  position: relative;
+  z-index: 6;
+  flex: none;
 }
 .graph-header h1 {
   margin: 0;
-  font-size: 22px;
-  letter-spacing: 4px;
+
+
   color: #e8c56b;
 }
 .graph-header p {
@@ -36,7 +35,7 @@
 .graph-legend {
   display: flex;
   justify-content: center;
-  gap: 16px;
+  gap: 8px 14px;
   align-items: center;
   font-size: 12px;
   color: #b6ab9a;
@@ -44,12 +43,12 @@
 }
 .graph-legend i {
   display: inline-block;
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   vertical-align: middle;
+  box-shadow: 0 0 6px currentColor;
 }
-/* 图例项：点击隐藏/显示该类型节点 */
 .graph-legend-item {
   display: inline-flex;
   align-items: center;
@@ -65,16 +64,22 @@
   cursor: pointer;
   transition: all 0.2s;
 }
+.graph-legend-item em {
+  font-style: normal;
+  font-size: 12px;
+  color: #a89a86;
+}
 .graph-legend-item:hover {
   border-color: rgba(232, 197, 107, 0.5);
   background: rgba(255, 255, 255, 0.05);
 }
-.graph-legend-item.is-off {
-  opacity: 0.4;
-  text-decoration: line-through;
+.graph-legend-item.is-active {
+  border-color: #e8c56b;
+  background: rgba(232, 197, 107, 0.1);
+  color: #f3ece2;
 }
-.graph-legend-item.is-off i {
-  filter: grayscale(1);
+.graph-legend-item.is-active em {
+  color: #e8c56b;
 }
 .graph-reset {
   padding: 4px 12px;
@@ -83,17 +88,115 @@
   background: transparent;
   color: #e8c56b;
   font-size: 12px;
+  font-family: inherit;
   cursor: pointer;
+  transition: all 0.2s;
 }
 .graph-reset:hover {
   background: #e8c56b;
   color: #14110f;
 }
 
-.graph-svg {
-  flex: 1;
+/* 搜索：标题下方居中，结果浮层 */
+.graph-search {
+  position: relative;
+  max-width: 340px;
+  margin: 10px auto 0;
+}
+.graph-search input {
   width: 100%;
+  padding: 7px 14px;
+  border: 1px solid #3a332c;
+  border-radius: 999px;
+  background: rgba(27, 23, 19, 0.8);
+  color: #f3ece2;
+  font-size: 13px;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+.graph-search input::placeholder {
+  color: #a89a86;
+}
+.graph-search input:focus {
+  border-color: #e8c56b;
+}
+.graph-search-list {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #1b1713;
+  border: 1px solid #e8c56b55;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
+  z-index: 9;
+}
+.graph-search-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 14px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #2e2823;
+  color: #d8cfc0;
+  font-family: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+.graph-search-item:last-child {
+  border-bottom: none;
+}
+.graph-search-item:hover {
+  background: #2e2823;
+  color: #e8c56b;
+}
+.graph-search-item span {
+  font-size: 12px;
+  color: #a89a86;
+  flex: none;
+}
+
+/* 星空画布 */
+.graph-sky {
+  position: relative;
+  flex: 1;
   min-height: 0;
+}
+.graph-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+.graph-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background: rgba(27, 23, 19, 0.94);
+  border: 1px solid #e8c56b55;
+  border-radius: 8px;
+  padding: 7px 11px;
+  font-size: 12px;
+  line-height: 1.5;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 4;
+  max-width: 210px;
+}
+.graph-tip strong {
+  display: block;
+  color: #f3ece2;
+  font-size: 13px;
+}
+.graph-tip span {
+  color: #9a8f80;
+  font-size: 12px;
 }
 
 /* 缩放控件：左侧垂直居中，避开右下角详情面板 */
@@ -123,118 +226,6 @@
 .graph-zoom button:hover {
   border-color: #e8c56b;
   color: #e8c56b;
-  transform: translateX(2px);
-}
-
-.g-link {
-  stroke-width: 1.2px;
-  opacity: 0.65;
-  /* 连线流动：虚线沿方向滚动，图谱整体有"呼吸感" */
-  stroke-dasharray: 5 5;
-  /* 开场：连线按序号错峰浮现（网状织就感），随后进入流动态 */
-  animation: g-flow 1.6s linear 0.4s infinite, g-fade 0.9s ease backwards;
-  animation-delay:
-    calc(0.4s + min(calc(var(--i, 0) * 7ms), 2.2s)),
-    calc(0.4s + min(calc(var(--i, 0) * 7ms), 2.2s));
-  transition: opacity 0.2s ease;
-}
-@keyframes g-flow {
-  to {
-    stroke-dashoffset: -20;
-  }
-}
-
-.g-node {
-  cursor: pointer;
-  /* backwards：入场后把 opacity 交还给 CSS，g-dim 才能生效；--i 错峰 */
-  animation: g-fade 0.7s ease backwards;
-  animation-delay: min(calc(var(--i, 0) * 7ms), 3s);
-  transition: opacity 0.2s ease;
-}
-@keyframes g-fade {
-  from {
-    opacity: 0;
-  }
-}
-@keyframes g-pop {
-  from {
-    opacity: 0;
-    transform: scale(0.25);
-  }
-}
-
-/* hover/选中时淡出无关节点与连线，突出关系子图 */
-.g-node.g-dim {
-  opacity: 0.12;
-}
-.g-link.g-dim {
-  opacity: 0.05;
-  stroke-dasharray: 2 6;
-}
-
-.g-node > circle {
-  transform-box: fill-box;
-  transform-origin: center;
-  transition: transform 0.2s ease, filter 0.2s ease;
-  /* 开场：圆点从中心弹出，与节点淡入同拍错峰 */
-  animation: g-pop 0.6s cubic-bezier(0.2, 0.75, 0.25, 1) backwards;
-  animation-delay: min(calc(var(--i, 0) * 7ms), 3s);
-}
-.g-node:hover > circle {
-  transform: scale(1.25);
-  filter: brightness(1.4);
-}
-
-/* 非遗项目节点：金色呼吸光晕（叠加在开场弹出之后） */
-.g-heritage > circle {
-  filter: drop-shadow(0 0 6px rgba(232, 197, 107, 0.6));
-  animation:
-    g-pop 0.6s cubic-bezier(0.2, 0.75, 0.25, 1) backwards,
-    g-breathe 2.6s ease-in-out 1.4s infinite;
-  animation-delay: min(calc(var(--i, 0) * 7ms), 3s), 1.4s;
-}
-@keyframes g-breathe {
-  50% {
-    filter: drop-shadow(0 0 15px rgba(232, 197, 107, 0.95));
-  }
-}
-
-/* 选中节点：亮描边 + 外发光脉冲（d3 通过 g-selected 类切换） */
-.g-node.g-selected > circle {
-  stroke: #f7ead2;
-  stroke-width: 3px;
-}
-.g-node.g-selected {
-  animation: g-fade 0.5s ease, g-sel 1.5s ease-in-out infinite;
-}
-@keyframes g-sel {
-  50% {
-    filter: drop-shadow(0 0 13px rgba(232, 197, 107, 0.95));
-  }
-}
-
-/* 悬停/选中时显示副节点标签（默认隐藏防糊版） */
-.g-node:not(.g-heritage):hover > text,
-.g-node.g-selected > text {
-  display: block !important;
-}
-.g-label {
-  fill: #d8cfc0;
-  font-size: 11px;
-  paint-order: stroke;
-  stroke: #14110f;
-  stroke-width: 3px;
-  pointer-events: none;
-  /* 开场：标签晚于节点浮现，避免一上来就糊版 */
-  animation: g-fade 0.7s ease backwards;
-  animation-delay: calc(1.15s + min(calc(var(--i, 0) * 5ms), 2s));
-}
-/* 缩放 LOD：拉远收起全部标签，拉近展开全部，中景维持默认（仅项目名） */
-.g-far .g-label {
-  display: none !important;
-}
-.g-near .g-label {
-  display: block !important;
 }
 
 .graph-loading,
@@ -244,38 +235,19 @@
   left: 50%;
   transform: translate(-50%, -50%);
   color: #9a8f80;
+  z-index: 3;
 }
 .graph-error {
   color: #e07a6a;
 }
 
-.graph-focus-bar {
-  display: inline-block;
-  margin-top: 8px;
-  padding: 4px 14px;
-  background: rgba(176, 58, 46, 0.2);
-  border: 1px solid #b03a2e;
-  border-radius: 999px;
-  color: #e0907f;
-  font-size: 12px;
-}
-
-.g-relation {
-  fill: #9a8f80;
-  font-size: 10px;
-  text-anchor: middle;
-  paint-order: stroke;
-  stroke: #14110f;
-  stroke-width: 3px;
-  pointer-events: none;
-}
-
+/* 详情面板（右下） */
 .graph-detail {
   position: absolute;
   right: 20px;
   bottom: 20px;
-  width: 300px;
-  max-height: 60%;
+  width: 310px;
+  max-height: 62%;
   overflow-y: auto;
   background: #1b1713;
   border: 1px solid #e8c56b55;
@@ -287,6 +259,7 @@
   font-size: 14px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   animation: panelIn 0.25s ease;
+  z-index: 6;
 }
 @keyframes panelIn {
   from {
@@ -303,17 +276,19 @@
   font-size: 16px;
   color: #f3ece2;
   flex: 1;
+  font-family: var(--font-serif);
 }
 .graph-detail-type {
-  font-size: 11px;
+  font-size: 12px;
 }
 .graph-close {
   border: none;
   background: transparent;
-  color: #6e655a;
+  color: #a89a86;
   font-size: 18px;
   cursor: pointer;
   line-height: 1;
+  padding: 0;
 }
 .graph-close:hover {
   color: #e07a6a;
@@ -325,20 +300,22 @@
   color: #b6ab9a;
 }
 .graph-detail-info span {
-  font-size: 11px;
-  color: #6e655a;
+  font-size: 12px;
+  color: #a89a86;
 }
 .graph-detail-actions {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
 }
 .graph-btn {
   padding: 7px 14px;
   border: 1px solid #3a332c;
-  border-radius: 7px;
+  border-radius: 8px;
   background: transparent;
   color: #c9bfae;
   font-size: 12px;
+  font-family: inherit;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -355,13 +332,8 @@
   background: #c94a3a;
   color: #fff;
 }
-.graph-btn.graph-btn-link {
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-}
 .graph-loading-line {
-  color: #6e655a;
+  color: #a89a86;
   font-style: italic;
 }
 .graph-relations {
@@ -373,8 +345,8 @@
 }
 .graph-relations em {
   font-style: normal;
-  font-size: 11px;
-  color: #6e655a;
+  font-size: 12px;
+  color: #a89a86;
 }
 .graph-relation-line {
   display: flex;
@@ -412,6 +384,6 @@
   color: #9a8f80;
   border-radius: 4px;
   padding: 1px 6px;
-  font-size: 10px;
-  margin-right: 6px;
+  font-size: 12px;
+  flex: none;
 }

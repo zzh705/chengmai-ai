@@ -1,532 +1,887 @@
-import { useEffect, useRef, useState } from 'react'
-import * as d3 from 'd3'
-import { fetchFullGraph, fetchItemGraph, type GraphData, type GraphNode } from '../api/graph'
-import { fetchHeritageDetail, type HeritageDetail } from '../api/heritage'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import {
+  fetchHeritageDetail,
+  fetchHeritageList,
+  type HeritageDetail,
+  type HeritageSummary,
+} from '../api/heritage'
+import { fetchFullGraph, type GraphData, type GraphNode } from '../api/graph'
+import { extractProvince } from '../utils/geo'
 import '../styles/graph.css'
-
-const TYPE_COLOR: Record<string, string> = {
-  heritage: '#e8c56b',
-  category: '#b03a2e',
-  region: '#4a9d8f',
-  person: '#c98ad4',
-  work: '#8fbf6f',
-  source: '#7aa7e0',
-}
-
-const TYPE_LABEL: Record<string, string> = {
-  heritage: '非遗项目',
-  category: '类别',
-  region: '地域',
-  person: '传承人',
-  work: '作品',
-  source: '资料来源',
-}
-
-interface SimNode extends GraphNode, d3.SimulationNodeDatum {
-  /** 数据序号：驱动入场错峰动画（CSS --i） */
-  i: number
-}
-
-/** D3 力模拟会把 source/target 从字符串原地替换成节点对象，故声明为联合类型 */
-interface SimLink {
-  source: string | SimNode
-  target: string | SimNode
-  relation: string
-}
 
 interface Props {
   onNavigate: (page: string, param?: string) => void
 }
 
+/** 官方十大类：固定顺序 = 固定配色与星座方位（数据增减不影响布局语义） */
+const CAT_ORDER = [
+  '民间文学',
+  '传统音乐',
+  '传统舞蹈',
+  '传统戏剧',
+  '曲艺',
+  '传统体育、游艺与杂技',
+  '传统美术',
+  '传统技艺',
+  '传统医药',
+  '民俗',
+]
+
+const CAT_COLOR: Record<string, string> = {
+  民间文学: '#8aa6d8',
+  传统音乐: '#c98ad4',
+  传统舞蹈: '#d4763b',
+  传统戏剧: '#b03a2e',
+  曲艺: '#d9a96a',
+  '传统体育、游艺与杂技': '#8fbf6f',
+  传统美术: '#e8c56b',
+  传统技艺: '#4a9d8f',
+  传统医药: '#a8bdb2',
+  民俗: '#c97b7b',
+}
+
+interface Star {
+  id: string
+  name: string
+  cat: string
+  prov: string
+  region: string
+  tier: string
+  deep: boolean
+  x: number
+  y: number
+  r: number
+  phase: number
+  /** 每帧写入的屏幕坐标（命中检测用） */
+  sx: number
+  sy: number
+}
+
+interface ProvCluster {
+  name: string
+  x: number
+  y: number
+  count: number
+}
+
+interface CatGroup {
+  name: string
+  color: string
+  count: number
+  deepCount: number
+  ax: number
+  ay: number
+  stars: Star[]
+  provs: ProvCluster[]
+}
+
+interface Sky {
+  groups: CatGroup[]
+  stars: Star[]
+  byId: Map<string, Star>
+  groupByName: Map<string, CatGroup>
+  dust: { x: number; y: number; r: number; a: number }[]
+  bounds: { x0: number; y0: number; x1: number; y1: number }
+}
+
+function mulberry32(seed: number) {
+  let a = seed >>> 0
+  return () => {
+    a |= 0
+    a = (a + 0x6d2b79f5) | 0
+    let t = Math.imul(a ^ (a >>> 15), 1 | a)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+
+function mainCat(raw: string): string {
+  const first = raw.split('·')[0].trim()
+  return CAT_ORDER.includes(first) ? first : raw.trim() || '民俗'
+}
+
+/** 把 3299 项排成 10 个星座：大类为星座、省份为星团、项目为星子（确定性布点） */
+function buildSky(items: HeritageSummary[]): Sky {
+  const rng = mulberry32(20260929)
+  const buckets = new Map<string, HeritageSummary[]>()
+  for (const it of items) {
+    const cat = mainCat(it.category)
+    if (!buckets.has(cat)) buckets.set(cat, [])
+    buckets.get(cat)!.push(it)
+  }
+  const order = [
+    ...CAT_ORDER.filter((c) => buckets.has(c)),
+    ...[...buckets.keys()].filter((c) => !CAT_ORDER.includes(c)),
+  ]
+  const n = Math.max(order.length, 1)
+  const rx = 1250
+  const ry = 760
+
+  const groups: CatGroup[] = []
+  const stars: Star[] = []
+  const byId = new Map<string, Star>()
+  const groupByName = new Map<string, CatGroup>()
+  let bx0 = Infinity
+  let by0 = Infinity
+  let bx1 = -Infinity
+  let by1 = -Infinity
+
+  order.forEach((cat, i) => {
+    const list = buckets.get(cat)!
+    const angle = -Math.PI / 2 + (i * 2 * Math.PI) / n
+    const ax = Math.cos(angle) * rx
+    const ay = Math.sin(angle) * ry
+    const group: CatGroup = {
+      name: cat,
+      color: CAT_COLOR[cat] ?? '#e8c56b',
+      count: list.length,
+      deepCount: list.filter((x) => x.tier !== 'index').length,
+      ax,
+      ay,
+      stars: [],
+      provs: [],
+    }
+
+    // 省份星团：按数量排序后均匀绕星座中心摆一圈
+    const provBuckets = new Map<string, HeritageSummary[]>()
+    for (const it of list) {
+      const p = extractProvince(it.region)
+      if (!provBuckets.has(p)) provBuckets.set(p, [])
+      provBuckets.get(p)!.push(it)
+    }
+    const provs = [...provBuckets.entries()].sort((a, b) => b[1].length - a[1].length)
+    const ringR = Math.min(150 + provs.length * 16, 330)
+    provs.forEach(([pname, plist], pi) => {
+      const pa = (pi * 2 * Math.PI) / Math.max(provs.length, 1) + angle * 0.35
+      const px = ax + Math.cos(pa) * ringR
+      const py = ay + Math.sin(pa) * ringR * 0.78
+      group.provs.push({ name: pname, x: px, y: py, count: plist.length })
+
+      const sigma = Math.min(36 + Math.sqrt(plist.length) * 8, 96)
+      for (const it of plist) {
+        const deep = it.tier !== 'index'
+        // 高斯盘内散点：sqrt 保证分布均匀不聚心
+        const rr = sigma * Math.sqrt(rng())
+        const aa = rng() * Math.PI * 2
+        const star: Star = {
+          id: it.id,
+          name: it.name,
+          cat,
+          prov: pname,
+          region: it.region,
+          tier: it.tier,
+          deep,
+          x: px + Math.cos(aa) * rr,
+          y: py + Math.sin(aa) * rr,
+          r: deep ? 3.1 : 1.7,
+          phase: rng() * Math.PI * 2,
+          sx: 0,
+          sy: 0,
+        }
+        group.stars.push(star)
+        stars.push(star)
+        byId.set(star.id, star)
+        bx0 = Math.min(bx0, star.x)
+        by0 = Math.min(by0, star.y)
+        bx1 = Math.max(bx1, star.x)
+        by1 = Math.max(by1, star.y)
+      }
+    })
+    groups.push(group)
+    groupByName.set(cat, group)
+  })
+
+  const dust = Array.from({ length: 320 }, () => ({
+    x: (rng() - 0.5) * 4200,
+    y: (rng() - 0.5) * 2800,
+    r: 0.5 + rng() * 1.1,
+    a: 0.05 + rng() * 0.13,
+  }))
+
+  return {
+    groups,
+    stars,
+    byId,
+    groupByName,
+    dust,
+    bounds: { x0: bx0, y0: by0, x1: bx1, y1: by1 },
+  }
+}
+
+interface View {
+  k: number
+  x: number
+  y: number
+}
+
 export default function KnowledgeGraph({ onNavigate }: Props) {
-  const svgRef = useRef<SVGSVGElement>(null)
-  const [data, setData] = useState<GraphData | null>(null)
-  const [focusId, setFocusId] = useState<string | null>(null)
-  const [selected, setSelected] = useState<GraphNode | null>(null)
-  const [detail, setDetail] = useState<HeritageDetail | null>(null)
-  const [busy, setBusy] = useState(false)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const tipRef = useRef<HTMLDivElement>(null)
+  const [sky, setSky] = useState<Sky | null>(null)
   const [error, setError] = useState('')
-  /** 已隐藏的节点类型（图例开关），ref 供 d3 读取、state 驱动图例样式 */
-  const [hidden, setHidden] = useState<string[]>([])
-  const hiddenRef = useRef<Set<string>>(new Set())
-  /** d3 effect 注册：重算高亮/显隐（hover、选中、图例切换共用） */
-  const applyRef = useRef<() => void>(() => {})
-  /** 缩放控件（＋ − 复位） */
-  const zoomRef = useRef<{ in: () => void; out: () => void; reset: () => void } | null>(null)
-  /** hover 中的节点 id：effect 内读它，避免 exhaustive-deps */
-  const hoverIdRef = useRef<string | null>(null)
-  /** 当前选中节点 id：effect 内读它而非闭包里的 selected，避免 exhaustive-deps */
-  const selectedIdRef = useRef<string | null>(null)
+  const [total, setTotal] = useState(0)
+  const [deepTotal, setDeepTotal] = useState(0)
+  const [sel, setSel] = useState<{ kind: 'star'; star: Star } | { kind: 'cat'; cat: CatGroup } | null>(
+    null,
+  )
+  const [detail, setDetail] = useState<HeritageDetail | null>(null)
+  const [graph, setGraph] = useState<GraphData | null>(null)
+  const [focusCat, setFocusCat] = useState<string | null>(null)
+  const [query, setQuery] = useState('')
+  const [results, setResults] = useState<Star[]>([])
+
+  const viewRef = useRef<View>({ k: 1, x: 0, y: 0 })
+  const animRef = useRef<{ from: View; to: View; t0: number } | null>(null)
+  const hoverRef = useRef<Star | null>(null)
+  const selRef = useRef<string | null>(null)
+  const focusRef = useRef<string | null>(null)
+  const sizeRef = useRef({ w: 0, h: 0, dpr: 1 })
+  const startRef = useRef(0)
+  const mouseRef = useRef<{ x: number; y: number } | null>(null)
+  const skyRef = useRef<Sky | null>(null)
+
+  skyRef.current = sky
+  selRef.current = sel?.kind === 'star' ? sel.star.id : null
+  focusRef.current = focusCat
+
+  const reduceMotion = useMemo(
+    () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    [],
+  )
 
   useEffect(() => {
-    fetchFullGraph().then(setData).catch((e) => setError(e.message))
+    Promise.all([fetchHeritageList(), fetchFullGraph().catch(() => null)])
+      .then(([list, g]) => {
+        setSky(buildSky(list))
+        setTotal(list.length)
+        setDeepTotal(list.filter((x) => x.tier !== 'index').length)
+        if (g) setGraph(g)
+        startRef.current = performance.now()
+      })
+      .catch((e) => setError(e.message))
   }, [])
 
+  /** 视图动画：600ms 缓动飞向目标（选星 / 聚焦星座 / 复位共用） */
+  function animateTo(k: number, wx: number, wy: number) {
+    const { w, h } = sizeRef.current
+    const to = { k, x: w / 2 - wx * k, y: h / 2 - wy * k }
+    if (reduceMotion) {
+      viewRef.current = to
+      return
+    }
+    animRef.current = { from: { ...viewRef.current }, to, t0: performance.now() }
+  }
+
+  function fitAll() {
+    const s = skyRef.current
+    if (!s) return
+    const { w, h } = sizeRef.current
+    const pad = 140
+    const bw = Math.max(s.bounds.x1 - s.bounds.x0, 1)
+    const bh = Math.max(s.bounds.y1 - s.bounds.y0, 1)
+    const k = Math.min((w - pad * 2) / bw, (h - pad * 2) / bh, 1.15)
+    const cx = (s.bounds.x0 + s.bounds.x1) / 2
+    const cy = (s.bounds.y0 + s.bounds.y1) / 2
+    animateTo(Math.max(k, 0.28), cx, cy)
+  }
+
+  // 主渲染循环：入场波 → 常态微闪；只在需要时重绘（持续 rAF，3k 星量级无压力）
   useEffect(() => {
-    if (!data || !svgRef.current) return
-    const svg = d3.select(svgRef.current)
-    svg.selectAll('*').remove()
+    const canvas = canvasRef.current
+    const wrap = wrapRef.current
+    if (!canvas || !wrap) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
 
-    const width = svgRef.current.clientWidth
-    const height = svgRef.current.clientHeight
-    const nodes: SimNode[] = data.nodes.map((n, i) => ({
-      ...n,
-      i,
-      // 确定性初始位置：全部落在视口中心附近，避免从 (0,0) 散开跑出画布
-      x: width / 2 + Math.cos(i * 2.4) * (40 + (i % 5) * 26),
-      y: height / 2 + Math.sin(i * 2.4) * (40 + (i % 5) * 26),
-    }))
-    const links: (SimLink & { i: number })[] = data.links.map((l, i) => ({ ...l, i }))
-
-    // 邻接表：hover/选中高亮时用它找出该节点的所有关联。
-    // 此刻 source/target 还是字符串 id（forceLink 尚未跑），用 idOf 兼容两种形态
-    const idOf = (v: string | SimNode) => (typeof v === 'string' ? v : v.id)
-    const typeById = new Map<string, string>()
-    const neighbors = new Map<string, Set<string>>()
-    for (const n of nodes) typeById.set(n.id, n.type)
-    for (const l of links) {
-      const s = idOf(l.source)
-      const t = idOf(l.target)
-      if (!neighbors.has(s)) neighbors.set(s, new Set())
-      if (!neighbors.has(t)) neighbors.set(t, new Set())
-      neighbors.get(s)!.add(t)
-      neighbors.get(t)!.add(s)
-    }
-
-    const rootG = svg.append('g')
-
-    // 滚轮缩放 + 拖空白平移（节点自身拖拽不受影响）
-    const zoom = d3
-      .zoom<SVGSVGElement, unknown>()
-      .scaleExtent([0.35, 3])
-      .on('zoom', (event) => {
-        rootG.attr('transform', event.transform)
-        // 缩放分级显隐标签（LOD）：拉远收起全部、拉近展开全部，中景维持默认
-        const k = event.transform.k
-        rootG.classed('g-far', k < 0.72).classed('g-near', k > 1.4)
-      })
-    svg.call(zoom).on('dblclick.zoom', null)
-    // 重建画布时回到初始视图，避免沿用上一视图的缩放态造成跳变
-    svg.call(zoom.transform as never, d3.zoomIdentity)
-
-    zoomRef.current = {
-      in: () => svg.transition().duration(240).call(zoom.scaleBy as never, 1.4),
-      out: () => svg.transition().duration(240).call(zoom.scaleBy as never, 1 / 1.4),
-      reset: () => svg.transition().duration(320).call(zoom.transform as never, d3.zoomIdentity),
-    }
-
-    const sim = d3
-      .forceSimulation(nodes)
-      // 收敛放慢：开场「网状生长」状态多停留几秒，过渡更从容
-      .alphaDecay(0.015)
-      .force(
-        'link',
-        d3
-          .forceLink(links)
-          .id((d) => (d as SimNode).id)
-          .distance(80),
-      )
-      .force('charge', d3.forceManyBody().strength(-140).distanceMax(420))
-      .force('center', d3.forceCenter(width / 2, height / 2))
-      // 向心力把节点拉回视口内，防止长跑出画布
-      .force('x', d3.forceX(width / 2).strength(0.05))
-      .force('y', d3.forceY(height / 2).strength(0.05))
-      .force('collide', d3.forceCollide(26))
-
-    const link = rootG
-      .append('g')
-      .selectAll('line')
-      .data(links)
-      .join('line')
-      .attr('class', 'g-link')
-      .attr('stroke', '#4a4137')
-      .style('--i', (d) => d.i)
-
-    // 聚焦子图时显示关系标签（全图 240 条边会拥挤，仅聚焦时展示）
-    const relLabel = rootG
-      .append('g')
-      .selectAll('text')
-      .data(focusId ? links : [])
-      .join('text')
-      .attr('class', 'g-relation')
-      .text((d) => d.relation)
-
-    // 拖动后会紧跟一次 click，用 moved 标记把误触吃掉
-    let moved = false
-
-    const node = rootG
-      .append('g')
-      .selectAll('g')
-      .data(nodes)
-      .join('g')
-      .attr('class', (d) => `g-node g-${d.type}`)
-      .style('--i', (d) => d.i)
-      .call(
-        d3
-          .drag<any, SimNode>()
-          .on('start', (event, d) => {
-            moved = false
-            event.sourceEvent?.stopPropagation() // 别让底下 zoom 跟着平移
-            if (!event.active) sim.alphaTarget(0.3).restart()
-            d.fx = d.x
-            d.fy = d.y
-          })
-          .on('drag', (event, d) => {
-            moved = true
-            d.fx = event.x
-            d.fy = event.y
-          })
-          .on('end', (event, d) => {
-            if (!event.active) sim.alphaTarget(0)
-            d.fx = null
-            d.fy = null
-          }),
-      )
-
-    node
-      .append('circle')
-      .attr('r', (d) => (d.type === 'heritage' ? 16 : 10))
-      .attr('fill', (d) => TYPE_COLOR[d.type] ?? '#999')
-      .attr('stroke', '#14110f')
-      .attr('stroke-width', 1.5)
-
-    node
-      .append('text')
-      .text((d) => d.label)
-      .attr('dy', (d) => (d.type === 'heritage' ? 30 : 22))
-      .attr('text-anchor', 'middle')
-      .attr('class', 'g-label')
-      // 全图只标非遗项目，其余节点标签在聚焦/选中时可读，避免 180 个标签糊成一片
-      .style('display', (d) => (focusId || d.type === 'heritage' ? null : 'none'))
-
-    node.on('click', (_event, d) => {
-      if (moved) return // 拖动结束的误触，不响应
-      selectNode(d)
-    })
-
-    /** 高亮/显隐总控：hover 或选中某节点时点亮其邻居、淡出无关；并应用图例隐藏 */
-    function applyState() {
-      const focus = hoverIdRef.current ?? selectedIdRef.current
-      const hid = hiddenRef.current
-      const keep = focus ? new Set([focus, ...(neighbors.get(focus) ?? [])]) : null
-
-      node
-        .style('display', (d) => (hid.has(d.type) ? 'none' : null))
-        .classed('g-dim', (d) => (keep ? !keep.has(d.id) : false))
-        .classed('g-selected', (d) => d.id === selectedIdRef.current)
-
-      link
-        .style('display', (d) => {
-          return hid.has(typeById.get(idOf(d.source))!) ||
-            hid.has(typeById.get(idOf(d.target))!)
-            ? 'none'
-            : null
-        })
-        .classed('g-dim', (d) => {
-          if (!keep) return false
-          // 只要有一端不在高亮子图里，这条边就属于"无关"
-          return !keep.has(idOf(d.source)) || !keep.has(idOf(d.target))
-        })
-
-      relLabel.style('display', (d) => {
-        if (!focusId) return 'none'
-        return hid.has(typeById.get(idOf(d.source))!) ||
-          hid.has(typeById.get(idOf(d.target))!)
-          ? 'none'
-          : null
-      })
-    }
-
-    node
-      .on('mouseenter', (_event, d) => {
-        hoverIdRef.current = d.id
-        applyState()
-      })
-      .on('mouseleave', () => {
-        hoverIdRef.current = null
-        applyState()
-      })
-
-    applyRef.current = applyState
-    applyState()
-
-    sim.on('tick', () => {
-      link
-        .attr('x1', (d) => (d.source as SimNode).x ?? 0)
-        .attr('y1', (d) => (d.source as SimNode).y ?? 0)
-        .attr('x2', (d) => (d.target as SimNode).x ?? 0)
-        .attr('y2', (d) => (d.target as SimNode).y ?? 0)
-      relLabel
-        .attr('x', (d) => (((d.source as SimNode).x ?? 0) + ((d.target as SimNode).x ?? 0)) / 2)
-        .attr('y', (d) => (((d.source as SimNode).y ?? 0) + ((d.target as SimNode).y ?? 0)) / 2 - 4)
-      node.attr('transform', (d) => `translate(${d.x ?? 0},${d.y ?? 0})`)
-    })
-
-    return () => {
-      sim.stop()
-      applyRef.current = () => {}
-      zoomRef.current = null
-    }
-  }, [data, focusId])
-
-  /** 统一的节点选中入口（d3 点击与面板点击共用） */
-  function selectNode(d: GraphNode) {
-    selectedIdRef.current = d.id
-    setSelected(d)
-    setDetail(null)
-    if (d.type === 'heritage') {
-      fetchHeritageDetail(d.id).then(setDetail).catch(() => setDetail(null))
-    }
-    applyRef.current()
-  }
-
-  function deselect() {
-    selectedIdRef.current = null
-    setSelected(null)
-    setDetail(null)
-    applyRef.current()
-  }
-
-  /** 图例开关：隐藏/显示某类节点（不重建模拟，位置不跳） */
-  function toggleType(type: string) {
-    const next = new Set(hiddenRef.current)
-    if (next.has(type)) next.delete(type)
-    else next.add(type)
-    hiddenRef.current = next
-    setHidden([...next])
-    applyRef.current()
-  }
-
-  async function focusNode(id: string) {
-    if (busy) return
-    setBusy(true)
-    try {
-      setFocusId(id)
-      setData(await fetchItemGraph(id))
-    } catch (e) {
-      setError(e instanceof Error ? e.message : '子图加载失败')
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  async function resetView() {
-    setFocusId(null)
-    deselect()
-    setData(await fetchFullGraph())
-  }
-
-  /** 当前视图中与选中节点相连的关系 */
-  const relations: { name: string; relation: string; other: GraphNode }[] = []
-  if (selected && data) {
-    for (const l of data.links) {
-      if (l.source === selected.id) {
-        const other = data.nodes.find((n) => n.id === l.target)
-        if (other) relations.push({ name: other.label, relation: l.relation, other })
-      } else if (l.target === selected.id) {
-        const other = data.nodes.find((n) => n.id === l.source)
-        if (other) relations.push({ name: other.label, relation: l.relation, other })
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      const w = wrap.clientWidth
+      const h = wrap.clientHeight
+      const oldW = sizeRef.current.w
+      const oldH = sizeRef.current.h
+      canvas.width = Math.round(w * dpr)
+      canvas.height = Math.round(h * dpr)
+      canvas.style.width = `${w}px`
+      canvas.style.height = `${h}px`
+      sizeRef.current = { w, h, dpr }
+      // 尺寸变化（如面板/按钮挤占头部）时保持视野中心的世界点不动
+      if (oldW > 0 && oldH > 0 && (oldW !== w || oldH !== h)) {
+        const dx = (w - oldW) / 2
+        const dy = (h - oldH) / 2
+        const an = animRef.current
+        if (an) {
+          an.from.x += dx
+          an.from.y += dy
+          an.to.x += dx
+          an.to.y += dy
+        }
+        viewRef.current.x += dx
+        viewRef.current.y += dy
       }
     }
-  }
-  const heritageRels = relations.filter((r) => r.other.type === 'heritage')
+    resize()
+    const ro = new ResizeObserver(resize)
+    ro.observe(wrap)
 
-  /** 关联行点击：项目→知识库详情，地域→地图，类别→知识库筛选，其余→图上选中 */
+    let raf = 0
+    let lastViewStr = ''
+    const frame = (now: number) => {
+      raf = requestAnimationFrame(frame)
+      const s = skyRef.current
+      const { w, h, dpr } = sizeRef.current
+      if (!w || !h) return
+
+      // 视图缓动
+      const an = animRef.current
+      if (an) {
+        const p = Math.min((now - an.t0) / 620, 1)
+        const e = 1 - Math.pow(1 - p, 3)
+        viewRef.current = {
+          k: an.from.k + (an.to.k - an.from.k) * e,
+          x: an.from.x + (an.to.x - an.from.x) * e,
+          y: an.from.y + (an.to.y - an.from.y) * e,
+        }
+        if (p >= 1) animRef.current = null
+      }
+      const v = viewRef.current
+
+      // 测试钩子：视图/选中/聚焦变化时写入 dataset（供 e2e 断言，不触发渲染）
+      const viewStr = `${v.k.toFixed(3)},${Math.round(v.x)},${Math.round(v.y)}`
+      if (viewStr !== lastViewStr) {
+        lastViewStr = viewStr
+        canvas.dataset.view = viewStr
+      }
+      const selStr = selRef.current ?? ''
+      const focusStr = focusRef.current ?? ''
+      if (canvas.dataset.sel !== selStr) canvas.dataset.sel = selStr
+      if (canvas.dataset.focus !== focusStr) canvas.dataset.focus = focusStr
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      ctx.clearRect(0, 0, w, h)
+      if (!s) return
+
+      const t = reduceMotion ? 1 : Math.min((now - startRef.current) / 1000, 1)
+      const w2x = (x: number) => x * v.k + v.x
+      const w2y = (y: number) => y * v.k + v.y
+
+      // 星尘（世界坐标，随视图漂移，营造纵深）
+      for (const d of s.dust) {
+        const sx = w2x(d.x)
+        const sy = w2y(d.y)
+        if (sx < -8 || sy < -8 || sx > w + 8 || sy > h + 8) continue
+        ctx.globalAlpha = d.a * t
+        ctx.fillStyle = '#e8c56b'
+        ctx.beginPath()
+        ctx.arc(sx, sy, d.r, 0, Math.PI * 2)
+        ctx.fill()
+      }
+
+      const hover = hoverRef.current
+      const selected = selRef.current
+      const focus = focusRef.current
+      const showProv = v.k > 0.85
+      const dimOf = (g: CatGroup) => (focus && focus !== g.name ? 0.16 : 1)
+
+      // 星座骨架：星座中心 → 省份星团
+      ctx.lineWidth = 1
+      for (const g of s.groups) {
+        const ga = dimOf(g) * t
+        if (ga < 0.05) continue
+        ctx.strokeStyle = `rgba(232,197,107,${0.1 * ga})`
+        ctx.beginPath()
+        for (const p of g.provs) {
+          ctx.moveTo(w2x(g.ax), w2y(g.ay))
+          ctx.lineTo(w2x(p.x), w2y(p.y))
+        }
+        ctx.stroke()
+      }
+
+      // 星子：入场波（自中心向外点亮）+ 深读亮星微闪
+      for (const st of s.stars) {
+        const g = s.groupByName.get(st.cat)!
+        const base = dimOf(g)
+        if (base < 0.05) continue
+        const dist = Math.hypot(st.x, st.y)
+        const a = reduceMotion ? base : base * Math.min(Math.max((t * 2400 - dist) / 420, 0), 1)
+        if (a <= 0.02) continue
+        const sx = w2x(st.x)
+        const sy = w2y(st.y)
+        st.sx = sx
+        st.sy = sy
+        if (sx < -20 || sy < -20 || sx > w + 20 || sy > h + 20) continue
+        const tw = st.deep && !reduceMotion ? 0.82 + 0.18 * Math.sin(now * 0.0021 + st.phase) : 1
+        const r = Math.max(st.r * Math.min(v.k, 2) ** 0.6, st.deep ? 2.2 : 1.3)
+        ctx.globalAlpha = a * (st.deep ? tw : 0.85)
+        ctx.fillStyle = g.color
+        ctx.beginPath()
+        ctx.arc(sx, sy, r, 0, Math.PI * 2)
+        ctx.fill()
+        if (st.deep) {
+          ctx.globalAlpha = a * 0.22 * tw
+          ctx.beginPath()
+          ctx.arc(sx, sy, r * 2.6, 0, Math.PI * 2)
+          ctx.fill()
+        }
+        if (st.id === selected || st === hover) {
+          if (st.id === selected) canvas.dataset.star = `${Math.round(sx)},${Math.round(sy)}`
+          ctx.globalAlpha = a
+          ctx.strokeStyle = '#f7ead2'
+          ctx.lineWidth = 1.4
+          ctx.beginPath()
+          ctx.arc(sx, sy, r + 4.5, 0, Math.PI * 2)
+          ctx.stroke()
+        }
+      }
+
+      // 省份星团标（拉近才可读）
+      if (showProv) {
+        ctx.font = '11px "PingFang SC", sans-serif'
+        ctx.textAlign = 'center'
+        for (const g of s.groups) {
+          const ga = dimOf(g) * t
+          if (ga < 0.05) continue
+          for (const p of g.provs) {
+            const sx = w2x(p.x)
+            const sy = w2y(p.y)
+            if (sx < -60 || sy < -20 || sx > w + 60 || sy > h + 20) continue
+            ctx.globalAlpha = Math.min(ga * ((v.k - 0.85) / 0.5), 0.85)
+            ctx.fillStyle = '#9a8f80'
+            ctx.fillText(p.name, sx, sy + 20)
+          }
+        }
+      }
+
+      // 星座中心：亮核 + 大类名（屏幕恒定字号，拉远仍可读）
+      for (const g of s.groups) {
+        const ga = dimOf(g) * t
+        if (ga < 0.05) continue
+        const sx = w2x(g.ax)
+        const sy = w2y(g.ay)
+        if (sx < -120 || sy < -60 || sx > w + 120 || sy > h + 60) continue
+        const pulse = reduceMotion ? 1 : 0.9 + 0.1 * Math.sin(now * 0.0016 + g.count)
+        ctx.globalAlpha = ga
+        ctx.fillStyle = g.color
+        ctx.beginPath()
+        ctx.arc(sx, sy, 5.5 * pulse, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.globalAlpha = ga * 0.3
+        ctx.beginPath()
+        ctx.arc(sx, sy, 13 * pulse, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.globalAlpha = ga
+        ctx.font = '600 15px "Songti SC", "SimSun", serif'
+        ctx.textAlign = 'center'
+        ctx.fillStyle = '#f3ece2'
+        ctx.fillText(g.name, sx, sy - 16)
+        ctx.font = '11px "PingFang SC", sans-serif'
+        ctx.fillStyle = '#9a8f80'
+        ctx.fillText(`${g.count} 项`, sx, sy + 26)
+      }
+
+      // hover 提示（DOM 定位，直接改样式避免重渲染）
+      ctx.globalAlpha = 1
+      const tip = tipRef.current
+      if (tip) {
+        if (hover && (!focus || hover.cat === focus)) {
+          tip.style.opacity = '1'
+          tip.style.transform = `translate(${Math.min(Math.max(hover.sx + 14, 8), w - 210)}px, ${Math.max(hover.sy - 46, 8)}px)`
+          tip.innerHTML = `<strong>${hover.name}</strong><span>${hover.cat} · ${hover.prov}${hover.deep ? ' · 深读' : ''}</span>`
+        } else {
+          tip.style.opacity = '0'
+        }
+      }
+    }
+    raf = requestAnimationFrame(frame)
+    return () => {
+      cancelAnimationFrame(raf)
+      ro.disconnect()
+    }
+  }, [reduceMotion])
+
+  // 指针：滚轮缩放（锚定光标）/ 拖拽平移 / hover 命中 / 点击选中
+  useEffect(() => {
+    const canvas = canvasRef.current
+    const wrap = wrapRef.current
+    if (!canvas || !wrap) return
+    let dragging = false
+    let moved = false
+    let lastX = 0
+    let lastY = 0
+
+    const hitTest = (mx: number, my: number): Star | null => {
+      const s = skyRef.current
+      if (!s) return null
+      const focus = focusRef.current
+      let best: Star | null = null
+      let bestD = 100
+      for (const st of s.stars) {
+        if (focus && st.cat !== focus) continue
+        const d = (st.sx - mx) ** 2 + (st.sy - my) ** 2
+        const rr = Math.max(st.r * 3.4, 7) ** 2
+        if (d < rr && d < bestD) {
+          bestD = d
+          best = st
+        }
+      }
+      return best
+    }
+
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault()
+      const v = viewRef.current
+      const factor = Math.exp(-e.deltaY * 0.0016)
+      const k = Math.min(Math.max(v.k * factor, 0.26), 4.2)
+      const mx = e.clientX - wrap.getBoundingClientRect().left
+      const my = e.clientY - wrap.getBoundingClientRect().top
+      // 锚定光标：缩放前后光标下的世界点保持不动
+      const wx = (mx - v.x) / v.k
+      const wy = (my - v.y) / v.k
+      viewRef.current = { k, x: mx - wx * k, y: my - wy * k }
+      animRef.current = null
+    }
+
+    const onDown = (e: PointerEvent) => {
+      dragging = true
+      moved = false
+      lastX = e.clientX
+      lastY = e.clientY
+      canvas.setPointerCapture(e.pointerId)
+    }
+    const onMove = (e: PointerEvent) => {
+      const rect = wrap.getBoundingClientRect()
+      const mx = e.clientX - rect.left
+      const my = e.clientY - rect.top
+      mouseRef.current = { x: mx, y: my }
+      if (dragging) {
+        const dx = e.clientX - lastX
+        const dy = e.clientY - lastY
+        if (Math.abs(dx) + Math.abs(dy) > 3) moved = true
+        lastX = e.clientX
+        lastY = e.clientY
+        viewRef.current.x += dx
+        viewRef.current.y += dy
+        animRef.current = null
+        return
+      }
+      const hit = hitTest(mx, my)
+      canvas.dataset.hover = hit ? `${hit.id}@${Math.round(mx)},${Math.round(my)}` : `@${Math.round(mx)},${Math.round(my)}`
+      if (hit !== hoverRef.current) {
+        hoverRef.current = hit
+        canvas.style.cursor = hit ? 'pointer' : 'grab'
+      }
+    }
+    const onUp = (e: PointerEvent) => {
+      if (dragging) {
+        dragging = false
+        canvas.releasePointerCapture(e.pointerId)
+      }
+      if (moved) return
+      const rect = wrap.getBoundingClientRect()
+      const mx = e.clientX - rect.left
+      const my = e.clientY - rect.top
+      const hit = hitTest(mx, my)
+      if (hit) {
+        selectStar(hit)
+        return
+      }
+      // 没点中星子 → 试星座中心
+      const s = skyRef.current
+      if (s) {
+        const v = viewRef.current
+        for (const g of s.groups) {
+          const sx = g.ax * v.k + v.x
+          const sy = g.ay * v.k + v.y
+          if ((sx - mx) ** 2 + (sy - my) ** 2 < 18 ** 2) {
+            focusCategory(g.name)
+            return
+          }
+        }
+      }
+      setSel(null)
+      setDetail(null)
+      setFocusCat(null)
+    }
+
+    canvas.addEventListener('wheel', onWheel, { passive: false })
+    canvas.addEventListener('pointerdown', onDown)
+    canvas.addEventListener('pointermove', onMove)
+    canvas.addEventListener('pointerup', onUp)
+    canvas.addEventListener('pointerleave', () => {
+      hoverRef.current = null
+    })
+    canvas.style.cursor = 'grab'
+    return () => {
+      canvas.removeEventListener('wheel', onWheel)
+      canvas.removeEventListener('pointerdown', onDown)
+      canvas.removeEventListener('pointermove', onMove)
+      canvas.removeEventListener('pointerup', onUp)
+    }
+    // 命中回调走事件时的最新渲染（selectStar/focusCategory 语义不随 effect 生命周期变化）
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // 数据就绪后铺一次全图
+  useEffect(() => {
+    if (sky) fitAll()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sky])
+
+  function selectStar(st: Star) {
+    setSel({ kind: 'star', star: st })
+    setDetail(null)
+    setFocusCat(null)
+    if (st.deep) fetchHeritageDetail(st.id).then(setDetail).catch(() => setDetail(null))
+    animateTo(Math.max(viewRef.current.k, 1.7), st.x, st.y)
+  }
+
+  function focusCategory(name: string) {
+    // 事件闭包持有挂载时的版本，数据源必须走 skyRef（渲染期已同步）
+    const g = skyRef.current?.groupByName.get(name)
+    if (!g) return
+    setFocusCat(name)
+    setSel({ kind: 'cat', cat: g })
+    setDetail(null)
+    animateTo(1.25, g.ax, g.ay)
+  }
+
+  function resetView() {
+    setFocusCat(null)
+    setSel(null)
+    setDetail(null)
+    fitAll()
+  }
+
+  function zoomBy(f: number) {
+    const { w, h } = sizeRef.current
+    const v = viewRef.current
+    const k = Math.min(Math.max(v.k * f, 0.26), 4.2)
+    const wx = (w / 2 - v.x) / v.k
+    const wy = (h / 2 - v.y) / v.k
+    animateTo(k, wx, wy)
+  }
+
+  function onSearch(q: string) {
+    setQuery(q)
+    const key = q.trim()
+    if (!key || !sky) {
+      setResults([])
+      return
+    }
+    const matches = sky.stars.filter(
+      (st) => st.name.includes(key) || st.prov.includes(key) || st.cat.includes(key),
+    )
+    // 全名命中排最前，保证「按名选星」的直达体验
+    matches.sort((a, b) => Number(b.name === key) - Number(a.name === key))
+    setResults(matches.slice(0, 8))
+  }
+
+  /** 面板关联行：沿用图谱数据（深读档案才有关系边） */
+  const relations = useMemo(() => {
+    if (!graph || !sel || sel.kind !== 'star') return []
+    const out: { name: string; relation: string; other: GraphNode }[] = []
+    const nodeById = new Map(graph.nodes.map((n) => [n.id, n]))
+    for (const l of graph.links) {
+      if (l.source === sel.star.id) {
+        const other = nodeById.get(l.target)
+        if (other) out.push({ name: other.label, relation: l.relation, other })
+      } else if (l.target === sel.star.id) {
+        const other = nodeById.get(l.source)
+        if (other) out.push({ name: other.label, relation: l.relation, other })
+      }
+    }
+    return out
+  }, [graph, sel])
+
   function openRelation(r: { other: GraphNode }) {
     const t = r.other
     if (t.type === 'heritage') onNavigate('knowledge', t.id)
     else if (t.type === 'region') onNavigate('map', t.label)
     else if (t.type === 'category') onNavigate('knowledge', `kw:${t.label}`)
-    else selectNode(t)
+    else onNavigate('knowledge')
   }
 
-  const extra = selected?.extra
+  const selectedStar = sel?.kind === 'star' ? sel.star : null
+  const selectedCat = sel?.kind === 'cat' ? sel.cat : null
 
   return (
     <div className="graph-page">
       <header className="graph-header">
-        <h1>非遗知识图谱</h1>
-        <p>悬停高亮关联；点击节点查看内容并进入对应页面；拖拽调整布局；滚轮或右侧按钮缩放；点图例可隐藏类型</p>
+        <h1>非遗星图</h1>
+        <p>
+          {total ? `${total} 项国家级非遗化作星子，大类为星座、省份为星团` : '加载中…'}
+          {deepTotal ? ` · 亮星是深读档案 ${deepTotal} 颗` : ''}
+          。滚轮缩放、拖拽平移，点星看详情，点星座中心看全类
+        </p>
         <div className="graph-legend">
-          {Object.entries(TYPE_LABEL).map(([type, label]) => (
+          {sky?.groups.map((g) => (
             <button
-              key={type}
-              className={`graph-legend-item ${hidden.includes(type) ? 'is-off' : ''}`}
-              onClick={() => toggleType(type)}
-              title={hidden.includes(type) ? `显示${label}` : `隐藏${label}`}
+              key={g.name}
+              className={`graph-legend-item ${focusCat === g.name ? 'is-active' : ''}`}
+              onClick={() => (focusCat === g.name ? resetView() : focusCategory(g.name))}
+              title={`${g.name}：${g.count} 项（深读 ${g.deepCount}）`}
             >
-              <i style={{ background: TYPE_COLOR[type] }} />
-              {label}
+              <i style={{ background: g.color }} />
+              {g.name}
+              <em>{g.count}</em>
             </button>
           ))}
-          {focusId && (
+          {(focusCat || sel) && (
             <button className="graph-reset" onClick={resetView}>
               返回全图
             </button>
           )}
         </div>
-        {focusId && (
-          <div className="graph-focus-bar">
-            聚焦中：{data?.nodes.find((n) => n.id === focusId)?.label ?? focusId} 的关系网络
-          </div>
-        )}
+        <div className="graph-search">
+          <input
+            value={query}
+            onChange={(e) => onSearch(e.target.value)}
+            placeholder="搜项目名、省份或大类…"
+          />
+          {results.length > 0 && (
+            <div className="graph-search-list">
+              {results.map((st) => (
+                <button
+                  key={st.id}
+                  className="graph-search-item"
+                  onClick={() => {
+                    selectStar(st)
+                    setQuery('')
+                    setResults([])
+                  }}
+                >
+                  <strong>{st.name}</strong>
+                  <span>
+                    {st.cat} · {st.prov}
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </header>
-      {error && <div className="graph-error">{error}</div>}
-      {!data && !error && <div className="graph-loading">图谱加载中…</div>}
-      <svg ref={svgRef} className="graph-svg" />
 
-      {/* 缩放控件 */}
+      {error && <div className="graph-error">{error}</div>}
+      {!sky && !error && <div className="graph-loading">星图加载中…</div>}
+
+      <div className="graph-sky" ref={wrapRef}>
+        <canvas ref={canvasRef} className="graph-canvas" />
+        <div className="graph-tip" ref={tipRef} aria-hidden />
+      </div>
+
       <div className="graph-zoom">
-        <button onClick={() => zoomRef.current?.in()} title="放大">
+        <button onClick={() => zoomBy(1.4)} title="放大">
           ＋
         </button>
-        <button onClick={() => zoomRef.current?.out()} title="缩小">
+        <button onClick={() => zoomBy(1 / 1.4)} title="缩小">
           －
         </button>
-        <button onClick={() => zoomRef.current?.reset()} title="复位视图">
+        <button onClick={resetView} title="复位视图">
           ⤢
         </button>
       </div>
 
-      {selected && (
+      {sel && (
         <div className="graph-detail">
           <div className="graph-detail-head">
-            <strong>{selected.label}</strong>
-            <span className="graph-detail-type" style={{ color: TYPE_COLOR[selected.type] }}>
-              {TYPE_LABEL[selected.type]}
+            <strong>{selectedStar ? selectedStar.name : selectedCat?.name}</strong>
+            <span
+              className="graph-detail-type"
+              style={{ color: selectedStar ? (selectedStar.deep ? '#e8c56b' : '#9a8f80') : selectedCat?.color }}
+            >
+              {selectedStar ? (selectedStar.deep ? '深读亮星' : '名录微星') : '星座'}
             </span>
-            <button className="graph-close" onClick={deselect}>
+            <button
+              className="graph-close"
+              onClick={() => {
+                setSel(null)
+                setDetail(null)
+              }}
+            >
               ×
             </button>
           </div>
 
-          {/* 每类节点都有内容展示 */}
-          {selected.type === 'heritage' && (
+          {selectedStar && (
             <div className="graph-detail-info">
-              {detail ? (
-                <>
-                  <p>{detail.description.slice(0, 140)}…</p>
-                  <span>
-                    {detail.category} · {detail.region} · {detail.level}
-                  </span>
-                </>
+              {selectedStar.deep ? (
+                detail ? (
+                  <>
+                    <p>{detail.description.slice(0, 140)}…</p>
+                    <span>
+                      {detail.category} · {detail.region} · {detail.level}
+                    </span>
+                  </>
+                ) : (
+                  <p className="graph-loading-line">简介加载中…</p>
+                )
               ) : (
-                <p className="graph-loading-line">简介加载中…</p>
+                <>
+                  <p>
+                    全国名录在册项目，{selectedStar.cat} · {selectedStar.prov}
+                    。索引层暂无深读档案，可在知识库查看简述与来源。
+                  </p>
+                  <span>{selectedStar.region}</span>
+                </>
               )}
             </div>
           )}
-          {selected.type === 'category' && (
+
+          {selectedCat && (
             <div className="graph-detail-info">
               <p>
-                该类别深读档案 {heritageRels.length} 份
-                {selected.extra?.total ? `，全国名录在册 ${selected.extra.total} 项` : ''}
-                ，点下方项目名直达知识库详情。
+                该星座 {selectedCat.count} 项，其中深读档案 {selectedCat.deepCount} 份；覆盖{' '}
+                {selectedCat.provs.length} 个省级行政区，点下方直达知识库筛选。
               </p>
-            </div>
-          )}
-          {selected.type === 'region' && (
-            <div className="graph-detail-info">
-              <p>
-                该地域深读档案 {heritageRels.length} 份
-                {selected.extra?.total ? `，全国名录在册 ${selected.extra.total} 项` : ''}
-                ，可去地图查看分布，或点下方项目直达详情。
-              </p>
-            </div>
-          )}
-          {selected.type === 'person' && (
-            <div className="graph-detail-info">
-              <p>代表性传承人，关联非遗项目 {heritageRels.length} 项，点击查看完整介绍。</p>
-            </div>
-          )}
-          {selected.type === 'work' && (
-            <div className="graph-detail-info">
-              <p>代表性作品，出自以下非遗项目：</p>
-            </div>
-          )}
-          {selected.type === 'source' && (
-            <div className="graph-detail-info">
-              <p>{extra?.title ?? '资料来源'}</p>
-              <span>
-                {extra?.publisher}
-                {extra?.reliability ? ` · 可信度：${extra.reliability}` : ''}
-              </span>
             </div>
           )}
 
-          {/* 主操作：进入对应页面 */}
           <div className="graph-detail-actions">
-            {selected.type === 'heritage' && (
-              <>
-                <button
-                  className="graph-btn primary"
-                  onClick={() => onNavigate('knowledge', selected.id)}
-                >
-                  进入知识库详情 →
-                </button>
-                {focusId !== selected.id && (
-                  <button className="graph-btn" onClick={() => focusNode(selected.id)}>
-                    聚焦子图
-                  </button>
-                )}
-              </>
-            )}
-            {selected.type === 'category' && (
+            {selectedStar && (
               <button
                 className="graph-btn primary"
-                onClick={() => onNavigate('knowledge', `kw:${selected.label}`)}
+                onClick={() => onNavigate('knowledge', selectedStar.id)}
+              >
+                查看知识库详情 →
+              </button>
+            )}
+            {selectedStar && (
+              <button
+                className="graph-btn"
+                onClick={() => onNavigate('map', extractProvince(selectedStar.region))}
+              >
+                去非遗地图
+              </button>
+            )}
+            {selectedCat && (
+              <button
+                className="graph-btn primary"
+                onClick={() => onNavigate('knowledge', `kw:${selectedCat.name}`)}
               >
                 去知识库筛选 →
               </button>
             )}
-            {selected.type === 'region' && (
-              <button
-                className="graph-btn primary"
-                onClick={() => onNavigate('map', selected.label)}
-              >
-                去非遗地图 →
-              </button>
-            )}
-            {(selected.type === 'person' || selected.type === 'work') && (
-              <button className="graph-btn primary" onClick={() => onNavigate('knowledge')}>
-                去知识库浏览 →
-              </button>
-            )}
-            {selected.type === 'source' && extra?.url && (
-              <a
-                className="graph-btn primary graph-btn-link"
-                href={extra.url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                打开原文 →
-              </a>
-            )}
           </div>
 
-          {/* 关联列表：全部可点击跳转 */}
-          <div className="graph-relations">
-            <em>关联 {relations.length} 项 · 点击可跳转</em>
-            {relations.slice(0, 10).map((r, i) => (
-              <button
-                key={i}
-                className="graph-relation-line"
-                onClick={() => openRelation(r)}
-                title={
-                  r.other.type === 'heritage'
-                    ? '进入知识库详情'
-                    : r.other.type === 'region'
-                      ? '去非遗地图'
-                      : r.other.type === 'category'
-                        ? '去知识库筛选'
-                        : '在图谱中选中'
-                }
-              >
-                <span className="graph-relation-tag">{r.relation}</span>
-                {r.name}
-                <span className="graph-relation-arrow">→</span>
-              </button>
-            ))}
-          </div>
+          {selectedStar && relations.length > 0 && (
+            <div className="graph-relations">
+              <em>关联 {relations.length} 项 · 点击可跳转</em>
+              {relations.slice(0, 10).map((r, i) => (
+                <button
+                  key={i}
+                  className="graph-relation-line"
+                  onClick={() => openRelation(r)}
+                  title="点击跳转到对应页面"
+                >
+                  <span className="graph-relation-tag">{r.relation}</span>
+                  {r.name}
+                  <span className="graph-relation-arrow">→</span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
