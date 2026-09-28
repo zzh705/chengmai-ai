@@ -103,7 +103,7 @@ body {
   flex-direction: column;
 }
 
-/* 页面切换动效：上浮 + 轻微缩放 + 柔焦消散（切页如卷轴轻展） */
+/* 页面切换动效：上浮 + 方向位移 + 轻微缩放 + 柔焦消散（方向由 --vt-x 驱动） */
 .page-transition {
   flex: 1;
   min-height: 0;
@@ -114,7 +114,7 @@ body {
 @keyframes pageIn {
   from {
     opacity: 0;
-    transform: translateY(16px) scale(0.995);
+    transform: translate(calc(var(--vt-x, 34px) * 0.45), 16px) scale(0.995);
     filter: blur(5px);
   }
   55% {
@@ -132,8 +132,8 @@ body {
   }
 }
 
-/* View Transitions（Chrome/Safari）：旧页上浮淡出、新页自下淡入交叉溶解，
-   取代 blur 弹入，切换更连贯。入口动画（pageIn）此时让位给 VT。 */
+/* View Transitions（Chrome/Safari）：页面风味多元化入场（--vt-new-in 切换 keyframes），
+   旧页微推近垫底、新页按风味溶解/入位；入口动画（pageIn）此时让位给 VT。 */
 .page-transition {
   view-transition-name: page-area;
 }
@@ -142,20 +142,50 @@ body {
 }
 ::view-transition-old(page-area),
 ::view-transition-new(page-area) {
-  animation-duration: 0.5s;
+  animation-duration: var(--vt-dur, 0.5s);
   animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-/* 旧页保持不透明垫底（新页在其上溶解），避免背景透色 */
+/* 旧页保持不透明并轻微推近（新页在其上入场），避免背景透色 */
 ::view-transition-old(page-area) {
-  animation: none;
+  animation-name: vtPageOut;
 }
 ::view-transition-new(page-area) {
-  animation-name: vtPageIn;
+  animation-name: var(--vt-new-in, vtInRise);
 }
-@keyframes vtPageIn {
+@keyframes vtPageOut {
+  to {
+    transform: scale(1.03);
+  }
+}
+/* 五种页面风味：沉静淡入 / 展卷上浮 / 入舆横移 / 墨晕化开 / 上榜轻抬 */
+@keyframes vtInFade {
   from {
     opacity: 0;
-    transform: translateY(14px);
+  }
+}
+@keyframes vtInRise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+@keyframes vtInDrift {
+  from {
+    opacity: 0;
+    transform: translateX(var(--vt-x, 34px));
+  }
+}
+@keyframes vtInInk {
+  from {
+    opacity: 0;
+    transform: scale(1.03);
+    filter: blur(12px);
+  }
+}
+@keyframes vtInLift {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.985);
   }
 }
 /* VT 期间页面处于静态快照：把入口动画推迟到转场结束后再播，避免定格跳变 */
@@ -175,7 +205,7 @@ body {
   animation-delay: 0.5s;
 }
 
-/* 路由金线：切页时自左向右扫过后淡出 */
+/* 路由金线：切页时扫过后淡出；颜色随页面组换色（--route-a/b），回切自右向左 */
 .route-bar {
   position: fixed;
   top: 0;
@@ -185,8 +215,17 @@ body {
   z-index: 70;
   pointer-events: none;
   transform-origin: left center;
-  background: linear-gradient(90deg, transparent 0%, #e8c56b 35%, #b03a2e 75%, transparent 100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--route-a, #e8c56b) 35%,
+    var(--route-b, #b03a2e) 75%,
+    transparent 100%
+  );
   animation: routeBar 1s cubic-bezier(0.3, 0.6, 0.2, 1) forwards;
+}
+.vt-back .route-bar {
+  transform-origin: right center;
 }
 @keyframes routeBar {
   0% {

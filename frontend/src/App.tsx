@@ -43,6 +43,35 @@ const HAS_VIEW_TRANSITION =
   !window.matchMedia('(prefers-reduced-motion: reduce)').matches
 if (HAS_VIEW_TRANSITION) document.documentElement.classList.add('has-vt')
 
+/**
+ * 页面风味：切页入场各有气质（fade 沉静 / rise 展卷 / drift 入舆 / ink 墨晕 / lift 上榜），
+ * 金线扫光按页面组换色；方向感知由 --vt-x（正=向右切，负=回切）驱动位移。
+ */
+const MOOD: Record<string, { in: string; dur: string; a: string; b: string }> = {
+  home: { in: 'vtInFade', dur: '0.44s', a: '#e8c56b', b: '#b03a2e' },
+  chat: { in: 'vtInFade', dur: '0.46s', a: '#e8c56b', b: '#b03a2e' },
+  knowledge: { in: 'vtInRise', dur: '0.5s', a: '#e8c56b', b: '#4f8f7b' },
+  graph: { in: 'vtInRise', dur: '0.5s', a: '#e8c56b', b: '#4f8f7b' },
+  map: { in: 'vtInDrift', dur: '0.56s', a: '#e8c56b', b: '#4f8f7b' },
+  path: { in: 'vtInInk', dur: '0.62s', a: '#e8c56b', b: '#b03a2e' },
+  lab: { in: 'vtInInk', dur: '0.62s', a: '#e8c56b', b: '#b03a2e' },
+  challenge: { in: 'vtInLift', dur: '0.44s', a: '#d4763b', b: '#e8c56b' },
+  profile: { in: 'vtInLift', dur: '0.44s', a: '#d4763b', b: '#e8c56b' },
+  about: { in: 'vtInRise', dur: '0.54s', a: '#e8c56b', b: '#b03a2e' },
+}
+
+function applyPageMood(target: string, dir: number) {
+  const r = document.documentElement
+  const m = MOOD[target]
+  r.style.setProperty('--vt-new-in', m?.in ?? 'vtInRise')
+  r.style.setProperty('--vt-dur', m?.dur ?? '0.5s')
+  // 正=向右前进（新页自右入），负=回切（新页自左入）
+  r.style.setProperty('--vt-x', dir < 0 ? '-34px' : '34px')
+  r.style.setProperty('--route-a', m?.a ?? '#e8c56b')
+  r.style.setProperty('--route-b', m?.b ?? '#b03a2e')
+  r.classList.toggle('vt-back', dir < 0)
+}
+
 // VT 期间新页是静态快照：入场动画若照常播会在快照里定格、转场结束跳变。
 // 故转场窗口内（vt-running）把入场动画/渐显统一推迟到转场结束后再播。
 let vtCleanupTimer: ReturnType<typeof setTimeout> | undefined
@@ -62,6 +91,11 @@ function App() {
 
   /** 导航并携带参数：chat=问题文本，knowledge=项目 id 或 kw:关键词，map=省份 key */
   function navigate(target: string, param?: string) {
+    // 方向感知：按导航序判断前进/回切，决定入场方向与金线扫光起点
+    const from = NAV.findIndex((n) => n.key === page)
+    const to = NAV.findIndex((n) => n.key === target)
+    const dir = from >= 0 && to >= 0 && from !== to ? Math.sign(to - from) : 1
+    applyPageMood(target, dir)
     const apply = () => {
       setPage(target as Page)
       if (target === 'chat') {
