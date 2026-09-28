@@ -493,3 +493,42 @@ body {
 .graph-btn.primary:hover:not(:disabled)::after {
   transform: rotate(16deg) translateX(460%);
 }
+
+/* ===== 全局：内容页视口四角回纹（框裱感，宽屏时点缀四周留白） ===== */
+.zh-corner {
+  position: fixed;
+  inset: 74px 26px 24px;
+  pointer-events: none;
+  z-index: 5;
+}
+.zh-corner i {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  opacity: 0.42;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34' fill='none'%3E%3Cpath d='M1 15V1h14M7 21V7h14' stroke='%23e8c56b' stroke-width='1.5'/%3E%3C/svg%3E");
+}
+.zh-corner i:nth-child(1) {
+  top: 0;
+  left: 0;
+}
+.zh-corner i:nth-child(2) {
+  top: 0;
+  right: 0;
+  transform: rotate(90deg);
+}
+.zh-corner i:nth-child(3) {
+  bottom: 0;
+  right: 0;
+  transform: rotate(180deg);
+}
+.zh-corner i:nth-child(4) {
+  bottom: 0;
+  left: 0;
+  transform: rotate(270deg);
+}
+@media (max-width: 760px) {
+  .zh-corner {
+    display: none;
+  }
+}

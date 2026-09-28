@@ -150,6 +150,14 @@ function App() {
       </nav>
       {/* 路由金线：每次切页重挂载，自左向右扫过后淡出（转场指示器） */}
       {!splash && <div key={page} className="route-bar" aria-hidden />}
+      {!splash && (
+        <div className="zh-corner" aria-hidden>
+          <i />
+          <i />
+          <i />
+          <i />
+        </div>
+      )}
       <main className="app-body">
         <div key={page} className="page-transition">
           {page === 'home' && <Home onNavigate={navigate} entered={!splash} />}

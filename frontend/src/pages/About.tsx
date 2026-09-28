@@ -55,7 +55,7 @@ const WHY_LINES: { t: string; c?: string }[] = [
 
 export default function About() {
   // 关键数字实时拉取：数据更新后页面无需改代码
-  const [stat, setStat] = useState({ items: 0, provs: 0, nodes: 0, links: 0 })
+  const [stat, setStat] = useState({ items: 0, deep: 0, provs: 0, nodes: 0, links: 0 })
   const [names, setNames] = useState<string[]>([])
   const [ready, setReady] = useState(false)
   const rootRef = useRevealGroup<HTMLDivElement>([ready])
@@ -68,14 +68,16 @@ export default function About() {
         .catch(() => ({ nodes: [], links: [] })),
     ])
       .then(([list, graph]) => {
+        const deep = list.filter((h) => h.tier !== 'index')
         const provs = new Set(
           list
             .map((h) => extractProvince(h.region))
             .filter((p) => p !== '全国' && p !== '其他'),
         ).size
-        setNames(list.map((h) => h.name))
+        setNames(deep.map((h) => h.name))
         setStat({
           items: list.length,
+          deep: deep.length,
           provs,
           nodes: graph.nodes?.length ?? 0,
           links: graph.links?.length ?? 0,
@@ -93,6 +95,21 @@ export default function About() {
 
   return (
     <div className="ab-page" ref={rootRef}>
+      {/* 两侧竖排边饰：留白处的卷轴气质（宽屏显示，纯装饰） */}
+      <div className="ab-rail ab-rail-left" aria-hidden>
+        <span className="ab-rail-mark">承脉</span>
+        <i className="ab-rail-line" />
+        <span className="ab-rail-text">凡有来处 · 皆有回响</span>
+        <i className="ab-rail-line" />
+        <span className="ab-rail-mark ab-rail-mark-sm">非遗</span>
+      </div>
+      <div className="ab-rail ab-rail-right" aria-hidden>
+        <span className="ab-rail-text">让非遗被看见 · 被问起 · 被用起来</span>
+        <i className="ab-rail-line" />
+        <span className="ab-rail-mark ab-rail-mark-sm">日新</span>
+        <i className="ab-rail-line" />
+        <span className="ab-rail-text ab-rail-text-dim">守正 · 创新</span>
+      </div>
       <header className="ab-header" id="intro">
         <div className="ab-seal">承脉</div>
         <h1>关于承脉 AI</h1>
@@ -123,16 +140,16 @@ export default function About() {
           ))}
         </div>
 
-        {/* 灯阵：每一盏灯对应知识库里的一个项目 */}
+        {/* 灯阵：每一盏灯对应知识库里的一份深读档案 */}
         <div className="ab-why-lights">
           <div className="ab-why-lights-head">
             <span>此刻，知识库里的灯</span>
             <em>
-              {num(stat.items)} 盏 · 每一盏是一个国家级非遗项目
+              {num(stat.deep)} 盏深读 · 另收录全国名录 {num(stat.items)} 项
             </em>
           </div>
           <div className="ab-lights">
-            {Array.from({ length: stat.items || 43 }, (_, i) => (
+            {Array.from({ length: stat.deep || 43 }, (_, i) => (
               <i
                 key={i}
                 title={names[i] ?? '国家级非物质文化遗产'}

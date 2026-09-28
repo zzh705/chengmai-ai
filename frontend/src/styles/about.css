@@ -5,6 +5,63 @@
   background: #14110f;
   color: #f3ece2;
   padding-bottom: 50px;
+  position: relative;
+}
+
+/* ===== 两侧竖排边饰：宽屏留白处的卷轴气质 ===== */
+.ab-rail {
+  display: none;
+}
+@media (min-width: 1220px) {
+  .ab-rail {
+    position: fixed;
+    z-index: 6;
+    top: 96px;
+    bottom: 46px;
+    width: 46px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    pointer-events: none;
+  }
+  .ab-rail-left {
+    left: 54px;
+  }
+  .ab-rail-right {
+    right: 54px;
+  }
+}
+.ab-rail-mark {
+  writing-mode: vertical-rl;
+  font-family: 'Songti SC', 'SimSun', serif;
+  font-size: 24px;
+  letter-spacing: 0.34em;
+  color: rgba(232, 197, 107, 0.52);
+  border: 1px solid rgba(232, 197, 107, 0.32);
+  border-radius: 4px;
+  padding: 12px 7px;
+}
+.ab-rail-mark-sm {
+  font-size: 14px;
+  padding: 8px 5px;
+  color: rgba(232, 197, 107, 0.38);
+}
+.ab-rail-text {
+  writing-mode: vertical-rl;
+  font-family: 'Songti SC', 'SimSun', serif;
+  font-size: 13px;
+  letter-spacing: 0.46em;
+  color: #7a6c5b;
+}
+.ab-rail-text-dim {
+  color: #5d5348;
+}
+.ab-rail-line {
+  flex: 1;
+  width: 1px;
+  min-height: 26px;
+  background: linear-gradient(180deg, transparent, rgba(232, 197, 107, 0.38), transparent);
 }
 .ab-header {
   text-align: center;
@@ -39,13 +96,34 @@
 }
 
 .ab-card {
-  max-width: 760px;
+  max-width: 820px;
   margin: 14px auto;
   background: #1b1713;
   border: 1px solid #2e2823;
   border-radius: 12px;
   padding: 20px 24px;
   scroll-margin-top: 64px;
+  position: relative;
+}
+/* 回纹角饰：对角双角（左上 + 右下），古典框裱感 */
+.ab-card::before,
+.ab-card::after {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  opacity: 0.5;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' fill='none'%3E%3Cpath d='M1 13V1h12M6 18V6h12' stroke='%23e8c56b' stroke-width='1.4'/%3E%3C/svg%3E");
+}
+.ab-card::before {
+  top: -7px;
+  left: -7px;
+}
+.ab-card::after {
+  bottom: -7px;
+  right: -7px;
+  transform: rotate(180deg);
 }
 .ab-card h3 {
   margin: 0 0 12px;
