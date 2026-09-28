@@ -9,22 +9,28 @@ export function speechSupported(): boolean {
 
 function pickVoice(): SpeechSynthesisVoice | null {
   const voices = window.speechSynthesis.getVoices()
+  const zh = voices.filter((v) => /zh[-_]CN|^zh$/i.test(v.lang))
+  // 首选慈爱柔和的中文女声（婷婷/晓晓/慧慧/佳佳/谷歌普通话），其次任意中文女声
+  const female = /Ting|Xiao|Hui|Mei|Jia|Ya|Tian|Google/i
+  const male = /Sinji|Kangkang|Yunxi|Yunye|Kang/i
   return (
-    voices.find((v) => /zh[-_]CN/i.test(v.lang) && /Ting|Xiao|Ya|Mei|Sinji/i.test(v.name)) ||
-    voices.find((v) => /zh[-_]CN/i.test(v.lang)) ||
+    zh.find((v) => female.test(v.name) && !male.test(v.name)) ||
+    zh.find((v) => !male.test(v.name)) ||
+    zh[0] ||
     voices.find((v) => /^zh/i.test(v.lang)) ||
     null
   )
 }
 
-/** 朗读一段中文讲解；返回 true 表示已启动。 */
+/** 朗读一段中文讲解；返回 true 表示已启动。语速略缓、音调略沉，取慈爱讲述感。 */
 export function speak(text: string, onEnd: () => void): boolean {
   if (!speechSupported() || !text) return false
   window.speechSynthesis.cancel()
   const utter = new SpeechSynthesisUtterance(text)
   utter.lang = 'zh-CN'
-  utter.rate = 0.95
-  utter.pitch = 1
+  utter.rate = 0.92
+  utter.pitch = 0.9
+  utter.volume = 1
   const voice = pickVoice()
   if (voice) utter.voice = voice
   utter.onend = onEnd
