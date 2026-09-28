@@ -1,4 +1,4 @@
-/* 承脉 AI 对话页 —— 东方文化视觉 + 现代 SaaS 风格 */
+/* 承脉 AI 对话页 —— 编辑式回答排版 + 文档型证据区 */
 .chat-page {
   display: flex;
   flex-direction: column;
@@ -52,7 +52,7 @@
 .chat-list {
   flex: 1;
   overflow-y: auto;
-  padding: 24px 20px;
+  padding: 28px 32px;
 }
 .chat-empty {
   text-align: center;
@@ -67,7 +67,7 @@
 }
 
 .bubble {
-  margin-bottom: 18px;
+  margin-bottom: 26px;
   display: flex;
   flex-direction: column;
 }
@@ -75,66 +75,203 @@
   align-items: flex-end;
 }
 .bubble.assistant {
-  align-items: flex-start;
+  align-items: stretch;
 }
 .bubble-content {
-  max-width: 76%;
-  padding: 12px 16px;
-  border-radius: 12px;
-  line-height: 1.7;
+  max-width: 100%;
+  line-height: 1.5;
   font-size: 15px;
-  white-space: pre-wrap;
-}
-.bubble.user .bubble-content {
-  background: #b03a2e;
-  color: #fff;
-  border-bottom-right-radius: 4px;
-}
-.bubble.assistant .bubble-content {
-  background: #241f1a;
-  border: 1px solid #352e27;
-  border-bottom-left-radius: 4px;
-}
-.loading {
-  color: #9a8f80;
-  font-size: 14px;
 }
 
-.bubble-meta {
-  margin-top: 8px;
-  padding: 10px 14px;
-  background: #1b1713;
-  border: 1px dashed #4a4137;
-  border-radius: 10px;
-  font-size: 13px;
+/* 用户消息：紧凑气泡 */
+.bubble.user .bubble-content {
   max-width: 76%;
+  padding: 11px 16px;
+  border-radius: 14px;
+  border-bottom-right-radius: 4px;
+  background: #b03a2e;
+  color: #fff;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+/* AI 回答：文档式排版，不装盒 */
+.bubble.assistant .answer {
+  border-left: 1px solid #2e2823;
+  padding-left: 18px;
+}
+.bubble.assistant .bubble-content {
+  color: #e9e1d4;
+  font-size: 15.5px;
+  line-height: 1.95;
+}
+.bubble.assistant .bubble-content p {
+  margin: 0 0 0.9em;
+}
+.bubble.assistant .bubble-content p:last-child {
+  margin-bottom: 0;
+}
+.bubble.assistant .bubble-content h4 {
+  margin: 1.3em 0 0.55em;
+  font-family: 'Songti SC', 'Noto Serif SC', serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: #e8c56b;
+  letter-spacing: 1px;
+}
+.bubble.assistant .bubble-content h4:first-child {
+  margin-top: 0;
+}
+.bubble.assistant .bubble-content ul,
+.bubble.assistant .bubble-content ol {
+  margin: 0.2em 0 0.9em;
+  padding-left: 1.4em;
+}
+.bubble.assistant .bubble-content li {
+  margin: 0.32em 0;
+  line-height: 1.85;
+}
+.bubble.assistant .bubble-content ul li::marker {
+  color: #b03a2e;
+}
+.bubble.assistant .bubble-content ol li::marker {
+  color: #e8c56b;
+  font-family: 'Songti SC', serif;
+}
+.bubble.assistant .bubble-content strong {
+  color: #f3ece2;
+  font-weight: 600;
+}
+
+/* 流式状态：等待光标 + 思考中呼吸 */
+.bubble-content.waiting::after {
+  content: '';
+  display: inline-block;
+  width: 0.5em;
+  height: 1.05em;
+  margin-left: 2px;
+  vertical-align: -0.16em;
+  background: #e8c56b;
+  animation: caretBlink 1s steps(2, start) infinite;
+}
+@keyframes caretBlink {
+  to {
+    visibility: hidden;
+  }
+}
+.thinking {
+  color: #9a8f80;
+  font-size: 14px;
+  letter-spacing: 2px;
+  animation: thinkPulse 1.4s ease-in-out infinite;
+}
+@keyframes thinkPulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* 证据区：回答下的文档页脚 */
+.bubble-meta {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #2e2823;
+  font-size: 13px;
   color: #b6ab9a;
 }
 .meta-block {
-  margin-bottom: 6px;
+  margin-bottom: 10px;
+}
+.meta-label {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #9a8f80;
+  margin-bottom: 8px;
+}
+.meta-label-note {
+  letter-spacing: 0;
+  color: #6e655a;
 }
 .source-item {
-  padding: 2px 0 2px 10px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 0;
+  border-top: 1px solid #221d18;
+}
+.source-item:first-of-type {
+  border-top: none;
+}
+.source-no {
+  flex: none;
+  width: 18px;
+  font-family: 'Songti SC', serif;
+  color: #e8c56b;
+}
+.source-title {
+  color: #d8cfc0;
+}
+.source-pub {
+  margin-left: auto;
+  flex: none;
+  color: #6e655a;
+  font-size: 12px;
+}
+.meta-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  color: #9a8f80;
+  font-size: 12.5px;
+}
+.evidence {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.evidence i {
+  display: inline-block;
+  width: 64px;
+  height: 3px;
+  background: #3a332c;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.evidence b {
+  display: block;
+  height: 100%;
+  background: #e8c56b;
 }
 .action-row {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  margin-top: 8px;
+  margin-top: 14px;
 }
 .action-btn {
-  padding: 5px 12px;
-  border: 1px solid #e8c56b;
-  border-radius: 6px;
+  padding: 6px 14px;
+  border: 1px solid #3a332c;
+  border-radius: 999px;
   background: transparent;
   color: #e8c56b;
-  font-size: 12px;
+  font-size: 12.5px;
   cursor: pointer;
   transition: all 0.2s;
 }
-.action-btn:hover {
-  background: #e8c56b;
-  color: #14110f;
+.action-btn:hover:not(:disabled) {
+  border-color: #e8c56b;
+  background: #e8c56b14;
+}
+.action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .chat-input {
@@ -170,126 +307,180 @@
   cursor: not-allowed;
 }
 
-/* 学习计划卡片 */
-.plan-card {
-  margin-top: 10px;
-  padding: 14px 16px;
-  max-width: 76%;
-  background: #1b1713;
-  border: 1px solid #e8c56b44;
+/* 生成卡片（路线 / 测验 / 故事）：统一文档卡 */
+.card-overline {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #9a8f80;
+  margin-bottom: 6px;
+}
+.plan-card,
+.quiz-card,
+.story-card {
+  margin-top: 16px;
+  padding: 18px 20px;
+  background: #1a1613;
+  border: 1px solid #2e2823;
   border-radius: 12px;
   font-size: 14px;
 }
 .plan-title {
-  color: #e8c56b;
+  color: #f3ece2;
+  font-family: 'Songti SC', 'Noto Serif SC', serif;
+  font-size: 16.5px;
   font-weight: 600;
-  margin-bottom: 10px;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
 }
 .plan-src {
   display: block;
   font-size: 12px;
   color: #9a8f80;
-  font-weight: normal;
-  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+/* 学习路线：时间轴式条目 */
+.plan-days {
+  margin-top: 10px;
 }
 .plan-day {
-  padding: 8px 0;
-  border-top: 1px dashed #3a332c;
-  color: #d8cfc0;
+  padding: 10px 0;
+  border-top: 1px solid #262019;
+}
+.plan-day-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.plan-day-no {
+  flex: none;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #e8c56b;
+}
+.plan-day-title {
+  color: #f3ece2;
+  font-weight: 600;
 }
 .plan-day ul {
   margin: 6px 0 0;
-  padding-left: 18px;
+  padding-left: 1.3em;
   color: #b6ab9a;
-  line-height: 1.7;
+  line-height: 1.8;
 }
-.action-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.plan-day ul li {
+  margin: 0.25em 0;
+}
+.plan-day ul li::marker {
+  color: #b03a2e;
 }
 
-/* 测验卡片 */
-.quiz-card,
-.story-card {
-  margin-top: 10px;
-  padding: 14px 16px;
-  max-width: 76%;
-  background: #1b1713;
-  border: 1px solid #4a9d8f66;
-  border-radius: 12px;
-  font-size: 14px;
-}
-.story-card {
-  border-color: #c98ad466;
-}
+/* 测验 */
 .quiz-q {
-  border-top: 1px dashed #3a332c;
-  padding: 10px 0;
+  border-top: 1px solid #262019;
+  padding: 14px 0 6px;
 }
 .quiz-question {
+  display: flex;
+  gap: 10px;
   color: #f3ece2;
-  margin-bottom: 8px;
-  line-height: 1.6;
+  margin-bottom: 10px;
+  line-height: 1.7;
+}
+.quiz-no {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin-top: 3px;
+  border: 1px solid #4a4137;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #e8c56b;
 }
 .quiz-options {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  padding-left: 32px;
 }
 .quiz-opt {
   text-align: left;
-  padding: 8px 12px;
+  padding: 9px 14px;
   border: 1px solid #3a332c;
   border-radius: 8px;
   background: #14110f;
   color: #d8cfc0;
-  font-size: 13px;
+  font-size: 13.5px;
   cursor: pointer;
+  transition: border-color 0.15s;
 }
 .quiz-opt:not(:disabled):hover {
   border-color: #e8c56b;
 }
 .quiz-opt.correct {
   border-color: #4a9d8f;
-  background: #4a9d8f33;
+  background: #4a9d8f22;
   color: #8fd8c9;
 }
 .quiz-opt.wrong {
   border-color: #b03a2e;
-  background: #b03a2e33;
+  background: #b03a2e22;
   color: #e89a90;
 }
 .quiz-explain {
-  margin-top: 8px;
-  font-size: 13px;
-  color: #9a8f80;
-  line-height: 1.6;
-}
-
-/* 故事卡片 */
-.story-section {
-  border-top: 1px dashed #3a332c;
-  padding: 10px 0;
-}
-.story-section strong {
-  color: #c98ad4;
-  font-size: 13px;
-}
-.story-section p {
-  margin: 6px 0 0;
-  color: #d8cfc0;
+  margin: 10px 0 0;
+  padding: 10px 14px;
+  border-left: 2px solid #3a332c;
+  font-size: 13.5px;
+  color: #b6ab9a;
   line-height: 1.8;
 }
+.quiz-explain .ok {
+  color: #8fd8c9;
+  margin-right: 6px;
+}
+.quiz-explain .no {
+  color: #e89a90;
+  margin-right: 6px;
+}
+
+/* 故事 */
+.story-section {
+  border-top: 1px solid #262019;
+  padding: 12px 0;
+}
+.story-section strong {
+  display: block;
+  color: #e8c56b;
+  font-family: 'Songti SC', 'Noto Serif SC', serif;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.story-section p {
+  margin: 0;
+  color: #d8cfc0;
+  line-height: 1.9;
+}
 .story-tips {
-  border-top: 1px dashed #3a332c;
-  padding-top: 10px;
+  border-top: 1px solid #262019;
+  padding-top: 12px;
   color: #d8cfc0;
 }
 .story-tips ul {
   margin: 6px 0 0;
-  padding-left: 18px;
-  line-height: 1.7;
+  padding-left: 1.3em;
+  line-height: 1.8;
   color: #b6ab9a;
+}
+.story-tips ul li {
+  margin: 0.3em 0;
+}
+.story-tips ul li::marker {
+  color: #b03a2e;
 }
 
 /* 消息气泡入场 */
@@ -300,5 +491,17 @@
   from {
     opacity: 0;
     transform: translateY(14px) scale(0.98);
+  }
+}
+
+@media (max-width: 640px) {
+  .chat-list {
+    padding: 20px 16px;
+  }
+  .bubble.assistant .answer {
+    padding-left: 12px;
+  }
+  .source-pub {
+    display: none;
   }
 }

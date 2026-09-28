@@ -13,6 +13,7 @@ _SYSTEM = (
     "规则：type 只能是 choice 或 judge；judge 题 options 固定为 [\"正确\", \"错误\"]；"
     "answer 必须与 options 中某一项完全一致；干扰项要 plausible 但明确错误；"
     "题目必须基于给定资料，explanation 要说清为什么。"
+    "所有字符串值禁止使用 emoji、颜文字与装饰性图标符号。"
 )
 
 

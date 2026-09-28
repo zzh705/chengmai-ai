@@ -4,6 +4,8 @@ import os
 
 from openai import OpenAI
 
+from app.utils.text_clean import strip_emoji
+
 _client: OpenAI | None = None
 
 DEFAULT_SYSTEM_PROMPT = (
@@ -24,16 +26,41 @@ def _get_client() -> OpenAI:
     return _client
 
 
-def chat(message: str, history: list[dict] | None = None, system: str | None = None) -> str:
-    """发送一轮对话，返回模型回答文本。"""
+def _build_messages(
+    message: str, history: list[dict] | None, system: str | None
+) -> list[dict]:
     messages = [{"role": "system", "content": system or DEFAULT_SYSTEM_PROMPT}]
     if history:
         messages.extend(history)
     messages.append({"role": "user", "content": message})
+    return messages
 
+
+def chat(message: str, history: list[dict] | None = None, system: str | None = None) -> str:
+    """发送一轮对话，返回模型回答文本。"""
     resp = _get_client().chat.completions.create(
         model=os.getenv("LLM_MODEL", "qwen-plus"),
-        messages=messages,
+        messages=_build_messages(message, history, system),
         temperature=0.7,
     )
-    return resp.choices[0].message.content or ""
+    return strip_emoji(resp.choices[0].message.content or "")
+
+
+def chat_stream(
+    message: str, history: list[dict] | None = None, system: str | None = None
+):
+    """流式对话：逐段 yield 回答增量，首 token 延迟即首屏可见延迟。"""
+    stream = _get_client().chat.completions.create(
+        model=os.getenv("LLM_MODEL", "qwen-plus"),
+        messages=_build_messages(message, history, system),
+        temperature=0.7,
+        stream=True,
+    )
+    for chunk in stream:
+        if not chunk.choices:
+            continue
+        delta = chunk.choices[0].delta.content
+        if delta:
+            text = strip_emoji(delta)
+            if text:
+                yield text

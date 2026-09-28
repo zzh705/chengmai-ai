@@ -69,3 +69,65 @@ export async function sendChat(req: ChatRequest): Promise<ChatResponse> {
   }
   return (await resp.json()) as ChatResponse
 }
+
+/** 流式接口的 meta 事件：证据链先于答案到达 */
+export type ChatMeta = Omit<ChatResponse, 'code' | 'answer'> & { type: 'meta' }
+
+export interface StreamHandlers {
+  onMeta: (meta: ChatMeta) => void
+  onDelta: (text: string) => void
+  onDone: () => void
+}
+
+/**
+ * SSE 流式对话：meta（检索完成即送达）→ delta*（逐字渲染）→ done。
+ * 首屏可见延迟 = 检索延迟（毫秒级），而非整个 LLM 生成周期。
+ */
+export async function streamChat(req: ChatRequest, handlers: StreamHandlers): Promise<void> {
+  if (USE_MOCK) {
+    const data = { ...mockChatResponse, answer: `【MOCK】${req.message}` }
+    handlers.onMeta({ ...data, type: 'meta' })
+    for (const ch of data.answer) {
+      handlers.onDelta(ch)
+      await new Promise((r) => setTimeout(r, 8))
+    }
+    handlers.onDone()
+    return
+  }
+
+  const resp = await fetch('/api/chat/stream', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(req),
+  })
+  if (!resp.ok || !resp.body) {
+    throw new Error(`请求失败：HTTP ${resp.status}`)
+  }
+
+  const reader = resp.body.getReader()
+  const decoder = new TextDecoder()
+  let buffer = ''
+
+  const emit = (line: string) => {
+    if (!line.startsWith('data: ')) return
+    const payload = JSON.parse(line.slice(6)) as
+      | ({ type: 'meta' } & ChatMeta)
+      | { type: 'delta'; text: string }
+      | { type: 'done' }
+    if (payload.type === 'meta') handlers.onMeta(payload)
+    else if (payload.type === 'delta') handlers.onDelta(payload.text)
+    else if (payload.type === 'done') handlers.onDone()
+  }
+
+  for (;;) {
+    const { done, value } = await reader.read()
+    if (done) break
+    buffer += decoder.decode(value, { stream: true })
+    const events = buffer.split('\n\n')
+    buffer = events.pop() ?? ''
+    for (const ev of events) {
+      const line = ev.split('\n').find((l) => l.startsWith('data: '))
+      if (line) emit(line)
+    }
+  }
+}

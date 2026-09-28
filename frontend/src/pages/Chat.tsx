@@ -1,9 +1,17 @@
-import { useEffect, useRef, useState } from 'react'
-import { sendChat, type Action, type ChatResponse, type Source } from '../api/chat'
+import { Fragment, useEffect, useRef, useState } from 'react'
+import {
+  streamChat,
+  type Action,
+  type ChatResponse,
+  type ChatMeta,
+  type Source,
+} from '../api/chat'
+import { sendChat } from '../api/chat'
 import { fetchLearningPlan, type LearningPlan } from '../api/learning'
 import { generateQuiz, type QuizResponse } from '../api/quiz'
 import { generateStory, type StoryResponse } from '../api/story'
 import { recordProgress } from '../api/progress'
+import { cleanLLM, stripEmojiDeep } from '../utils/text'
 import '../styles/chat.css'
 
 type Mode = 'scholar' | 'inheritor' | 'youth'
@@ -14,10 +22,79 @@ const MODES: { key: Mode; label: string; desc: string }[] = [
   { key: 'youth', label: '青年传播者', desc: '通俗故事 · 创意表达' },
 ]
 
+const INTENT_LABELS: Record<string, string> = {
+  LEARNING: '学习',
+  QUIZ: '测验',
+  STORY: '故事',
+  CREATION: '创作活化',
+  COMPARE: '对比',
+  INFO: '知识问答',
+}
+
 interface Message {
   role: 'user' | 'assistant'
   content: string
   data?: ChatResponse
+  streaming?: boolean
+}
+
+/** 轻量排版：标题 / 列表 / 段落 / 强调，让长回答像文档而非聊天串 */
+function renderProse(text: string): React.ReactNode {
+  const blocks = cleanLLM(text)
+    .split(/\n{2,}/)
+    .map((b) => b.trim())
+    .filter(Boolean)
+  return blocks.map((b, i) => {
+    const lines = b.split('\n')
+    const heading = b.match(/^(#{1,4})\s+(.+)$/)
+    if (heading && lines.length === 1) {
+      return <h4 key={i}>{inline(heading[2])}</h4>
+    }
+    if (lines.every((l) => /^\s*[-*]\s+/.test(l))) {
+      return (
+        <ul key={i}>
+          {lines.map((l, j) => (
+            <li key={j}>{inline(l.replace(/^\s*[-*]\s+/, ''))}</li>
+          ))}
+        </ul>
+      )
+    }
+    if (lines.length > 1 && lines.every((l) => /^\s*\d+[.、)]\s*/.test(l))) {
+      return (
+        <ol key={i}>
+          {lines.map((l, j) => (
+            <li key={j}>{inline(l.replace(/^\s*\d+[.、)]\s*/, ''))}</li>
+          ))}
+        </ol>
+      )
+    }
+    return (
+      <p key={i}>
+        {lines.map((l, j) => (
+          <Fragment key={j}>
+            {j > 0 && <br />}
+            {inline(l)}
+          </Fragment>
+        ))}
+      </p>
+    )
+  })
+}
+
+function inline(text: string): React.ReactNode {
+  if (!text.includes('**')) return text
+  return text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
+    part.startsWith('**') && part.endsWith('**') && part.length > 4 ? (
+      <strong key={i}>{part.slice(2, -2)}</strong>
+    ) : (
+      <Fragment key={i}>{part}</Fragment>
+    ),
+  )
+}
+
+function metaFrom(m: ChatMeta): ChatResponse {
+  const { type: _type, ...rest } = m
+  return { code: 0, answer: '', ...rest }
 }
 
 export default function Chat({ initialQuery }: { initialQuery?: string }) {
@@ -33,6 +110,12 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
   const [actionBusy, setActionBusy] = useState<string | null>(null)
   const listRef = useRef<HTMLDivElement>(null)
 
+  // 流式期间持续贴底，结束后停止接管
+  useEffect(() => {
+    if (!loading) return
+    listRef.current?.scrollTo({ top: listRef.current.scrollHeight })
+  }, [messages, loading])
+
   function topicFor(msgIndex: number, data: ChatResponse): string | undefined {
     // 主题优先取知识库关联项，否则回退到该回答之前的用户原话
     const related = data.related_items[0]?.name
@@ -43,27 +126,68 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
     return undefined
   }
 
+  function patchLast(fn: (m: Message) => Message) {
+    setMessages((prev) => {
+      const next = [...prev]
+      for (let i = next.length - 1; i >= 0; i--) {
+        if (next[i].role === 'assistant') {
+          next[i] = fn(next[i])
+          break
+        }
+      }
+      return next
+    })
+  }
+
   async function send(text: string) {
     if (!text || loading) return
-    setMessages((prev) => [...prev, { role: 'user', content: text }])
+    setMessages((prev) => [
+      ...prev,
+      { role: 'user', content: text },
+      { role: 'assistant', content: '', streaming: true },
+    ])
     setInput('')
     setLoading(true)
+    let streamed = false
     try {
-      const data = await sendChat({ message: text, mode, session_id: sessionId })
-      setSessionId(data.session_id)
-      if (data.related_items.length > 0) {
-        const it = data.related_items[0]
-        recordProgress('view', { id: it.id, name: it.name })
-      }
-      setMessages((prev) => [...prev, { role: 'assistant', content: data.answer, data }])
-      requestAnimationFrame(() =>
-        listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' }),
+      await streamChat(
+        { message: text, mode, session_id: sessionId },
+        {
+          onMeta: (meta) => {
+            setSessionId(meta.session_id)
+            const data = metaFrom(meta)
+            if (data.related_items.length > 0) {
+              const it = data.related_items[0]
+              recordProgress('view', { id: it.id, name: it.name })
+            }
+            patchLast((m) => ({ ...m, data }))
+          },
+          onDelta: (t) => {
+            streamed = true
+            patchLast((m) => ({ ...m, content: m.content + t }))
+          },
+          onDone: () => patchLast((m) => ({ ...m, streaming: false })),
+        },
       )
+      if (!streamed) throw new Error('流式连接中断')
+      patchLast((m) => ({ ...m, streaming: false }))
     } catch (e) {
-      setMessages((prev) => [
-        ...prev,
-        { role: 'assistant', content: `⚠️ 出错了：${e instanceof Error ? e.message : '未知错误'}` },
-      ])
+      // 流式不可用时回退一次性接口，保证功能不退化
+      try {
+        const data = await sendChat({ message: text, mode, session_id: sessionId })
+        setSessionId(data.session_id)
+        if (data.related_items.length > 0) {
+          const it = data.related_items[0]
+          recordProgress('view', { id: it.id, name: it.name })
+        }
+        patchLast(() => ({ role: 'assistant', content: data.answer, data }))
+      } catch {
+        patchLast(() => ({
+          role: 'assistant',
+          content: `出错了：${e instanceof Error ? e.message : '未知错误'}`,
+          streaming: false,
+        }))
+      }
     } finally {
       setLoading(false)
     }
@@ -87,14 +211,14 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
     try {
       if (action.type === 'learning_plan') {
         const plan = await fetchLearningPlan(topic, 7)
-        setPlans((prev) => ({ ...prev, [msgIndex]: plan }))
+        setPlans((prev) => ({ ...prev, [msgIndex]: stripEmojiDeep(plan) }))
         recordProgress('learning_plan', { name: topic })
       } else if (action.type === 'quiz') {
         const quiz = await generateQuiz(topic, 3)
-        setQuizzes((prev) => ({ ...prev, [msgIndex]: quiz }))
+        setQuizzes((prev) => ({ ...prev, [msgIndex]: stripEmojiDeep(quiz) }))
       } else if (action.type === 'story') {
         const story = await generateStory(topic)
-        setStories((prev) => ({ ...prev, [msgIndex]: story }))
+        setStories((prev) => ({ ...prev, [msgIndex]: stripEmojiDeep(story) }))
       } else if (action.type === 'lab') {
         alert('请在顶部导航打开「活化实验室」')
         return
@@ -143,129 +267,167 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
         )}
         {messages.map((msg, i) => (
           <div key={i} className={`bubble ${msg.role}`}>
-            <div className="bubble-content">{msg.content}</div>
-            {msg.data && (
-              <div className="bubble-meta">
-                <div className="meta-block">
-                  <strong>资料依据：</strong>
-                  {msg.data.sources.length === 0
-                    ? ' 暂未找到权威资料'
-                    : msg.data.sources.map((s: Source, idx) => (
-                        <div key={s.id} className="source-item">
-                          {idx + 1}. {s.title}（{s.publisher}）
-                        </div>
-                      ))}
-                </div>
-                <div className="meta-block">
-                  <strong>意图：</strong>
-                  {msg.data.intent}
-                  {msg.data.evidence_score.total > 0 && (
-                    <>
-                      {' · '}
-                      <strong>依据强度：</strong>
-                      {(msg.data.evidence_score.total * 100).toFixed(0)}%
-                    </>
+            {msg.role === 'user' ? (
+              <div className="bubble-content">{msg.content}</div>
+            ) : (
+              <div className="answer">
+                <div className={`bubble-content${msg.streaming && !msg.content ? ' waiting' : ''}`}>
+                  {msg.content ? (
+                    renderProse(msg.content)
+                  ) : msg.data ? (
+                    '正在组织回答…'
+                  ) : (
+                    <span className="thinking">检索知识库并核对来源</span>
                   )}
                 </div>
-                <div className="action-row">
-                  {msg.data.actions.map((a: Action) => (
-                    <button
-                      key={a.type}
-                      className="action-btn"
-                      disabled={actionBusy === `${i}:${a.type}`}
-                      onClick={() => handleAction(i, a, msg.data!)}
-                    >
-                      {actionBusy === `${i}:${a.type}` ? '生成中…' : a.label}
-                    </button>
-                  ))}
-                </div>
 
-                {plans[i] && (
-                  <div className="plan-card">
-                    <div className="plan-title">
-                      📅「{plans[i].topic}」7 天学习路线
-                      {plans[i].sources.length > 0 && (
-                        <span className="plan-src">参考知识库：{plans[i].sources.join('、')}</span>
-                      )}
-                    </div>
-                    {plans[i].days.map((d) => (
-                      <div key={d.day} className="plan-day">
-                        <strong>
-                          Day {d.day} · {d.title}
-                        </strong>
-                        <ul>
-                          {d.tasks.map((t, ti) => (
-                            <li key={ti}>{t}</li>
-                          ))}
-                        </ul>
+                {msg.data && (
+                  <div className="bubble-meta">
+                    <div className="meta-block sources-block">
+                      <div className="meta-label">
+                        资料依据
+                        <span className="meta-label-note">
+                          {msg.data.sources.length === 0
+                            ? '暂未找到权威资料'
+                            : `共 ${msg.data.sources.length} 条`}
+                        </span>
                       </div>
-                    ))}
-                  </div>
-                )}
-
-                {quizzes[i] && (
-                  <div className="quiz-card">
-                    <div className="plan-title">
-                      📝「{quizzes[i].topic}」知识挑战
-                      {quizzes[i].sources.length > 0 && (
-                        <span className="plan-src">依据：{quizzes[i].sources.join('、')}</span>
-                      )}
-                    </div>
-                    {quizzes[i].questions.map((q) => {
-                      const picked = picks[`${i}-${q.id}`]
-                      return (
-                        <div key={q.id} className="quiz-q">
-                          <div className="quiz-question">
-                            {q.id}. {q.question}
-                          </div>
-                          <div className="quiz-options">
-                            {q.options.map((opt) => {
-                              const chosen = picked === opt
-                              const isAnswer = opt === q.answer
-                              let cls = 'quiz-opt'
-                              if (picked && isAnswer) cls += ' correct'
-                              else if (chosen && !isAnswer) cls += ' wrong'
-                              return (
-                                <button
-                                  key={opt}
-                                  className={cls}
-                                  disabled={!!picked}
-                                  onClick={() => pick(i, q.id, opt)}
-                                >
-                                  {opt}
-                                </button>
-                              )
-                            })}
-                          </div>
-                          {picked && (
-                            <div className="quiz-explain">
-                              {picked === q.answer ? '✅ 答对了！' : '❌ 答错了，'}解析：
-                              {q.explanation}
-                            </div>
-                          )}
+                      {msg.data.sources.map((s: Source, idx) => (
+                        <div key={s.id} className="source-item">
+                          <span className="source-no">{idx + 1}</span>
+                          <span className="source-title">{s.title}</span>
+                          <span className="source-pub">{s.publisher}</span>
                         </div>
-                      )
-                    })}
-                  </div>
-                )}
+                      ))}
+                    </div>
+                    <div className="meta-stats">
+                      <span>
+                        意图 {INTENT_LABELS[msg.data.intent] ?? msg.data.intent}
+                      </span>
+                      {msg.data.evidence_score.total > 0 && (
+                        <span className="evidence">
+                          依据强度
+                          <i>
+                            <b
+                              style={{
+                                width: `${(msg.data.evidence_score.total * 100).toFixed(0)}%`,
+                              }}
+                            />
+                          </i>
+                          {(msg.data.evidence_score.total * 100).toFixed(0)}%
+                        </span>
+                      )}
+                    </div>
+                    <div className="action-row">
+                      {msg.data.actions.map((a: Action) => (
+                        <button
+                          key={a.type}
+                          className="action-btn"
+                          disabled={actionBusy === `${i}:${a.type}`}
+                          onClick={() => handleAction(i, a, msg.data!)}
+                        >
+                          {actionBusy === `${i}:${a.type}` ? '生成中…' : a.label}
+                        </button>
+                      ))}
+                    </div>
 
-                {stories[i] && (
-                  <div className="story-card">
-                    <div className="plan-title">📖 {stories[i].title}</div>
-                    {stories[i].sections.map((s, si) => (
-                      <div key={si} className="story-section">
-                        <strong>{s.heading}</strong>
-                        <p>{s.content}</p>
-                      </div>
-                    ))}
-                    {stories[i].spread_tips.length > 0 && (
-                      <div className="story-tips">
-                        <strong>📢 传播建议</strong>
-                        <ul>
-                          {stories[i].spread_tips.map((t, ti) => (
-                            <li key={ti}>{t}</li>
+                    {plans[i] && (
+                      <div className="plan-card">
+                        <div className="card-overline">学习路线 · 7 DAYS</div>
+                        <div className="plan-title">「{plans[i].topic}」七日学习计划</div>
+                        {plans[i].sources.length > 0 && (
+                          <span className="plan-src">
+                            参考知识库：{plans[i].sources.join('、')}
+                          </span>
+                        )}
+                        <div className="plan-days">
+                          {plans[i].days.map((d) => (
+                            <div key={d.day} className="plan-day">
+                              <div className="plan-day-head">
+                                <span className="plan-day-no">
+                                  第 {String(d.day).padStart(2, '0')} 天
+                                </span>
+                                <span className="plan-day-title">{d.title}</span>
+                              </div>
+                              <ul>
+                                {d.tasks.map((t, ti) => (
+                                  <li key={ti}>{t}</li>
+                                ))}
+                              </ul>
+                            </div>
                           ))}
-                        </ul>
+                        </div>
+                      </div>
+                    )}
+
+                    {quizzes[i] && (
+                      <div className="quiz-card">
+                        <div className="card-overline">知识挑战 · QUIZ</div>
+                        <div className="plan-title">「{quizzes[i].topic}」随堂三问</div>
+                        {quizzes[i].sources.length > 0 && (
+                          <span className="plan-src">依据：{quizzes[i].sources.join('、')}</span>
+                        )}
+                        {quizzes[i].questions.map((q) => {
+                          const picked = picks[`${i}-${q.id}`]
+                          return (
+                            <div key={q.id} className="quiz-q">
+                              <div className="quiz-question">
+                                <span className="quiz-no">{q.id}</span>
+                                {q.question}
+                              </div>
+                              <div className="quiz-options">
+                                {q.options.map((opt) => {
+                                  const chosen = picked === opt
+                                  const isAnswer = opt === q.answer
+                                  let cls = 'quiz-opt'
+                                  if (picked && isAnswer) cls += ' correct'
+                                  else if (chosen && !isAnswer) cls += ' wrong'
+                                  return (
+                                    <button
+                                      key={opt}
+                                      className={cls}
+                                      disabled={!!picked}
+                                      onClick={() => pick(i, q.id, opt)}
+                                    >
+                                      {opt}
+                                    </button>
+                                  )
+                                })}
+                              </div>
+                              {picked && (
+                                <div className="quiz-explain">
+                                  <strong className={picked === q.answer ? 'ok' : 'no'}>
+                                    {picked === q.answer ? '答对了。' : '答错了。'}
+                                  </strong>
+                                  {q.explanation}
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )}
+
+                    {stories[i] && (
+                      <div className="story-card">
+                        <div className="card-overline">可传播故事 · STORY</div>
+                        <div className="plan-title">{stories[i].title}</div>
+                        {stories[i].sections.map((s, si) => (
+                          <div key={si} className="story-section">
+                            <strong>{s.heading}</strong>
+                            <p>{s.content}</p>
+                          </div>
+                        ))}
+                        {stories[i].spread_tips.length > 0 && (
+                          <div className="story-tips">
+                            <div className="card-overline">传播建议</div>
+                            <ul>
+                              {stories[i].spread_tips.map((t, ti) => (
+                                <li key={ti}>{t}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -274,7 +436,6 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
             )}
           </div>
         ))}
-        {loading && <div className="bubble assistant loading">承脉 AI 思考中…</div>}
       </div>
 
       <footer className="chat-input">

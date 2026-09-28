@@ -22,6 +22,7 @@ _SYSTEM = (
     "（如符号寓意、工序禁忌）；steps 必须拆成 4-6 个独立数组元素（禁止合并成一条），"
     "每条不超过 50 字；traditional_elements/modern_carrier/spread_channels/ai_parts 各 3-5 条，"
     "每条具体到可执行（写明对象、场景或数量），禁止'加大宣传''提升影响'这类空话。"
+    "所有字符串值禁止使用 emoji、颜文字与装饰性图标符号。"
 )
 
 _OUTPUT_HINT = {
