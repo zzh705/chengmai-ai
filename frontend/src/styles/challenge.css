@@ -233,3 +233,232 @@
   font-size: 12px;
   color: #9a8f80;
 }
+
+/* 等级称号进度条 */
+.ch-rank {
+  width: 100%;
+  margin-top: 14px;
+  text-align: left;
+}
+.ch-rank-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+.ch-rank-head strong {
+  font-size: 14px;
+  color: #e8c56b;
+  letter-spacing: 1px;
+}
+.ch-rank-head span {
+  font-size: 11.5px;
+  color: #9a8f80;
+}
+.ch-rank-bar {
+  height: 10px;
+  background: #241f1b;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.ch-rank-bar i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #8f3529, #e8c56b);
+  border-radius: 6px;
+  transition: width 0.9s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+/* 每日一题 */
+.ch-daily-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.ch-daily-head h2 {
+  margin: 0;
+}
+.ch-daily-refresh {
+  flex: none;
+  border: 1px solid #e8c56b66;
+  background: linear-gradient(135deg, rgba(232, 197, 107, 0.14), rgba(176, 58, 46, 0.16));
+  color: #e8c56b;
+  border-radius: 999px;
+  padding: 7px 18px;
+  font-size: 13px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ch-daily-refresh:hover:not(:disabled) {
+  background: #e8c56b;
+  color: #14110f;
+  box-shadow: 0 4px 16px rgba(232, 197, 107, 0.3);
+}
+.ch-daily-refresh:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.ch-daily-hint {
+  margin: 0;
+  color: #9a8f80;
+  font-size: 13.5px;
+  line-height: 1.8;
+}
+.ch-q-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ch-q-sk-line {
+  height: 18px;
+  width: 76%;
+  border-radius: 6px;
+}
+.ch-q-sk-opt {
+  height: 42px;
+  border-radius: 10px;
+}
+.ch-q-error {
+  margin: 0;
+  color: #e07a6a;
+  font-size: 13.5px;
+}
+.ch-q-error button {
+  margin-left: 10px;
+  border: 1px solid #e07a6a66;
+  background: transparent;
+  color: #e07a6a;
+  border-radius: 6px;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+.ch-q-card {
+  background: #14110f;
+  border: 1px solid #3a332c;
+  border-radius: 12px;
+  padding: 16px 18px;
+  animation: riseIn 0.45s ease;
+}
+.ch-q-text {
+  margin: 0 0 14px;
+  font-size: 15.5px;
+  line-height: 1.8;
+  color: #f3ece2;
+}
+.ch-q-options {
+  display: grid;
+  gap: 9px;
+}
+.ch-q-opt {
+  text-align: left;
+  border: 1px solid #3a332c;
+  background: #1b1713;
+  color: #d8cfc0;
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 14px;
+  line-height: 1.6;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.ch-q-opt:hover:not(:disabled) {
+  border-color: #e8c56b;
+  transform: translateX(4px);
+}
+.ch-q-opt.right {
+  border-color: #4a9d8f;
+  background: rgba(74, 157, 143, 0.16);
+  color: #a8e6d9;
+  animation: qRight 0.4s ease;
+}
+.ch-q-opt.wrong {
+  border-color: #e07a6a;
+  background: rgba(224, 122, 106, 0.14);
+  color: #f0a99b;
+  animation: qShake 0.35s ease;
+}
+.ch-q-opt.dim {
+  opacity: 0.45;
+}
+@keyframes qRight {
+  40% {
+    transform: scale(1.02);
+  }
+}
+@keyframes qShake {
+  25% {
+    transform: translateX(-6px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-3px);
+  }
+}
+.ch-q-result {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 13px;
+  padding: 11px 13px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  line-height: 1.7;
+  animation: riseIn 0.4s ease 0.15s backwards;
+}
+.ch-q-result.ok {
+  background: rgba(74, 157, 143, 0.12);
+  border: 1px solid #4a9d8f55;
+}
+.ch-q-result.no {
+  background: rgba(224, 122, 106, 0.1);
+  border: 1px solid #e07a6a55;
+}
+.ch-q-result strong {
+  color: #e8c56b;
+  letter-spacing: 1px;
+}
+.ch-q-result span {
+  color: #b6ab9a;
+}
+
+/* 徽章：解锁发光 / 未解锁进度 */
+.ch-badge {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  animation: riseIn 0.5s ease backwards;
+}
+.ch-badge.earned {
+  border-color: #e8c56b88;
+  background: linear-gradient(150deg, rgba(232, 197, 107, 0.12), rgba(176, 58, 46, 0.08));
+  box-shadow: 0 0 18px rgba(232, 197, 107, 0.14);
+}
+.ch-badge-flag {
+  font-size: 11px;
+  color: #e8c56b;
+  letter-spacing: 2px;
+}
+.ch-badge-prog {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ch-badge-prog i {
+  display: block;
+  height: 5px;
+  flex: 1;
+  background: linear-gradient(90deg, #8f3529, #e8c56b);
+  border-radius: 3px;
+  transition: width 0.8s ease;
+}
+.ch-badge-prog span {
+  font-size: 10.5px;
+  color: #9a8f80;
+  min-width: 30px;
+  text-align: right;
+}
