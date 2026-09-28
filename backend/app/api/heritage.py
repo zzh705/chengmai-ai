@@ -1,6 +1,6 @@
 """GET /api/heritage — 非遗知识库浏览接口。"""
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 
 from app.knowledge.search import _load_items, sources_of
 from app.schemas.heritage import HeritageDetail, HeritageSummary
@@ -9,8 +9,18 @@ router = APIRouter(prefix="/api", tags=["heritage"])
 
 
 @router.get("/heritage", response_model=list[HeritageSummary])
-def list_heritage() -> list[HeritageSummary]:
-    """知识库全部项目概览（列表页/下拉选择用）。"""
+def list_heritage(
+    tier: str = Query("all", pattern="^(all|deep|index)$"),
+    limit: int = Query(0, ge=0, le=20000),
+) -> list[HeritageSummary]:
+    """知识库项目概览。tier=deep 仅深读档案（选择器用），默认全部。"""
+    rows = [
+        item
+        for item in _load_items()
+        if tier == "all" or item.get("tier", "deep") == tier
+    ]
+    if limit:
+        rows = rows[:limit]
     return [
         HeritageSummary(
             id=item["id"],
@@ -20,8 +30,9 @@ def list_heritage() -> list[HeritageSummary]:
             level=item["level"],
             image=f"images/heritage/{item['id']}.jpg",
             hook=item.get("hook", ""),
+            tier=item.get("tier", "deep"),
         )
-        for item in _load_items()
+        for item in rows
     ]
 
 

@@ -25,7 +25,7 @@ const VIZ_COLORS = ['#b03a2e', '#e8c56b', '#4a7c6f', '#5a6f9c', '#a45c8a', '#c07
 
 // 探索矩阵：首页功能总入口（序号+文字，不用小图标）
 const GATES = [
-  { page: 'knowledge', title: '非遗知识库', desc: '43 项国家级非遗全景档案，故事、工序、谱系一次读透' },
+  { page: 'knowledge', title: '非遗知识库', desc: '数千项国家级非遗全景档案，故事、工序、谱系一次读透' },
   { page: 'map', title: '非遗地图', desc: '沿华夏地理看非遗分布，按省按类自由探索' },
   { page: 'graph', title: '知识图谱', desc: '项目、人物、地域交织的关系网络，可缩放漫游' },
   { page: 'path', title: '学习路径', desc: '输入主题即得七日精进路线，逐日推进' },

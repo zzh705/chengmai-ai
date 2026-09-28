@@ -33,7 +33,7 @@ export default function Path() {
   const rootRef = useRevealGroup<HTMLDivElement>([plan?.topic])
 
   useEffect(() => {
-    fetchHeritageList()
+    fetchHeritageList('deep')
       .then((l) => {
         setList(l)
         if (l.length > 0) setTopic(l[0].name)

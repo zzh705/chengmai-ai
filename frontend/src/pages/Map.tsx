@@ -463,7 +463,7 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
           <p className="map-empty">该省份暂无收录项目，去看看别的地方吧</p>
         )}
         <div className="map-items">
-          {selectedProv?.items.map((it) => (
+          {selectedProv?.items.slice(0, 12).map((it) => (
             <div
               key={it.id}
               className="map-item"
@@ -478,6 +478,9 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
             </div>
           ))}
         </div>
+        {selectedProv && selectedProv.items.length > 12 && (
+          <p className="map-items-note">展示前 12 项，本省共收录 {selectedProv.items.length} 项</p>
+        )}
         {selectedProv && selectedProv.items.length > 0 && (
           <button className="map-all" onClick={() => onNavigate('knowledge', `kw:${selectedProv.key}`)}>
             在知识库中查看「{selectedProv.key}」全部项目 →

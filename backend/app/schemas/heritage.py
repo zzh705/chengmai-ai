@@ -11,6 +11,7 @@ class HeritageSummary(BaseModel):
     level: str
     image: str  # 前端图片路径（public/images/heritage/{id}.jpg）
     hook: str = ""  # 一句话悬念钩子（卡片展示）
+    tier: str = "deep"  # deep=深读档案 / index=全国名录索引
 
 
 class HeritageDetail(BaseModel):

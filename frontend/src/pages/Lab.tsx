@@ -71,7 +71,7 @@ export default function Lab() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    fetchHeritageList()
+    fetchHeritageList('deep')
       .then((l) => {
         setList(l)
         if (l.length > 0) setHeritage(l[0].id)

@@ -73,7 +73,7 @@ export default function Challenge({ onNavigate }: Props) {
 
   useEffect(() => {
     fetchProfile().then(setProfile).catch((e) => setError(e.message))
-    fetchHeritageList().then(setList).catch(() => setList([]))
+    fetchHeritageList('deep').then(setList).catch(() => setList([]))
   }, [])
 
   useEffect(() => {

@@ -157,6 +157,30 @@
   padding: 40px;
   grid-column: 1 / -1;
 }
+/* 分页：加载更多 */
+.kb-more {
+  display: block;
+  margin: 22px auto 40px;
+  padding: 11px 34px;
+  background: none;
+  border: 1px solid #4a423a;
+  border-radius: 999px;
+  color: #c9bfae;
+  font-size: 13.5px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.kb-more:hover {
+  border-color: #e8c56b;
+  color: #e8c56b;
+}
+/* 索引条目的来源说明（无证据链时的诚实交代） */
+.kb-src-note {
+  font-size: 13px;
+  line-height: 1.9;
+  color: #9a8f80;
+}
 .kb-error {
   color: #e07a6a;
 }

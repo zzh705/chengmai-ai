@@ -58,6 +58,14 @@ export default function Knowledge({
   )
   const [cat, setCat] = useState('全部')
   const [error, setError] = useState('')
+  // 列表分页：数千条全国名录条目一次渲染会拖垮首屏；筛选变化在渲染期归零（React 官方模式）
+  const [shown, setShown] = useState(60)
+  const filterKey = `${cat}|${keyword}`
+  const [shownFor, setShownFor] = useState(filterKey)
+  if (shownFor !== filterKey) {
+    setShownFor(filterKey)
+    setShown(60)
+  }
   // 语音讲解 / 背景音（懒初始化：SSR 不存在，浏览器支持即可见入口）
   const [canSpeech] = useState(() => speechSupported())
   const [speaking, setSpeaking] = useState(false)
@@ -188,7 +196,7 @@ export default function Knowledge({
             <span className="kb-level">{detail.level}</span>
           </h1>
           <div className="kb-meta">
-            {detail.category} · {detail.region} · {detail.era}
+            {[detail.category, detail.region, detail.era].filter(Boolean).join(' · ')}
           </div>
 
           {/* 聆听条：语音讲解 + 背景音 + 深入追问 AI（全部文字按钮，无小图标） */}
@@ -274,38 +282,57 @@ export default function Knowledge({
             <h3>文化内涵</h3>
             <p>{detail.cultural_meaning}</p>
           </section>
-          <section className="reveal">
-            <h3>技艺工序</h3>
-            <p>{detail.craft_process}</p>
-          </section>
-          <div className="kb-grid">
+          {detail.craft_process && (
             <section className="reveal">
-              <h3>代表作品</h3>
-              <ul>
-                {detail.representative_works.map((w, i) => (
-                  <li key={i}>{w}</li>
+              <h3>技艺工序</h3>
+              <p>{detail.craft_process}</p>
+            </section>
+          )}
+          {(detail.representative_works.length > 0 || detail.representative_inheritors.length > 0) && (
+            <div className="kb-grid">
+              {detail.representative_works.length > 0 && (
+                <section className="reveal">
+                  <h3>代表作品</h3>
+                  <ul>
+                    {detail.representative_works.map((w, i) => (
+                      <li key={i}>{w}</li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+              {detail.representative_inheritors.length > 0 && (
+                <section className="reveal">
+                  <h3>代表性传承人</h3>
+                  <ul>
+                    {detail.representative_inheritors.map((p, i) => (
+                      <li key={i}>{p}</li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+            </div>
+          )}
+          {detail.sources.length > 0 && (
+            <section className="reveal">
+              <h3>资料来源</h3>
+              <ul className="kb-sources">
+                {detail.sources.map((s) => (
+                  <li key={s.id}>
+                    {s.title}（{s.publisher}）· 可信度：{s.reliability_level}
+                  </li>
                 ))}
               </ul>
             </section>
+          )}
+          {detail.sources.length === 0 && detail.tier === 'index' && (
             <section className="reveal">
-              <h3>代表性传承人</h3>
-              <ul>
-                {detail.representative_inheritors.map((p, i) => (
-                  <li key={i}>{p}</li>
-                ))}
-              </ul>
+              <h3>条目来源</h3>
+              <p className="kb-src-note">
+                文化和旅游部 · 中国非物质文化遗产网国家级名录条目，简介由承脉 AI
+                依据名录信息简述，深读档案另附完整证据链。
+              </p>
             </section>
-          </div>
-          <section className="reveal">
-            <h3>资料来源</h3>
-            <ul className="kb-sources">
-              {detail.sources.map((s) => (
-                <li key={s.id}>
-                  {s.title}（{s.publisher}）· 可信度：{s.reliability_level}
-                </li>
-              ))}
-            </ul>
-          </section>
+          )}
 
           {/* 相关推荐：把一次阅读延展成一次探索 */}
           {related.length > 0 && (
@@ -333,7 +360,10 @@ export default function Knowledge({
     <div className="kb-page" ref={pageRef}>
       <header className="kb-header">
         <h1>非遗知识库</h1>
-        <p className="kb-count">共 {list.length} 项国家级非遗代表性项目</p>
+        <p className="kb-count">
+          共 {list.length} 项国家级非遗代表性项目 · 其中{' '}
+          {list.filter((h) => h.tier !== 'index').length} 份深读档案
+        </p>
         <input
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
@@ -369,7 +399,7 @@ export default function Knowledge({
               </div>
             </div>
           ))}
-        {filtered.map((h) => (
+        {filtered.slice(0, shown).map((h) => (
           <div key={h.id} className="kb-card" onClick={() => open(h.id)}>
             <Cover item={h} className="kb-card-cover" />
             <div className="kb-card-body">
@@ -386,6 +416,11 @@ export default function Knowledge({
           <div className="kb-empty">没有匹配的项目</div>
         )}
       </div>
+      {filtered.length > shown && (
+        <button className="kb-more" onClick={() => setShown((s) => s + 60)}>
+          加载更多 · 还有 {filtered.length - shown} 项
+        </button>
+      )}
     </div>
   )
 }

@@ -9,6 +9,8 @@ export interface HeritageSummary {
   image: string
   /** 一句话悬念钩子（卡片展示） */
   hook: string
+  /** deep=深读档案 / index=全国名录索引 */
+  tier: string
 }
 
 /** 详情页数字亮点 */
@@ -23,8 +25,8 @@ export interface WowNumber {
   label: string
 }
 
-export async function fetchHeritageList(): Promise<HeritageSummary[]> {
-  const resp = await fetch('/api/heritage')
+export async function fetchHeritageList(tier?: 'all' | 'deep' | 'index'): Promise<HeritageSummary[]> {
+  const resp = await fetch(`/api/heritage${tier && tier !== 'all' ? `?tier=${tier}` : ''}`)
   if (!resp.ok) throw new Error(`知识库加载失败：HTTP ${resp.status}`)
   return (await resp.json()) as HeritageSummary[]
 }

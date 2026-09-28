@@ -36,12 +36,17 @@ def _build_messages(
     return messages
 
 
-def chat(message: str, history: list[dict] | None = None, system: str | None = None) -> str:
+def chat(
+    message: str,
+    history: list[dict] | None = None,
+    system: str | None = None,
+    temperature: float = 0.7,
+) -> str:
     """发送一轮对话，返回模型回答文本。"""
     resp = _get_client().chat.completions.create(
         model=os.getenv("LLM_MODEL", "qwen-plus"),
         messages=_build_messages(message, history, system),
-        temperature=0.7,
+        temperature=temperature,
     )
     return strip_emoji(resp.choices[0].message.content or "")
 
