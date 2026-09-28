@@ -101,16 +101,6 @@
   padding: 12px 14px 14px;
 }
 /* 图片加载失败的渐变字卡兜底 */
-.kb-cover-fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #3a2a26, #1b1713 60%, #24312f);
-  color: #e8c56b;
-  font-size: 44px;
-  font-weight: 700;
-  letter-spacing: 4px;
-}
 .kb-card-name {
   font-size: 18px;
   color: #e8c56b;
@@ -156,7 +146,7 @@
   display: block;
   margin-bottom: 6px;
 }
-.kb-detail .kb-cover-fallback {
+.kb-detail .cover-fallback {
   height: 280px;
   border-radius: 12px;
   border: 1px solid #2e2823;

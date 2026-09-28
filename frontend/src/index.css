@@ -132,6 +132,19 @@ body {
   border-radius: 2px;
 }
 
+/* 封面图加载失败时的渐变字卡兜底（components/Cover 共享） */
+.cover-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #3a2a26, #1b1713 60%, #24312f);
+  color: #e8c56b;
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  user-select: none;
+}
+
 /* 滚动条 */
 ::-webkit-scrollbar {
   width: 9px;

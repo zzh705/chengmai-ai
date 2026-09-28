@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { fetchHeritageList, type HeritageSummary } from '../api/heritage'
 import { fetchProfile, type Profile } from '../api/progress'
 import { extractProvince } from '../utils/geo'
+import Cover from '../components/Cover'
 import '../styles/home.css'
 
 interface Props {
@@ -90,6 +91,7 @@ export default function Home({ onNavigate }: Props) {
             onClick={() => onNavigate('knowledge', featured.id)}
             title="进入知识库查看详情"
           >
+            <Cover item={featured} className="home-today-img" />
             <div className="home-today-main">
               <h3>{featured.name}</h3>
               <p>
@@ -108,8 +110,11 @@ export default function Home({ onNavigate }: Props) {
           <div className="home-recs">
             {recommended.map((h) => (
               <div key={h.id} className="home-rec" onClick={() => onNavigate('knowledge', h.id)}>
-                <strong>{h.name}</strong>
-                <span>{h.region}</span>
+                <Cover item={h} className="home-rec-img" />
+                <div className="home-rec-txt">
+                  <strong>{h.name}</strong>
+                  <span>{h.region}</span>
+                </div>
               </div>
             ))}
           </div>

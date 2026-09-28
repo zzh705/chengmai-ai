@@ -5,31 +5,11 @@ import {
   type HeritageDetail,
   type HeritageSummary,
 } from '../api/heritage'
+import Cover from '../components/Cover'
 import '../styles/knowledge.css'
 
 interface Credit {
   license?: string
-}
-
-/** 图片封面：加载失败时回退为渐变字卡 */
-function Cover({ item, className }: { item: HeritageSummary | HeritageDetail; className: string }) {
-  const [failed, setFailed] = useState(false)
-  if (failed) {
-    return (
-      <div className={`${className} kb-cover-fallback`} aria-hidden>
-        {item.name.slice(0, 1)}
-      </div>
-    )
-  }
-  return (
-    <img
-      className={className}
-      src={item.image}
-      alt={item.name}
-      loading="lazy"
-      onError={() => setFailed(true)}
-    />
-  )
 }
 
 export default function Knowledge({ openParam }: { openParam?: string }) {
