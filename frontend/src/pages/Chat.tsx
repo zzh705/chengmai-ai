@@ -22,6 +22,33 @@ const MODES: { key: Mode; label: string; desc: string }[] = [
   { key: 'youth', label: '青年传播者', desc: '通俗故事 · 创意表达' },
 ]
 
+/** 模式特写：切模式时展示该模式的专属气质（剪影 + 文案），只在未开始对话时出现 */
+const SHOWCASE: Record<
+  Mode,
+  { kanji: string; lede: string; points: string[]; example: string }
+> = {
+  scholar: {
+    kanji: '读典',
+    lede: '以文献与名录为据，一字一句讲求出处；不戏说、不附会，回答必附来源。',
+    points: ['史料考据，言必有据', '辨析源流与版本异说', '来源与证据分可溯'],
+    example: '苏绣为什么被称为「针尖上的江南」？',
+  },
+  inheritor: {
+    kanji: '守艺',
+    lede: '从选料到成器，把一门手艺拆成可以跟着做的工序，点出火候与诀窍。',
+    points: ['核心工序逐步拆解', '关键诀窍与常见误区', '工具材料一并说明'],
+    example: '把宜兴紫砂壶的制作工序讲给我听',
+  },
+  youth: {
+    kanji: '潮传',
+    lede: '用故事、类比和网感表达，让非遗成为年轻人愿意转发的内容。',
+    points: ['通俗故事与生活类比', '面向同学与留学生的讲法', '给出可直接分享的表达'],
+    example: '用三句话把京剧脸谱讲给外国朋友',
+  },
+}
+
+const MODE_STORE_KEY = 'chengmai_mode'
+
 const INTENT_LABELS: Record<string, string> = {
   LEARNING: '学习',
   QUIZ: '测验',
@@ -97,10 +124,114 @@ function metaFrom(m: ChatMeta): ChatResponse {
   return { code: 0, answer: '', ...rest }
 }
 
+/** 模式剪影小景：月洞门里的中式场景（学者夜读 / 传承人执锤 / 青年放鸢） */
+function ModeScene({ mode }: { mode: Mode }) {
+  return (
+    <svg
+      viewBox="0 0 360 320"
+      className={`msc-svg s-${mode}`}
+      role="img"
+      aria-label={
+        mode === 'scholar' ? '窗下夜读剪影' : mode === 'inheritor' ? '匠人执锤剪影' : '青年放鸢剪影'
+      }
+    >
+      <defs>
+        <radialGradient id="mscMoon" cx="42%" cy="34%" r="75%">
+          <stop offset="0%" className="mo-a" />
+          <stop offset="100%" className="mo-b" />
+        </radialGradient>
+        <clipPath id="mscClip">
+          <circle cx="180" cy="150" r="118" />
+        </clipPath>
+      </defs>
+      <circle cx="180" cy="150" r="118" fill="url(#mscMoon)" />
+      <g clipPath="url(#mscClip)">
+        <ellipse cx="180" cy="258" rx="110" ry="18" className="msc-floor" />
+        <path d="M78 252 Q180 236 282 252" className="msc-ground" />
+        {mode === 'scholar' && (
+          <g className="msc-star">
+            <circle cx="238" cy="74" r="2.2" />
+            <circle cx="262" cy="106" r="1.7" />
+            <circle cx="222" cy="52" r="1.5" />
+          </g>
+        )}
+
+      {mode === 'scholar' && (
+        <g className="msc-ink">
+          {/* 竹 */}
+          <path d="M96 252 L100 96" className="msc-stalk" />
+          <path d="M97 176 h7 M98 130 h7" className="msc-node" />
+          <path d="M100 122 q22 8 36 -8 q-24 -4 -36 8z" />
+          <path d="M99 152 q-22 4 -30 -12 q22 0 30 12z" />
+          <path d="M98 196 q20 10 36 -2 q-22 -6 -36 2z" />
+          {/* 夜读高士 */}
+          <path d="M150 252 C148 218 154 200 170 194 C186 189 200 197 206 212 L214 252 Z" />
+          <circle cx="184" cy="180" r="12" />
+          <circle cx="188" cy="165" r="5" />
+          <path
+            d="M164 220 L184 212 L186 224 L166 232 Z M186 212 L206 216 L204 228 L186 224 Z"
+            className="msc-book"
+          />
+        </g>
+      )}
+
+      {mode === 'inheritor' && (
+        <g className="msc-ink">
+          {/* 砧案与器皿 */}
+          <rect x="212" y="216" width="66" height="12" rx="2" />
+          <path d="M220 228 v22 M270 228 v22" className="msc-stalk" />
+          <path d="M262 216 C262 206 264 202 269 202 C274 202 276 206 276 216 Z" />
+          {/* 执锤匠人 */}
+          <path d="M118 254 C116 224 122 206 136 202 C150 199 160 208 164 222 L170 254 Z" />
+          <circle cx="142" cy="188" r="12" />
+          <circle cx="146" cy="173" r="5" />
+          <path d="M154 214 L186 182" className="msc-arm" />
+          <rect x="171" y="175" width="30" height="13" rx="2.5" transform="rotate(45 186 182)" />
+          {/* 火星 */}
+          <path d="M218 208 l4 6 -4 6 -4 -6z" className="msc-spark" />
+          <path d="M230 198 l3 5 -3 5 -3 -5z" className="msc-spark" />
+          <path d="M208 196 l3 5 -3 5 -3 -5z" className="msc-spark" />
+        </g>
+      )}
+
+      {mode === 'youth' && (
+        <g>
+          <g className="msc-ink">
+            {/* 放鸢青年 */}
+            <path d="M110 254 C108 228 114 212 126 209 C139 206 148 214 152 226 L157 254 Z" />
+            <circle cx="133" cy="196" r="12" />
+            <path d="M122 196 q-14 0 -18 12 q10 -2 18 -6z" />
+            <path d="M145 218 L172 188" className="msc-arm" />
+            {/* 风筝 */}
+            <path d="M258 80 L282 104 L258 132 L234 104 Z" />
+          </g>
+          <path d="M172 188 Q216 142 256 106" className="msc-string" />
+          <path d="M258 80 V132 M234 104 H282" className="msc-kite-line" />
+          <path d="M258 132 q12 14 0 26 q-12 12 2 24" className="msc-tail" />
+          <circle cx="257" cy="157" r="3" className="msc-spark" />
+          <circle cx="259" cy="181" r="3" className="msc-spark" />
+        </g>
+      )}
+      </g>
+      <circle cx="180" cy="150" r="118" className="msc-ring" />
+    </svg>
+  )
+}
+
 export default function Chat({ initialQuery }: { initialQuery?: string }) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
-  const [mode, setMode] = useState<Mode>('youth')
+  const [mode, setMode] = useState<Mode>(() => {
+    try {
+      const v = localStorage.getItem(MODE_STORE_KEY)
+      if (v === 'scholar' || v === 'inheritor' || v === 'youth') return v
+    } catch {
+      /* 隐私模式：忽略 */
+    }
+    return 'youth'
+  })
+  /** 模式切换方向（正=向右），驱动特写卡入场方位 */
+  const modeDirRef = useRef(1)
   const [loading, setLoading] = useState(false)
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [plans, setPlans] = useState<Record<number, LearningPlan>>({})
@@ -230,6 +361,22 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
     }
   }
 
+  function switchMode(next: Mode) {
+    if (next === mode) return
+    const idx = (m: Mode) => MODES.findIndex((x) => x.key === m)
+    modeDirRef.current = Math.sign(idx(next) - idx(mode)) || 1
+    setMode(next)
+    try {
+      localStorage.setItem(MODE_STORE_KEY, next)
+    } catch {
+      /* 隐私模式：忽略 */
+    }
+  }
+
+  const modeIdx = MODES.findIndex((x) => x.key === mode)
+  const modeMeta = MODES[modeIdx]
+  const show = SHOWCASE[mode]
+
   function pick(msgIndex: number, qid: number, option: string) {
     setPicks((prev) => ({ ...prev, [`${msgIndex}-${qid}`]: option }))
     const quiz = quizzes[msgIndex]
@@ -249,7 +396,7 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
             <button
               key={m.key}
               className={mode === m.key ? 'active' : ''}
-              onClick={() => setMode(m.key)}
+              onClick={() => switchMode(m.key)}
               title={m.desc}
             >
               {m.label}模式
@@ -260,9 +407,35 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
 
       <div className="chat-list" ref={listRef}>
         {messages.length === 0 && (
-          <div className="chat-empty">
-            你想了解哪一种非遗？<br />
-            <span>例如：什么是苏绣 / 把京剧讲给外国留学生听</span>
+          <div
+            className={`mode-showcase m-${mode}`}
+            key={mode}
+            style={{ '--dir': modeDirRef.current } as React.CSSProperties}
+          >
+            <div className="msc-copy">
+              <span className="msc-kanji" aria-hidden>
+                {show.kanji}
+              </span>
+              <div className="msc-body">
+                <h2>
+                  {modeMeta.label}
+                  <em>模式</em>
+                </h2>
+                <p className="msc-lede">{show.lede}</p>
+                <ul className="msc-points">
+                  {show.points.map((p, i) => (
+                    <li key={p}>
+                      <i>{String(i + 1).padStart(2, '0')}</i>
+                      <span>{p}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="msc-hint">试试问我：{show.example}</p>
+              </div>
+            </div>
+            <div className="msc-scene">
+              <ModeScene mode={mode} />
+            </div>
           </div>
         )}
         {messages.map((msg, i) => (
