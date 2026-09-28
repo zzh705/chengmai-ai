@@ -78,6 +78,13 @@ export default function Lab() {
       .catch((e) => setError(e.message))
   }, [])
 
+  // 结果区在表单+历史之下，生成后自动滚过去，否则用户看不到回答
+  function scrollToResult() {
+    setTimeout(() => {
+      document.querySelector('.lab-result')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 80)
+  }
+
   async function handleGenerate() {
     if (!heritage || !requirement.trim() || loading) return
     setLoading(true)
@@ -90,6 +97,7 @@ export default function Lab() {
         audience,
       })
       setResult(resp)
+      scrollToResult()
       recordProgress('creation', { name })
 
       // 存入历史（最多 10 条）
@@ -217,7 +225,10 @@ export default function Lab() {
               <button
                 key={h.id}
                 className={result?.result.title === h.title ? 'active' : ''}
-                onClick={() => setResult(h.data)}
+                onClick={() => {
+                  setResult(h.data)
+                  scrollToResult()
+                }}
               >
                 <strong>{h.title}</strong>
                 <span>

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { flushSync } from 'react-dom'
 import Splash from './components/Splash'
 import About from './pages/About'
 import Chat from './pages/Chat'
@@ -36,6 +37,21 @@ const NAV: { key: Page; label: string }[] = [
   { key: 'about', label: '关于项目' },
 ]
 
+const HAS_VIEW_TRANSITION =
+  typeof document !== 'undefined' &&
+  'startViewTransition' in document &&
+  !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+if (HAS_VIEW_TRANSITION) document.documentElement.classList.add('has-vt')
+
+// VT 期间新页是静态快照：入场动画若照常播会在快照里定格、转场结束跳变。
+// 故转场窗口内（vt-running）把入场动画/渐显统一推迟到转场结束后再播。
+let vtCleanupTimer: ReturnType<typeof setTimeout> | undefined
+function setVtRunning(on: boolean) {
+  clearTimeout(vtCleanupTimer)
+  if (on) document.documentElement.classList.add('vt-running')
+  else document.documentElement.classList.remove('vt-running')
+}
+
 function App() {
   // 开屏仪式动画：App 挂载播一次（路由切换不重播），点击/跳过/3.4s 自动结束
   const [splash, setSplash] = useState(true)
@@ -46,13 +62,37 @@ function App() {
 
   /** 导航并携带参数：chat=问题文本，knowledge=项目 id 或 kw:关键词，map=省份 key */
   function navigate(target: string, param?: string) {
-    setPage(target as Page)
-    if (target === 'chat') {
-      // 每次带新问题进对话页都生成新值，触发 Chat 重新挂载并自动发送
-      setChatQuery(param)
+    const apply = () => {
+      setPage(target as Page)
+      if (target === 'chat') {
+        // 每次带新问题进对话页都生成新值，触发 Chat 重新挂载并自动发送
+        setChatQuery(param)
+      }
+      if (target === 'knowledge') setKbParam(param)
+      if (target === 'map') setMapParam(param)
     }
-    if (target === 'knowledge') setKbParam(param)
-    if (target === 'map') setMapParam(param)
+    if (HAS_VIEW_TRANSITION) {
+      const doc = document as Document & {
+        startViewTransition?: (cb: () => void) => { finished: Promise<void> }
+      }
+      setVtRunning(true)
+      const t = doc.startViewTransition?.(() => flushSync(apply))
+      // 转场结束后留 0.75s 余量（入场动画时长 ≤0.7s），等动画播完再撤销延迟，
+      // 避免 animation-delay 回跳导致已播内容闪变
+      t?.finished
+        .then(() => {
+          vtCleanupTimer = setTimeout(() => setVtRunning(false), 750)
+        })
+        .catch(() => {
+          vtCleanupTimer = setTimeout(() => setVtRunning(false), 750)
+        })
+      if (!t) {
+        apply()
+        setVtRunning(false)
+      }
+    } else {
+      apply()
+    }
   }
 
   return (

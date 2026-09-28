@@ -114,7 +114,7 @@ body {
   from {
     opacity: 0;
     transform: translateY(16px) scale(0.995);
-    filter: blur(7px);
+    filter: blur(5px);
   }
   55% {
     filter: blur(0);
@@ -129,6 +129,49 @@ body {
   .page-transition {
     animation-duration: 0.2s;
   }
+}
+
+/* View Transitions（Chrome/Safari）：旧页上浮淡出、新页自下淡入交叉溶解，
+   取代 blur 弹入，切换更连贯。入口动画（pageIn）此时让位给 VT。 */
+.page-transition {
+  view-transition-name: page-area;
+}
+.has-vt .page-transition {
+  animation: none;
+}
+::view-transition-old(page-area),
+::view-transition-new(page-area) {
+  animation-duration: 0.5s;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+/* 旧页保持不透明垫底（新页在其上溶解），避免背景透色 */
+::view-transition-old(page-area) {
+  animation: none;
+}
+::view-transition-new(page-area) {
+  animation-name: vtPageIn;
+}
+@keyframes vtPageIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+/* VT 期间页面处于静态快照：把入口动画推迟到转场结束后再播，避免定格跳变 */
+.vt-running .page-transition *,
+.vt-running .page-transition *::before,
+.vt-running .page-transition *::after {
+  animation-delay: 0.5s !important;
+}
+.vt-running .page-transition .reveal {
+  transition-delay: 0.5s !important;
+}
+.has-vt .route-bar {
+  animation-delay: 0.45s;
+  animation-fill-mode: both;
+}
+.has-vt .app-body h1::after {
+  animation-delay: 0.5s;
 }
 
 /* 路由金线：切页时自左向右扫过后淡出 */
