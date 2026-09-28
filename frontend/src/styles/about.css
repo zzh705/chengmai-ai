@@ -368,3 +368,142 @@
   letter-spacing: 3px;
   margin-top: 30px;
 }
+
+/* 初心：动情叙事 + 灯阵 */
+.ab-why {
+  position: relative;
+  background:
+    radial-gradient(420px 180px at 100% 0%, rgba(176, 58, 46, 0.08), transparent),
+    radial-gradient(360px 200px at 0% 100%, rgba(232, 197, 107, 0.06), transparent),
+    #1b1713;
+  border-color: #3a332c;
+  padding-top: 26px;
+}
+.ab-why-kicker {
+  display: inline-block;
+  font-size: 11.5px;
+  letter-spacing: 4px;
+  color: #9a8f80;
+  border: 1px solid #3a332c;
+  border-radius: 999px;
+  padding: 3px 14px;
+  margin-bottom: 22px;
+}
+.ab-why-lines p {
+  font-family: 'Songti SC', 'Noto Serif SC', serif;
+  font-size: 16.5px;
+  line-height: 2.15;
+  color: #d8cfc0;
+  margin: 0 0 14px;
+}
+.ab-why-lines p.turn {
+  font-size: 18px;
+  color: #f3ece2;
+  padding-left: 14px;
+  border-left: 2px solid #b03a2e;
+}
+.ab-why-lines p.last {
+  font-size: 20px;
+  color: #e8c56b;
+  letter-spacing: 2px;
+  margin-top: 26px;
+  text-align: center;
+}
+
+/* 灯阵 */
+.ab-why-lights {
+  margin-top: 30px;
+  padding-top: 22px;
+  border-top: 1px dashed #3a332c;
+}
+.ab-why-lights-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.ab-why-lights-head span {
+  font-size: 14px;
+  letter-spacing: 3px;
+  color: #e8c56b;
+}
+.ab-why-lights-head em {
+  font-style: normal;
+  font-size: 11.5px;
+  color: #6e655a;
+  letter-spacing: 1px;
+}
+.ab-lights {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20px, 1fr));
+  gap: 12px;
+}
+.ab-lights i {
+  width: 15px;
+  height: 15px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: #241f1a;
+  border: 1px solid #2e2823;
+  cursor: help;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.ab-why.revealed .ab-lights i {
+  animation:
+    lightUp 0.7s ease var(--d, 0s) backwards,
+    lightBreath 3.8s ease-in-out calc(var(--d, 0s) + 0.8s) infinite;
+}
+@keyframes lightUp {
+  from {
+    background: #241f1a;
+    box-shadow: none;
+    transform: scale(0.5);
+  }
+  to {
+    background: radial-gradient(circle at 35% 30%, #ffe9ad, #e8c56b 55%, #9a7425);
+    box-shadow: 0 0 9px rgba(232, 197, 107, 0.55);
+    transform: scale(1);
+  }
+}
+@keyframes lightBreath {
+  50% {
+    box-shadow: 0 0 13px rgba(232, 197, 107, 0.85);
+    filter: brightness(1.25);
+  }
+}
+.ab-lights i:hover {
+  transform: scale(1.45);
+  background: radial-gradient(circle at 35% 30%, #fff6dd, #e8c56b 60%, #b08a2e);
+  box-shadow: 0 0 16px rgba(232, 197, 107, 0.95);
+}
+.ab-why-lights-note {
+  margin-top: 16px !important;
+  font-size: 12.5px !important;
+  color: #6e655a !important;
+  line-height: 1.9 !important;
+  text-align: center;
+}
+.ab-why-sign {
+  margin: 26px 0 4px;
+  text-align: right;
+  font-family: 'STKaiti', 'Kaiti SC', serif;
+  font-size: 14.5px;
+  color: #9a8f80;
+  letter-spacing: 3px;
+}
+@media (max-width: 560px) {
+  .ab-why-lines p {
+    font-size: 15.5px;
+  }
+  .ab-why-lines p.last {
+    font-size: 17.5px;
+  }
+  .ab-lights {
+    gap: 9px;
+  }
+  .ab-why-lights-head {
+    flex-direction: column;
+    gap: 4px;
+  }
+}

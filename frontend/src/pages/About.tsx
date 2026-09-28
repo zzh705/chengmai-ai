@@ -7,6 +7,7 @@ import '../styles/about.css'
 
 /** 目录锚点：点击平滑滚动到对应分区 */
 const SECTIONS = [
+  ['why', '初心'],
   ['intro', '简介'],
   ['idea', '理念'],
   ['arch', '架构'],
@@ -40,9 +41,22 @@ const TECH = [
   'Playwright 端到端回归',
 ]
 
+/** 初心叙事：逐行浮现（c 为强调行样式名） */
+const WHY_LINES: { t: string; c?: string }[] = [
+  { t: '有些东西，是在没有人注意的时候消失的。' },
+  { t: '没有告别，也没有掌声。只有一位老师傅轻轻关上了身后的门——而门后面，是一千年。' },
+  { t: '名录上的一行字，背后也许只剩最后一位还会这门手艺的人。他没有学生，也没有第二段人生，可以再教一遍。' },
+  { t: '我们做承脉 AI，是害怕这种安静。', c: 'turn' },
+  { t: '怕它消失得太体面、太沉默，沉默到我们后来才想起来：曾经有人用了一生，只为把一样东西交出去。' },
+  { t: '于是我们把它放到这代人每天都在的地方——问一句就有答案，走一步就有记录，动一次手就能留下作品。', c: 'turn' },
+  { t: '让非遗重新被人看见、被人问起、被人拿去用。' },
+  { t: '传承不是把过去供起来，而是让它还有明天。', c: 'last' },
+]
+
 export default function About() {
   // 关键数字实时拉取：数据更新后页面无需改代码
   const [stat, setStat] = useState({ items: 0, provs: 0, nodes: 0, links: 0 })
+  const [names, setNames] = useState<string[]>([])
   const [ready, setReady] = useState(false)
   const rootRef = useRevealGroup<HTMLDivElement>([ready])
 
@@ -59,6 +73,7 @@ export default function About() {
             .map((h) => extractProvince(h.region))
             .filter((p) => p !== '全国' && p !== '其他'),
         ).size
+        setNames(list.map((h) => h.name))
         setStat({
           items: list.length,
           provs,
@@ -92,6 +107,46 @@ export default function About() {
           </button>
         ))}
       </nav>
+
+      {/* 初心：动情叙事 + 灯阵（非文字表达） */}
+      <section className="ab-card ab-why reveal" id="why">
+        <span className="ab-why-kicker">写在最前面 · 初心</span>
+        <div className="ab-why-lines">
+          {WHY_LINES.map((l, i) => (
+            <p
+              key={i}
+              className={`reveal ${l.c ?? ''}`}
+              style={{ transitionDelay: `${0.08 + i * 0.12}s` }}
+            >
+              {l.t}
+            </p>
+          ))}
+        </div>
+
+        {/* 灯阵：每一盏灯对应知识库里的一个项目 */}
+        <div className="ab-why-lights">
+          <div className="ab-why-lights-head">
+            <span>此刻，知识库里的灯</span>
+            <em>
+              {num(stat.items)} 盏 · 每一盏是一个国家级非遗项目
+            </em>
+          </div>
+          <div className="ab-lights">
+            {Array.from({ length: stat.items || 43 }, (_, i) => (
+              <i
+                key={i}
+                title={names[i] ?? '国家级非物质文化遗产'}
+                style={{ '--d': `${(i % 11) * 0.11 + Math.floor(i / 11) * 0.16}s` } as React.CSSProperties}
+              />
+            ))}
+          </div>
+          <p className="ab-why-lights-note">
+            名字被问起一次，灯就亮一分。它们还在亮着——这是一件值得守的事。
+          </p>
+        </div>
+
+        <blockquote className="ab-why-sign">承脉 AI · 设计手记</blockquote>
+      </section>
 
       <section className="ab-card reveal ab-intro">
         <h3>项目简介</h3>
