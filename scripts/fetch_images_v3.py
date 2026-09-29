@@ -102,6 +102,32 @@ REGION_PINYIN = (
 ).split()
 _PLACE = set(REGION_PINYIN)
 
+# 英文词典：常见词（foil/painting/beating/tray…）一律不算锚点，专名（pangu/kunqu/
+# wuhu…）才算——结构性替代逐词黑名单，杜绝 foil 撞镁箔闪光灯这类漏网。
+def _load_dict() -> set[str]:
+    try:
+        with open("/usr/share/dict/words", encoding="utf-8", errors="ignore") as f:
+            return {w.strip().lower() for w in f if w.strip()}
+    except OSError:
+        return set()
+
+
+DICT = _load_dict()
+
+
+def _is_weak_word(tok: str) -> bool:
+    if tok in WEAK or tok in DICT:
+        return True
+    if tok.endswith("s") and tok[:-1] in DICT:  # shoes → shoe
+        return True
+    if tok.endswith("es") and tok[:-2] in DICT:  # boxes → box
+        return True
+    if tok.endswith("ing") and (tok[:-3] in DICT or tok[:-4] in DICT):  # coiling → coil
+        return True
+    if tok.endswith("ed") and (tok[:-1] in DICT or tok[:-2] in DICT):  # carved → carve
+        return True
+    return False
+
 
 def _region_level(t: str, title: str) -> int:
     """弱词命中的地域背书强度：2=中文文件名（强），1=china/chinese/省州拼音（弱）。"""
@@ -219,7 +245,7 @@ def score_title(title: str, full_term: str, extra_toks: list[str], name_sh: tupl
         return 10 + cj
     if nj:
         return 10 + nj
-    anchor = [tok for tok in of_hits if tok not in WEAK and tok not in _PLACE]
+    anchor = [tok for tok in of_hits if tok not in _PLACE and not _is_weak_word(tok)]
     if anchor:
         return 5 + len(of_hits) + 0.5 * len(ex_hits)
     # 地名词不算锚点：城市全景/地标照（南通全景、北京玉峰亭）必须还有 ≥2 个非地名命中
