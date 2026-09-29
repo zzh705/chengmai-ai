@@ -220,11 +220,11 @@ def query_variants(term: str) -> list[str]:
             base += [t[:3], t[-3:], t[-2:]]
         elif len(t) == 3:
             base += [t[-2:]]
-    out: list[str] = []
-    for v in base:
-        if v and v not in out:
-            out.append(v)
-    return out[:3]
+        out: list[str] = []
+        for v in base:
+            if v and v not in out:
+                out.append(v)
+        return out[:3]
     words = term.split()
     if len(words) <= 2:
         return [term]
