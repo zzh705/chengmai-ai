@@ -95,10 +95,19 @@ export async function streamChat(req: ChatRequest, handlers: StreamHandlers): Pr
     return
   }
 
+  const controller = new AbortController()
+  // 看门狗：首包 10s / 字段间 15s 无数据即中止，交给上层回退非流接口
+  let watchdog = setTimeout(() => controller.abort(), 10_000)
+  const bump = (ms: number) => {
+    clearTimeout(watchdog)
+    watchdog = setTimeout(() => controller.abort(), ms)
+  }
+
   const resp = await fetch('/api/chat/stream', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(req),
+    signal: controller.signal,
   })
   if (!resp.ok || !resp.body) {
     throw new Error(`请求失败：HTTP ${resp.status}`)
@@ -110,24 +119,32 @@ export async function streamChat(req: ChatRequest, handlers: StreamHandlers): Pr
 
   const emit = (line: string) => {
     if (!line.startsWith('data: ')) return
-    const payload = JSON.parse(line.slice(6)) as
-      | ({ type: 'meta' } & ChatMeta)
-      | { type: 'delta'; text: string }
-      | { type: 'done' }
-    if (payload.type === 'meta') handlers.onMeta(payload)
-    else if (payload.type === 'delta') handlers.onDelta(payload.text)
+    bump(15_000)
+    let payload: { type: string; text?: string }
+    try {
+      payload = JSON.parse(line.slice(6)) as { type: string; text?: string }
+    } catch {
+      return // 单帧损坏不中断整条流
+    }
+    if (payload.type === 'meta') handlers.onMeta(payload as { type: 'meta' } & ChatMeta)
+    else if (payload.type === 'delta') handlers.onDelta(payload.text ?? '')
     else if (payload.type === 'done') handlers.onDone()
   }
 
-  for (;;) {
-    const { done, value } = await reader.read()
-    if (done) break
-    buffer += decoder.decode(value, { stream: true })
-    const events = buffer.split('\n\n')
-    buffer = events.pop() ?? ''
-    for (const ev of events) {
-      const line = ev.split('\n').find((l) => l.startsWith('data: '))
-      if (line) emit(line)
+  try {
+    for (;;) {
+      const { done, value } = await reader.read()
+      if (done) break
+      bump(15_000)
+      buffer += decoder.decode(value, { stream: true })
+      const events = buffer.split('\n\n')
+      buffer = events.pop() ?? ''
+      for (const ev of events) {
+        const line = ev.split('\n').find((l) => l.startsWith('data: '))
+        if (line) emit(line)
+      }
     }
+  } finally {
+    clearTimeout(watchdog)
   }
 }

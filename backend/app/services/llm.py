@@ -22,6 +22,8 @@ def _get_client() -> OpenAI:
         _client = OpenAI(
             base_url=os.getenv("LLM_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1"),
             api_key=os.getenv("LLM_API_KEY"),
+            timeout=45.0,
+            max_retries=2,
         )
     return _client
 
