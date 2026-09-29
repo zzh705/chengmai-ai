@@ -195,7 +195,7 @@ def work(item: dict, terms: list[str], stats: dict) -> None:
             if tok not in extra:
                 extra.append(tok)
     name_sh = tuple(cjk_shingles(item.get("name") or ""))
-    for t in terms[:7]:
+    for t in terms[:5]:
         for source in (met_hits, cleveland_hits):
             try:
                 hits = source(t, t, extra, name_sh)
@@ -215,7 +215,7 @@ def work(item: dict, terms: list[str], stats: dict) -> None:
                 except Exception as e:  # noqa: BLE001
                     print(f"  {iid}: dl {type(e).__name__}: {e}", flush=True)
                     break
-            time.sleep(0.3)
+            time.sleep(0.15)
     with _lock:
         st = load_state()
         st["items"][iid] = "miss"
@@ -230,7 +230,12 @@ def main() -> None:
     items = json.loads(ITEMS.read_text(encoding="utf-8"))
     enrich = json.loads(ENRICH.read_text(encoding="utf-8")) if ENRICH.exists() else {}
     terms2 = json.loads(TERMS2.read_text(encoding="utf-8")) if TERMS2.exists() else {}
-    todo = [i for i in items if not (IMG_DIR / f"{i['id']}.jpg").exists()]
+    try:
+        prev = json.loads((ROOT / "data/structured/img_state_museum.json").read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001
+        prev = {}
+    tried_miss = {k for k, v in (prev.get("items") or {}).items() if v == "miss"}
+    todo = [i for i in items if not (IMG_DIR / f"{i['id']}.jpg").exists() and i["id"] not in tried_miss]
     jobs = [(i, terms_for(i, terms2, enrich)) for i in todo]
     jobs = [j for j in jobs if j[1]]
     if limit is not None:
@@ -239,7 +244,7 @@ def main() -> None:
     stats = {"done": 0, "miss": 0}
     from concurrent.futures import ThreadPoolExecutor, as_completed
 
-    with ThreadPoolExecutor(max_workers=3) as ex:
+    with ThreadPoolExecutor(max_workers=8) as ex:
         futs = [ex.submit(work, i, t, stats) for i, t in jobs]
         for n, f in enumerate(as_completed(futs), 1):
             f.result()

@@ -16,14 +16,14 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from fetch_images_v3 import _get, OK_EXT  # noqa: E402
 
-CATS = ROOT / "data/structured/commons_categories.json"
+CATS_FILES = sorted(ROOT.glob("data/structured/commons_categories*.json"))
 POOL = ROOT / "data/structured/commons_pool.jsonl"
 API = "https://commons.wikimedia.org/w/api.php"
-MAX_PAGES = int(sys.argv[sys.argv.index("--pages") + 1]) if "--pages" in sys.argv else 2
+MAX_PAGES = int(sys.argv[sys.argv.index("--pages") + 1]) if "--pages" in sys.argv else 8
 
 
-def build(cat: str, cont: str | None) -> str:
-    params = {
+def build(cat: str, cont: dict | None) -> str:
+    params: dict = {
         "action": "query",
         "generator": "categorymembers",
         "gcmtitle": f"Category:{cat}",
@@ -35,8 +35,9 @@ def build(cat: str, cont: str | None) -> str:
         "format": "json",
     }
     if cont:
-        params["gcmcontinue"] = cont
-        params["continue"] = "gcmcontinue"
+        # MediaWiki 续传令牌是通用字典（gcmcontinue/iicontinue/continue 混合），
+        # 只认 gcmcontinue 会漏掉 imageinfo 续传 → 每类只取到首批 ~50 条
+        params.update(cont)
     return f"{API}?{urllib.parse.urlencode(params)}"
 
 
@@ -66,7 +67,10 @@ def extract(cat: str, data: dict) -> list[dict]:
 
 
 def main() -> None:
-    cats = json.loads(CATS.read_text(encoding="utf-8"))
+    cats: list[str] = []
+    for f in CATS_FILES:
+        cats.extend(json.loads(f.read_text(encoding="utf-8")))
+    cats = list(dict.fromkeys(cats))
     have: set[str] = set()
     if POOL.exists():
         for line in POOL.read_text(encoding="utf-8").splitlines():
@@ -79,7 +83,7 @@ def main() -> None:
     added = 0
     with POOL.open("a", encoding="utf-8") as f:
         for n, cat in enumerate(todo, 1):
-            cont: str | None = None
+            cont: dict | None = None
             got: list[dict] = []
             for _ in range(MAX_PAGES):
                 try:
@@ -88,8 +92,8 @@ def main() -> None:
                     print(f"  {cat}: {type(e).__name__} {getattr(e, 'code', '')}", flush=True)
                     break
                 got.extend(extract(cat, data))
-                cont = (data.get("continue") or {}).get("gcmcontinue")
-                if not cont:
+                cont = data.get("continue")
+                if not cont or len(got) >= 1500:
                     break
             for rec in got:
                 f.write(json.dumps(rec, ensure_ascii=False) + "\n")
