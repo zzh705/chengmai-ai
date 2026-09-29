@@ -15,6 +15,7 @@
 """
 
 import json
+import hashlib
 import pathlib
 import re
 import ssl
@@ -185,6 +186,10 @@ def direct_opener():
 
 _rate_lock = threading.Lock()
 _next_slot: dict[str, float] = {"search": 0.0, "other": 0.0}
+# 通道冷却：429 后该通道静默 15s，自动改用另一通道（直连/代理限额会交替变热，
+# 实测二十分钟内「代理全429直连通」翻转成「直连全429代理通」——跟自己的流量也有关）
+_ch_block: dict[str, float] = {"direct": 0.0, "proxy": 0.0}
+SEARCH_CACHE = ROOT / "data/structured/http_cache"
 
 
 def _pace(min_interval: float = 0.24, slot: str = "other") -> None:
@@ -196,27 +201,51 @@ def _pace(min_interval: float = 0.24, slot: str = "other") -> None:
         time.sleep(wait)
 
 
+def _pick_search_opener():
+    """选先冷却完的通道；都被封则等最近的。"""
+    now = time.monotonic()
+    with _rate_lock:
+        d, p = _ch_block["direct"], _ch_block["proxy"]
+        if d <= now and p <= now:
+            return direct_opener(), "direct"
+        ch = "direct" if d <= p else "proxy"
+        wait = max(_ch_block[ch] - now, 0.05)
+    time.sleep(wait)
+    return (direct_opener() if ch == "direct" else opener()), ch
+
+
 def _get(url: str, timeout: int = 30) -> bytes:
-    """search 类（commons api）首用直连、备用代理；其余首用代理、备用直连。"""
+    """search 类：直连/代理冷却自适应 + 查询缓存；其余：代理首选直连备用。"""
     is_search = "commons.wikimedia.org/w/api.php" in url
+    if is_search:
+        SEARCH_CACHE.mkdir(parents=True, exist_ok=True)
+        key = SEARCH_CACHE / (hashlib.md5(url.encode()).hexdigest() + ".json")
+        if key.exists():
+            return key.read_bytes()
     last: Exception | None = None
     for attempt in range(4):
-        _pace(0.5 if is_search else 0.24, "search" if is_search else "other")
         if is_search:
-            op = direct_opener() if attempt % 2 == 0 else opener()
-            timeout = min(timeout, 15)  # GFW 停顿快失败快重试，别等满 30s
+            _pace(0.7, "search")
+            op, ch = _pick_search_opener()
+            timeout = min(timeout, 15)  # GFW 停顿快失败快重试
         else:
+            _pace(0.24, "other")
             op = opener() if attempt % 2 == 0 else direct_opener()
+            ch = "proxy" if attempt % 2 == 0 else "direct"
         try:
             with op.open(url, timeout=timeout) as r:
-                return r.read()
+                data = r.read()
+            if is_search:
+                key.write_bytes(data)  # type: ignore[union-attr]
+            return data
         except urllib.error.HTTPError as e:
             last = e
-            if e.code in (403, 429, 500, 502, 503, 504):
-                if is_search and e.code == 429:
-                    time.sleep(4 * (attempt + 1))
-                else:
-                    time.sleep((10 if e.code in (403, 429) else 2) * (attempt + 1))
+            if e.code in (403, 429):
+                with _rate_lock:
+                    _ch_block[ch] = time.monotonic() + (15 if e.code == 429 else 30)
+                continue
+            if e.code in (500, 502, 503, 504):
+                time.sleep(2 * (attempt + 1))
                 continue
             raise
         except Exception as e:  # noqa: BLE001 GFW 重置/代理断连
