@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type KeyboardEvent } from 'react'
 import { fetchHeritageList, type HeritageSummary } from '../api/heritage'
 import { fetchProfile, type Profile } from '../api/progress'
 import { PROVINCES } from '../utils/geo'
@@ -25,13 +25,21 @@ const VIZ_COLORS = ['#b03a2e', '#e8c56b', '#4a7c6f', '#5a6f9c', '#a45c8a', '#c07
 
 // 探索矩阵：首页功能总入口（序号+文字，不用小图标）
 const GATES = [
-  { page: 'knowledge', title: '非遗知识库', desc: '数千项国家级非遗全景档案，故事、工序、谱系一次读透' },
-  { page: 'map', title: '非遗地图', desc: '沿华夏地理看非遗分布，按省按类自由探索' },
-  { page: 'graph', title: '知识图谱', desc: '项目、人物、地域交织的关系网络，可缩放漫游' },
-  { page: 'path', title: '学习路径', desc: '输入主题即得七日精进路线，逐日推进' },
-  { page: 'lab', title: '活化实验室', desc: '让老手艺走进今天：文创、活动、短视频方案即刻生成' },
-  { page: 'challenge', title: '非遗挑战', desc: '三题快问快答，检验功底、收集徽章' },
+  { page: 'knowledge', title: '非遗知识库', desc: '故事、工序、谱系一次读透' },
+  { page: 'map', title: '非遗地图', desc: '沿华夏地理看非遗分布' },
+  { page: 'graph', title: '知识图谱', desc: '项目、人物、地域关系网络' },
+  { page: 'path', title: '学习路径', desc: '输入主题即得七日精进路线' },
+  { page: 'lab', title: '活化实验室', desc: '文创、活动、短视频方案即刻生成' },
+  { page: 'challenge', title: '非遗挑战', desc: '三题快问快答，收集徽章' },
 ]
+
+/** 卡片键盘激活：Enter/空格触发，与 click 等价 */
+const onActivate = (e: KeyboardEvent, fn: () => void) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault()
+    fn()
+  }
+}
 
 export default function Home({ onNavigate, entered = true }: Props) {
   const [list, setList] = useState<HeritageSummary[]>([])
@@ -218,7 +226,10 @@ export default function Home({ onNavigate, entered = true }: Props) {
           <h2>今日非遗</h2>
           <div
             className="home-today"
+            role="button"
+            tabIndex={0}
             onClick={() => onNavigate('knowledge', featured.id)}
+            onKeyDown={(e) => onActivate(e, () => onNavigate('knowledge', featured.id))}
             title="查看知识库详情"
           >
             <Cover item={featured} className="home-today-img" />
@@ -248,7 +259,10 @@ export default function Home({ onNavigate, entered = true }: Props) {
               <article
                 key={h.id}
                 className="home-story"
+                role="button"
+                tabIndex={0}
                 onClick={() => onNavigate('knowledge', h.id)}
+                onKeyDown={(e) => onActivate(e, () => onNavigate('knowledge', h.id))}
               >
                 <Cover item={h} className="home-story-img" />
                 <div className="home-story-txt">
@@ -271,7 +285,14 @@ export default function Home({ onNavigate, entered = true }: Props) {
           <h2>AI 推荐</h2>
           <div className="home-recs">
             {recommended.map((h) => (
-              <div key={h.id} className="home-rec" onClick={() => onNavigate('knowledge', h.id)}>
+              <div
+                key={h.id}
+                className="home-rec"
+                role="button"
+                tabIndex={0}
+                onClick={() => onNavigate('knowledge', h.id)}
+                onKeyDown={(e) => onActivate(e, () => onNavigate('knowledge', h.id))}
+              >
                 <Cover item={h} className="home-rec-img" />
                 <div className="home-rec-txt">
                   <strong>{h.name}</strong>
@@ -351,10 +372,16 @@ export default function Home({ onNavigate, entered = true }: Props) {
             </div>
 
             <div className="viz-rank">
-              <h4>省份 TOP 5</h4>
+              <h3>省份 TOP 5</h3>
               <ul>
                 {topProvs.map(([r, n]) => (
-                  <li key={r} onClick={() => onNavigate('knowledge', `kw:${r}`)}>
+                  <li
+                    key={r}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => onNavigate('knowledge', `kw:${r}`)}
+                    onKeyDown={(e) => onActivate(e, () => onNavigate('knowledge', `kw:${r}`))}
+                  >
                     <span className="viz-rank-name">{r}</span>
                     <span className="viz-rank-bar">
                       <i style={{ width: `${(n / topProvs[0][1]) * 100}%` }} />

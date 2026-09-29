@@ -145,6 +145,14 @@
     opacity: 0;
   }
 }
+.map-prov:focus {
+  outline: none;
+}
+.map-prov:focus-visible {
+  outline: none;
+  stroke: #e8c56b;
+  stroke-width: 2.5;
+}
 .map-prov:hover {
   stroke: #e8c56b;
   stroke-width: 2;
@@ -243,7 +251,7 @@
   padding: 14px 16px;
   animation: riseIn 0.55s ease 0.15s backwards;
 }
-.map-side h3 {
+.map-side h2 {
   font-size: 13px;
   color: #e8c56b;
   letter-spacing: 3px;
@@ -251,7 +259,7 @@
   padding-bottom: 6px;
   border-bottom: 1px solid #2e2823;
 }
-.map-side h3:not(:first-child) {
+.map-side h2:not(:first-child) {
   margin-top: 18px;
 }
 .map-rank {
@@ -520,7 +528,7 @@
   gap: 12px;
   margin-bottom: 12px;
 }
-.map-tour-head h3 {
+.map-tour-head h2 {
   margin: 0;
   font-size: 15px;
   letter-spacing: 3px;

@@ -140,7 +140,11 @@ export default function Lab() {
       </header>
 
       <div className="lab-form">
-        <select value={heritage} onChange={(e) => setHeritage(e.target.value)}>
+        <select
+          value={heritage}
+          onChange={(e) => setHeritage(e.target.value)}
+          aria-label="选择要活化的非遗项目"
+        >
           {list.map((h) => (
             <option key={h.id} value={h.id}>
               {h.name}（{h.category.split('·')[0].trim()}）
@@ -149,8 +153,8 @@ export default function Lab() {
         </select>
 
         <div className="lab-row">
-          <div className="lab-opt">
-            <label>方案类型</label>
+          <div className="lab-opt" role="group" aria-label="方案类型">
+            <span className="lab-opt-label">方案类型</span>
             <div className="lab-types">
               {OUTPUT_TYPES.map((t) => (
                 <button
@@ -163,8 +167,8 @@ export default function Lab() {
               ))}
             </div>
           </div>
-          <div className="lab-opt">
-            <label>创作风格</label>
+          <div className="lab-opt" role="group" aria-label="创作风格">
+            <span className="lab-opt-label">创作风格</span>
             <div className="lab-types">
               {STYLES.map((s) => (
                 <button
@@ -177,8 +181,8 @@ export default function Lab() {
               ))}
             </div>
           </div>
-          <div className="lab-opt">
-            <label>目标受众</label>
+          <div className="lab-opt" role="group" aria-label="目标受众">
+            <span className="lab-opt-label">目标受众</span>
             <div className="lab-types">
               {AUDIENCES.map((a) => (
                 <button
@@ -198,6 +202,7 @@ export default function Lab() {
           value={requirement}
           onChange={(e) => setRequirement(e.target.value)}
           placeholder="描述你的创意需求，例如：把剪纸和现代校园文化结合，做一个有传播效果的社团活动…"
+          aria-label="创意需求描述"
         />
         <div className="lab-presets">
           {PRESETS.map((p) => (

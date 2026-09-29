@@ -175,7 +175,7 @@
   padding: 0 26px;
   border: none;
   border-radius: 999px;
-  background: linear-gradient(135deg, #b03a2e, #d4763b);
+  background: linear-gradient(135deg, #96301f, #b85522);
   color: #fff;
   font-size: 15px;
   letter-spacing: 3px;
@@ -559,7 +559,7 @@
   color: #e8c56b;
 }
 
-.viz-rank h4 {
+.viz-rank h3 {
   margin: 0 0 12px;
   font-size: 13px;
   color: #e8c56b;

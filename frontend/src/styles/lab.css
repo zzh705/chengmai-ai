@@ -85,7 +85,7 @@
   padding: 12px;
   border: none;
   border-radius: 8px;
-  background: linear-gradient(135deg, #b03a2e, #d4763b);
+  background: linear-gradient(135deg, #96301f, #b85522);
   color: #fff;
   font-size: 15px;
   letter-spacing: 2px;
@@ -371,7 +371,7 @@
   flex-direction: column;
   gap: 10px;
 }
-.lab-opt label {
+.lab-opt .lab-opt-label {
   display: block;
   font-size: 12px;
   color: #9a8f80;

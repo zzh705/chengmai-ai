@@ -76,7 +76,7 @@
   padding: 12px;
   border: none;
   border-radius: 8px;
-  background: linear-gradient(135deg, #b03a2e, #d4763b);
+  background: linear-gradient(135deg, #96301f, #b85522);
   color: #fff;
   font-size: 15px;
   letter-spacing: 2px;
@@ -152,7 +152,7 @@
 }
 
 /* 目标与时长选择 */
-.path-opt-group label {
+.path-opt-group .path-opt-label {
   display: block;
   font-size: 12px;
   color: #9a8f80;

@@ -630,6 +630,12 @@ textarea {
   }
 }
 
+/* 按压反馈：全站按钮与可点元素统一（filter 不与元素自身 transform 冲突） */
+button:not(:disabled):active,
+[role='button']:active {
+  filter: brightness(0.92);
+}
+
 /* ===== reduced-motion 兜底：全站无限动画（navPulse/petalFall/sealGlow/ladderPulse/
    badgeGlow/lightBreath 等）在用户偏好减少动效时一律降为瞬时静止。
    仅作用于 reduce 媒体查询，不影响 View Transitions（reduce 下 has-vt 本就不启用），

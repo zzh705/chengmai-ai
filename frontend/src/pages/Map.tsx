@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type KeyboardEvent } from 'react'
 import { geoMercator, geoPath } from 'd3-geo'
 import { fetchHeritageList, type HeritageSummary } from '../api/heritage'
 import Cover from '../components/Cover'
@@ -28,6 +28,14 @@ function provKey(name: string): string {
 
 /** category 形如"传统美术 · 刺绣"，取首段作大类 */
 const catOf = (c: string) => c.split(' · ')[0]
+
+/** 卡片/省份键盘激活：Enter/空格触发，与 click 等价 */
+const onActivate = (e: KeyboardEvent, fn: () => void) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault()
+    fn()
+  }
+}
 
 /**
  * 方格视图：34 个省级行政区按近似地理方位排成 8 列方格（报纸天气图式表达），
@@ -274,9 +282,17 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
                     fill: fillOf(p),
                     animationDelay: `${i * 35}ms`,
                   }}
+                  role={p.count > 0 ? 'button' : undefined}
+                  tabIndex={p.count > 0 ? 0 : -1}
+                  aria-label={`${p.name}，${p.count} 项`}
                   onMouseEnter={() => setHover(p.name)}
                   onMouseLeave={() => setHover(null)}
                   onClick={() => p.count > 0 && setSelected(isSelected(p) ? null : p.key)}
+                  onKeyDown={
+                    p.count > 0
+                      ? (e) => onActivate(e, () => setSelected(isSelected(p) ? null : p.key))
+                      : undefined
+                  }
                 >
                   <title>{`${p.name}：${p.count} 项`}</title>
                 </path>
@@ -363,13 +379,16 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
 
         {/* 右侧数据栏：省份排行 + 类别分布 */}
         <aside className="map-side">
-          <h3>省份排行</h3>
+          <h2>省份排行</h2>
           <ul className="map-rank">
             {ranking.map((p) => (
               <li
                 key={p.key}
                 className={isSelected(p) ? 'active' : ''}
+                role="button"
+                tabIndex={0}
                 onClick={() => setSelected(isSelected(p) ? null : p.key)}
+                onKeyDown={(e) => onActivate(e, () => setSelected(isSelected(p) ? null : p.key))}
                 onMouseEnter={() => setHover(p.name)}
                 onMouseLeave={() => setHover(null)}
               >
@@ -382,7 +401,7 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
             ))}
           </ul>
 
-          <h3>类别分布</h3>
+          <h2>类别分布</h2>
           <div className="map-cats">
             {catStats.map(([c, n]) => (
               <div
@@ -406,7 +425,7 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
       {ranking.length > 0 && (
         <section className="map-tour">
           <div className="map-tour-head">
-            <h3>省域巡礼</h3>
+            <h2>省域巡礼</h2>
             <span>从非遗最密集的地方开始，看见它的地理</span>
           </div>
           <div className="map-tour-row">
@@ -467,7 +486,10 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
             <div
               key={it.id}
               className="map-item"
+              role="button"
+              tabIndex={0}
               onClick={() => onNavigate('knowledge', it.id)}
+              onKeyDown={(e) => onActivate(e, () => onNavigate('knowledge', it.id))}
             >
               <Cover item={it} className="map-item-img" />
               <div className="map-item-txt">

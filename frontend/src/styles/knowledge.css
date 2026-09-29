@@ -134,7 +134,7 @@
   color: #a89a84;
   margin-bottom: 8px;
   padding-left: 8px;
-  border-left: 2px solid #b03a2e;
+  border-left: 1px solid #b03a2e;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -459,7 +459,7 @@
 .kb-story-title {
   font-size: 13px;
   letter-spacing: 3px;
-  color: #8f8674;
+  color: #9c927e;
   margin-bottom: 8px;
 }
 .kb-story-title span {

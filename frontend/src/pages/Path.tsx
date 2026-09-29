@@ -99,7 +99,11 @@ export default function Path() {
       </header>
 
       <div className="path-form">
-        <select value={topic} onChange={(e) => setTopic(e.target.value)}>
+        <select
+          value={topic}
+          onChange={(e) => setTopic(e.target.value)}
+          aria-label="从收录项目中选择主题"
+        >
           {list.map((h) => (
             <option key={h.id} value={h.name}>
               {h.name}
@@ -110,10 +114,11 @@ export default function Path() {
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
           placeholder="或直接输入任意主题，如：中国传统刺绣"
+          aria-label="自定义学习主题"
         />
 
-        <div className="path-opt-group">
-          <label>学习目标</label>
+        <div className="path-opt-group" role="group" aria-label="学习目标">
+          <span className="path-opt-label">学习目标</span>
           <div className="path-goals">
             {GOALS.map((g) => (
               <button
@@ -130,8 +135,8 @@ export default function Path() {
         </div>
 
         <div className="path-opt-row">
-          <div className="path-opt-group">
-            <label>天数</label>
+          <div className="path-opt-group" role="group" aria-label="天数">
+            <span className="path-opt-label">天数</span>
             <div className="path-days">
               {DAYS.map((d) => (
                 <button key={d} className={days === d ? 'active' : ''} onClick={() => setDays(d)}>
@@ -140,8 +145,8 @@ export default function Path() {
               ))}
             </div>
           </div>
-          <div className="path-opt-group">
-            <label>每日投入</label>
+          <div className="path-opt-group" role="group" aria-label="每日投入">
+            <span className="path-opt-label">每日投入</span>
             <div className="path-days">
               {MINUTES.map((m) => (
                 <button

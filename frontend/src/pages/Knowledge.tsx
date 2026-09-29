@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 import {
   fetchHeritageDetail,
   fetchHeritageList,
@@ -16,6 +16,17 @@ import '../styles/knowledge.css'
 interface Credit {
   license?: string
 }
+
+/** 卡片键盘激活：Enter/空格触发，与 click 等价 */
+const onActivate = (e: KeyboardEvent, fn: () => void) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault()
+    fn()
+  }
+}
+
+/** 正文中的解释性破折号改为冒号（文案硬禁：——） */
+const clean = (s: string) => s.replace(/——/g, '：')
 
 /** 数字亮点：挂载后 0 → value 缓动滚动（easeOutCubic） */
 function WowNum({ value, suffix, label }: WowNumber) {
@@ -196,7 +207,8 @@ export default function Knowledge({
             <span className="kb-level">{detail.level}</span>
           </h1>
           <div className="kb-meta">
-            {[detail.category, detail.region, detail.era].filter(Boolean).join(' · ')}
+            {[detail.category, detail.region].filter(Boolean).join(' · ')}
+            {detail.era ? `（${detail.era}）` : ''}
           </div>
 
           {/* 聆听条：语音讲解 + 背景音 + 深入追问 AI（全部文字按钮，无小图标） */}
@@ -214,14 +226,14 @@ export default function Knowledge({
                 className="kb-audio-ai"
                 onClick={() => onNavigate('chat', `深入讲讲${detail.name}`)}
               >
-                让承脉 AI 继续讲
+                让承脉 AI 把这项聊透
               </button>
             )}
             {speaking && <span className="kb-audio-hint">正在为你朗读钩子与故事</span>}
           </div>
 
           {/* 悬念钩子：详情页第一记视觉重拳 */}
-          {detail.hook && <div className="kb-hook">「{detail.hook}」</div>}
+          {detail.hook && <div className="kb-hook">「{clean(detail.hook)}」</div>}
 
           {/* 数字亮点：滚动计数大字 */}
           {detail.wow_numbers.length > 0 && (
@@ -238,7 +250,7 @@ export default function Knowledge({
               <div className="kb-story-title">
                 一分钟认识<span>{detail.name}</span>
               </div>
-              <p>{detail.story}</p>
+              <p>{clean(detail.story)}</p>
             </div>
           )}
 
@@ -260,7 +272,7 @@ export default function Knowledge({
 
           <section className="reveal">
             <h3>项目简介</h3>
-            <p className="kb-lede">{detail.description}</p>
+            <p className="kb-lede">{clean(detail.description)}</p>
           </section>
 
           {/* 冷知识：让人好奇的"你知道吗" */}
@@ -400,7 +412,14 @@ export default function Knowledge({
             </div>
           ))}
         {filtered.slice(0, shown).map((h) => (
-          <div key={h.id} className="kb-card" onClick={() => open(h.id)}>
+          <div
+            key={h.id}
+            className="kb-card"
+            role="button"
+            tabIndex={0}
+            onClick={() => open(h.id)}
+            onKeyDown={(e) => onActivate(e, () => open(h.id))}
+          >
             <Cover item={h} className="kb-card-cover" />
             <div className="kb-card-body">
               <div className="kb-card-name">{h.name}</div>

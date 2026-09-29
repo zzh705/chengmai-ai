@@ -167,7 +167,7 @@ export default function About() {
       </section>
 
       <section className="ab-card reveal ab-intro">
-        <h3>项目简介</h3>
+        <h2>项目简介</h2>
         <p>
           承脉 AI
           面向青少年与海外中文学习者，围绕国家级非物质文化遗产提供“检索问答、知识图谱、非遗地图、学习路径、
@@ -195,7 +195,7 @@ export default function About() {
       </section>
 
       <section className="ab-card reveal" id="idea">
-        <h3>设计理念</h3>
+        <h2>设计理念</h2>
         <div className="ab-idea">
           <div>
             <strong>可溯源</strong>
@@ -222,7 +222,7 @@ export default function About() {
       </section>
 
       <section className="ab-card reveal" id="arch">
-        <h3>系统架构</h3>
+        <h2>系统架构</h2>
         <div className="ab-flow">
           <div className="ab-flow-row">
             <span className="ab-flow-node in">用户提问 / 点击探索</span>
@@ -262,7 +262,7 @@ export default function About() {
       </section>
 
       <section className="ab-card reveal">
-        <h3>多智能体架构</h3>
+        <h2>多智能体架构</h2>
         <div className="ab-agents">
           {AGENTS.map((a) => (
             <div key={a.n} className="ab-agent">
@@ -274,7 +274,7 @@ export default function About() {
       </section>
 
       <section className="ab-card reveal" id="ai">
-        <h3>AI 使用说明与防幻觉设计</h3>
+        <h2>AI 使用说明与防幻觉设计</h2>
         <ul className="ab-list">
           <li>
             <strong>模型与能力：</strong>
@@ -305,7 +305,7 @@ export default function About() {
       </section>
 
       <section className="ab-card reveal">
-        <h3>技术栈</h3>
+        <h2>技术栈</h2>
         <div className="ab-tags">
           {TECH.map((t) => (
             <span key={t}>{t}</span>
@@ -314,7 +314,7 @@ export default function About() {
       </section>
 
       <section className="ab-card reveal" id="data">
-        <h3>数据与来源</h3>
+        <h2>数据与来源</h2>
         <p>
           知识库收录 <strong>{num(stat.items)}</strong> 项国家级非遗代表性项目（覆盖{' '}
           <strong>{num(stat.provs)}</strong> 个省级行政区、7
@@ -327,7 +327,7 @@ export default function About() {
       </section>
 
       <section className="ab-card reveal">
-        <h3>合规与开源说明</h3>
+        <h2>合规与开源说明</h2>
         <ul className="ab-list">
           <li>
             <strong>图片版权：</strong>
@@ -354,7 +354,7 @@ export default function About() {
       </section>
 
       <section className="ab-card reveal" id="quality">
-        <h3>测试与质量</h3>
+        <h2>测试与质量</h2>
         <div className="ab-quality">
           <div>
             <em>8</em>
@@ -380,7 +380,7 @@ export default function About() {
       </section>
 
       <section className="ab-card reveal" id="timeline">
-        <h3>里程碑</h3>
+        <h2>里程碑</h2>
         <ul className="ab-timeline">
           <li>
             <span className="tl-when">起步</span>
@@ -409,7 +409,7 @@ export default function About() {
       </section>
 
       <section className="ab-card reveal" id="team">
-        <h3>团队分工</h3>
+        <h2>团队分工</h2>
         <p className="ab-team-school">北京科技大学天津学院 · 软件工程专业</p>
         <div className="ab-team">
           <div>
@@ -428,7 +428,7 @@ export default function About() {
       </section>
 
       <section className="ab-card reveal" id="advisor">
-        <h3>指导老师</h3>
+        <h2>指导老师</h2>
         <div className="ab-team ab-advisors">
           <div>
             <strong>赵米傲</strong>
