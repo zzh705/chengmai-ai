@@ -223,9 +223,9 @@ def _get(url: str, timeout: int = 30) -> bytes:
         if key.exists():
             return key.read_bytes()
     last: Exception | None = None
-    for attempt in range(4):
+    for attempt in range(3):
         if is_search:
-            _pace(0.7, "search")
+            _pace(1.5, "search")  # WMF 匿名限额：持续 >2/s 会双 IP 进处罚期（实测教训）
             op, ch = _pick_search_opener()
             timeout = min(timeout, 15)  # GFW 停顿快失败快重试
         else:
@@ -242,7 +242,7 @@ def _get(url: str, timeout: int = 30) -> bytes:
             last = e
             if e.code in (403, 429):
                 with _rate_lock:
-                    _ch_block[ch] = time.monotonic() + (15 if e.code == 429 else 30)
+                    _ch_block[ch] = time.monotonic() + (120 if e.code == 429 else 300)
                 continue
             if e.code in (500, 502, 503, 504):
                 time.sleep(2 * (attempt + 1))
@@ -479,7 +479,11 @@ def terms_for(item: dict, terms2: dict, enrich: dict) -> list[str]:
         t = str(t).strip()
         if t and t not in merged:
             merged.append(t)
-    return merged[:10]
+    # 中文词优先：CJK 查询命中中文文件名概率最高且只花 1 次搜索，
+    # 原先 English 在前 terms[:5] 截断导致多数条目根本没试过中文词
+    cjk = [t for t in merged if CJK_RE.search(t)]
+    lat = [t for t in merged if not CJK_RE.search(t)]
+    return (cjk + lat)[:10]
 
 
 def mark_done(iid: str, url: str) -> None:
