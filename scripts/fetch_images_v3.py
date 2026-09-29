@@ -220,11 +220,11 @@ def query_variants(term: str) -> list[str]:
             base += [t[:3], t[-3:], t[-2:]]
         elif len(t) == 3:
             base += [t[-2:]]
-        out: list[str] = []
-        for v in base:
-            if v and v not in out:
-                out.append(v)
-        return out[:4]
+    out: list[str] = []
+    for v in base:
+        if v and v not in out:
+            out.append(v)
+    return out[:3]
     words = term.split()
     if len(words) <= 2:
         return [term]
@@ -236,7 +236,7 @@ def query_variants(term: str) -> list[str]:
     for v in base:
         if v and v not in out:
             out.append(v)
-    return out[:5]
+    return out[:3]
 
 
 def score_title(title: str, full_term: str, extra_toks: list[str], name_sh: tuple = ()) -> float:
@@ -455,7 +455,7 @@ def work(item: dict, terms: list[str], allow_reuse: bool, use_ov: bool, stats: d
     with _lock:
         st = load_state()
         used = st.get("urls", {})
-    for t in terms:
+    for t in terms[:5]:
         try:
             cands = commons_candidates(t, t, extra_toks, name_sh)
         except Exception as e:  # noqa: BLE001
@@ -474,13 +474,13 @@ def work(item: dict, terms: list[str], allow_reuse: bool, use_ov: bool, stats: d
             except Exception as e:  # noqa: BLE001
                 print(f"  {iid}: dl {type(e).__name__}: {e}", flush=True)
                 break
-        time.sleep(0.4)
+        time.sleep(0.25)
     if use_ov:
         with _lock:
             st = load_state()
             ov_left = int(st.get("ov_used", 200))
         if ov_left > OV_BUDGET_MIN:
-            for t in terms[:6]:
+            for t in terms[:4]:
                 with _lock:
                     st = load_state()
                     ov_left = int(st.get("ov_used", 200))
@@ -507,7 +507,7 @@ def work(item: dict, terms: list[str], allow_reuse: bool, use_ov: bool, stats: d
                     except Exception as e:  # noqa: BLE001
                         print(f"  {iid}: dl {type(e).__name__}: {e}", flush=True)
                         break
-                time.sleep(1.2)
+                time.sleep(0.9)
     mark_miss(iid)
     stats["miss"] += 1
 
