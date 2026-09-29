@@ -45,6 +45,8 @@ BAD_PAT = re.compile(
     r"logo|coat of arms|\bflag\b|\bseal\b|\bmap of\b|icon\b|banner|"
     r"diagram|chart\b|screenshot|scan of|\bsymbol\b|"
     r"地图|位置图|分布图|行政区|政区|示意图|路线图|人口|区划|卫星图|"
+    r"\btower\b|\bpagoda\b|\btemple\b|\bmonastery\b|\bpalace\b|\bmuseum\b|\bbridge\b|"
+    r"\bshrine\b|\bchurch\b|\bcastle\b|\bbuilding\b|\blandmark\b|\bsite\b|"
     r"考釋|釋文|論文|學位|學報|期刊|全集|字典|辭典|年鑑|彙編|"
     r"\bISBN\b|\bvolume\b|\bmanuscript\b|"
     r"postage stamp|\bstamp\b|philatelic|banknote|bank note|\bcoin\b|power plant|substation|"
@@ -101,6 +103,12 @@ REGION_PINYIN = (
     "nantong weifang xuzhou wenzhou yiwu jingdezhen"
 ).split()
 _PLACE = set(REGION_PINYIN)
+
+# 色彩词：青花蓝白碗靠 blue/white 凑齐双命中配望江挑花——不算内容命中
+_COLOR = {
+    "red", "blue", "green", "white", "black", "yellow", "orange", "brown",
+    "gray", "grey", "pink", "purple", "cyan", "silver", "golden", "blond",
+}
 
 # 英文词典：常见词（foil/painting/beating/tray…）一律不算锚点，专名（pangu/kunqu/
 # wuhu…）才算——结构性替代逐词黑名单，杜绝 foil 撞镁箔闪光灯这类漏网。
@@ -245,11 +253,14 @@ def score_title(title: str, full_term: str, extra_toks: list[str], name_sh: tupl
         return 10 + cj
     if nj:
         return 10 + nj
-    anchor = [tok for tok in of_hits if tok not in _PLACE and not _is_weak_word(tok)]
-    if anchor:
+    anchors = [tok for tok in of_hits if tok not in _PLACE and not _is_weak_word(tok)]
+    weak_of = [tok for tok in of_hits if tok in _PLACE or _is_weak_word(tok)]
+    # 单个专名孤证不够（Pierre Meige/南通全景/上党战役旧址都靠它混过）：
+    # 要么 ≥2 个专名，要么专名 + 至少 1 个语境弱词（词源与标题的交集）
+    if len(anchors) >= 2 or (anchors and weak_of):
         return 5 + len(of_hits) + 0.5 * len(ex_hits)
-    # 地名词不算锚点：城市全景/地标照（南通全景、北京玉峰亭）必须还有 ≥2 个非地名命中
-    content_hits = [tok for tok in of_hits if tok not in _PLACE]
+    # 地域/词级背书用的非地名命中：色彩词不算（青花蓝白碗凑 color 词配望江挑花）
+    content_hits = [tok for tok in of_hits if tok not in _PLACE and tok not in _COLOR]
     tl = full_term.lower()
     if len(content_hits) >= 2 and ("china" in tl or "chinese" in tl):
         # 词源自称中国 + 标题命中 ≥2 非地名词：词级地域背书
