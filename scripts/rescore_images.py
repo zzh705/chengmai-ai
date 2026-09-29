@@ -44,7 +44,11 @@ def main() -> None:
         checked += 1
         it = items[iid]
         name_sh = tuple(cjk_shingles(it["name"]))
-        sc = score_title(title, term, [], name_sh)
+        # 池来源带类目名，评分时类目并入有效标题（与 match_pool 一致）
+        eff = title
+        if v.get("cat"):
+            eff = f"{title} | {v['cat']}"
+        sc = score_title(eff, term, [], name_sh)
         if sc <= 0:
             bad.append((iid, title[:56], term[:44]))
 
@@ -56,6 +60,9 @@ def main() -> None:
         (IMG / f"{iid}.jpg").unlink(missing_ok=True)
         cr.pop(iid, None)
         st.get("items", {}).pop(iid, None)
+        for u, owner in list(st.get("urls", {}).items()):
+            if owner == iid:
+                st["urls"].pop(u, None)
 
     if not dry:
         cr_path.write_text(json.dumps(cr, ensure_ascii=False, indent=1), encoding="utf-8")

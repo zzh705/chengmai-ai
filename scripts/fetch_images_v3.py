@@ -51,7 +51,10 @@ BAD_PAT = re.compile(
     r"考釋|釋文|論文|學位|學報|期刊|全集|字典|辭典|年鑑|彙編|"
     r"\bISBN\b|\bvolume\b|\bmanuscript\b|"
     r"postage stamp|\bstamp\b|philatelic|banknote|bank note|\bcoin\b|power plant|substation|"
-    r"\bstation\b|\bairport\b|terminal|school\b|university|hospital\b|hotel\b",
+    r"\bstation\b|\bairport\b|terminal|school\b|university|hospital\b|hotel\b|"
+    r"\bmall\b|shopping|\bplaza\b|\bauction\b|preview|exhibition opening|"
+    r"\bcatalogue\b|\bcatalog\b|\billustrated\b|\bportfolio\b|\bfrontispiece\b|"
+    r"\bencyclop\w*\b|\balbum\b|\bplate\b|\bprint\b|\bengraving\b",
     re.I,
 )
 OK_EXT = (".jpg", ".jpeg", ".png", ".webp")
@@ -100,7 +103,7 @@ REGION_PINYIN = (
     "fujian zhejiang jiangsu anhui jiangxi hainan beijing shanghai tianjin "
     "chongqing suzhou hangzhou quanzhou xian luoyang changsha wuhan chengdu "
     "guiyang guangzhou nanjing manchu mongol miao tujia buyei zhuang qiang dai "
-    "tibetan uighur uyghur inner-mongolia "
+    "tibetan uighur uyghur mongolian inner-mongolia "
     "nantong weifang xuzhou wenzhou yiwu jingdezhen"
 ).split()
 _PLACE = set(REGION_PINYIN)
@@ -109,6 +112,14 @@ _PLACE = set(REGION_PINYIN)
 _COLOR = {
     "red", "blue", "green", "white", "black", "yellow", "orange", "brown",
     "gray", "grey", "pink", "purple", "cyan", "silver", "golden", "blond",
+}
+
+# 朝代/时期词与国名同样是「背书」而非「内容」：Qing dynasty jade mountain 撞
+# Imperial Dragon Embroidery Qing Dynasty、词源里的 china 撞类目名 China 都靠它们凑数
+_PERIOD = {
+    "tang", "song", "yuan", "ming", "qing", "zhou", "shang", "han", "wei", "jin",
+    "sui", "dynasty", "imperial", "reign", "era", "century", "period", "medieval",
+    "ancient", "modern", "china", "chinese", "asian", "hongkong", "beijing",
 }
 
 # 英文词典：常见词（foil/painting/beating/tray…）一律不算锚点，专名（pangu/kunqu/
@@ -147,6 +158,26 @@ def _region_level(t: str, title: str) -> int:
     if any(p in t for p in REGION_PINYIN):
         return 1
     return 0
+
+
+_REGION_WORD_RE = re.compile(
+    r"\b(?:" + "|".join(map(re.escape, REGION_PINYIN)) + r")\b"
+)
+
+
+def _title_region(base_l: str, cat: str) -> bool:
+    """图片自身标题（可含类目后缀）是否带中国地域证据。
+    仅用于弱词二次门——地域必须来自标题/类目本身，不能只看词源自称。"""
+    if CJK_RE.search(base_l):
+        return True
+    if "china" in base_l or "chinese" in base_l:
+        return True
+    if _REGION_WORD_RE.search(base_l):
+        return True
+    cl = cat.lower()
+    if "china" in cl or "chinese" in cl:
+        return True
+    return bool(_REGION_WORD_RE.search(cl))
 
 
 def _has_word(t: str, tok: str) -> bool:
@@ -295,13 +326,19 @@ def query_variants(term: str) -> list[str]:
 def score_title(title: str, full_term: str, extra_toks: list[str], name_sh: tuple = ()) -> float:
     if BAD_PAT.search(title):
         return 0
-    t = title.lower()
+    # "图片标题 | 类目名" 拆开：类目只背书地域，不参与词命中（防 Stone carving in
+    # China 的 carving 给玉雕条目凑内容词）
+    parts = title.split(" | ", 1)
+    base = parts[0]
+    cat = parts[1] if len(parts) > 1 else ""
+    t = base.lower()
+    region = _title_region(t, cat)
     full_lat = latin_tokens(full_term)
     of_hits = list(dict.fromkeys(tok for tok in full_lat if _has_word(t, tok)))
     ex_hits = [tok for tok in set(extra_toks) if _has_word(t, tok)]
     sh = cjk_shingles(full_term)
-    cj = sum(1 for s in sh if s in title)
-    nj = sum(1 for s in name_sh if s in title)
+    cj = sum(1 for s in sh if s in base)
+    nj = sum(1 for s in name_sh if s in base)
     if cj:
         return 10 + cj
     if nj:
@@ -312,23 +349,24 @@ def score_title(title: str, full_term: str, extra_toks: list[str], name_sh: tupl
     # 要么 ≥2 个专名，要么专名 + 至少 1 个语境弱词（词源与标题的交集）
     if len(anchors) >= 2 or (anchors and weak_of):
         return 5 + len(of_hits) + 0.5 * len(ex_hits)
-    # 地域/词级背书用的非地名命中：色彩词不算（青花蓝白碗凑 color 词配望江挑花）
-    content_hits = [tok for tok in of_hits if tok not in _PLACE and tok not in _COLOR]
+    # 地域/词级背书用的非地名命中：色彩词/朝代国名词不算（防 period 词凑数）
+    content_hits = [
+        tok for tok in of_hits
+        if tok not in _PLACE and tok not in _COLOR and tok not in _PERIOD
+    ]
     tl = full_term.lower()
     if len(content_hits) >= 2 and ("china" in tl or "chinese" in tl):
         # 词源自称中国 + 标题命中 ≥2 非地名词：词级地域背书
         return 5 + len(of_hits) + 0.5 * len(ex_hits)
     if of_hits or (not full_lat and len(ex_hits) >= 2):
-        # 全是弱词命中：中文文件名/地域拼音背书都要求命中 ≥2（其中 ≥1 非地名，
-        # 除非是中文文件名+任意双命中——防「菊花配宋锦」式单弱词撞图）
-        lvl = _region_level(t, title)
-        if lvl >= 2 and len(of_hits) >= 2:
-            return 5 + len(of_hits) + 0.5 * len(ex_hits)
-        if lvl == 1 and len(content_hits) >= 2:
+        # 弱词路径：地域证据必须来自标题/类目自身（原实现误传标题自身做地域门，
+        # 形同虚设——'Chinese ...' 标题一律 lvl1、中文标题一律 lvl2）。
+        # 且 ≥2 命中里要扣掉朝代/国名（'Chinese porcelain' 只剩 porcelain 一个
+        # 真命中），再要求 ≥1 内容词：防丝绸晚礼服配竹编、古城照配玉雕。
+        nonperiod = [tok for tok in of_hits if tok not in _PERIOD]
+        if region and len(nonperiod) >= 2 and len(content_hits) >= 1:
             return 5 + len(of_hits) + 0.5 * len(ex_hits)
         return 0
-    if not full_lat and ex_hits and _region_level(t, title):
-        return 1 + 0.5 * len(ex_hits)
     return 0
 
 
