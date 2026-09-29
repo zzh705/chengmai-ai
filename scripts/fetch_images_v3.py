@@ -158,6 +158,7 @@ def _has_word(t: str, tok: str) -> bool:
 
 
 def opener():
+    """代理通道（Openverse/图床）——代理 IP 的 commons search 已被全量 429。"""
     op = getattr(_local, "opener", None)
     if op is None:
         op = urllib.request.build_opener(
@@ -169,35 +170,58 @@ def opener():
     return op
 
 
+def direct_opener():
+    """直连通道——Commons search 专用（本机 IP 未被限速，实测代理 8/8 全 429、直连可用）。"""
+    op = getattr(_local, "direct", None)
+    if op is None:
+        op = urllib.request.build_opener(
+            urllib.request.ProxyHandler({}),
+            urllib.request.HTTPSHandler(context=ssl.create_default_context()),
+        )
+        op.addheaders = [("User-Agent", "chengmai-ai/1.0 (competition project; contact: zzh705)")]
+        _local.direct = op
+    return op
+
+
 _rate_lock = threading.Lock()
-_next_slot = [0.0]
+_next_slot: dict[str, float] = {"search": 0.0, "other": 0.0}
 
 
-def _pace(min_interval: float = 0.24) -> None:
+def _pace(min_interval: float = 0.24, slot: str = "other") -> None:
     with _rate_lock:
         now = time.monotonic()
-        wait = _next_slot[0] - now
-        _next_slot[0] = max(now, _next_slot[0]) + min_interval
+        wait = _next_slot[slot] - now
+        _next_slot[slot] = max(now, _next_slot[slot]) + min_interval
     if wait > 0:
         time.sleep(wait)
 
 
 def _get(url: str, timeout: int = 30) -> bytes:
+    """search 类（commons api）首用直连、备用代理；其余首用代理、备用直连。"""
+    is_search = "commons.wikimedia.org/w/api.php" in url
     last: Exception | None = None
     for attempt in range(4):
-        _pace()
+        _pace(0.5 if is_search else 0.24, "search" if is_search else "other")
+        if is_search:
+            op = direct_opener() if attempt % 2 == 0 else opener()
+            timeout = min(timeout, 15)  # GFW 停顿快失败快重试，别等满 30s
+        else:
+            op = opener() if attempt % 2 == 0 else direct_opener()
         try:
-            with opener().open(url, timeout=timeout) as r:
+            with op.open(url, timeout=timeout) as r:
                 return r.read()
         except urllib.error.HTTPError as e:
             last = e
             if e.code in (403, 429, 500, 502, 503, 504):
-                time.sleep((10 if e.code in (403, 429) else 2) * (attempt + 1))
+                if is_search and e.code == 429:
+                    time.sleep(4 * (attempt + 1))
+                else:
+                    time.sleep((10 if e.code in (403, 429) else 2) * (attempt + 1))
                 continue
             raise
-        except Exception as e:  # noqa: BLE001 代理断连等
+        except Exception as e:  # noqa: BLE001 GFW 重置/代理断连
             last = e
-            time.sleep(1.2 * (attempt + 1))
+            time.sleep(1.0 * (attempt + 1))
     raise last  # type: ignore[misc]
 
 
