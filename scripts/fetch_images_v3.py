@@ -533,7 +533,7 @@ def main() -> None:
     stats = {"done": 0, "miss": 0}
     from concurrent.futures import ThreadPoolExecutor, as_completed
 
-    with ThreadPoolExecutor(max_workers=4) as ex:
+    with ThreadPoolExecutor(max_workers=8) as ex:
         futs = [ex.submit(work, i, t, allow_reuse, use_ov, stats) for i, t in jobs]
         for n, f in enumerate(as_completed(futs), 1):
             f.result()
