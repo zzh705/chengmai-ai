@@ -5,10 +5,11 @@
   height: 100%;
   color: #f3ece2;
   position: relative;
-  /* 夜空：深处一点青晕，靠 canvas 星尘造纵深，不堆装饰 */
+  /* 夜空：墨底 + 靛/朱双晕 + 中心一点青晕，靠 canvas 星云与星尘造纵深 */
   background:
-    radial-gradient(ellipse 60% 50% at 50% 42%, rgba(74, 157, 143, 0.06), transparent),
-    #14110f;
+    radial-gradient(ellipse 70% 55% at 50% 38%, rgba(74, 157, 143, 0.07), transparent 72%),
+    radial-gradient(ellipse 45% 40% at 85% 80%, rgba(176, 58, 46, 0.05), transparent 70%),
+    #12100e;
   overflow: hidden;
 }
 

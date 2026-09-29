@@ -80,7 +80,7 @@ interface Sky {
   stars: Star[]
   byId: Map<string, Star>
   groupByName: Map<string, CatGroup>
-  dust: { x: number; y: number; r: number; a: number }[]
+  dust: { x: number; y: number; r: number; a: number; c: string }[]
   bounds: { x0: number; y0: number; x1: number; y1: number }
 }
 
@@ -191,11 +191,12 @@ function buildSky(items: HeritageSummary[]): Sky {
     groupByName.set(cat, group)
   })
 
-  const dust = Array.from({ length: 320 }, () => ({
+  const dust = Array.from({ length: 340 }, (_, i) => ({
     x: (rng() - 0.5) * 4200,
     y: (rng() - 0.5) * 2800,
-    r: 0.5 + rng() * 1.1,
-    a: 0.05 + rng() * 0.13,
+    r: i % 8 === 0 ? 1.3 + rng() * 0.7 : 0.5 + rng() * 1.1,
+    a: 0.05 + rng() * 0.14,
+    c: rng() < 0.66 ? '#e8c56b' : '#cdd8e4',
   }))
 
   return {
@@ -367,13 +368,30 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
       const w2x = (x: number) => x * v.k + v.x
       const w2y = (y: number) => y * v.k + v.y
 
-      // 星尘（世界坐标，随视图漂移，营造纵深）
+      // 星云底晕（屏幕空间，靛蓝/暗朱/墨青三晕，缓慢呼吸，营造水墨纵深）
+      if (t > 0.02) {
+        const drift = reduceMotion ? 0 : Math.sin(now * 0.00007) * 14
+        const neb = (cx: number, cy: number, rad: number, col: string) => {
+          const ng = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad)
+          ng.addColorStop(0, col)
+          ng.addColorStop(1, 'rgba(0,0,0,0)')
+          ctx.fillStyle = ng
+          ctx.fillRect(0, 0, w, h)
+        }
+        ctx.globalAlpha = t
+        neb(w * 0.32, h * 0.3 + drift, w * 0.42, 'rgba(34,52,88,0.5)')
+        neb(w * 0.72, h * 0.72 - drift, w * 0.4, 'rgba(78,34,26,0.4)')
+        neb(w * 0.5, h * 0.5, w * 0.6, 'rgba(20,60,56,0.14)')
+        ctx.globalAlpha = 1
+      }
+
+      // 星尘（世界坐标，随视图漂移，金银双色营造纵深）
       for (const d of s.dust) {
         const sx = w2x(d.x)
         const sy = w2y(d.y)
         if (sx < -8 || sy < -8 || sx > w + 8 || sy > h + 8) continue
         ctx.globalAlpha = d.a * t
-        ctx.fillStyle = '#e8c56b'
+        ctx.fillStyle = d.c
         ctx.beginPath()
         ctx.arc(sx, sy, d.r, 0, Math.PI * 2)
         ctx.fill()
@@ -385,18 +403,47 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
       const showProv = v.k > 0.85
       const dimOf = (g: CatGroup) => (focus && focus !== g.name ? 0.16 : 1)
 
-      // 星座骨架：星座中心 → 省份星团
-      ctx.lineWidth = 1
+      // 星座骨架：中心→星团双段提亮（近端更亮）+ 星团方位顺连成「宿」
       for (const g of s.groups) {
         const ga = dimOf(g) * t
         if (ga < 0.05) continue
-        ctx.strokeStyle = `rgba(232,197,107,${0.1 * ga})`
-        ctx.beginPath()
-        for (const p of g.provs) {
-          ctx.moveTo(w2x(g.ax), w2y(g.ay))
-          ctx.lineTo(w2x(p.x), w2y(p.y))
+        const hx = w2x(g.ax)
+        const hy = w2y(g.ay)
+        if (g.provs.length > 2) {
+          ctx.strokeStyle = `rgba(232,197,107,${0.05 * ga})`
+          ctx.lineWidth = 0.8
+          ctx.beginPath()
+          ctx.moveTo(w2x(g.provs[g.provs.length - 1].x), w2y(g.provs[g.provs.length - 1].y))
+          for (const p of g.provs) ctx.lineTo(w2x(p.x), w2y(p.y))
+          ctx.closePath()
+          ctx.stroke()
         }
-        ctx.stroke()
+        ctx.lineWidth = 1
+        for (const p of g.provs) {
+          const px = w2x(p.x)
+          const py = w2y(p.y)
+          if (
+            (hx < -60 && px < -60) ||
+            (hx > w + 60 && px > w + 60) ||
+            (hy < -60 && py < -60) ||
+            (hy > h + 60 && py > h + 60)
+          )
+            continue
+          ctx.strokeStyle = `rgba(232,197,107,${0.06 * ga})`
+          ctx.beginPath()
+          ctx.moveTo(hx, hy)
+          ctx.lineTo(px, py)
+          ctx.stroke()
+          ctx.strokeStyle = `rgba(232,197,107,${0.07 * ga})`
+          ctx.beginPath()
+          ctx.moveTo(hx, hy)
+          ctx.lineTo(hx + (px - hx) * 0.5, hy + (py - hy) * 0.5)
+          ctx.stroke()
+          ctx.fillStyle = `rgba(232,197,107,${0.35 * ga})`
+          ctx.beginPath()
+          ctx.arc(px, py, 1.4, 0, Math.PI * 2)
+          ctx.fill()
+        }
       }
 
       // 星子：入场波（自中心向外点亮）+ 深读亮星微闪
@@ -414,15 +461,39 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
         if (sx < -20 || sy < -20 || sx > w + 20 || sy > h + 20) continue
         const tw = st.deep && !reduceMotion ? 0.82 + 0.18 * Math.sin(now * 0.0021 + st.phase) : 1
         const r = Math.max(st.r * Math.min(v.k, 2) ** 0.6, st.deep ? 2.2 : 1.3)
-        ctx.globalAlpha = a * (st.deep ? tw : 0.85)
-        ctx.fillStyle = g.color
-        ctx.beginPath()
-        ctx.arc(sx, sy, r, 0, Math.PI * 2)
-        ctx.fill()
         if (st.deep) {
-          ctx.globalAlpha = a * 0.22 * tw
+          // 深读亮星：外晕 → 本体 → 白热内核 →（约三分之一）十字微芒
+          ctx.globalAlpha = a * 0.26 * tw
+          ctx.fillStyle = g.color
           ctx.beginPath()
-          ctx.arc(sx, sy, r * 2.6, 0, Math.PI * 2)
+          ctx.arc(sx, sy, r * 3.2, 0, Math.PI * 2)
+          ctx.fill()
+          ctx.globalAlpha = a * (0.9 * tw)
+          ctx.beginPath()
+          ctx.arc(sx, sy, r, 0, Math.PI * 2)
+          ctx.fill()
+          ctx.globalAlpha = a * 0.95
+          ctx.fillStyle = '#fff9ec'
+          ctx.beginPath()
+          ctx.arc(sx, sy, r * 0.42, 0, Math.PI * 2)
+          ctx.fill()
+          if (st.phase < 2.1) {
+            ctx.globalAlpha = a * 0.1 * tw
+            ctx.strokeStyle = '#f7ead2'
+            ctx.lineWidth = 1
+            const fl = r * 3.2
+            ctx.beginPath()
+            ctx.moveTo(sx - fl, sy)
+            ctx.lineTo(sx + fl, sy)
+            ctx.moveTo(sx, sy - fl)
+            ctx.lineTo(sx, sy + fl)
+            ctx.stroke()
+          }
+        } else {
+          ctx.globalAlpha = a * 0.85
+          ctx.fillStyle = g.color
+          ctx.beginPath()
+          ctx.arc(sx, sy, r, 0, Math.PI * 2)
           ctx.fill()
         }
         if (st.id === selected || st === hover) {
@@ -440,6 +511,8 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
       if (showProv) {
         ctx.font = '11px "PingFang SC", sans-serif'
         ctx.textAlign = 'center'
+        const sp2 = ctx as unknown as { letterSpacing?: string }
+        if ('letterSpacing' in sp2) sp2.letterSpacing = '1px'
         for (const g of s.groups) {
           const ga = dimOf(g) * t
           if (ga < 0.05) continue
@@ -448,38 +521,77 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
             const sy = w2y(p.y)
             if (sx < -60 || sy < -20 || sx > w + 60 || sy > h + 20) continue
             ctx.globalAlpha = Math.min(ga * ((v.k - 0.85) / 0.5), 0.85)
-            ctx.fillStyle = '#9a8f80'
+            ctx.fillStyle = '#a89a86'
             ctx.fillText(p.name, sx, sy + 20)
           }
         }
+        if ('letterSpacing' in sp2) sp2.letterSpacing = '0px'
       }
 
-      // 星座中心：亮核 + 大类名（屏幕恒定字号，拉远仍可读）
+      // 星座中心：热核 + 浑仪双环 + 字距衬线大类名（拉远仍可读）
       for (const g of s.groups) {
         const ga = dimOf(g) * t
         if (ga < 0.05) continue
         const sx = w2x(g.ax)
         const sy = w2y(g.ay)
-        if (sx < -120 || sy < -60 || sx > w + 120 || sy > h + 60) continue
+        if (sx < -140 || sy < -80 || sx > w + 140 || sy > h + 80) continue
         const pulse = reduceMotion ? 1 : 0.9 + 0.1 * Math.sin(now * 0.0016 + g.count)
+        ctx.globalAlpha = ga * 0.22
+        ctx.fillStyle = g.color
+        ctx.beginPath()
+        ctx.arc(sx, sy, 14 * pulse, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.strokeStyle = g.color
+        ctx.lineWidth = 1
+        ctx.globalAlpha = ga * 0.5
+        ctx.beginPath()
+        ctx.arc(sx, sy, 9.5, 0, Math.PI * 2)
+        ctx.stroke()
+        if (!reduceMotion) {
+          ctx.setLineDash([2, 5])
+          ctx.lineDashOffset = -now * 0.008
+        }
+        ctx.globalAlpha = ga * 0.32
+        ctx.beginPath()
+        ctx.arc(sx, sy, 15.5, 0, Math.PI * 2)
+        ctx.stroke()
+        ctx.setLineDash([])
+        ctx.lineDashOffset = 0
         ctx.globalAlpha = ga
         ctx.fillStyle = g.color
         ctx.beginPath()
         ctx.arc(sx, sy, 5.5 * pulse, 0, Math.PI * 2)
         ctx.fill()
-        ctx.globalAlpha = ga * 0.3
+        ctx.fillStyle = '#fffaf0'
         ctx.beginPath()
-        ctx.arc(sx, sy, 13 * pulse, 0, Math.PI * 2)
+        ctx.arc(sx, sy, 2, 0, Math.PI * 2)
         ctx.fill()
-        ctx.globalAlpha = ga
+        const sp = ctx as unknown as { letterSpacing?: string }
+        if ('letterSpacing' in sp) sp.letterSpacing = '2px'
         ctx.font = '600 15px "Songti SC", "SimSun", serif'
         ctx.textAlign = 'center'
         ctx.fillStyle = '#f3ece2'
-        ctx.fillText(g.name, sx, sy - 16)
+        ctx.fillText(g.name, sx, sy - 21)
+        if ('letterSpacing' in sp) sp.letterSpacing = '0px'
         ctx.font = '11px "PingFang SC", sans-serif'
         ctx.fillStyle = '#9a8f80'
-        ctx.fillText(`${g.count} 项`, sx, sy + 26)
+        ctx.fillText(`${g.count} 项`, sx, sy + 31)
       }
+
+      // 四边暗角：收拢视线，边缘标签渐隐
+      const vg = ctx.createRadialGradient(
+        w / 2,
+        h / 2,
+        Math.min(w, h) * 0.3,
+        w / 2,
+        h / 2,
+        Math.max(w, h) * 0.75,
+      )
+      vg.addColorStop(0, 'rgba(10,8,6,0)')
+      vg.addColorStop(1, 'rgba(10,8,6,0.58)')
+      ctx.globalAlpha = t
+      ctx.fillStyle = vg
+      ctx.fillRect(0, 0, w, h)
 
       // hover 提示（DOM 定位，直接改样式避免重渲染）
       ctx.globalAlpha = 1
