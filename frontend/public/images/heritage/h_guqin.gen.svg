@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
+<defs>
+  <radialGradient id="vg" cx="0.5" cy="0.42" r="0.75">
+    <stop offset="0" stop-color="#241d15" stop-opacity="0.95"/>
+    <stop offset="1" stop-color="#14100c" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<rect width="600" height="800" fill="#15110d"/>
+<rect width="600" height="800" fill="url(#vg)"/>
+<g fill="none" stroke="#c9a86a" stroke-width="1.6" opacity="0.07" stroke-linecap="round">
+<circle cx="511" cy="479" r="41" stroke-dasharray="6 9"/>
+<circle cx="511" cy="479" r="56" stroke-dasharray="6 9"/>
+<circle cx="511" cy="479" r="67" stroke-dasharray="6 9"/>
+<circle cx="511" cy="479" r="82"/>
+<circle cx="511" cy="479" r="94"/>
+<circle cx="92" cy="670" r="43"/>
+<circle cx="92" cy="670" r="56"/>
+<circle cx="92" cy="670" r="69"/>
+<circle cx="92" cy="670" r="81"/>
+<circle cx="92" cy="670" r="91"/>
+<circle cx="406" cy="522" r="42"/>
+<circle cx="406" cy="522" r="55" stroke-dasharray="6 9"/>
+<circle cx="406" cy="522" r="67"/>
+<circle cx="406" cy="522" r="80"/>
+<circle cx="406" cy="522" r="93"/>
+<circle cx="229" cy="151" r="42"/>
+<circle cx="229" cy="151" r="55"/>
+<circle cx="229" cy="151" r="69" stroke-dasharray="6 9"/>
+<circle cx="229" cy="151" r="79"/>
+<circle cx="229" cy="151" r="92" stroke-dasharray="6 9"/>
+<circle cx="334" cy="526" r="40"/>
+<circle cx="334" cy="526" r="54"/>
+<circle cx="334" cy="526" r="67"/>
+<circle cx="334" cy="526" r="78"/>
+<circle cx="334" cy="526" r="93"/>
+<circle cx="390" cy="366" r="43" stroke-dasharray="6 9"/>
+<circle cx="390" cy="366" r="56"/>
+<circle cx="390" cy="366" r="65" stroke-dasharray="6 9"/>
+<circle cx="390" cy="366" r="79"/>
+<circle cx="390" cy="366" r="94"/>
+</g>
+<g fill="none" stroke="#a08a52" opacity="0.55" stroke-width="1.6">
+  <rect x="20" y="20" width="560" height="760"/>
+</g>
+<g fill="none" stroke="#a08a52" opacity="0.22" stroke-width="1">
+  <rect x="30" y="30" width="540" height="740"/>
+</g>
+<g fill="none" stroke="#a08a52" opacity="0.7" stroke-width="2" stroke-linejoin="miter">
+  <path d="M44 74 V44 H74 M52 74 V52 H74"/>
+  <path d="M556 74 V44 H526 M548 74 V52 H526"/>
+  <path d="M44 726 V756 H74 M52 726 V748 H74"/>
+  <path d="M556 726 V756 H526 M548 726 V748 H526"/>
+</g>
+<text x="300" y="470" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="380"
+  fill="#e8dcc0" opacity="0.05">古</text>
+<text x="300" y="132" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="22"
+  fill="#9a8a66" letter-spacing="8">传统音乐 · 乐器技艺</text>
+<g font-family="'Songti SC','Noto Serif SC','STSong',serif">
+<text font-family="'Songti SC','Noto Serif SC','STSong',serif" x="300" y="418" text-anchor="middle" font-size="76" fill="#eadfc4" letter-spacing="6">古琴艺术</text>
+<text x="300" y="470" text-anchor="middle" font-size="24" fill="#8f7f5c"
+  letter-spacing="4">全国（诸城派、虞山派、广陵派等流派） · 先秦时期已有记载</text>
+</g>
+<g transform="translate(276 668)">
+  <rect width="48" height="76" rx="6" fill="#9e3b2c"/>
+  <text x="24" y="34" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="26"
+    fill="#f5ead8">承</text>
+  <text x="24" y="66" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="26"
+    fill="#f5ead8">脉</text>
+</g>
+</svg>

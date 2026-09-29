@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
+<defs>
+  <radialGradient id="vg" cx="0.5" cy="0.42" r="0.75">
+    <stop offset="0" stop-color="#241d15" stop-opacity="0.95"/>
+    <stop offset="1" stop-color="#14100c" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<rect width="600" height="800" fill="#15110d"/>
+<rect width="600" height="800" fill="url(#vg)"/>
+<g fill="none" stroke="#c9a86a" stroke-width="1.6" opacity="0.07" stroke-linecap="round">
+<path d="M40 150 h22 v22 h-14 v-11 h7"/>
+<path d="M70 150 h14 v14 h-9 v-7 h4"/>
+<path d="M92 150 h18 v18 h-12 v-9 h6"/>
+<path d="M118 150 h16 v16 h-10 v-8 h5"/>
+<path d="M142 150 h21 v21 h-14 v-10 h7"/>
+<path d="M171 150 h15 v15 h-10 v-7 h5"/>
+<path d="M194 150 h15 v15 h-10 v-7 h5"/>
+<path d="M217 150 h15 v15 h-10 v-7 h5"/>
+<path d="M240 150 h20 v20 h-13 v-10 h6"/>
+<path d="M268 150 h15 v15 h-10 v-7 h5"/>
+<path d="M291 150 h16 v16 h-10 v-8 h5"/>
+<path d="M315 150 h19 v19 h-12 v-9 h6"/>
+<path d="M342 150 h21 v21 h-14 v-10 h7"/>
+<path d="M371 150 h20 v20 h-13 v-10 h6"/>
+<path d="M399 150 h17 v17 h-11 v-8 h5"/>
+<path d="M424 150 h20 v20 h-13 v-10 h6"/>
+<path d="M452 150 h16 v16 h-10 v-8 h5"/>
+<path d="M476 150 h16 v16 h-10 v-8 h5"/>
+<path d="M500 150 h20 v20 h-13 v-10 h6"/>
+<path d="M528 150 h21 v21 h-14 v-10 h7"/>
+<path d="M40 640 h20 v20 h-13 v-10 h6"/>
+<path d="M68 640 h19 v19 h-12 v-9 h6"/>
+<path d="M95 640 h23 v23 h-15 v-11 h7"/>
+<path d="M126 640 h20 v20 h-13 v-10 h6"/>
+<path d="M154 640 h23 v23 h-15 v-11 h7"/>
+<path d="M185 640 h14 v14 h-9 v-7 h4"/>
+<path d="M207 640 h15 v15 h-10 v-7 h5"/>
+<path d="M230 640 h15 v15 h-10 v-7 h5"/>
+<path d="M253 640 h17 v17 h-11 v-8 h5"/>
+<path d="M278 640 h19 v19 h-12 v-9 h6"/>
+<path d="M305 640 h17 v17 h-11 v-8 h5"/>
+<path d="M330 640 h15 v15 h-10 v-7 h5"/>
+<path d="M353 640 h14 v14 h-9 v-7 h4"/>
+<path d="M375 640 h20 v20 h-13 v-10 h6"/>
+<path d="M403 640 h21 v21 h-14 v-10 h7"/>
+<path d="M432 640 h18 v18 h-12 v-9 h6"/>
+<path d="M458 640 h22 v22 h-14 v-11 h7"/>
+<path d="M488 640 h17 v17 h-11 v-8 h5"/>
+<path d="M513 640 h15 v15 h-10 v-7 h5"/>
+<path d="M536 640 h21 v21 h-14 v-10 h7"/>
+</g>
+<g fill="none" stroke="#a08a52" opacity="0.55" stroke-width="1.6">
+  <rect x="20" y="20" width="560" height="760"/>
+</g>
+<g fill="none" stroke="#a08a52" opacity="0.22" stroke-width="1">
+  <rect x="30" y="30" width="540" height="740"/>
+</g>
+<g fill="none" stroke="#a08a52" opacity="0.7" stroke-width="2" stroke-linejoin="miter">
+  <path d="M44 74 V44 H74 M52 74 V52 H74"/>
+  <path d="M556 74 V44 H526 M548 74 V52 H526"/>
+  <path d="M44 726 V756 H74 M52 726 V748 H74"/>
+  <path d="M556 726 V756 H526 M548 726 V748 H526"/>
+</g>
+<text x="300" y="470" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="380"
+  fill="#e8dcc0" opacity="0.05">潮</text>
+<text x="300" y="132" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="22"
+  fill="#9a8a66" letter-spacing="8">传统技艺</text>
+<g font-family="'Songti SC','Noto Serif SC','STSong',serif">
+<text font-family="'Songti SC','Noto Serif SC','STSong',serif" x="300" y="396" text-anchor="middle" font-size="56" fill="#eadfc4" letter-spacing="6">潮汕古建筑</text>
+<text font-family="'Songti SC','Noto Serif SC','STSong',serif" x="300" y="466" text-anchor="middle" font-size="56" fill="#eadfc4" letter-spacing="6">营造技艺</text>
+<text x="300" y="512" text-anchor="middle" font-size="24" fill="#8f7f5c"
+  letter-spacing="4">广东省</text>
+</g>
+<g transform="translate(276 668)">
+  <rect width="48" height="76" rx="6" fill="#9e3b2c"/>
+  <text x="24" y="34" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="26"
+    fill="#f5ead8">承</text>
+  <text x="24" y="66" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="26"
+    fill="#f5ead8">脉</text>
+</g>
+</svg>

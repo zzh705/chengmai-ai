@@ -1,0 +1,317 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
+<defs>
+  <radialGradient id="vg" cx="0.5" cy="0.42" r="0.75">
+    <stop offset="0" stop-color="#241d15" stop-opacity="0.95"/>
+    <stop offset="1" stop-color="#14100c" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<rect width="600" height="800" fill="#15110d"/>
+<rect width="600" height="800" fill="url(#vg)"/>
+<g fill="none" stroke="#c9a86a" stroke-width="1.6" opacity="0.07" stroke-linecap="round">
+<path d="M-65 -58 h14 M-58 -65 v14"/>
+<path d="M-7 -58 h14 M0 -65 v14"/>
+<path d="M51 -58 h14 M58 -65 v14"/>
+<path d="M53 -63 l10 10 M63 -63 l-10 10"/>
+<path d="M109 -58 h14 M116 -65 v14"/>
+<path d="M167 -58 h14 M174 -65 v14"/>
+<path d="M225 -58 h14 M232 -65 v14"/>
+<path d="M227 -63 l10 10 M237 -63 l-10 10"/>
+<path d="M283 -58 h14 M290 -65 v14"/>
+<path d="M341 -58 h14 M348 -65 v14"/>
+<path d="M399 -58 h14 M406 -65 v14"/>
+<path d="M401 -63 l10 10 M411 -63 l-10 10"/>
+<path d="M457 -58 h14 M464 -65 v14"/>
+<path d="M515 -58 h14 M522 -65 v14"/>
+<path d="M573 -58 h14 M580 -65 v14"/>
+<path d="M575 -63 l10 10 M585 -63 l-10 10"/>
+<path d="M631 -58 h14 M638 -65 v14"/>
+<path d="M-65 0 h14 M-58 -7 v14"/>
+<path d="M-7 0 h14 M0 -7 v14"/>
+<path d="M-5 -5 l10 10 M5 -5 l-10 10"/>
+<path d="M51 0 h14 M58 -7 v14"/>
+<path d="M109 0 h14 M116 -7 v14"/>
+<path d="M167 0 h14 M174 -7 v14"/>
+<path d="M169 -5 l10 10 M179 -5 l-10 10"/>
+<path d="M225 0 h14 M232 -7 v14"/>
+<path d="M283 0 h14 M290 -7 v14"/>
+<path d="M341 0 h14 M348 -7 v14"/>
+<path d="M343 -5 l10 10 M353 -5 l-10 10"/>
+<path d="M399 0 h14 M406 -7 v14"/>
+<path d="M457 0 h14 M464 -7 v14"/>
+<path d="M515 0 h14 M522 -7 v14"/>
+<path d="M517 -5 l10 10 M527 -5 l-10 10"/>
+<path d="M573 0 h14 M580 -7 v14"/>
+<path d="M631 0 h14 M638 -7 v14"/>
+<path d="M-65 58 h14 M-58 51 v14"/>
+<path d="M-63 53 l10 10 M-53 53 l-10 10"/>
+<path d="M-7 58 h14 M0 51 v14"/>
+<path d="M51 58 h14 M58 51 v14"/>
+<path d="M109 58 h14 M116 51 v14"/>
+<path d="M111 53 l10 10 M121 53 l-10 10"/>
+<path d="M167 58 h14 M174 51 v14"/>
+<path d="M225 58 h14 M232 51 v14"/>
+<path d="M283 58 h14 M290 51 v14"/>
+<path d="M285 53 l10 10 M295 53 l-10 10"/>
+<path d="M341 58 h14 M348 51 v14"/>
+<path d="M399 58 h14 M406 51 v14"/>
+<path d="M457 58 h14 M464 51 v14"/>
+<path d="M459 53 l10 10 M469 53 l-10 10"/>
+<path d="M515 58 h14 M522 51 v14"/>
+<path d="M573 58 h14 M580 51 v14"/>
+<path d="M631 58 h14 M638 51 v14"/>
+<path d="M633 53 l10 10 M643 53 l-10 10"/>
+<path d="M-65 116 h14 M-58 109 v14"/>
+<path d="M-7 116 h14 M0 109 v14"/>
+<path d="M51 116 h14 M58 109 v14"/>
+<path d="M53 111 l10 10 M63 111 l-10 10"/>
+<path d="M109 116 h14 M116 109 v14"/>
+<path d="M167 116 h14 M174 109 v14"/>
+<path d="M225 116 h14 M232 109 v14"/>
+<path d="M227 111 l10 10 M237 111 l-10 10"/>
+<path d="M283 116 h14 M290 109 v14"/>
+<path d="M341 116 h14 M348 109 v14"/>
+<path d="M399 116 h14 M406 109 v14"/>
+<path d="M401 111 l10 10 M411 111 l-10 10"/>
+<path d="M457 116 h14 M464 109 v14"/>
+<path d="M515 116 h14 M522 109 v14"/>
+<path d="M573 116 h14 M580 109 v14"/>
+<path d="M575 111 l10 10 M585 111 l-10 10"/>
+<path d="M631 116 h14 M638 109 v14"/>
+<path d="M-65 174 h14 M-58 167 v14"/>
+<path d="M-7 174 h14 M0 167 v14"/>
+<path d="M-5 169 l10 10 M5 169 l-10 10"/>
+<path d="M51 174 h14 M58 167 v14"/>
+<path d="M109 174 h14 M116 167 v14"/>
+<path d="M167 174 h14 M174 167 v14"/>
+<path d="M169 169 l10 10 M179 169 l-10 10"/>
+<path d="M225 174 h14 M232 167 v14"/>
+<path d="M283 174 h14 M290 167 v14"/>
+<path d="M341 174 h14 M348 167 v14"/>
+<path d="M343 169 l10 10 M353 169 l-10 10"/>
+<path d="M399 174 h14 M406 167 v14"/>
+<path d="M457 174 h14 M464 167 v14"/>
+<path d="M515 174 h14 M522 167 v14"/>
+<path d="M517 169 l10 10 M527 169 l-10 10"/>
+<path d="M573 174 h14 M580 167 v14"/>
+<path d="M631 174 h14 M638 167 v14"/>
+<path d="M-65 232 h14 M-58 225 v14"/>
+<path d="M-63 227 l10 10 M-53 227 l-10 10"/>
+<path d="M-7 232 h14 M0 225 v14"/>
+<path d="M51 232 h14 M58 225 v14"/>
+<path d="M109 232 h14 M116 225 v14"/>
+<path d="M111 227 l10 10 M121 227 l-10 10"/>
+<path d="M167 232 h14 M174 225 v14"/>
+<path d="M225 232 h14 M232 225 v14"/>
+<path d="M283 232 h14 M290 225 v14"/>
+<path d="M285 227 l10 10 M295 227 l-10 10"/>
+<path d="M341 232 h14 M348 225 v14"/>
+<path d="M399 232 h14 M406 225 v14"/>
+<path d="M457 232 h14 M464 225 v14"/>
+<path d="M459 227 l10 10 M469 227 l-10 10"/>
+<path d="M515 232 h14 M522 225 v14"/>
+<path d="M573 232 h14 M580 225 v14"/>
+<path d="M631 232 h14 M638 225 v14"/>
+<path d="M633 227 l10 10 M643 227 l-10 10"/>
+<path d="M-65 290 h14 M-58 283 v14"/>
+<path d="M-7 290 h14 M0 283 v14"/>
+<path d="M51 290 h14 M58 283 v14"/>
+<path d="M53 285 l10 10 M63 285 l-10 10"/>
+<path d="M109 290 h14 M116 283 v14"/>
+<path d="M167 290 h14 M174 283 v14"/>
+<path d="M225 290 h14 M232 283 v14"/>
+<path d="M227 285 l10 10 M237 285 l-10 10"/>
+<path d="M283 290 h14 M290 283 v14"/>
+<path d="M341 290 h14 M348 283 v14"/>
+<path d="M399 290 h14 M406 283 v14"/>
+<path d="M401 285 l10 10 M411 285 l-10 10"/>
+<path d="M457 290 h14 M464 283 v14"/>
+<path d="M515 290 h14 M522 283 v14"/>
+<path d="M573 290 h14 M580 283 v14"/>
+<path d="M575 285 l10 10 M585 285 l-10 10"/>
+<path d="M631 290 h14 M638 283 v14"/>
+<path d="M-65 348 h14 M-58 341 v14"/>
+<path d="M-7 348 h14 M0 341 v14"/>
+<path d="M-5 343 l10 10 M5 343 l-10 10"/>
+<path d="M51 348 h14 M58 341 v14"/>
+<path d="M109 348 h14 M116 341 v14"/>
+<path d="M167 348 h14 M174 341 v14"/>
+<path d="M169 343 l10 10 M179 343 l-10 10"/>
+<path d="M225 348 h14 M232 341 v14"/>
+<path d="M283 348 h14 M290 341 v14"/>
+<path d="M341 348 h14 M348 341 v14"/>
+<path d="M343 343 l10 10 M353 343 l-10 10"/>
+<path d="M399 348 h14 M406 341 v14"/>
+<path d="M457 348 h14 M464 341 v14"/>
+<path d="M515 348 h14 M522 341 v14"/>
+<path d="M517 343 l10 10 M527 343 l-10 10"/>
+<path d="M573 348 h14 M580 341 v14"/>
+<path d="M631 348 h14 M638 341 v14"/>
+<path d="M-65 406 h14 M-58 399 v14"/>
+<path d="M-63 401 l10 10 M-53 401 l-10 10"/>
+<path d="M-7 406 h14 M0 399 v14"/>
+<path d="M51 406 h14 M58 399 v14"/>
+<path d="M109 406 h14 M116 399 v14"/>
+<path d="M111 401 l10 10 M121 401 l-10 10"/>
+<path d="M167 406 h14 M174 399 v14"/>
+<path d="M225 406 h14 M232 399 v14"/>
+<path d="M283 406 h14 M290 399 v14"/>
+<path d="M285 401 l10 10 M295 401 l-10 10"/>
+<path d="M341 406 h14 M348 399 v14"/>
+<path d="M399 406 h14 M406 399 v14"/>
+<path d="M457 406 h14 M464 399 v14"/>
+<path d="M459 401 l10 10 M469 401 l-10 10"/>
+<path d="M515 406 h14 M522 399 v14"/>
+<path d="M573 406 h14 M580 399 v14"/>
+<path d="M631 406 h14 M638 399 v14"/>
+<path d="M633 401 l10 10 M643 401 l-10 10"/>
+<path d="M-65 464 h14 M-58 457 v14"/>
+<path d="M-7 464 h14 M0 457 v14"/>
+<path d="M51 464 h14 M58 457 v14"/>
+<path d="M53 459 l10 10 M63 459 l-10 10"/>
+<path d="M109 464 h14 M116 457 v14"/>
+<path d="M167 464 h14 M174 457 v14"/>
+<path d="M225 464 h14 M232 457 v14"/>
+<path d="M227 459 l10 10 M237 459 l-10 10"/>
+<path d="M283 464 h14 M290 457 v14"/>
+<path d="M341 464 h14 M348 457 v14"/>
+<path d="M399 464 h14 M406 457 v14"/>
+<path d="M401 459 l10 10 M411 459 l-10 10"/>
+<path d="M457 464 h14 M464 457 v14"/>
+<path d="M515 464 h14 M522 457 v14"/>
+<path d="M573 464 h14 M580 457 v14"/>
+<path d="M575 459 l10 10 M585 459 l-10 10"/>
+<path d="M631 464 h14 M638 457 v14"/>
+<path d="M-65 522 h14 M-58 515 v14"/>
+<path d="M-7 522 h14 M0 515 v14"/>
+<path d="M-5 517 l10 10 M5 517 l-10 10"/>
+<path d="M51 522 h14 M58 515 v14"/>
+<path d="M109 522 h14 M116 515 v14"/>
+<path d="M167 522 h14 M174 515 v14"/>
+<path d="M169 517 l10 10 M179 517 l-10 10"/>
+<path d="M225 522 h14 M232 515 v14"/>
+<path d="M283 522 h14 M290 515 v14"/>
+<path d="M341 522 h14 M348 515 v14"/>
+<path d="M343 517 l10 10 M353 517 l-10 10"/>
+<path d="M399 522 h14 M406 515 v14"/>
+<path d="M457 522 h14 M464 515 v14"/>
+<path d="M515 522 h14 M522 515 v14"/>
+<path d="M517 517 l10 10 M527 517 l-10 10"/>
+<path d="M573 522 h14 M580 515 v14"/>
+<path d="M631 522 h14 M638 515 v14"/>
+<path d="M-65 580 h14 M-58 573 v14"/>
+<path d="M-63 575 l10 10 M-53 575 l-10 10"/>
+<path d="M-7 580 h14 M0 573 v14"/>
+<path d="M51 580 h14 M58 573 v14"/>
+<path d="M109 580 h14 M116 573 v14"/>
+<path d="M111 575 l10 10 M121 575 l-10 10"/>
+<path d="M167 580 h14 M174 573 v14"/>
+<path d="M225 580 h14 M232 573 v14"/>
+<path d="M283 580 h14 M290 573 v14"/>
+<path d="M285 575 l10 10 M295 575 l-10 10"/>
+<path d="M341 580 h14 M348 573 v14"/>
+<path d="M399 580 h14 M406 573 v14"/>
+<path d="M457 580 h14 M464 573 v14"/>
+<path d="M459 575 l10 10 M469 575 l-10 10"/>
+<path d="M515 580 h14 M522 573 v14"/>
+<path d="M573 580 h14 M580 573 v14"/>
+<path d="M631 580 h14 M638 573 v14"/>
+<path d="M633 575 l10 10 M643 575 l-10 10"/>
+<path d="M-65 638 h14 M-58 631 v14"/>
+<path d="M-7 638 h14 M0 631 v14"/>
+<path d="M51 638 h14 M58 631 v14"/>
+<path d="M53 633 l10 10 M63 633 l-10 10"/>
+<path d="M109 638 h14 M116 631 v14"/>
+<path d="M167 638 h14 M174 631 v14"/>
+<path d="M225 638 h14 M232 631 v14"/>
+<path d="M227 633 l10 10 M237 633 l-10 10"/>
+<path d="M283 638 h14 M290 631 v14"/>
+<path d="M341 638 h14 M348 631 v14"/>
+<path d="M399 638 h14 M406 631 v14"/>
+<path d="M401 633 l10 10 M411 633 l-10 10"/>
+<path d="M457 638 h14 M464 631 v14"/>
+<path d="M515 638 h14 M522 631 v14"/>
+<path d="M573 638 h14 M580 631 v14"/>
+<path d="M575 633 l10 10 M585 633 l-10 10"/>
+<path d="M631 638 h14 M638 631 v14"/>
+<path d="M-65 696 h14 M-58 689 v14"/>
+<path d="M-7 696 h14 M0 689 v14"/>
+<path d="M-5 691 l10 10 M5 691 l-10 10"/>
+<path d="M51 696 h14 M58 689 v14"/>
+<path d="M109 696 h14 M116 689 v14"/>
+<path d="M167 696 h14 M174 689 v14"/>
+<path d="M169 691 l10 10 M179 691 l-10 10"/>
+<path d="M225 696 h14 M232 689 v14"/>
+<path d="M283 696 h14 M290 689 v14"/>
+<path d="M341 696 h14 M348 689 v14"/>
+<path d="M343 691 l10 10 M353 691 l-10 10"/>
+<path d="M399 696 h14 M406 689 v14"/>
+<path d="M457 696 h14 M464 689 v14"/>
+<path d="M515 696 h14 M522 689 v14"/>
+<path d="M517 691 l10 10 M527 691 l-10 10"/>
+<path d="M573 696 h14 M580 689 v14"/>
+<path d="M631 696 h14 M638 689 v14"/>
+<path d="M-65 754 h14 M-58 747 v14"/>
+<path d="M-63 749 l10 10 M-53 749 l-10 10"/>
+<path d="M-7 754 h14 M0 747 v14"/>
+<path d="M51 754 h14 M58 747 v14"/>
+<path d="M109 754 h14 M116 747 v14"/>
+<path d="M111 749 l10 10 M121 749 l-10 10"/>
+<path d="M167 754 h14 M174 747 v14"/>
+<path d="M225 754 h14 M232 747 v14"/>
+<path d="M283 754 h14 M290 747 v14"/>
+<path d="M285 749 l10 10 M295 749 l-10 10"/>
+<path d="M341 754 h14 M348 747 v14"/>
+<path d="M399 754 h14 M406 747 v14"/>
+<path d="M457 754 h14 M464 747 v14"/>
+<path d="M459 749 l10 10 M469 749 l-10 10"/>
+<path d="M515 754 h14 M522 747 v14"/>
+<path d="M573 754 h14 M580 747 v14"/>
+<path d="M631 754 h14 M638 747 v14"/>
+<path d="M633 749 l10 10 M643 749 l-10 10"/>
+<path d="M-65 812 h14 M-58 805 v14"/>
+<path d="M-7 812 h14 M0 805 v14"/>
+<path d="M51 812 h14 M58 805 v14"/>
+<path d="M53 807 l10 10 M63 807 l-10 10"/>
+<path d="M109 812 h14 M116 805 v14"/>
+<path d="M167 812 h14 M174 805 v14"/>
+<path d="M225 812 h14 M232 805 v14"/>
+<path d="M227 807 l10 10 M237 807 l-10 10"/>
+<path d="M283 812 h14 M290 805 v14"/>
+<path d="M341 812 h14 M348 805 v14"/>
+<path d="M399 812 h14 M406 805 v14"/>
+<path d="M401 807 l10 10 M411 807 l-10 10"/>
+<path d="M457 812 h14 M464 805 v14"/>
+<path d="M515 812 h14 M522 805 v14"/>
+<path d="M573 812 h14 M580 805 v14"/>
+<path d="M575 807 l10 10 M585 807 l-10 10"/>
+<path d="M631 812 h14 M638 805 v14"/>
+</g>
+<g fill="none" stroke="#a08a52" opacity="0.55" stroke-width="1.6">
+  <rect x="20" y="20" width="560" height="760"/>
+</g>
+<g fill="none" stroke="#a08a52" opacity="0.22" stroke-width="1">
+  <rect x="30" y="30" width="540" height="740"/>
+</g>
+<g fill="none" stroke="#a08a52" opacity="0.7" stroke-width="2" stroke-linejoin="miter">
+  <path d="M44 74 V44 H74 M52 74 V52 H74"/>
+  <path d="M556 74 V44 H526 M548 74 V52 H526"/>
+  <path d="M44 726 V756 H74 M52 726 V748 H74"/>
+  <path d="M556 726 V756 H526 M548 726 V748 H526"/>
+</g>
+<text x="300" y="470" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="380"
+  fill="#e8dcc0" opacity="0.05">宣</text>
+<text x="300" y="132" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="22"
+  fill="#9a8a66" letter-spacing="8">传统技艺 · 造纸</text>
+<g font-family="'Songti SC','Noto Serif SC','STSong',serif">
+<text font-family="'Songti SC','Noto Serif SC','STSong',serif" x="300" y="418" text-anchor="middle" font-size="64" fill="#eadfc4" letter-spacing="6">宣纸制作技艺</text>
+<text x="300" y="470" text-anchor="middle" font-size="24" fill="#8f7f5c"
+  letter-spacing="4">安徽省宣城市泾县 · 唐代已负盛名，明代定型</text>
+</g>
+<g transform="translate(276 668)">
+  <rect width="48" height="76" rx="6" fill="#9e3b2c"/>
+  <text x="24" y="34" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="26"
+    fill="#f5ead8">承</text>
+  <text x="24" y="66" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="26"
+    fill="#f5ead8">脉</text>
+</g>
+</svg>

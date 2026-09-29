@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
+<defs>
+  <radialGradient id="vg" cx="0.5" cy="0.42" r="0.75">
+    <stop offset="0" stop-color="#241d15" stop-opacity="0.95"/>
+    <stop offset="1" stop-color="#14100c" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<rect width="600" height="800" fill="#15110d"/>
+<rect width="600" height="800" fill="url(#vg)"/>
+<g fill="none" stroke="#c9a86a" stroke-width="1.6" opacity="0.07" stroke-linecap="round">
+<path d="M40 150 h14 v14 h-9 v-7 h4"/>
+<path d="M62 150 h15 v15 h-10 v-7 h5"/>
+<path d="M85 150 h17 v17 h-11 v-8 h5"/>
+<path d="M110 150 h16 v16 h-10 v-8 h5"/>
+<path d="M134 150 h20 v20 h-13 v-10 h6"/>
+<path d="M162 150 h15 v15 h-10 v-7 h5"/>
+<path d="M185 150 h23 v23 h-15 v-11 h7"/>
+<path d="M216 150 h20 v20 h-13 v-10 h6"/>
+<path d="M244 150 h16 v16 h-10 v-8 h5"/>
+<path d="M268 150 h16 v16 h-10 v-8 h5"/>
+<path d="M292 150 h21 v21 h-14 v-10 h7"/>
+<path d="M321 150 h21 v21 h-14 v-10 h7"/>
+<path d="M350 150 h21 v21 h-14 v-10 h7"/>
+<path d="M379 150 h16 v16 h-10 v-8 h5"/>
+<path d="M403 150 h15 v15 h-10 v-7 h5"/>
+<path d="M426 150 h22 v22 h-14 v-11 h7"/>
+<path d="M456 150 h20 v20 h-13 v-10 h6"/>
+<path d="M484 150 h21 v21 h-14 v-10 h7"/>
+<path d="M513 150 h22 v22 h-14 v-11 h7"/>
+<path d="M40 640 h16 v16 h-10 v-8 h5"/>
+<path d="M64 640 h17 v17 h-11 v-8 h5"/>
+<path d="M89 640 h16 v16 h-10 v-8 h5"/>
+<path d="M113 640 h21 v21 h-14 v-10 h7"/>
+<path d="M142 640 h17 v17 h-11 v-8 h5"/>
+<path d="M167 640 h15 v15 h-10 v-7 h5"/>
+<path d="M190 640 h15 v15 h-10 v-7 h5"/>
+<path d="M213 640 h17 v17 h-11 v-8 h5"/>
+<path d="M238 640 h19 v19 h-12 v-9 h6"/>
+<path d="M265 640 h17 v17 h-11 v-8 h5"/>
+<path d="M290 640 h21 v21 h-14 v-10 h7"/>
+<path d="M319 640 h17 v17 h-11 v-8 h5"/>
+<path d="M344 640 h14 v14 h-9 v-7 h4"/>
+<path d="M366 640 h18 v18 h-12 v-9 h6"/>
+<path d="M392 640 h21 v21 h-14 v-10 h7"/>
+<path d="M421 640 h16 v16 h-10 v-8 h5"/>
+<path d="M445 640 h19 v19 h-12 v-9 h6"/>
+<path d="M472 640 h15 v15 h-10 v-7 h5"/>
+<path d="M495 640 h21 v21 h-14 v-10 h7"/>
+<path d="M524 640 h14 v14 h-9 v-7 h4"/>
+</g>
+<g fill="none" stroke="#a08a52" opacity="0.55" stroke-width="1.6">
+  <rect x="20" y="20" width="560" height="760"/>
+</g>
+<g fill="none" stroke="#a08a52" opacity="0.22" stroke-width="1">
+  <rect x="30" y="30" width="540" height="740"/>
+</g>
+<g fill="none" stroke="#a08a52" opacity="0.7" stroke-width="2" stroke-linejoin="miter">
+  <path d="M44 74 V44 H74 M52 74 V52 H74"/>
+  <path d="M556 74 V44 H526 M548 74 V52 H526"/>
+  <path d="M44 726 V756 H74 M52 726 V748 H74"/>
+  <path d="M556 726 V756 H526 M548 726 V748 H526"/>
+</g>
+<text x="300" y="470" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="380"
+  fill="#e8dcc0" opacity="0.05">目</text>
+<text x="300" y="132" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="22"
+  fill="#9a8a66" letter-spacing="8">民间文学</text>
+<g font-family="'Songti SC','Noto Serif SC','STSong',serif">
+<text font-family="'Songti SC','Noto Serif SC','STSong',serif" x="300" y="418" text-anchor="middle" font-size="76" fill="#eadfc4" letter-spacing="6">目瑙斋瓦</text>
+<text x="300" y="470" text-anchor="middle" font-size="24" fill="#8f7f5c"
+  letter-spacing="4">云南省</text>
+</g>
+<g transform="translate(276 668)">
+  <rect width="48" height="76" rx="6" fill="#9e3b2c"/>
+  <text x="24" y="34" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="26"
+    fill="#f5ead8">承</text>
+  <text x="24" y="66" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="26"
+    fill="#f5ead8">脉</text>
+</g>
+</svg>

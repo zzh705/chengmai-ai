@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
+<defs>
+  <radialGradient id="vg" cx="0.5" cy="0.42" r="0.75">
+    <stop offset="0" stop-color="#241d15" stop-opacity="0.95"/>
+    <stop offset="1" stop-color="#14100c" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<rect width="600" height="800" fill="#15110d"/>
+<rect width="600" height="800" fill="url(#vg)"/>
+<g fill="none" stroke="#c9a86a" stroke-width="1.6" opacity="0.07" stroke-linecap="round">
+<path d="M30 130 h25 a8 8 0 1 0 0 12 a6 6 0 1 1 -12 0"/>
+<path d="M85 130 h21 a7 7 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+<path d="M136 130 h24 a8 8 0 1 0 0 12 a6 6 0 1 1 -12 0"/>
+<path d="M190 130 h24 a8 8 0 1 0 0 12 a6 6 0 1 1 -12 0"/>
+<path d="M244 130 h18 a6 6 0 1 0 0 9 a4 4 0 1 1 -9 0"/>
+<path d="M292 130 h20 a6 6 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+<path d="M342 130 h18 a6 6 0 1 0 0 9 a4 4 0 1 1 -9 0"/>
+<path d="M390 130 h25 a8 8 0 1 0 0 12 a6 6 0 1 1 -12 0"/>
+<path d="M445 130 h21 a7 7 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+<path d="M496 130 h25 a8 8 0 1 0 0 12 a6 6 0 1 1 -12 0"/>
+<path d="M551 130 h23 a7 7 0 1 0 0 11 a5 5 0 1 1 -11 0"/>
+<path d="M64 200 h26 a8 8 0 1 0 0 13 a6 6 0 1 1 -13 0"/>
+<path d="M120 200 h21 a7 7 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+<path d="M171 200 h22 a7 7 0 1 0 0 11 a5 5 0 1 1 -11 0"/>
+<path d="M223 200 h18 a6 6 0 1 0 0 9 a4 4 0 1 1 -9 0"/>
+<path d="M271 200 h21 a7 7 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+<path d="M322 200 h25 a8 8 0 1 0 0 12 a6 6 0 1 1 -12 0"/>
+<path d="M377 200 h26 a8 8 0 1 0 0 13 a6 6 0 1 1 -13 0"/>
+<path d="M433 200 h23 a7 7 0 1 0 0 11 a5 5 0 1 1 -11 0"/>
+<path d="M486 200 h18 a6 6 0 1 0 0 9 a4 4 0 1 1 -9 0"/>
+<path d="M534 200 h22 a7 7 0 1 0 0 11 a5 5 0 1 1 -11 0"/>
+<path d="M30 270 h26 a8 8 0 1 0 0 13 a6 6 0 1 1 -13 0"/>
+<path d="M86 270 h17 a5 5 0 1 0 0 8 a4 4 0 1 1 -8 0"/>
+<path d="M133 270 h23 a7 7 0 1 0 0 11 a5 5 0 1 1 -11 0"/>
+<path d="M186 270 h20 a6 6 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+<path d="M236 270 h20 a6 6 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+<path d="M286 270 h19 a6 6 0 1 0 0 9 a4 4 0 1 1 -9 0"/>
+<path d="M335 270 h27 a9 9 0 1 0 0 13 a6 6 0 1 1 -13 0"/>
+<path d="M392 270 h16 a5 5 0 1 0 0 8 a4 4 0 1 1 -8 0"/>
+<path d="M438 270 h18 a6 6 0 1 0 0 9 a4 4 0 1 1 -9 0"/>
+<path d="M486 270 h22 a7 7 0 1 0 0 11 a5 5 0 1 1 -11 0"/>
+<path d="M538 270 h26 a8 8 0 1 0 0 13 a6 6 0 1 1 -13 0"/>
+<path d="M64 340 h27 a9 9 0 1 0 0 13 a6 6 0 1 1 -13 0"/>
+<path d="M121 340 h25 a8 8 0 1 0 0 12 a6 6 0 1 1 -12 0"/>
+<path d="M176 340 h26 a8 8 0 1 0 0 13 a6 6 0 1 1 -13 0"/>
+<path d="M232 340 h24 a8 8 0 1 0 0 12 a6 6 0 1 1 -12 0"/>
+<path d="M286 340 h16 a5 5 0 1 0 0 8 a4 4 0 1 1 -8 0"/>
+<path d="M332 340 h21 a7 7 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+<path d="M383 340 h27 a9 9 0 1 0 0 13 a6 6 0 1 1 -13 0"/>
+<path d="M440 340 h21 a7 7 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+<path d="M491 340 h20 a6 6 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+<path d="M541 340 h22 a7 7 0 1 0 0 11 a5 5 0 1 1 -11 0"/>
+<path d="M30 410 h27 a9 9 0 1 0 0 13 a6 6 0 1 1 -13 0"/>
+<path d="M87 410 h25 a8 8 0 1 0 0 12 a6 6 0 1 1 -12 0"/>
+<path d="M142 410 h17 a5 5 0 1 0 0 8 a4 4 0 1 1 -8 0"/>
+<path d="M189 410 h25 a8 8 0 1 0 0 12 a6 6 0 1 1 -12 0"/>
+<path d="M244 410 h27 a9 9 0 1 0 0 13 a6 6 0 1 1 -13 0"/>
+<path d="M301 410 h22 a7 7 0 1 0 0 11 a5 5 0 1 1 -11 0"/>
+<path d="M353 410 h26 a8 8 0 1 0 0 13 a6 6 0 1 1 -13 0"/>
+<path d="M409 410 h23 a7 7 0 1 0 0 11 a5 5 0 1 1 -11 0"/>
+<path d="M462 410 h21 a7 7 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+<path d="M513 410 h20 a6 6 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+<path d="M64 480 h21 a7 7 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+<path d="M115 480 h16 a5 5 0 1 0 0 8 a4 4 0 1 1 -8 0"/>
+<path d="M161 480 h16 a5 5 0 1 0 0 8 a4 4 0 1 1 -8 0"/>
+<path d="M207 480 h17 a5 5 0 1 0 0 8 a4 4 0 1 1 -8 0"/>
+<path d="M254 480 h16 a5 5 0 1 0 0 8 a4 4 0 1 1 -8 0"/>
+<path d="M300 480 h21 a7 7 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+<path d="M351 480 h24 a8 8 0 1 0 0 12 a6 6 0 1 1 -12 0"/>
+<path d="M405 480 h27 a9 9 0 1 0 0 13 a6 6 0 1 1 -13 0"/>
+<path d="M462 480 h20 a6 6 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+<path d="M512 480 h23 a7 7 0 1 0 0 11 a5 5 0 1 1 -11 0"/>
+<path d="M30 550 h24 a8 8 0 1 0 0 12 a6 6 0 1 1 -12 0"/>
+<path d="M84 550 h26 a8 8 0 1 0 0 13 a6 6 0 1 1 -13 0"/>
+<path d="M140 550 h26 a8 8 0 1 0 0 13 a6 6 0 1 1 -13 0"/>
+<path d="M196 550 h19 a6 6 0 1 0 0 9 a4 4 0 1 1 -9 0"/>
+<path d="M245 550 h21 a7 7 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+<path d="M296 550 h16 a5 5 0 1 0 0 8 a4 4 0 1 1 -8 0"/>
+<path d="M342 550 h24 a8 8 0 1 0 0 12 a6 6 0 1 1 -12 0"/>
+<path d="M396 550 h17 a5 5 0 1 0 0 8 a4 4 0 1 1 -8 0"/>
+<path d="M443 550 h24 a8 8 0 1 0 0 12 a6 6 0 1 1 -12 0"/>
+<path d="M497 550 h27 a9 9 0 1 0 0 13 a6 6 0 1 1 -13 0"/>
+<path d="M554 550 h20 a6 6 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+<path d="M64 620 h25 a8 8 0 1 0 0 12 a6 6 0 1 1 -12 0"/>
+<path d="M119 620 h24 a8 8 0 1 0 0 12 a6 6 0 1 1 -12 0"/>
+<path d="M173 620 h27 a9 9 0 1 0 0 13 a6 6 0 1 1 -13 0"/>
+<path d="M230 620 h24 a8 8 0 1 0 0 12 a6 6 0 1 1 -12 0"/>
+<path d="M284 620 h17 a5 5 0 1 0 0 8 a4 4 0 1 1 -8 0"/>
+<path d="M331 620 h26 a8 8 0 1 0 0 13 a6 6 0 1 1 -13 0"/>
+<path d="M387 620 h17 a5 5 0 1 0 0 8 a4 4 0 1 1 -8 0"/>
+<path d="M434 620 h19 a6 6 0 1 0 0 9 a4 4 0 1 1 -9 0"/>
+<path d="M483 620 h23 a7 7 0 1 0 0 11 a5 5 0 1 1 -11 0"/>
+<path d="M536 620 h27 a9 9 0 1 0 0 13 a6 6 0 1 1 -13 0"/>
+<path d="M30 690 h23 a7 7 0 1 0 0 11 a5 5 0 1 1 -11 0"/>
+<path d="M83 690 h21 a7 7 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+<path d="M134 690 h23 a7 7 0 1 0 0 11 a5 5 0 1 1 -11 0"/>
+<path d="M187 690 h21 a7 7 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+<path d="M238 690 h19 a6 6 0 1 0 0 9 a4 4 0 1 1 -9 0"/>
+<path d="M287 690 h20 a6 6 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+<path d="M337 690 h17 a5 5 0 1 0 0 8 a4 4 0 1 1 -8 0"/>
+<path d="M384 690 h24 a8 8 0 1 0 0 12 a6 6 0 1 1 -12 0"/>
+<path d="M438 690 h18 a6 6 0 1 0 0 9 a4 4 0 1 1 -9 0"/>
+<path d="M486 690 h20 a6 6 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+<path d="M536 690 h20 a6 6 0 1 0 0 10 a5 5 0 1 1 -10 0"/>
+</g>
+<g fill="none" stroke="#a08a52" opacity="0.55" stroke-width="1.6">
+  <rect x="20" y="20" width="560" height="760"/>
+</g>
+<g fill="none" stroke="#a08a52" opacity="0.22" stroke-width="1">
+  <rect x="30" y="30" width="540" height="740"/>
+</g>
+<g fill="none" stroke="#a08a52" opacity="0.7" stroke-width="2" stroke-linejoin="miter">
+  <path d="M44 74 V44 H74 M52 74 V52 H74"/>
+  <path d="M556 74 V44 H526 M548 74 V52 H526"/>
+  <path d="M44 726 V756 H74 M52 726 V748 H74"/>
+  <path d="M556 726 V756 H526 M548 726 V748 H526"/>
+</g>
+<text x="300" y="470" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="380"
+  fill="#e8dcc0" opacity="0.05">锣</text>
+<text x="300" y="132" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="22"
+  fill="#9a8a66" letter-spacing="8">传统音乐</text>
+<g font-family="'Songti SC','Noto Serif SC','STSong',serif">
+<text font-family="'Songti SC','Noto Serif SC','STSong',serif" x="300" y="396" text-anchor="middle" font-size="56" fill="#eadfc4" letter-spacing="6">锣鼓艺术（</text>
+<text font-family="'Songti SC','Noto Serif SC','STSong',serif" x="300" y="466" text-anchor="middle" font-size="56" fill="#eadfc4" letter-spacing="6">八音锣鼓）</text>
+<text x="300" y="512" text-anchor="middle" font-size="24" fill="#8f7f5c"
+  letter-spacing="4">广东省</text>
+</g>
+<g transform="translate(276 668)">
+  <rect width="48" height="76" rx="6" fill="#9e3b2c"/>
+  <text x="24" y="34" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="26"
+    fill="#f5ead8">承</text>
+  <text x="24" y="66" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="26"
+    fill="#f5ead8">脉</text>
+</g>
+</svg>

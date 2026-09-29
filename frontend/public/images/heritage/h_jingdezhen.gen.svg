@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
+<defs>
+  <radialGradient id="vg" cx="0.5" cy="0.42" r="0.75">
+    <stop offset="0" stop-color="#241d15" stop-opacity="0.95"/>
+    <stop offset="1" stop-color="#14100c" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<rect width="600" height="800" fill="#15110d"/>
+<rect width="600" height="800" fill="url(#vg)"/>
+<g fill="none" stroke="#c9a86a" stroke-width="1.6" opacity="0.07" stroke-linecap="round">
+<circle cx="373" cy="682" r="43"/>
+<circle cx="373" cy="682" r="55" stroke-dasharray="6 9"/>
+<circle cx="373" cy="682" r="66"/>
+<circle cx="373" cy="682" r="79" stroke-dasharray="6 9"/>
+<circle cx="373" cy="682" r="93" stroke-dasharray="6 9"/>
+<circle cx="415" cy="96" r="41"/>
+<circle cx="415" cy="96" r="54"/>
+<circle cx="415" cy="96" r="67"/>
+<circle cx="415" cy="96" r="80"/>
+<circle cx="415" cy="96" r="93" stroke-dasharray="6 9"/>
+<circle cx="450" cy="330" r="40"/>
+<circle cx="450" cy="330" r="52" stroke-dasharray="6 9"/>
+<circle cx="450" cy="330" r="65"/>
+<circle cx="450" cy="330" r="82"/>
+<circle cx="450" cy="330" r="95"/>
+<circle cx="336" cy="164" r="41"/>
+<circle cx="336" cy="164" r="54"/>
+<circle cx="336" cy="164" r="67" stroke-dasharray="6 9"/>
+<circle cx="336" cy="164" r="80"/>
+<circle cx="336" cy="164" r="92"/>
+<circle cx="496" cy="482" r="40" stroke-dasharray="6 9"/>
+<circle cx="496" cy="482" r="53"/>
+<circle cx="496" cy="482" r="66" stroke-dasharray="6 9"/>
+<circle cx="496" cy="482" r="80"/>
+<circle cx="496" cy="482" r="95" stroke-dasharray="6 9"/>
+<circle cx="265" cy="152" r="39"/>
+<circle cx="265" cy="152" r="54"/>
+<circle cx="265" cy="152" r="67" stroke-dasharray="6 9"/>
+<circle cx="265" cy="152" r="79"/>
+<circle cx="265" cy="152" r="92" stroke-dasharray="6 9"/>
+</g>
+<g fill="none" stroke="#a08a52" opacity="0.55" stroke-width="1.6">
+  <rect x="20" y="20" width="560" height="760"/>
+</g>
+<g fill="none" stroke="#a08a52" opacity="0.22" stroke-width="1">
+  <rect x="30" y="30" width="540" height="740"/>
+</g>
+<g fill="none" stroke="#a08a52" opacity="0.7" stroke-width="2" stroke-linejoin="miter">
+  <path d="M44 74 V44 H74 M52 74 V52 H74"/>
+  <path d="M556 74 V44 H526 M548 74 V52 H526"/>
+  <path d="M44 726 V756 H74 M52 726 V748 H74"/>
+  <path d="M556 726 V756 H526 M548 726 V748 H526"/>
+</g>
+<text x="300" y="470" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="380"
+  fill="#e8dcc0" opacity="0.05">景</text>
+<text x="300" y="132" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="22"
+  fill="#9a8a66" letter-spacing="8">传统技艺 · 陶瓷</text>
+<g font-family="'Songti SC','Noto Serif SC','STSong',serif">
+<text font-family="'Songti SC','Noto Serif SC','STSong',serif" x="300" y="396" text-anchor="middle" font-size="56" fill="#eadfc4" letter-spacing="6">景德镇瓷器</text>
+<text font-family="'Songti SC','Noto Serif SC','STSong',serif" x="300" y="466" text-anchor="middle" font-size="56" fill="#eadfc4" letter-spacing="6">烧制技艺</text>
+<text x="300" y="512" text-anchor="middle" font-size="24" fill="#8f7f5c"
+  letter-spacing="4">江西省景德镇市 · 始于宋景德年间，明清达鼎盛</text>
+</g>
+<g transform="translate(276 668)">
+  <rect width="48" height="76" rx="6" fill="#9e3b2c"/>
+  <text x="24" y="34" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="26"
+    fill="#f5ead8">承</text>
+  <text x="24" y="66" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="26"
+    fill="#f5ead8">脉</text>
+</g>
+</svg>

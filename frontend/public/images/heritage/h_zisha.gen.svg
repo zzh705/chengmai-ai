@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
+<defs>
+  <radialGradient id="vg" cx="0.5" cy="0.42" r="0.75">
+    <stop offset="0" stop-color="#241d15" stop-opacity="0.95"/>
+    <stop offset="1" stop-color="#14100c" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<rect width="600" height="800" fill="#15110d"/>
+<rect width="600" height="800" fill="url(#vg)"/>
+<g fill="none" stroke="#c9a86a" stroke-width="1.6" opacity="0.07" stroke-linecap="round">
+<circle cx="291" cy="242" r="40" stroke-dasharray="6 9"/>
+<circle cx="291" cy="242" r="53"/>
+<circle cx="291" cy="242" r="65" stroke-dasharray="6 9"/>
+<circle cx="291" cy="242" r="81" stroke-dasharray="6 9"/>
+<circle cx="291" cy="242" r="95" stroke-dasharray="6 9"/>
+<circle cx="233" cy="566" r="41"/>
+<circle cx="233" cy="566" r="55"/>
+<circle cx="233" cy="566" r="69" stroke-dasharray="6 9"/>
+<circle cx="233" cy="566" r="82"/>
+<circle cx="233" cy="566" r="95"/>
+<circle cx="486" cy="200" r="39"/>
+<circle cx="486" cy="200" r="56"/>
+<circle cx="486" cy="200" r="65" stroke-dasharray="6 9"/>
+<circle cx="486" cy="200" r="78" stroke-dasharray="6 9"/>
+<circle cx="486" cy="200" r="95" stroke-dasharray="6 9"/>
+<circle cx="424" cy="496" r="41"/>
+<circle cx="424" cy="496" r="53" stroke-dasharray="6 9"/>
+<circle cx="424" cy="496" r="67"/>
+<circle cx="424" cy="496" r="82" stroke-dasharray="6 9"/>
+<circle cx="424" cy="496" r="91" stroke-dasharray="6 9"/>
+<circle cx="197" cy="226" r="43"/>
+<circle cx="197" cy="226" r="53" stroke-dasharray="6 9"/>
+<circle cx="197" cy="226" r="68"/>
+<circle cx="197" cy="226" r="81"/>
+<circle cx="197" cy="226" r="94"/>
+<circle cx="169" cy="96" r="39"/>
+<circle cx="169" cy="96" r="56"/>
+<circle cx="169" cy="96" r="68"/>
+<circle cx="169" cy="96" r="80"/>
+<circle cx="169" cy="96" r="95"/>
+</g>
+<g fill="none" stroke="#a08a52" opacity="0.55" stroke-width="1.6">
+  <rect x="20" y="20" width="560" height="760"/>
+</g>
+<g fill="none" stroke="#a08a52" opacity="0.22" stroke-width="1">
+  <rect x="30" y="30" width="540" height="740"/>
+</g>
+<g fill="none" stroke="#a08a52" opacity="0.7" stroke-width="2" stroke-linejoin="miter">
+  <path d="M44 74 V44 H74 M52 74 V52 H74"/>
+  <path d="M556 74 V44 H526 M548 74 V52 H526"/>
+  <path d="M44 726 V756 H74 M52 726 V748 H74"/>
+  <path d="M556 726 V756 H526 M548 726 V748 H526"/>
+</g>
+<text x="300" y="470" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="380"
+  fill="#e8dcc0" opacity="0.05">宜</text>
+<text x="300" y="132" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="22"
+  fill="#9a8a66" letter-spacing="8">传统技艺 · 陶瓷</text>
+<g font-family="'Songti SC','Noto Serif SC','STSong',serif">
+<text font-family="'Songti SC','Noto Serif SC','STSong',serif" x="300" y="396" text-anchor="middle" font-size="56" fill="#eadfc4" letter-spacing="6">宜兴紫砂陶</text>
+<text font-family="'Songti SC','Noto Serif SC','STSong',serif" x="300" y="466" text-anchor="middle" font-size="56" fill="#eadfc4" letter-spacing="6">制作技艺</text>
+<text x="300" y="512" text-anchor="middle" font-size="24" fill="#8f7f5c"
+  letter-spacing="4">江苏省宜兴市 · 明代正德年间创始</text>
+</g>
+<g transform="translate(276 668)">
+  <rect width="48" height="76" rx="6" fill="#9e3b2c"/>
+  <text x="24" y="34" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="26"
+    fill="#f5ead8">承</text>
+  <text x="24" y="66" text-anchor="middle" font-family="'Songti SC','Noto Serif SC','STSong',serif" font-size="26"
+    fill="#f5ead8">脉</text>
+</g>
+</svg>
