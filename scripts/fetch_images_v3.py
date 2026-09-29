@@ -1,0 +1,424 @@
+"""全量补齐实拍图（目标 100%）：Commons 主力 + Openverse 尾部（预算制）+ 复用二轮。
+
+词源：enrich_img_terms 的 8 词/项（不足时回退 enrich img_terms / 中文名）。
+- 查询降级：长词组 → 前缀/后缀缩短（CirrusSearch 全词 AND，长句必空）；
+- 命中评分：标题须命中全词 token（≥1）或中文双字切片；CJK 词查英文标题需
+  命中本项全部词源 ≥2 个 token，防串图；
+- HTTPError 退避重试（代理并发偶发 5xx）；
+- pass1 Commons 逐词（跨条目 URL 去重）；pass2 Openverse（200/天预算）；
+  pass3 允许复用 URL 兜底。
+
+落盘：<id>.jpg（sips 转 jpeg 900px，<15KB 废图丢弃）+ credits.json
+{license, term, title, source: commons|openverse, landing}。
+
+用法: python3 scripts/fetch_images_v3.py [--limit N] [--no-openverse] [--no-reuse]
+"""
+
+import json
+import pathlib
+import re
+import ssl
+import subprocess
+import sys
+import threading
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+IMG_DIR = ROOT / "frontend" / "public" / "images" / "heritage"
+ITEMS = ROOT / "data" / "structured" / "heritage_items.json"
+ENRICH = ROOT / "data" / "structured" / "index_enrich.json"
+TERMS2 = ROOT / "data" / "structured" / "img_terms_v2.json"
+STATE = ROOT / "data" / "structured" / "img_state_v3.json"
+CREDITS = IMG_DIR / "credits.json"
+PROXY = "http://127.0.0.1:7890"
+COMMONS_API = "https://commons.wikimedia.org/w/api.php"
+OPENVERSE_API = "https://api.openverse.org/v1/images/"
+OV_BUDGET_MIN = 12
+
+_local = threading.local()
+_lock = threading.Lock()
+
+BAD_PAT = re.compile(
+    r"logo|coat of arms|\bflag\b|\bseal\b|\bmap of\b|icon\b|banner|"
+    r"diagram|chart\b|screenshot|scan of|\bsymbol\b|"
+    r"考釋|釋文|論文|學位|學報|期刊|全集|字典|辭典|年鑑|彙編|"
+    r"\bISBN\b|\bvolume\b|\bmanuscript\b|"
+    r"postage stamp|banknote|bank note|\bcoin\b|power plant|substation",
+    re.I,
+)
+OK_EXT = (".jpg", ".jpeg", ".png", ".webp")
+STOP = {"the", "and", "with", "from", "into", "over", "under", "this", "that", "for"}
+CJK_RE = re.compile(r"[一-鿿]")
+
+
+def opener():
+    op = getattr(_local, "opener", None)
+    if op is None:
+        op = urllib.request.build_opener(
+            urllib.request.ProxyHandler({"http": PROXY, "https": PROXY}),
+            urllib.request.HTTPSHandler(context=ssl.create_default_context()),
+        )
+        op.addheaders = [("User-Agent", "chengmai-ai/1.0 (competition project; contact: zzh705)")]
+        _local.opener = op
+    return op
+
+
+_rate_lock = threading.Lock()
+_next_slot = [0.0]
+
+
+def _pace(min_interval: float = 0.24) -> None:
+    with _rate_lock:
+        now = time.monotonic()
+        wait = _next_slot[0] - now
+        _next_slot[0] = max(now, _next_slot[0]) + min_interval
+    if wait > 0:
+        time.sleep(wait)
+
+
+def _get(url: str, timeout: int = 30) -> bytes:
+    last: Exception | None = None
+    for attempt in range(4):
+        _pace()
+        try:
+            with opener().open(url, timeout=timeout) as r:
+                return r.read()
+        except urllib.error.HTTPError as e:
+            last = e
+            if e.code in (429, 500, 502, 503, 504):
+                time.sleep((6 if e.code == 429 else 2) * (attempt + 1))
+                continue
+            raise
+        except Exception as e:  # noqa: BLE001 代理断连等
+            last = e
+            time.sleep(1.2 * (attempt + 1))
+    raise last  # type: ignore[misc]
+
+
+def latin_tokens(term: str) -> list[str]:
+    return [w.lower() for w in re.findall(r"[A-Za-z]{3,}", term) if w.lower() not in STOP]
+
+
+def cjk_shingles(term: str) -> list[str]:
+    if not CJK_RE.search(term):
+        return []
+    chars = [c for c in term if CJK_RE.match(c)]
+    return ["".join(chars[i : i + 2]) for i in range(len(chars) - 1)]
+
+
+def query_variants(term: str) -> list[str]:
+    if CJK_RE.search(term):
+        base = [term]
+        t = term.strip()
+        if len(t) >= 4:
+            base += [t[:3], t[-3:], t[-2:]]
+        elif len(t) == 3:
+            base += [t[-2:]]
+        out: list[str] = []
+        for v in base:
+            if v and v not in out:
+                out.append(v)
+        return out[:4]
+    words = term.split()
+    if len(words) <= 2:
+        return [term]
+    base = [term, " ".join(words[:3]), " ".join(words[:2])]
+    if len(words) >= 3:
+        base.append(" ".join(words[-2:]))
+    base.append(words[0])
+    out = []
+    for v in base:
+        if v and v not in out:
+            out.append(v)
+    return out[:5]
+
+
+def score_title(title: str, full_term: str, extra_toks: list[str], name_sh: tuple = ()) -> float:
+    if BAD_PAT.search(title):
+        return 0
+    t = title.lower()
+    full_lat = latin_tokens(full_term)
+    of = sum(1 for tok in set(full_lat) if tok in t)
+    ex = sum(1 for tok in set(extra_toks) if tok in t)
+    sh = cjk_shingles(full_term)
+    cj = sum(1 for s in sh if s in title)
+    nj = sum(1 for s in name_sh if s in title)
+    if cj:
+        return 10 + cj
+    if nj:
+        return 10 + nj
+    if of >= 1:
+        return 5 + of + 0.5 * ex
+    if not full_lat and ex >= 2:
+        return 1 + 0.5 * ex
+    return 0
+
+
+def commons_candidates(term: str, full_term: str, extra_toks: list[str], name_sh: tuple = ()) -> list[dict]:
+    for vi, variant in enumerate(query_variants(term)):
+        best: list[dict] = []
+        for mime in ("image/jpeg", "image/png") if vi == 0 else ("image/jpeg",):
+            q = urllib.parse.urlencode(
+                {
+                    "action": "query",
+                    "generator": "search",
+                    "gsrsearch": f"{variant} filemime:{mime}",
+                    "gsrnamespace": 6,
+                    "gsrlimit": 20,
+                    "prop": "imageinfo",
+                    "iiprop": "url|extmetadata|size",
+                    "iiurlwidth": 1400,
+                    "format": "json",
+                }
+            )
+            try:
+                data = json.loads(_get(f"{COMMONS_API}?{q}").decode())
+            except Exception as e:  # noqa: BLE001
+                print(f"    commons {type(e).__name__} {getattr(e, 'code', '')} {variant!r}", flush=True)
+                continue
+            pages = data.get("query", {}).get("pages", {})
+            ordered = sorted(pages.values(), key=lambda p: p.get("index", 99))
+            hits: list[dict] = []
+            for p in ordered:
+                title = p.get("title", "")
+                info = (p.get("imageinfo") or [{}])[0]
+                url = info.get("thumburl") or info.get("url")
+                if not url or not url.lower().split("?")[0].endswith(OK_EXT):
+                    continue
+                if (info.get("width") or 0) < 640:
+                    continue
+                sc = score_title(title, full_term, extra_toks, name_sh)
+                if sc <= 0:
+                    continue
+                meta = info.get("extmetadata", {})
+                hits.append(
+                    {
+                        "url": url,
+                        "license": meta.get("LicenseShortName", {}).get("value", "see source"),
+                        "title": title,
+                        "source": "commons",
+                        "landing": info.get("descriptionurl", ""),
+                        "score": sc,
+                    }
+                )
+            hits.sort(key=lambda x: -x["score"])
+            best.extend(hits)
+            if best:
+                return best
+            time.sleep(0.3)
+        time.sleep(0.3)
+    return []
+
+
+def openverse_candidates(term: str, full_term: str, extra_toks: list[str], name_sh: tuple = ()) -> list[dict]:
+    q = urllib.parse.urlencode(
+        {"q": term, "page_size": 20, "license": "cc0,pdm,by,by-sa", "mature": "false"}
+    )
+    raw = _get(f"{OPENVERSE_API}?{q}")
+    data = json.loads(raw.decode())
+    out = []
+    for r0 in data.get("results", []):
+        title = str(r0.get("title") or "")
+        if BAD_PAT.search(title):
+            continue
+        url = r0.get("url") or ""
+        if not url.lower().split("?")[0].endswith(OK_EXT):
+            continue
+        w = r0.get("width") or 0
+        if w and w < 640:
+            continue
+        sc = score_title(title, full_term, extra_toks, name_sh) or score_title(title, term, extra_toks, name_sh)
+        if sc <= 0:
+            continue
+        lic = str(r0.get("license") or "")
+        licv = str(r0.get("license_version") or "")
+        if lic in {"pdm", "cc0"}:
+            lic_full = "CC0" if lic == "cc0" else "Public domain"
+        else:
+            lic_full = f"CC {lic.upper()} {licv}".strip()
+        out.append(
+            {
+                "url": url,
+                "license": lic_full,
+                "title": title,
+                "source": "openverse",
+                "landing": r0.get("foreign_landing_url") or "",
+                "score": sc,
+            }
+        )
+    out.sort(key=lambda x: -x["score"])
+    return out
+
+
+def download(item_id: str, hit: dict, term: str) -> bool:
+    tmp = IMG_DIR / f"_v3_{item_id}"
+    tmp.write_bytes(_get(hit["url"], timeout=60))
+    if tmp.stat().st_size < 8 * 1024:
+        tmp.unlink(missing_ok=True)
+        return False
+    out = IMG_DIR / f"{item_id}.jpg"
+    subprocess.run(
+        ["sips", "-s", "format", "jpeg", "-s", "formatOptions", "82", "-Z", "900", str(tmp), "--out", str(out)],
+        check=True,
+        capture_output=True,
+    )
+    tmp.unlink(missing_ok=True)
+    if not out.exists() or out.stat().st_size < 15 * 1024:
+        out.unlink(missing_ok=True)
+        return False
+    with _lock:
+        credits = json.loads(CREDITS.read_text(encoding="utf-8"))
+        credits[item_id] = {
+            "license": hit["license"],
+            "term": term,
+            "title": hit["title"],
+            "source": hit["source"],
+            "landing": hit.get("landing", ""),
+        }
+        CREDITS.write_text(json.dumps(credits, ensure_ascii=False, indent=1), encoding="utf-8")
+    return True
+
+
+def load_state() -> dict:
+    if STATE.exists():
+        return json.loads(STATE.read_text(encoding="utf-8"))
+    return {"items": {}, "ov_used": 200, "urls": {}}
+
+
+def save_state(st: dict) -> None:
+    tmp = STATE.with_suffix(".tmp")
+    tmp.write_text(json.dumps(st, ensure_ascii=False, indent=1), encoding="utf-8")
+    tmp.replace(STATE)
+
+
+def terms_for(item: dict, terms2: dict, enrich: dict) -> list[str]:
+    got = terms2.get(item["id"]) or []
+    old = (enrich.get(item["id"]) or {}).get("img_terms") or []
+    if isinstance(old, str):
+        old = [old]
+    merged = []
+    for t in list(got) + list(old) + [item["name"]]:
+        t = str(t).strip()
+        if t and t not in merged:
+            merged.append(t)
+    return merged[:10]
+
+
+def mark_done(iid: str, url: str) -> None:
+    with _lock:
+        st = load_state()
+        st.setdefault("urls", {})[url] = iid
+        st.setdefault("items", {})[iid] = "done"
+        save_state(st)
+
+
+def mark_miss(iid: str) -> None:
+    with _lock:
+        st = load_state()
+        st.setdefault("items", {})[iid] = "miss"
+        save_state(st)
+
+
+def work(item: dict, terms: list[str], allow_reuse: bool, use_ov: bool, stats: dict) -> None:
+    iid = item["id"]
+    extra_toks: list[str] = []
+    for t in terms:
+        for tok in latin_tokens(t):
+            if tok not in extra_toks:
+                extra_toks.append(tok)
+    name_sh = tuple(cjk_shingles(item.get("name") or ""))
+    with _lock:
+        st = load_state()
+        used = st.get("urls", {})
+    for t in terms:
+        try:
+            cands = commons_candidates(t, t, extra_toks, name_sh)
+        except Exception as e:  # noqa: BLE001
+            print(f"  {iid}: commons {type(e).__name__} {getattr(e, 'code', '')}", flush=True)
+            time.sleep(3)
+            continue
+        for hit in cands:
+            if not allow_reuse and hit["url"] in used and used[hit["url"]] != iid:
+                continue
+            try:
+                if download(iid, hit, t):
+                    mark_done(iid, hit["url"])
+                    stats["done"] += 1
+                    print(f"  {iid}: ← [{hit['source']}] {hit['title'][:56]} [{hit['license']}]", flush=True)
+                    return
+            except Exception as e:  # noqa: BLE001
+                print(f"  {iid}: dl {type(e).__name__}: {e}", flush=True)
+                break
+        time.sleep(0.4)
+    if use_ov:
+        with _lock:
+            st = load_state()
+            ov_left = int(st.get("ov_used", 200))
+        if ov_left > OV_BUDGET_MIN:
+            for t in terms[:6]:
+                with _lock:
+                    st = load_state()
+                    ov_left = int(st.get("ov_used", 200))
+                if ov_left <= OV_BUDGET_MIN:
+                    break
+                try:
+                    cands = openverse_candidates(t, t, extra_toks, name_sh)
+                    with _lock:
+                        st = load_state()
+                        st["ov_used"] = max(int(st.get("ov_used", 200)) - 1, 0)
+                        save_state(st)
+                except Exception as e:  # noqa: BLE001
+                    print(f"  {iid}: ov {type(e).__name__} {getattr(e, 'code', '')}", flush=True)
+                    continue
+                for hit in cands:
+                    if not allow_reuse and hit["url"] in used and used[hit["url"]] != iid:
+                        continue
+                    try:
+                        if download(iid, hit, t):
+                            mark_done(iid, hit["url"])
+                            stats["done"] += 1
+                            print(f"  {iid}: ← [openverse] {hit['title'][:56]} [{hit['license']}]", flush=True)
+                            return
+                    except Exception as e:  # noqa: BLE001
+                        print(f"  {iid}: dl {type(e).__name__}: {e}", flush=True)
+                        break
+                time.sleep(1.2)
+    mark_miss(iid)
+    stats["miss"] += 1
+
+
+def main() -> None:
+    limit = None
+    use_ov = "--no-openverse" not in sys.argv
+    if "--limit" in sys.argv:
+        limit = int(sys.argv[sys.argv.index("--limit") + 1])
+    allow_reuse = "--no-reuse" in sys.argv
+    IMG_DIR.mkdir(parents=True, exist_ok=True)
+    items = json.loads(ITEMS.read_text(encoding="utf-8"))
+    enrich = json.loads(ENRICH.read_text(encoding="utf-8")) if ENRICH.exists() else {}
+    terms2 = json.loads(TERMS2.read_text(encoding="utf-8")) if TERMS2.exists() else {}
+
+    todo = [i for i in items if not (IMG_DIR / f"{i['id']}.jpg").exists()]
+    jobs = [(i, terms_for(i, terms2, enrich)) for i in todo]
+    jobs = [j for j in jobs if j[1]]
+    if limit is not None:
+        jobs = jobs[:limit]
+    print(f"待抓取 {len(jobs)} 项（词源 v2={len(terms2)}） reuse={allow_reuse} ov={use_ov}", flush=True)
+
+    stats = {"done": 0, "miss": 0}
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+
+    with ThreadPoolExecutor(max_workers=4) as ex:
+        futs = [ex.submit(work, i, t, allow_reuse, use_ov, stats) for i, t in jobs]
+        for n, f in enumerate(as_completed(futs), 1):
+            f.result()
+            if n % 50 == 0:
+                print(f"[{n}/{len(jobs)}] 新增 {stats['done']} 缺 {stats['miss']}", flush=True)
+    print(f"完成：新增 {stats['done']}，仍缺 {stats['miss']}", flush=True)
+
+
+if __name__ == "__main__":
+    main()
