@@ -44,14 +44,83 @@ _lock = threading.Lock()
 BAD_PAT = re.compile(
     r"logo|coat of arms|\bflag\b|\bseal\b|\bmap of\b|icon\b|banner|"
     r"diagram|chart\b|screenshot|scan of|\bsymbol\b|"
+    r"地图|位置图|分布图|行政区|政区|示意图|路线图|人口|区划|卫星图|"
     r"考釋|釋文|論文|學位|學報|期刊|全集|字典|辭典|年鑑|彙編|"
     r"\bISBN\b|\bvolume\b|\bmanuscript\b|"
-    r"postage stamp|banknote|bank note|\bcoin\b|power plant|substation",
+    r"postage stamp|\bstamp\b|philatelic|banknote|bank note|\bcoin\b|power plant|substation|"
+    r"\bstation\b|\bairport\b|terminal|school\b|university|hospital\b|hotel\b",
     re.I,
 )
 OK_EXT = (".jpg", ".jpeg", ".png", ".webp")
 STOP = {"the", "and", "with", "from", "into", "over", "under", "this", "that", "for"}
 CJK_RE = re.compile(r"[一-鿿]")
+
+# 叙事/表演类词：story/tale/epic/performance… 能命中全世界任何一张图
+# （实测踩坑：徐文长故事→Drag Story、都镇湾故事→英国首相讲故事、嘎达梅林→塞尔维亚说唱）。
+# 单独命中不算数，必须再有中国地域信号。
+NARR = set(
+    """
+    story stories storytelling tale tales myths myth mythic legend legends epic epics
+    performance performing performances recitation recite singing singer song songs
+    sung chant chanting duet ballad drama dramatic theatrical theatre plays play
+    puppet puppetry marionette illustration illustrated folklore folk skit skits
+    pageant opera festival ceremony rituals ritual dance dances dancing music musical
+    songs sung scene scenes show shows workshop demonstration craftsmanship artisan
+    sculpture statue portrait mural carving cham
+    """.split()
+)
+
+# 材料/器型/朝代拼音/书画套路词：同样不足以独证相关（与 museum GENERIC 同理）
+WEAK = NARR | set(
+    """
+    silver gold copper iron bronze brass jade wood stone marble silk cloth paper
+    glass ceramic clay steel tool craft crafts made making work production design
+    pattern object piece set pair bowl cup vessel pot jar mask bell knife
+    tang song yuan ming qing zhou shang feng
+    hand scroll landscape print ink art rock great long small new night white ancient
+    imperial palace tomb emperor court reign era northern southern ancient modern
+    china chinese asian
+    cotton embroidery embroidered needlework needlepoint tapestry textile textiles
+    brocade quilt shawl plate people costume clothing garments felt dye dyeing
+    batik lace crochet cutting cut woodcut woodblock prints printing paper-cut
+    event festival exhibition conference demonstration workshop woodcarving
+    papercut paper-cut pottery figurine mural
+    wool linen leather velvet satin hemp jute fur
+    shoes boots jacket robe apron skirt
+    """.split()
+)
+
+# 中国地域信号（省/主要城市/民族拼音）：弱词命中时的二次验证
+REGION_PINYIN = (
+    "yunnan sichuan guizhou hunan hubei shanxi shaanxi shandong henan hebei "
+    "liaoning jilin heilongjiang gansu qinghai xinjiang tibet guangxi guangdong "
+    "fujian zhejiang jiangsu anhui jiangxi hainan beijing shanghai tianjin "
+    "chongqing suzhou hangzhou quanzhou xian luoyang changsha wuhan chengdu "
+    "guiyang guangzhou nanjing manchu mongol miao tujia buyei zhuang qiang dai "
+    "tibetan uighur uyghur inner-mongolia "
+    "nantong weifang xuzhou wenzhou yiwu jingdezhen"
+).split()
+_PLACE = set(REGION_PINYIN)
+
+
+def _region_level(t: str, title: str) -> int:
+    """弱词命中的地域背书强度：2=中文文件名（强），1=china/chinese/省州拼音（弱）。"""
+    if CJK_RE.search(title):
+        return 2
+    if "china" in t or "chinese" in t:
+        return 1
+    if any(p in t for p in REGION_PINYIN):
+        return 1
+    return 0
+
+
+def _has_word(t: str, tok: str) -> bool:
+    """整词命中（带简单复数宽容），避免 'hand' 撞 'Handscroll'、'dai' 撞 'daily'。"""
+    if re.search(r"\b" + re.escape(tok) + r"s?\b", t):
+        return True
+    if tok.endswith("s") and re.search(r"\b" + re.escape(tok[:-1]) + r"\b", t):
+        return True
+    return False
 
 
 def opener():
@@ -88,8 +157,8 @@ def _get(url: str, timeout: int = 30) -> bytes:
                 return r.read()
         except urllib.error.HTTPError as e:
             last = e
-            if e.code in (429, 500, 502, 503, 504):
-                time.sleep((6 if e.code == 429 else 2) * (attempt + 1))
+            if e.code in (403, 429, 500, 502, 503, 504):
+                time.sleep((10 if e.code in (403, 429) else 2) * (attempt + 1))
                 continue
             raise
         except Exception as e:  # noqa: BLE001 代理断连等
@@ -141,8 +210,8 @@ def score_title(title: str, full_term: str, extra_toks: list[str], name_sh: tupl
         return 0
     t = title.lower()
     full_lat = latin_tokens(full_term)
-    of = sum(1 for tok in set(full_lat) if tok in t)
-    ex = sum(1 for tok in set(extra_toks) if tok in t)
+    of_hits = list(dict.fromkeys(tok for tok in full_lat if _has_word(t, tok)))
+    ex_hits = [tok for tok in set(extra_toks) if _has_word(t, tok)]
     sh = cjk_shingles(full_term)
     cj = sum(1 for s in sh if s in title)
     nj = sum(1 for s in name_sh if s in title)
@@ -150,10 +219,26 @@ def score_title(title: str, full_term: str, extra_toks: list[str], name_sh: tupl
         return 10 + cj
     if nj:
         return 10 + nj
-    if of >= 1:
-        return 5 + of + 0.5 * ex
-    if not full_lat and ex >= 2:
-        return 1 + 0.5 * ex
+    anchor = [tok for tok in of_hits if tok not in WEAK and tok not in _PLACE]
+    if anchor:
+        return 5 + len(of_hits) + 0.5 * len(ex_hits)
+    # 地名词不算锚点：城市全景/地标照（南通全景、北京玉峰亭）必须还有 ≥2 个非地名命中
+    content_hits = [tok for tok in of_hits if tok not in _PLACE]
+    tl = full_term.lower()
+    if len(content_hits) >= 2 and ("china" in tl or "chinese" in tl):
+        # 词源自称中国 + 标题命中 ≥2 非地名词：词级地域背书
+        return 5 + len(of_hits) + 0.5 * len(ex_hits)
+    if of_hits or (not full_lat and len(ex_hits) >= 2):
+        # 全是弱词命中：中文文件名/地域拼音背书都要求命中 ≥2（其中 ≥1 非地名，
+        # 除非是中文文件名+任意双命中——防「菊花配宋锦」式单弱词撞图）
+        lvl = _region_level(t, title)
+        if lvl >= 2 and len(of_hits) >= 2:
+            return 5 + len(of_hits) + 0.5 * len(ex_hits)
+        if lvl == 1 and len(content_hits) >= 2:
+            return 5 + len(of_hits) + 0.5 * len(ex_hits)
+        return 0
+    if not full_lat and ex_hits and _region_level(t, title):
+        return 1 + 0.5 * len(ex_hits)
     return 0
 
 
@@ -395,7 +480,7 @@ def main() -> None:
     use_ov = "--no-openverse" not in sys.argv
     if "--limit" in sys.argv:
         limit = int(sys.argv[sys.argv.index("--limit") + 1])
-    allow_reuse = "--no-reuse" in sys.argv
+    allow_reuse = "--reuse" in sys.argv
     IMG_DIR.mkdir(parents=True, exist_ok=True)
     items = json.loads(ITEMS.read_text(encoding="utf-8"))
     enrich = json.loads(ENRICH.read_text(encoding="utf-8")) if ENRICH.exists() else {}
