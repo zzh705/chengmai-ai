@@ -8,9 +8,12 @@ import Home from './pages/Home'
 import Knowledge from './pages/Knowledge'
 import KnowledgeGraph from './pages/KnowledgeGraph'
 import Lab from './pages/Lab'
+import Login from './pages/Login'
 import MapPage from './pages/Map'
+import Masters from './pages/Masters'
 import Path from './pages/Path'
 import ProfilePage from './pages/Profile'
+import { clearSession, getSession } from './utils/auth'
 
 type Page =
   | 'home'
@@ -18,6 +21,7 @@ type Page =
   | 'knowledge'
   | 'graph'
   | 'map'
+  | 'masters'
   | 'path'
   | 'lab'
   | 'challenge'
@@ -30,10 +34,11 @@ const NAV: { key: Page; label: string }[] = [
   { key: 'knowledge', label: '非遗知识库' },
   { key: 'graph', label: '知识图谱' },
   { key: 'map', label: '非遗地图' },
+  { key: 'masters', label: '名家风采' },
   { key: 'path', label: '学习路径' },
   { key: 'lab', label: '活化实验室' },
   { key: 'challenge', label: '非遗挑战' },
-  { key: 'profile', label: '传承档案' },
+  { key: 'profile', label: '个人中心' },
   { key: 'about', label: '关于项目' },
 ]
 
@@ -53,10 +58,11 @@ const MOOD: Record<string, { in: string; dur: string; a: string; b: string }> = 
   knowledge: { in: 'vtInRise', dur: '0.5s', a: '#e8c56b', b: '#4f8f7b' },
   graph: { in: 'vtInRise', dur: '0.5s', a: '#e8c56b', b: '#4f8f7b' },
   map: { in: 'vtInDrift', dur: '0.56s', a: '#e8c56b', b: '#4f8f7b' },
+  masters: { in: 'vtInRise', dur: '0.52s', a: '#e8c56b', b: '#b03a2e' },
   path: { in: 'vtInInk', dur: '0.62s', a: '#e8c56b', b: '#b03a2e' },
   lab: { in: 'vtInInk', dur: '0.62s', a: '#e8c56b', b: '#b03a2e' },
-  challenge: { in: 'vtInLift', dur: '0.44s', a: '#d4763b', b: '#e8c56b' },
-  profile: { in: 'vtInLift', dur: '0.44s', a: '#d4763b', b: '#e8c56b' },
+  challenge: { in: 'vtInLift', dur: '0.44s', a: '#e8c56b', b: '#b03a2e' },
+  profile: { in: 'vtInLift', dur: '0.44s', a: '#e8c56b', b: '#b03a2e' },
   about: { in: 'vtInRise', dur: '0.54s', a: '#e8c56b', b: '#b03a2e' },
 }
 
@@ -82,12 +88,23 @@ function setVtRunning(on: boolean) {
 }
 
 function App() {
-  // 开屏仪式动画：App 挂载播一次（路由切换不重播），点击/跳过/3.4s 自动结束
-  const [splash, setSplash] = useState(true)
+  // 三阶段：未题名 → 登录仪式；题名成功 / 已有会话 → 开屏动画；之后入馆
+  const [phase, setPhase] = useState<'login' | 'splash' | 'app'>(() =>
+    getSession() ? 'splash' : 'login',
+  )
   const [page, setPage] = useState<Page>('home')
   const [chatQuery, setChatQuery] = useState<string | undefined>(undefined)
   const [kbParam, setKbParam] = useState<string | undefined>(undefined)
   const [mapParam, setMapParam] = useState<string | undefined>(undefined)
+  const [masterParam, setMasterParam] = useState<string | undefined>(undefined)
+  const splash = phase === 'splash'
+
+  /** 退出登录：清会话回到题名仪式页 */
+  function logout() {
+    clearSession()
+    setPage('home')
+    setPhase('login')
+  }
 
   /** 导航并携带参数：chat=问题文本，knowledge=项目 id 或 kw:关键词，map=省份 key */
   function navigate(target: string, param?: string) {
@@ -104,6 +121,7 @@ function App() {
       }
       if (target === 'knowledge') setKbParam(param)
       if (target === 'map') setMapParam(param)
+      if (target === 'masters') setMasterParam(param)
     }
     if (HAS_VIEW_TRANSITION) {
       const doc = document as Document & {
@@ -126,17 +144,26 @@ function App() {
     }
   }
 
+  if (phase === 'login') {
+    return <Login onEnter={() => setPhase('splash')} />
+  }
+
   return (
     <div className={`app-shell ${splash ? 'pre-splash' : 'entered'}`}>
-      {splash && <Splash onDone={() => setSplash(false)} />}
+      {splash && <Splash onDone={() => setPhase('app')} />}
       {/* 无障碍：键盘用户首焦点直达主内容，跳过 10 项导航 */}
       <a className="skip-link" href="#main-content">
         跳到主要内容
       </a>
       <nav className="app-nav" aria-label="主导航">
-        <span className="app-brand" onClick={() => navigate('home')}>
+        <button
+          type="button"
+          className="app-brand"
+          aria-label="返回首页"
+          onClick={() => navigate('home')}
+        >
           承脉
-        </span>
+        </button>
         <div className="app-nav-links">
           {NAV.map((n) => (
             <button
@@ -170,10 +197,13 @@ function App() {
           )}
           {page === 'graph' && <KnowledgeGraph onNavigate={navigate} />}
           {page === 'map' && <MapPage onNavigate={navigate} openRegion={mapParam} />}
+          {page === 'masters' && (
+            <Masters key={masterParam ?? 'ms-list'} openParam={masterParam} onNavigate={navigate} />
+          )}
           {page === 'path' && <Path />}
           {page === 'lab' && <Lab />}
           {page === 'challenge' && <Challenge onNavigate={navigate} />}
-          {page === 'profile' && <ProfilePage />}
+          {page === 'profile' && <ProfilePage onLogout={logout} />}
           {page === 'about' && <About />}
         </div>
       </main>

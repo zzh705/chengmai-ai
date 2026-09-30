@@ -6,6 +6,7 @@ import Cover from '../components/Cover'
 import CountUp from '../components/CountUp'
 import EmberCanvas from '../components/EmberCanvas'
 import { useRevealGroup } from '../hooks/useReveal'
+import { MASTERS } from '../data/masters'
 import '../styles/home.css'
 
 interface Props {
@@ -20,8 +21,16 @@ const DAY_INDEX = (() => {
   return Math.floor((Date.now() - start.getTime()) / 86400000)
 })()
 
-// 非遗全景环形图配色（朱红/藤黄/青碧/黛蓝/绛紫/赭石/松绿）
-const VIZ_COLORS = ['#b03a2e', '#e8c56b', '#4a7c6f', '#5a6f9c', '#a45c8a', '#c07b3a', '#6b8f5e']
+// 非遗全景环形图矿彩阶（对应 index.css --viz-*：朱红/藤黄/青碧/黛蓝/绛紫/赭石/松绿，
+// 仅用于分类数据可视化，与 UI 控件色板隔离）
+const VIZ_COLORS = ['#b03a2e', '#e8c56b', '#4f8f7b', '#56688f', '#965880', '#b0743c', '#65855a']
+
+// 首页固定展示位：今日非遗 = 昆曲（百戏之祖）；一分钟认识 = 长洲太平清醮 / 粤剧 / 湘绣
+const FIXED_FEATURED_ID = 'h_kunqu'
+const FIXED_STORY_IDS = ['h_n15160', 'h_yueju_gd', 'h_xiangxiu']
+
+// 名家手卷预览：取前六位开宗立派的大师，其余进名家录
+const MASTERS_PREVIEW = MASTERS.slice(0, 6)
 
 // 探索矩阵：首页功能总入口（序号+文字，不用小图标）
 const GATES = [
@@ -50,31 +59,42 @@ export default function Home({ onNavigate, entered = true }: Props) {
   const rootRef = useRevealGroup<HTMLDivElement>([list.length])
 
   useEffect(() => {
-    fetchHeritageList().then(setList).catch((e) => setError(e.message))
+    loadList()
     fetchProfile().then(setProfile).catch(() => setProfile(null))
   }, [])
 
-  // 今日非遗：按日期轮换，每天换一个
-  const dayIndex = list.length ? DAY_INDEX % list.length : 0
-  const featured = list[dayIndex]
-  const recommended = useMemo(
-    () => list.filter((h) => h !== featured).slice(0, 3),
-    [list, featured],
+  function loadList() {
+    setError('')
+    fetchHeritageList().then(setList).catch((e) => setError(`名录暂未取到，请稍后重试（${e instanceof Error ? e.message : '网络异常'}）`))
+  }
+
+  // 首页所有展示位只取有真实配图的项目（无图条目已在知识库沉底）
+  const pictured = useMemo(() => list.filter((h) => h.has_image !== false), [list])
+
+  // 今日非遗：固定为昆曲（百戏之祖，最能代表非遗的中正典雅）
+  const featured = useMemo(
+    () => pictured.find((h) => h.id === FIXED_FEATURED_ID) ?? pictured[DAY_INDEX % Math.max(1, pictured.length)],
+    [pictured],
   )
 
-  // 一分钟认识：避开今日与推荐位，按天轮换三张故事卡
+  const recommended = useMemo(
+    () => pictured.filter((h) => h !== featured).slice(0, 3),
+    [pictured, featured],
+  )
+
+  // 一分钟认识：固定为长洲太平清醮/粤剧/湘绣（按顺序，保留 hook 渲染）
   const storyPicks = useMemo(() => {
-    const pool = list.filter(
-      (h) => h.hook && h !== featured && !recommended.some((r) => r.id === h.id),
+    const picks = FIXED_STORY_IDS
+      .map((id) => pictured.find((h) => h.id === id))
+      .filter((h): h is HeritageSummary => Boolean(h))
+    if (picks.length === FIXED_STORY_IDS.length) return picks
+    // 数据尚未就绪或缺失时的兜底：从池里补齐至 3 张
+    const pool = pictured.filter(
+      (h) => h.hook && h !== featured && !picks.some((p) => p.id === h.id),
     )
-    if (pool.length === 0) return []
-    const picks: HeritageSummary[] = []
-    for (let i = 0; picks.length < 3 && i < pool.length * 3; i++) {
-      const cand = pool[(DAY_INDEX * 3 + i * 7) % pool.length]
-      if (!picks.some((p) => p.id === cand.id)) picks.push(cand)
-    }
+    for (let i = 0; picks.length < 3 && i < pool.length; i++) picks.push(pool[i])
     return picks
-  }, [list, featured, recommended])
+  }, [pictured, featured])
 
   // 地域探索：与地图同口径（含「全国」只记全国）；否则该省出现即计入
   // （多省项目如"陕西、河北唐山…"会同时给相关省份计数，避免首页与地图数字打架）
@@ -148,7 +168,10 @@ export default function Home({ onNavigate, entered = true }: Props) {
           <input
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && askAI()}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.nativeEvent.isComposing) askAI()
+            }}
+            aria-label="向承脉 AI 提问"
             placeholder="问问承脉 AI：什么是昆曲百戏之祖？"
           />
           <button onClick={askAI}>问 AI</button>
@@ -170,7 +193,14 @@ export default function Home({ onNavigate, entered = true }: Props) {
         <span>活化创作</span>
       </div>
 
-      {error && <div className="home-error">{error}</div>}
+      {error && (
+        <div className="home-error" role="alert">
+          <span>{error}</span>
+          <button type="button" onClick={loadList}>
+            重试
+          </button>
+        </div>
+      )}
 
       {/* 探索矩阵：全站功能入口 */}
       <section className="home-section reveal">
@@ -242,7 +272,7 @@ export default function Home({ onNavigate, entered = true }: Props) {
                 </span>
               </p>
             </div>
-            <span className="home-today-cta">查看 →</span>
+            <span className="home-today-cta">查看</span>
           </div>
         </section>
       )}
@@ -270,7 +300,7 @@ export default function Home({ onNavigate, entered = true }: Props) {
                   <p className="home-story-hook">「{h.hook}」</p>
                   <span className="home-story-foot">
                     {h.name} · {h.region}
-                    <em>查看 →</em>
+                    <em>查看</em>
                   </span>
                 </div>
               </article>
@@ -278,6 +308,44 @@ export default function Home({ onNavigate, entered = true }: Props) {
           </div>
         </section>
       )}
+
+      {/* 名家风采：开宗立派的大师手卷，横向浏览 */}
+      <section className="home-section home-masters reveal">
+        <div className="home-sec-head">
+          <h2>名家风采</h2>
+          <button className="home-roam" onClick={() => onNavigate('masters')}>
+            全部名家
+          </button>
+        </div>
+        <div className="home-masters-viewport">
+          <div className="home-masters-track">
+            {MASTERS_PREVIEW.map((m) => (
+              <button
+                key={m.id}
+                className="home-master"
+                onClick={() => onNavigate('masters', m.id)}
+                title={`${m.name} · ${m.title}`}
+              >
+                <span className="home-master-img">
+                  <img src={m.image} alt={`${m.name}历史影像`} loading="lazy" />
+                  <i className="home-master-seal" aria-hidden>
+                    {m.name[m.name.length - 1]}
+                  </i>
+                </span>
+                <span className="home-master-name">{m.name}</span>
+                <span className="home-master-art">{m.art}</span>
+                <span className="home-master-cta">查看详情</span>
+              </button>
+            ))}
+            <button className="home-master home-master-more" onClick={() => onNavigate('masters')}>
+              <span className="home-master-more-inner">
+                <em>名家录</em>
+                <strong>查看全部 {MASTERS.length} 位 →</strong>
+              </span>
+            </button>
+          </div>
+        </div>
+      </section>
 
       {/* AI 推荐 + 地域探索 双栏 */}
       <section className="home-cols reveal">
@@ -343,7 +411,9 @@ export default function Home({ onNavigate, entered = true }: Props) {
                         transform="rotate(-90 70 70)"
                         onMouseEnter={() => setHoverSeg(s.name)}
                         onClick={() => onNavigate('knowledge', `kw:${s.name}`)}
-                      />
+                      >
+                        <title>{`${s.name}：${s.count} 项`}</title>
+                      </circle>
                     )
                   })}
                 </svg>
@@ -358,10 +428,14 @@ export default function Home({ onNavigate, entered = true }: Props) {
                 {catSegs.map((s, i) => (
                   <li
                     key={s.name}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`${s.name}，${s.count} 项，查看该类项目`}
                     className={hoverSeg === s.name ? 'active' : ''}
                     onMouseEnter={() => setHoverSeg(s.name)}
                     onMouseLeave={() => setHoverSeg(null)}
                     onClick={() => onNavigate('knowledge', `kw:${s.name}`)}
+                    onKeyDown={(e) => onActivate(e, () => onNavigate('knowledge', `kw:${s.name}`))}
                   >
                     <i style={{ background: VIZ_COLORS[i % VIZ_COLORS.length] }} />
                     <span>{s.name}</span>
@@ -436,7 +510,7 @@ export default function Home({ onNavigate, entered = true }: Props) {
             <span>活化创作</span>
           </div>
           <button className="home-prog-cta" onClick={() => onNavigate('profile')}>
-            查看 →
+            查看
           </button>
         </div>
       </section>

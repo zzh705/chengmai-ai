@@ -9,6 +9,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 
+from app.api.auth import router as auth_router
 from app.api.chat import router as chat_router
 from app.api.creation import router as creation_router
 from app.api.graph import router as graph_router
@@ -37,6 +38,7 @@ app.add_middleware(
 # 数千条知识库摘要体积可观，统一 gzip（流式响应按块压缩，不阻塞 SSE）
 app.add_middleware(GZipMiddleware, minimum_size=1024)
 
+app.include_router(auth_router)
 app.include_router(chat_router)
 app.include_router(learning_router)
 app.include_router(graph_router)

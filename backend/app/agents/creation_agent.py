@@ -16,12 +16,18 @@ _SYSTEM = (
     ' "spread_channels": ["传播方式1"],'
     ' "ai_parts": ["AI辅助部分1"],'
     ' "steps": ["可实施步骤1"],'
-    ' "guardrails": ["不能随意改变的文化语义1"]}\n'
+    ' "guardrails": ["不能随意改变的文化语义1"],'
+    ' "materials": ["物料与资源1"],'
+    ' "risks": ["风险与边界1"],'
+    ' "metrics": ["成效标尺1"]}\n'
     "要求：title 要有画面感与记忆点（可对仗、可悬念，18 字内）；slogan 不超过 16 字、"
     "能直接印在海报/包装上；guardrails 必须基于检索资料明确指出该非遗的核心文化语义"
-    "（如符号寓意、工序禁忌）；steps 必须拆成 4-6 个独立数组元素（禁止合并成一条），"
-    "每条不超过 50 字；traditional_elements/modern_carrier/spread_channels/ai_parts 各 3-5 条，"
+    "（如符号寓意、工序禁忌）；steps 必须拆成 5-7 个独立数组元素（禁止合并成一条），"
+    "每条不超过 50 字；traditional_elements/modern_carrier/spread_channels/ai_parts 各 4-6 条，"
     "每条具体到可执行（写明对象、场景或数量），禁止'加大宣传''提升影响'这类空话。"
+    "materials 列 3-5 条落地物料与资源（写清大致数量或规格，并点出可借/可自制的低成本项）；"
+    "risks 列 2-4 条执行风险与文化边界（覆盖安全、文化误读、场地或版权等维度，每条带一句规避办法）；"
+    "metrics 列 2-4 条可量化成效标尺（如参与人次、完播率、投稿数量，给出可对照的目标量级）。"
     "所有字符串值禁止使用 emoji、颜文字与装饰性图标符号。"
 )
 
@@ -78,9 +84,12 @@ def generate_creation(req: CreationRequest) -> tuple[CreationResult, list[str]]:
         "- modern_carrier：落地的现代载体（如校园活动/文创/小程序）\n"
         "- spread_channels：传播渠道\n"
         "- ai_parts：AI 可辅助完成的部分\n"
-        "- steps：实施步骤，4-6 个数组元素，每步一个元素且≤50字，"
+        "- steps：实施步骤，5-7 个数组元素，每步一个元素且≤50字，"
         "格式如'第1周：完成XX，产出XX'\n"
-        "- guardrails：不能随意改变的文化语义（必须来自资料）"
+        "- guardrails：不能随意改变的文化语义（必须来自资料）\n"
+        "- materials：落地物料与资源准备，3-5 条（数量/规格/低成本来源）\n"
+        "- risks：执行风险与文化边界，2-4 条（每条附规避办法）\n"
+        "- metrics：可量化成效标尺，2-4 条（带目标量级）"
     )
     data = extract_json(llm_chat(user_prompt, system=_SYSTEM))
     result = CreationResult(**data)

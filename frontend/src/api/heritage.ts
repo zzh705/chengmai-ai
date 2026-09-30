@@ -7,6 +7,8 @@ export interface HeritageSummary {
   region: string
   level: string
   image: string
+  /** 是否有真实配图；false 的条目在知识库中已沉底，首页推荐位亦排除 */
+  has_image: boolean
   /** 一句话悬念钩子（卡片展示） */
   hook: string
   /** deep=深读档案 / index=全国名录索引 */

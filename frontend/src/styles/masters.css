@@ -1,0 +1,581 @@
+/* 名家风采页：历史肖像廊，暗墨底 + 暖褐老照片 + 朱印 */
+.ms-page {
+  height: 100%;
+  overflow-y: auto;
+  background:
+    radial-gradient(ellipse 70% 36% at 50% -8%, rgba(176, 58, 46, 0.14), transparent),
+    #14110f;
+  color: #f3ece2;
+  padding: 44px 28px 60px;
+}
+
+.ms-header {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 36px;
+  animation: msHeadIn 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.ms-header h1 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: 8px;
+  color: #e8c56b;
+}
+.ms-subtitle {
+  display: block;
+  margin-top: 10px;
+  font-family: var(--font-kai);
+  font-size: 14px;
+  letter-spacing: 6px;
+  color: #9a8f80;
+}
+.ms-header p {
+  margin: 16px 0 0;
+  font-size: 14px;
+  line-height: 1.9;
+  color: #c9bfae;
+}
+@keyframes msHeadIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 肖像网格 */
+.ms-grid {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 22px;
+}
+.ms-card {
+  background: #1b1713;
+  border: 1px solid #2e2823;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: msCardIn 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.ms-card:hover {
+  border-color: rgba(232, 197, 107, 0.45);
+  transform: translateY(-4px);
+}
+@keyframes msCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 肖像：老照片统一暖褐色调，悬停缓推近 */
+.ms-card-img {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  padding: 0;
+  border: none;
+  background: #14110f;
+  cursor: pointer;
+  overflow: hidden;
+}
+.ms-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  /* 老照片暖褐滤镜保持静态，悬停只走 transform（不渐变 filter） */
+  filter: sepia(0.28) contrast(1.04) brightness(0.9);
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.ms-card:hover .ms-card-img img {
+  transform: scale(1.045);
+}
+/* 底部融入暗墨的渐隐，压住照片边缘 */
+.ms-card-veil {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 46%;
+  background: linear-gradient(to top, rgba(20, 17, 15, 0.92), transparent);
+  pointer-events: none;
+}
+/* 朱印：右下小字方印 */
+.ms-card-seal {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 2;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #b03a2e;
+  color: #f3ece2;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 8px;
+  transform: rotate(-4deg);
+  opacity: 0.92;
+  box-shadow: 0 2px 8px rgba(20, 17, 15, 0.45);
+}
+
+.ms-card-txt {
+  padding: 14px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ms-card-art {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #4f8f7b;
+}
+.ms-card-txt h2 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  color: #e8c56b;
+}
+.ms-card-meta {
+  margin: 0;
+  font-size: 12px;
+  color: #9a8f80;
+  line-height: 1.6;
+}
+.ms-card-hook {
+  margin: 2px 0 8px;
+  font-size: 13px;
+  line-height: 1.75;
+  color: #c9bfae;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ms-card-cta {
+  align-self: flex-start;
+  padding: 7px 18px;
+  border: 1px solid rgba(232, 197, 107, 0.5);
+  border-radius: 999px;
+  background: transparent;
+  color: #e8c56b;
+  font-size: 13px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: background-color 0.25s, color 0.25s;
+}
+.ms-card-cta:hover {
+  background: #e8c56b;
+  color: #14110f;
+}
+.ms-card-cta:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: 2px;
+}
+.ms-card-img:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: -2px;
+}
+
+/* ===== 详情 ===== */
+.ms-back {
+  display: block;
+  margin: 0 auto 22px;
+  padding: 7px 20px;
+  border: 1px solid #3a332c;
+  border-radius: 999px;
+  background: transparent;
+  color: #c9bfae;
+  font-size: 13px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.ms-back:hover {
+  border-color: #e8c56b;
+  color: #e8c56b;
+}
+.ms-back:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: 2px;
+}
+
+.ms-detail {
+  max-width: 980px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 40px;
+  align-items: start;
+  animation: msDetailIn 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+/* 详情容器由脚本接管焦点：鼠标进入不显焦点环，键盘聚焦仍走全站金环 */
+.ms-detail:focus:not(:focus-visible) {
+  outline: none;
+}
+@keyframes msDetailIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.ms-detail-portrait {
+  position: relative;
+  border: 1px solid rgba(232, 197, 107, 0.25);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #1b1713;
+  position: sticky;
+  top: 12px;
+}
+.ms-detail-portrait img {
+  display: block;
+  width: 100%;
+  /* 定比例占位，避免图片加载前后的布局位移（CLS） */
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  object-position: top center;
+  filter: sepia(0.22) contrast(1.04) brightness(0.96);
+}
+/* 详情肖像：无影像兜底已移除，十六位皆有公版影像 */
+.ms-detail-seal {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #b03a2e;
+  color: #f3ece2;
+  font-family: var(--font-serif);
+  font-size: 19px;
+  font-weight: 700;
+  border-radius: 8px;
+  transform: rotate(-4deg);
+  box-shadow: 0 3px 10px rgba(20, 17, 15, 0.5);
+}
+
+.ms-detail-art {
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: #4f8f7b;
+}
+.ms-detail-main h1 {
+  margin: 8px 0 0;
+  font-family: var(--font-serif);
+  font-size: 38px;
+  font-weight: 600;
+  letter-spacing: 8px;
+  color: #e8c56b;
+}
+.ms-detail-meta {
+  margin: 12px 0 0;
+  font-size: 14px;
+  color: #9a8f80;
+  letter-spacing: 1px;
+}
+.ms-detail-hook {
+  margin: 20px 0;
+  padding: 14px 18px;
+  border-left: 3px solid #b03a2e;
+  background: rgba(176, 58, 46, 0.07);
+  border-radius: 0 8px 8px 0;
+  font-family: var(--font-kai);
+  font-size: 16px;
+  line-height: 1.9;
+  color: #f3ece2;
+}
+.ms-detail-bio p {
+  margin: 0 0 14px;
+  font-size: 15px;
+  line-height: 2.05;
+  color: #c9bfae;
+  text-align: justify;
+}
+
+/* ===== 段落小标题：朱点引题 ===== */
+.ms-section-h {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 30px 0 14px;
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  color: #e8c56b;
+}
+.ms-section-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #b03a2e;
+  box-shadow: 0 0 0 3px rgba(176, 58, 46, 0.18);
+  flex: none;
+}
+.ms-section-h::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(232, 197, 107, 0.4), transparent);
+}
+
+/* ===== 艺林故事：宣纸便签 + 其一其二朱印 ===== */
+.ms-story {
+  position: relative;
+  margin: 0 0 12px;
+  padding: 16px 18px 16px 58px;
+  border: 1px solid #2e2823;
+  border-radius: 12px;
+  background:
+    radial-gradient(ellipse 90% 60% at 0% 0%, rgba(232, 197, 107, 0.05), transparent 70%),
+    #1b1713;
+  animation: msStoryIn 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.ms-story:nth-child(3) {
+  animation-delay: 0.12s;
+}
+.ms-story p {
+  margin: 0;
+  font-family: var(--font-kai);
+  font-size: 15px;
+  line-height: 1.95;
+  color: #c9bfae;
+  text-align: justify;
+}
+.ms-story-seal {
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(176, 58, 46, 0.14);
+  border: 1px solid rgba(176, 58, 46, 0.55);
+  color: #d8a098;
+  font-family: var(--font-serif);
+  font-size: 12px;
+  letter-spacing: 1px;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+}
+@keyframes msStoryIn {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ===== 生平年表：描金竖轴，节点逐粒点亮 ===== */
+.ms-timeline ol {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0 4px 4px;
+  position: relative;
+}
+.ms-timeline ol::before {
+  content: '';
+  position: absolute;
+  left: 67px;
+  top: 10px;
+  bottom: 10px;
+  width: 1px;
+  background: linear-gradient(to bottom, rgba(232, 197, 107, 0.55), rgba(232, 197, 107, 0.12));
+}
+.ms-timeline li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 56px 24px 1fr;
+  align-items: baseline;
+  gap: 0;
+  padding: 7px 0;
+  animation: msTlIn 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.ms-tl-year {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #e8c56b;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.ms-tl-dot {
+  justify-self: center;
+  align-self: center;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #14110f;
+  border: 1.5px solid #b03a2e;
+  position: relative;
+  z-index: 1;
+}
+.ms-tl-event {
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: #c9bfae;
+  padding-left: 12px;
+}
+@keyframes msTlIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.ms-detail-works-h {
+  margin: 22px 0 10px;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  color: #e8c56b;
+}
+.ms-detail-works {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.ms-detail-works span {
+  padding: 6px 16px;
+  border: 1px solid #3a332c;
+  border-radius: 999px;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: #c9bfae;
+  background: #1b1713;
+}
+.ms-detail-quote {
+  margin: 26px 0;
+  padding: 18px 22px;
+  border: 1px solid rgba(232, 197, 107, 0.22);
+  border-radius: 12px;
+  background: rgba(232, 197, 107, 0.04);
+  font-family: var(--font-kai);
+  font-size: 17px;
+  line-height: 1.9;
+  color: #e8c56b;
+}
+.ms-quote-mark {
+  margin-right: 4px;
+}
+.ms-detail-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.ms-btn-primary {
+  padding: 11px 26px;
+  border: none;
+  border-radius: 999px;
+  background: #b03a2e;
+  color: #f3ece2;
+  font-size: 14px;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+.ms-btn-primary:hover {
+  background-color: #b03a2e;
+  background-image: linear-gradient(rgba(243, 236, 226, 0.1), rgba(243, 236, 226, 0.1));
+  transform: translateY(-1px);
+}
+.ms-btn-primary:focus-visible,
+.ms-btn-ghost:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: 2px;
+}
+.ms-btn-ghost {
+  padding: 11px 22px;
+  border: 1px solid #3a332c;
+  border-radius: 999px;
+  background: transparent;
+  color: #c9bfae;
+  font-size: 14px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.ms-btn-ghost:hover {
+  border-color: #e8c56b;
+  color: #e8c56b;
+}
+.ms-credit {
+  margin: 22px 0 0;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #9a8f80;
+}
+
+@media (max-width: 820px) {
+  .ms-detail {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .ms-detail-portrait {
+    position: static;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+  .ms-detail-main h1 {
+    font-size: 30px;
+    letter-spacing: 5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ms-header,
+  .ms-card,
+  .ms-detail,
+  .ms-story,
+  .ms-timeline li {
+    animation: none;
+  }
+  .ms-card,
+  .ms-card:hover,
+  .ms-card-img img,
+  .ms-card:hover .ms-card-img img,
+  .ms-btn-primary,
+  .ms-btn-primary:hover {
+    transform: none;
+    transition: none;
+  }
+}

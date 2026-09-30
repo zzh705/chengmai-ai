@@ -32,3 +32,14 @@ Thumbs.db
 *.log
 logs/
 data/structured/embeddings_cache.*
+
+# ===== 运行时数据（密钥与用户库，首次启动自动生成/注册）=====
+backend/data/auth_secret.key
+backend/data/users.json
+
+# ===== 缓存与备份 =====
+data/structured/http_cache/
+*.bak
+**/*.bak
+*.bak.*
+**/*.bak.*

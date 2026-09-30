@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import CountUp from '../components/CountUp'
 import { useRevealGroup } from '../hooks/useReveal'
-import { fetchHeritageList } from '../api/heritage'
+import { fetchHeritageList, type HeritageSummary } from '../api/heritage'
+import type { GraphData, GraphNode } from '../api/graph'
 import { extractProvince } from '../utils/geo'
 import '../styles/about.css'
 
@@ -54,45 +55,119 @@ const WHY_LINES: { t: string; c?: string }[] = [
   { t: '传承不是把过去供起来，而是让它还有明天。', c: 'last' },
 ]
 
+/** 传承人名录条目：拆出括号内的称号，名与项目分别呈现 */
+interface InheritorEntry {
+  name: string
+  title?: string
+  project: string
+  projectId: string
+  hook: string
+}
+
+/** 把后端图谱（关联传承人 link）与非遗清单拼成名录条目 */
+function buildInheritors(
+  list: HeritageSummary[],
+  graph: GraphData,
+): InheritorEntry[] {
+  const deep = list.filter((h) => h.tier !== 'index')
+  const heritageById = new Map(deep.map((h) => [h.id, h]))
+  const personById = new Map<string, GraphNode>(
+    (graph.nodes ?? []).filter((n) => n.type === 'person').map((n) => [n.id, n]),
+  )
+  const out: InheritorEntry[] = []
+  for (const link of graph.links ?? []) {
+    if (link.relation !== '关联传承人') continue
+    const h = heritageById.get(link.source)
+    const p = personById.get(link.target)
+    if (!h || !p) continue
+    const m = p.label.match(/^([^（()]+)[（(]([^）)]+)[）)]/)
+    if (m) {
+      out.push({ name: m[1].trim(), title: m[2].trim(), project: h.name, projectId: h.id, hook: h.hook })
+    } else {
+      out.push({ name: p.label, project: h.name, projectId: h.id, hook: h.hook })
+    }
+  }
+  return out
+}
+
 export default function About() {
   // 关键数字实时拉取：数据更新后页面无需改代码
   const [stat, setStat] = useState({ items: 0, deep: 0, provs: 0, nodes: 0, links: 0 })
-  const [names, setNames] = useState<string[]>([])
+  const [inheritors, setInheritors] = useState<InheritorEntry[]>([])
   const [ready, setReady] = useState(false)
+  // 接口失败不再静默显示 0：置错误标记，统计区显「数据暂不可用」+ 重试
+  const [failed, setFailed] = useState(false)
   const rootRef = useRevealGroup<HTMLDivElement>([ready])
 
-  useEffect(() => {
+  const load = useCallback(() => {
     Promise.all([
       fetchHeritageList(),
       fetch('/api/graph')
         .then((r) => r.json())
-        .catch(() => ({ nodes: [], links: [] })),
+        .catch(() => ({ nodes: [], links: [] })) as Promise<GraphData>,
     ])
       .then(([list, graph]) => {
+        // 计数口径：只计在册深读项（tier !== 'index'），与「国家级非遗项目」页面文字一致
         const deep = list.filter((h) => h.tier !== 'index')
         const provs = new Set(
           list
             .map((h) => extractProvince(h.region))
             .filter((p) => p !== '全国' && p !== '其他'),
         ).size
-        setNames(deep.map((h) => h.name))
+        setInheritors(buildInheritors(list, graph))
         setStat({
-          items: list.length,
+          items: deep.length,
           deep: deep.length,
           provs,
           nodes: graph.nodes?.length ?? 0,
           links: graph.links?.length ?? 0,
         })
       })
-      .catch(() => undefined)
+      .catch(() => setFailed(true))
       .finally(() => setReady(true))
   }, [])
 
-  function scrollTo(id: string) {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  useEffect(() => {
+    load()
+  }, [load])
+
+  /** 重试：先在事件里复位状态，再重新拉取 */
+  function retry() {
+    setFailed(false)
+    setReady(false)
+    load()
   }
 
-  const num = (v: number) => (ready ? String(v) : '0')
+  const reducedMotion = () =>
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  function scrollTo(id: string) {
+    document
+      .getElementById(id)
+      ?.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' })
+  }
+
+  const num = (v: number) => (failed ? '…' : ready ? String(v) : '0')
+
+  /** 名录条目：第二份仅为无缝横移复制，对辅助技术隐藏；错落低位用索引类保证双份一致 */
+  const renderInheritor = (it: InheritorEntry, key: string, duplicated = false, index = 0) => (
+    <article
+      key={key}
+      className={`ab-inheritor${index % 2 === 1 ? ' ab-inheritor-low' : ''}${duplicated ? ' ab-inheritor-dup' : ''}`}
+      title={`${it.name} · ${it.project}`}
+      aria-hidden={duplicated || undefined}
+    >
+      <div className="ab-inheritor-top">
+        <span className="ab-inheritor-seal" aria-hidden>
+          {it.name[0]}
+        </span>
+        <span className="ab-inheritor-name">{it.name}</span>
+        {it.title && <span className="ab-inheritor-title">{it.title}</span>}
+      </div>
+      <span className="ab-inheritor-proj">{it.project}</span>
+      <p className="ab-inheritor-hook">{it.hook}</p>
+    </article>
+  )
 
   return (
     <div className="ab-page" ref={rootRef}>
@@ -126,7 +201,7 @@ export default function About() {
         ))}
       </nav>
 
-      {/* 初心：动情叙事 + 灯阵（非文字表达） */}
+      {/* 初心：动情叙事 + 传承人名录（横卷徐行） */}
       <section className="ab-card ab-why reveal" id="why">
         <span className="ab-why-kicker">初心</span>
         <div className="ab-why-lines">
@@ -141,25 +216,28 @@ export default function About() {
           ))}
         </div>
 
-        {/* 灯阵：每一盏灯对应知识库里的一份深读档案 */}
-        <div className="ab-why-lights">
-          <div className="ab-why-lights-head">
-            <span>此刻，知识库里的灯</span>
+        {/* 传承人名录：横卷徐行，名在卷上、项目悬腕，皆指向真实的人 */}
+        <div className="ab-why-inheritors">
+          <div className="ab-why-inheritors-head">
+            <span>传承人名录</span>
             <em>
-              {num(stat.deep)} 盏深读 · 另收录全国名录 {num(stat.items)} 项
+              {failed
+                ? '名录数据暂不可用'
+                : `${num(inheritors.length)} 位代表 · 此刻仍在执笔传习`}
             </em>
           </div>
-          <div className="ab-lights">
-            {Array.from({ length: stat.deep }, (_, i) => (
-              <i
-                key={i}
-                title={names[i] ?? '国家级非物质文化遗产'}
-                style={{ '--d': `${(i % 11) * 0.11 + Math.floor(i / 11) * 0.16}s` } as React.CSSProperties}
-              />
-            ))}
-          </div>
-          <p className="ab-why-lights-note">
-            名字被问起一次，灯就亮一分。它们还在亮着，这是一件值得守的事。
+          {inheritors.length > 0 && !failed && (
+            <div className="ab-inheritors-viewport">
+              <div className="ab-inheritors-track">
+                {inheritors.map((it, i) => renderInheritor(it, `a${i}`, false, i))}
+                {inheritors.map((it, i) => renderInheritor(it, `b${i}`, true, i))}
+              </div>
+            </div>
+          )}
+          <p className="ab-why-inheritors-note">
+            横卷上缓缓走过的每一位，都是非物质文化遗产代表性传承人。姓名、称号与所承项目均取自公开的官方名录，
+            由知识图谱中的人物关系与深读档案逐条对应生成，没有一个名字是凭空写下的。悬停时卷轴会停下来，
+            好让每个名字都来得及读完。他们把一生交给一门手艺，我们至少把这一行名录读完整。
           </p>
         </div>
 
@@ -175,22 +253,33 @@ export default function About() {
           让每一次回答都带来源，让每一份创作都有依据，让学习进度可记录、可展示。
         </p>
         <div className="ab-nums">
-          <div>
-            <em>{ready ? <CountUp value={stat.items} /> : "0"}</em>
-            <span>国家级非遗项目</span>
-          </div>
-          <div>
-            <em>{ready ? <CountUp value={stat.provs} /> : "0"}</em>
-            <span>覆盖省级行政区</span>
-          </div>
-          <div>
-            <em>{ready ? <CountUp value={stat.nodes} /> : "0"}</em>
-            <span>图谱节点</span>
-          </div>
-          <div>
-            <em>{ready ? <CountUp value={stat.links} /> : "0"}</em>
-            <span>知识关系</span>
-          </div>
+          {failed ? (
+            <div className="ab-nums-error" role="alert">
+              <span>实时统计数据暂不可用</span>
+              <button type="button" className="ab-retry" onClick={retry}>
+                重试
+              </button>
+            </div>
+          ) : (
+            <>
+              <div>
+                <em>{ready ? <CountUp value={stat.items} /> : '0'}</em>
+                <span>国家级非遗项目</span>
+              </div>
+              <div>
+                <em>{ready ? <CountUp value={stat.provs} /> : '0'}</em>
+                <span>覆盖省级行政区</span>
+              </div>
+              <div>
+                <em>{ready ? <CountUp value={stat.nodes} /> : '0'}</em>
+                <span>图谱节点</span>
+              </div>
+              <div>
+                <em>{ready ? <CountUp value={stat.links} /> : '0'}</em>
+                <span>知识关系</span>
+              </div>
+            </>
+          )}
         </div>
       </section>
 
@@ -317,10 +406,12 @@ export default function About() {
         <h2>数据与来源</h2>
         <p>
           知识库收录 <strong>{num(stat.items)}</strong> 项国家级非遗代表性项目（覆盖{' '}
-          <strong>{num(stat.provs)}</strong> 个省级行政区、7
+          <strong>{num(stat.provs)}</strong> 个省级行政区、10
           个非遗大类），结构化字段（简介、文化内涵、技艺工序、代表作品、代表性传承人）
-          逐条标注来源（中国非物质文化遗产网、UNESCO、中国民俗学网等），
-          实拍图取自 Wikimedia Commons 并附许可，未匹配到实拍图的条目使用程序生成的传统纹样字卡；
+          逐条标注来源（中国非物质文化遗产网、UNESCO、中国民俗学网等）。
+          配图按三层管线如实分层：优先采用开放许可实拍图；实拍确无可靠来源的长尾条目，
+          使用通义万相文生图模型生成写实风格的<strong>场景示意图（非实景照片、不冒充实拍）</strong>；
+          仍未覆盖的少量条目以程序生成的传统纹样字卡兜底，并在知识库列表中自动沉底、不做展示露出。
           回答中以「来源」与「证据分」
           双重呈现可信度。数据仅用于教学演示，正式发布前将按赛制要求做权威信源核验。
         </p>
@@ -330,11 +421,34 @@ export default function About() {
         <h2>合规与开源说明</h2>
         <ul className="ab-list">
           <li>
-            <strong>图片版权：</strong>
-            实拍图来自 Wikimedia Commons，许可为 CC0 / CC BY / CC BY-SA / Public
-            Domain / OGDL-Taiwan-1.0 等，逐张记录于 <code>credits.json</code>
-            （含许可与原始文件名）；未匹配到实拍图的条目，封面为本项目程序生成的传统纹样字卡
-            （回纹、挑花格、旋纹等，不含第三方素材与人名信息）。
+            <strong>实拍图片：</strong>
+            来自 Wikimedia Commons、大都会艺术博物馆 Open Access、克利夫兰艺术博物馆
+            Open Access 与 Openverse 聚合的开放许可素材，许可为 CC0 / CC BY / CC BY-SA /
+            Public Domain / 博物馆 Open Access 等，逐张记录于{' '}
+            <code>credits.json</code>（含来源平台、许可与原始文件名）。
+          </li>
+          <li>
+            <strong>名家肖像：</strong>
+            「名家风采」收录的十六位开宗立派名家，肖像均取自 Wikimedia Commons
+            的公有领域历史影像或历史画像（其中荀慧生一张为 CC BY-SA 4.0，张明山一张为
+            CC0），逐张人工核验为本人，模糊者仅做裁切与对比度修复，不做任何猜测性配图；
+            原始文件名与许可记录于 <code>images/masters/credits.json</code>，
+            并在每位名家的详情页逐张标注来源。
+          </li>
+          <li>
+            <strong>AI 生成示意图：</strong>
+            对严格相关性筛选后仍无靠谱实拍的长尾条目，使用阿里云百炼「通义万相」
+            wanx2.1-t2i-turbo 文生图模型生成写实风格配图，仅作场景与氛围示意，
+            <strong>不是真实影像、不冒充实拍、不对应真实在世人物</strong>；
+            生成时以器物、双手、远景与侧逆光剪影为主，回避清晰人脸。
+            每张均在 <code>credits.json</code> 中以{' '}
+            <code>source: dashscope-wanx-ai</code> 标注并留存提示词，数量受模型免费额度上限约束。
+          </li>
+          <li>
+            <strong>字卡兜底：</strong>
+            实拍与 AI 示意图均未覆盖的少量条目，封面为本项目程序生成的传统纹样字卡
+            （回纹、挑花格、旋纹等，不含第三方素材与人名信息），此类条目在知识库列表中
+            自动沉底，常规浏览与首页推荐位均不露出。
           </li>
           <li>
             <strong>数据来源：</strong>

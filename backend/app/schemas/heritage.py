@@ -10,6 +10,7 @@ class HeritageSummary(BaseModel):
     region: str
     level: str
     image: str  # 前端图片路径（public/images/heritage/{id}.jpg）
+    has_image: bool = True  # 是否有真实配图（实拍/AI 示意图）；False 的条目已沉底
     hook: str = ""  # 一句话悬念钩子（卡片展示）
     tier: str = "deep"  # deep=深读档案 / index=全国名录索引
 

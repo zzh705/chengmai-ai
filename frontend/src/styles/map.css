@@ -12,8 +12,8 @@
 }
 .map-header h1 {
   margin: 0;
-
-
+  /* 字号 26 / 字重 600 / 宋体由全局 h1 统一承载，此处只补本页字距与色 */
+  letter-spacing: 4px;
   color: #e8c56b;
 }
 .map-header p {
@@ -21,10 +21,47 @@
   font-size: 13px;
   margin-top: 8px;
 }
+/* 错误态：朱红只做边框与底纹，正文用墨色软文字 */
 .map-error {
+  max-width: 900px;
+  margin: 12px auto 0;
+  padding: 16px;
   text-align: center;
-  color: #e07a6a;
-  padding: 12px;
+  color: #c9bfae;
+  background: rgba(176, 58, 46, 0.1);
+  border: 1px solid rgba(176, 58, 46, 0.55);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.map-error p {
+  margin: 0;
+}
+.map-retry {
+  min-height: 44px;
+  padding: 0 24px;
+  background: rgba(176, 58, 46, 0.13);
+  border: 1px solid #b03a2e;
+  border-radius: 999px;
+  color: #c9bfae;
+  font-size: 14px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background-color 0.2s,
+    transform 0.15s;
+}
+.map-retry:hover {
+  border-color: #e8c56b;
+  color: #e8c56b;
+}
+.map-retry:active {
+  transform: scale(0.98);
 }
 
 /* 全局统计条 */
@@ -37,12 +74,37 @@
   gap: 10px;
 }
 .map-stat {
-  background: linear-gradient(160deg, #1d1814, #171310);
+  background: linear-gradient(160deg, #1b1713, #14110f);
   border: 1px solid #2e2823;
   border-radius: 12px;
   padding: 10px 12px;
   text-align: center;
   animation: riseIn 0.5s ease backwards;
+}
+/* 数据未到：数字位骨架占位（与全站 .skeleton 同款扫光，translateX 驱动） */
+.map-stat-pending {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  height: 26px;
+  width: 56px;
+  max-width: 80%;
+  margin: 0 auto;
+  border-radius: 8px;
+  background: #1b1713;
+}
+.map-stat-pending::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(232, 197, 107, 0.08),
+    transparent
+  );
+  animation: skeletonSweep 1.5s ease-in-out infinite;
 }
 .map-stat:nth-child(2) {
   animation-delay: 0.06s;
@@ -88,11 +150,22 @@
   padding: 6px 12px;
   border-radius: 999px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background-color 0.2s,
+    transform 0.15s;
+}
+.map-filters button:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: 2px;
+}
+.map-filters button:active {
+  transform: scale(0.98);
 }
 .map-filters button em {
   font-style: normal;
-  color: #a89a86; /* AA: 小字需 4.5:1，原 #6e655a 在深色底仅 ~3.1 */
+  color: #9a8f80; /* AA: 小字需 4.5:1，原更暗的灰褐在深底上仅约 3.1:1 */
   margin-left: 3px;
 }
 .map-filters button:hover {
@@ -126,24 +199,45 @@
 .map-wrap {
   position: relative;
   min-width: 0;
+  border: 1px solid rgba(232, 197, 107, 0.15);
+  border-radius: 12px;
+  padding: 14px;
+}
+.map-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9a8f80;
+  font-size: 14px;
+  letter-spacing: 2px;
 }
 .map-svg {
   width: 100%;
   height: auto;
-  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.4));
+  /* 入场：舆图整体展卷，一次成形，不逐省分批浮现（不使用整图 drop-shadow） */
+  animation: mapEnter 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  transform-origin: 50% 55%;
 }
-.map-prov {
-  stroke: #0e0c0a;
-  stroke-width: 1.2;
-  cursor: pointer;
-  transition: opacity 0.15s, stroke 0.15s, filter 0.2s;
-  /* 逐省浮现入场（delay 在 TSX 内联按序号递增） */
-  animation: provIn 0.5s ease backwards;
-}
-@keyframes provIn {
+@keyframes mapEnter {
   from {
     opacity: 0;
+    transform: translateY(10px) scale(0.982);
   }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* 省界交互只改 stroke：选中 2.4px 金、hover 2px 金；不做 brightness/saturate 滤镜 */
+.map-prov {
+  stroke: #1b1713;
+  stroke-width: 1.2;
+  cursor: pointer;
+  transition:
+    opacity 0.15s,
+    stroke 0.15s;
 }
 .map-prov:focus {
   outline: none;
@@ -151,37 +245,27 @@
 .map-prov:focus-visible {
   outline: none;
   stroke: #e8c56b;
-  stroke-width: 2.5;
+  stroke-width: 2.4;
 }
-.map-prov:hover {
+.map-prov.has-items:hover {
   stroke: #e8c56b;
   stroke-width: 2;
-  filter: brightness(1.5) drop-shadow(0 0 7px rgba(232, 197, 107, 0.4));
 }
 .map-prov.is-selected {
   stroke: #e8c56b;
   stroke-width: 2.4;
-  filter: brightness(1.35) drop-shadow(0 0 9px rgba(232, 197, 107, 0.5));
 }
 .map-prov:not(.has-items) {
   cursor: default;
 }
 .map-prov:not(.has-items):hover {
-  stroke: #0e0c0a;
-  stroke-width: 1.2;
-  filter: none;
-}
-/* 有数据省份的热力填充随筛选平滑过渡 */
-.map-prov {
-  transition:
-    fill 0.35s ease,
-    opacity 0.15s,
-    stroke 0.15s,
-    filter 0.2s;
+  opacity: 0.5;
 }
 
-/* 色阶图例 */
+/* 色阶图例：z-index 高于宣纸晕（::before z2），保证可读可点 */
 .map-legend {
+  position: relative;
+  z-index: 4;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -192,12 +276,13 @@
   margin-top: 4px;
 }
 .map-legend-label {
-  letter-spacing: 1px;
+  font-family: var(--font-kai);
+  letter-spacing: 2px;
 }
 .map-scale {
   display: inline-flex;
   border: 1px solid #2e2823;
-  border-radius: 4px;
+  border-radius: 8px;
   overflow: hidden;
 }
 .map-scale i {
@@ -206,7 +291,7 @@
   display: block;
 }
 .map-legend-note {
-  color: #a89a86;
+  color: #9a8f80;
 }
 
 /* 悬停提示卡 */
@@ -225,8 +310,9 @@
   flex-direction: column;
   gap: 2px;
   max-width: 260px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 20px rgba(20, 17, 15, 0.5);
   animation: tipIn 0.15s ease;
+  z-index: 4;
 }
 @keyframes tipIn {
   from {
@@ -235,8 +321,9 @@
   }
 }
 .map-tip strong {
+  font-family: var(--font-kai);
   font-size: 14px;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
 }
 .map-tip span {
   color: #c9bfae;
@@ -245,7 +332,7 @@
 
 /* 右侧数据栏 */
 .map-side {
-  background: #171310;
+  background: #1b1713;
   border: 1px solid #2e2823;
   border-radius: 12px;
   padding: 14px 16px;
@@ -278,9 +365,9 @@
   gap: 8px;
   font-size: 12px;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 2px 4px;
-  transition: background 0.15s;
+  transition: background-color 0.15s, transform 0.15s;
 }
 .map-rank li:hover,
 .map-cat:hover {
@@ -292,6 +379,15 @@
 .map-cat.active {
   background: rgba(176, 58, 46, 0.22);
 }
+.map-rank li:focus-visible,
+.map-cat:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: 2px;
+}
+.map-rank li:active,
+.map-cat:active {
+  transform: scale(0.98);
+}
 .rank-name {
   color: #c9bfae;
   white-space: nowrap;
@@ -300,16 +396,16 @@
 }
 .rank-bar {
   height: 8px;
-  background: #241f1b;
-  border-radius: 4px;
+  background: #1b1713;
+  border-radius: 8px;
   overflow: hidden;
   display: block;
 }
 .rank-bar i {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, #8f3529, #d0553f);
-  border-radius: 4px;
+  background: linear-gradient(90deg, #b03a2e, #e8c56b);
+  border-radius: 8px;
   transform-origin: left center;
   animation: barGrow 0.6s cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
 }
@@ -340,13 +436,14 @@
   padding: 0 16px;
 }
 .map-panel h2 {
+  font-family: var(--font-kai);
   font-size: 16px;
   color: #e8c56b;
   letter-spacing: 2px;
   margin: 14px 0 10px;
 }
 .map-empty {
-  color: #a89a86;
+  color: #9a8f80;
   font-size: 13px;
 }
 .map-items {
@@ -363,11 +460,21 @@
   border-radius: 12px;
   padding: 10px 12px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    transform 0.2s var(--ease-out),
+    border-color 0.2s,
+    background-color 0.2s;
 }
 .map-item:hover {
   border-color: #e8c56b;
   transform: translateY(-2px);
+}
+.map-item:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: 2px;
+}
+.map-item:active {
+  transform: translateY(-2px) scale(0.98);
 }
 .map-item-img {
   width: 58px;
@@ -401,13 +508,16 @@
 .map-all {
   margin-top: 12px;
   background: none;
-  border: 1px dashed #4a423a;
+  border: 1px dashed #3a332c;
   color: #c9bfae;
   font-size: 13px;
   padding: 9px 16px;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background-color 0.2s;
 }
 .map-all:hover {
   border-color: #e8c56b;
@@ -427,7 +537,8 @@
   display: flex;
   border: 1px solid #3a332c;
   border-radius: 999px;
-  overflow: hidden;
+  /* 不裁焦点金环；按钮自身已是全圆角 */
+  overflow: visible;
 }
 .map-views button {
   border: none;
@@ -437,11 +548,18 @@
   font-size: 13px;
   letter-spacing: 3px;
   cursor: pointer;
-  transition: color 0.2s, background 0.2s;
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+  border-radius: 999px;
+}
+.map-views button:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: 2px;
 }
 .map-views button.active {
   background: #b03a2e;
-  color: #fff;
+  color: #f3ece2;
 }
 .map-random {
   background: none;
@@ -452,14 +570,24 @@
   font-size: 13px;
   letter-spacing: 2px;
   cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s,
+    transform 0.15s;
+}
+.map-random:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: 2px;
+}
+.map-random:active {
+  transform: scale(0.98);
 }
 .map-random:hover {
   border-color: #e8c56b;
   background: #e8c56b14;
 }
 
-/* 方格视图：报纸天气图式省块 */
+/* 方格视图：报纸天气图式省块；小屏横向滑动，不挤压省块 */
 .map-grid-wrap {
   position: relative;
   min-width: 0;
@@ -481,12 +609,16 @@
   justify-content: center;
   gap: 3px;
   cursor: pointer;
-  color: #d8cfc0;
+  color: #c9bfae;
   font-family: inherit;
-  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    border-color 0.2s,
+    background-color 0.2s;
 }
 .map-tile span {
-  font-size: 12.5px;
+  font-family: var(--font-kai);
+  font-size: 13px;
   letter-spacing: 1px;
 }
 .map-tile em {
@@ -495,15 +627,26 @@
   color: #e8c56b;
 }
 .map-tile.no-data {
-  color: #a89a86;
+  color: #9a8f80;
 }
 .map-tile.no-data em {
-  color: #a89a86;
+  color: #9a8f80;
 }
-.map-tile:hover {
+.map-tile:not(:disabled):hover {
   transform: translateY(-3px);
   border-color: #e8c56b;
   z-index: 1;
+}
+.map-tile:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: 2px;
+}
+.map-tile:not(:disabled):active {
+  transform: scale(0.98);
+}
+.map-tile:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 .map-tile.is-selected {
   border-color: #e8c56b;
@@ -530,12 +673,13 @@
 }
 .map-tour-head h2 {
   margin: 0;
+  font-family: var(--font-kai);
   font-size: 15px;
   letter-spacing: 3px;
   color: #e8c56b;
 }
 .map-tour-head span {
-  font-size: 12.5px;
+  font-size: 13px;
   color: #9a8f80;
   letter-spacing: 1px;
 }
@@ -555,21 +699,31 @@
   padding: 10px;
   cursor: pointer;
   font-family: inherit;
-  transition: border-color 0.25s, transform 0.25s, background 0.25s;
+  transition:
+    border-color 0.25s,
+    transform 0.25s,
+    background-color 0.25s;
 }
 .map-tour-card:hover {
   border-color: #e8c56b;
   transform: translateY(-3px);
 }
+.map-tour-card:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: 2px;
+}
+.map-tour-card:active {
+  transform: scale(0.98);
+}
 .map-tour-card.active {
   border-color: #e8c56b;
-  background: #211a15;
+  background: #1b1713;
 }
 .map-tour-no {
   position: absolute;
   top: 14px;
   right: 16px;
-  font-family: var(--font-serif);
+  font-family: var(--font-kai);
   font-size: 13px;
   color: #e8c56b;
   letter-spacing: 1px;
@@ -583,8 +737,9 @@
   border-radius: 8px;
 }
 .map-tour-card strong {
+  font-family: var(--font-kai);
   color: #f3ece2;
-  font-size: 14.5px;
+  font-size: 14px;
   text-align: left;
   font-weight: 600;
 }
@@ -601,7 +756,7 @@
 .map-prov-line {
   margin: 0 0 10px;
   color: #c9bfae;
-  font-size: 13.5px;
+  font-size: 14px;
   letter-spacing: 1px;
 }
 .map-prov-cats {
@@ -614,8 +769,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 12.5px;
-  color: #b6ab9a;
+  font-size: 13px;
+  color: #9a8f80;
 }
 .map-prov-cat > span:first-child {
   width: 64px;
@@ -634,7 +789,7 @@
   display: block;
   margin: 16px auto 0;
   background: none;
-  border: 1px dashed #4a4137;
+  border: 1px dashed #3a332c;
   border-radius: 999px;
   color: #c9bfae;
   padding: 9px 22px;
@@ -672,10 +827,126 @@
   }
 }
 
+/* 小屏：工具条换行居中；方格视图横向滑动保省块尺寸；触控热区 ≥44（视图钮 ≥40） */
+@media (max-width: 720px) {
+  .map-tools {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  .map-grid-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 6px;
+  }
+  .map-grid {
+    min-width: 560px;
+  }
+  .map-filters button,
+  .map-random {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .map-views button {
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .map-all,
+  .map-next {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
 /* 省面板条目限流提示 */
 .map-items-note {
   margin: 8px 0 0;
-  font-size: 12.5px;
-  color: #8a8073;
+  font-size: 13px;
+  color: #9a8f80;
   letter-spacing: 1px;
+}
+
+/* ============================================================
+   中国韵味层：舆图宣纸晕 · 朱印 · 禹贡题款 · 灯火脉动
+   贴合暗墨底 #14110f，遵循 quieter 原则
+   ============================================================ */
+
+/* 舆图副题：禹贡九州（古典地理志典）*/
+.map-subtitle {
+  display: block;
+  font-family: var(--font-kai);
+  color: rgba(232, 197, 107, 0.5);
+  font-size: 11px;
+  letter-spacing: 4px;
+  margin-top: 4px;
+}
+
+/* 舆图宣纸晕：地图边缘融回 #14110f */
+.map-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -8%;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 55%,
+    rgba(20, 17, 15, 0.85) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* 朱印 · 舆图题款（hard edge 印章感）*/
+.map-seal {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #b03a2e;
+  color: #f3ece2;
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 700;
+  border-radius: 8px;
+  transform: rotate(-4deg);
+  opacity: 0.85;
+  box-shadow: 0 2px 0 #1b1713;
+  z-index: 3;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* （原 fixed + mix-blend 噪点层已移除：改由纯墨底承载，避免全屏合成开销） */
+
+/* 灯火省份脉动：最高两阶（灯火与描金）的省份微缓呼吸 */
+.map-prov.is-bright {
+  animation: lampBreath 4.5s ease-in-out infinite;
+}
+@keyframes lampBreath {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+/* Reduced-motion：关闭入场动效、灯火脉动、条形增长与提示浮入 */
+@media (prefers-reduced-motion: reduce) {
+  .map-svg,
+  .map-prov.is-bright,
+  .rank-bar i,
+  .map-tip {
+    animation: none;
+  }
 }

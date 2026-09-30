@@ -12,6 +12,7 @@ import { generateQuiz, type QuizResponse } from '../api/quiz'
 import { generateStory, type StoryResponse } from '../api/story'
 import { recordProgress } from '../api/progress'
 import { cleanLLM, stripEmojiDeep } from '../utils/text'
+import Motif from '../components/Motif'
 import '../styles/chat.css'
 
 type Mode = 'scholar' | 'inheritor' | 'youth'
@@ -30,7 +31,7 @@ const SHOWCASE: Record<
   scholar: {
     kanji: '读典',
     lede: '以文献与名录为据，一字一句讲求出处；不戏说、不附会，回答必附来源。',
-    points: ['史料考据，言必有据', '辨析源流与版本异说', '来源与证据分可溯'],
+    points: ['史料考据，言必有据', '辨析源流与版本异说', '来源与证据均可溯源'],
     example: '苏绣为什么被称为「针尖上的江南」？',
   },
   inheritor: {
@@ -41,7 +42,7 @@ const SHOWCASE: Record<
   },
   youth: {
     kanji: '潮传',
-    lede: '用故事、类比和网感表达，让非遗成为年轻人愿意转发的内容。',
+    lede: '用故事与网感表达，让年轻人主动转发。',
     points: ['通俗故事与生活类比', '面向同学与留学生的讲法', '给出可直接分享的表达'],
     example: '用三句话把京剧脸谱讲给外国朋友',
   },
@@ -63,6 +64,8 @@ interface Message {
   content: string
   data?: ChatResponse
   streaming?: boolean
+  /** 本轮回答失败：气泡以错误样式呈现并对读屏播报 */
+  failed?: boolean
 }
 
 /** 轻量排版：标题 / 列表 / 段落 / 强调，让长回答像文档而非聊天串。
@@ -218,7 +221,7 @@ function ModeScene({ mode }: { mode: Mode }) {
       {mode === 'inheritor' && (
         <g className="msc-ink">
           {/* 砧案与器皿 */}
-          <rect x="212" y="216" width="66" height="12" rx="2" />
+          <rect x="212" y="216" width="66" height="12" />
           <path d="M220 228 v22 M270 228 v22" className="msc-stalk" />
           <path d="M262 216 C262 206 264 202 269 202 C274 202 276 206 276 216 Z" />
           {/* 执锤匠人 */}
@@ -226,7 +229,7 @@ function ModeScene({ mode }: { mode: Mode }) {
           <circle cx="142" cy="188" r="12" />
           <circle cx="146" cy="173" r="5" />
           <path d="M154 214 L186 182" className="msc-arm" />
-          <rect x="171" y="175" width="30" height="13" rx="2.5" transform="rotate(45 186 182)" />
+          <rect x="171" y="175" width="30" height="13" transform="rotate(45 186 182)" />
           {/* 火星 */}
           <path d="M218 208 l4 6 -4 6 -4 -6z" className="msc-spark" />
           <path d="M230 198 l3 5 -3 5 -3 -5z" className="msc-spark" />
@@ -271,8 +274,8 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
     return 'youth'
   })
   /**
-   * 特写入场交给全局转场时序：vt-running 期间入场动画统一推迟 0.5s（=VT 时长），
-   * 快照里特写处于 from 态（旧页在其位置溶解），VT 结束正好接续淡入，无缝且不闪。
+   * 特写入场交给全局转场时序：vt-running 期间入场动画统一推迟 0.34s（VT 后段起跑），
+   * 真实 DOM 揭示时特写已在淡入进程中，与页面溶解连成一笔，不弹跳。
    * 手动切模式无 vt-running，按自身 --d 错峰即时播放。
    */
   /** 模式切换方向（正=向右），驱动特写卡入场方位 */
@@ -284,7 +287,35 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
   const [stories, setStories] = useState<Record<number, StoryResponse>>({})
   const [picks, setPicks] = useState<Record<string, string>>({})
   const [actionBusy, setActionBusy] = useState<string | null>(null)
+  /** 页内非阻断提示条（替代 alert），3.6 秒后自动消失 */
+  const [notice, setNotice] = useState('')
   const listRef = useRef<HTMLDivElement>(null)
+  const noticeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  /** 发送中的同步锁（loading 是状态、落库有延迟，挡不住同 tick 的双调） */
+  const sendingRef = useRef(false)
+
+  useEffect(
+    () => () => {
+      if (noticeTimerRef.current) clearTimeout(noticeTimerRef.current)
+    },
+    [],
+  )
+
+  function showNotice(msg: string) {
+    setNotice(msg)
+    if (noticeTimerRef.current) clearTimeout(noticeTimerRef.current)
+    noticeTimerRef.current = setTimeout(() => setNotice(''), 3600)
+  }
+
+  /** 抄录回答：写入剪贴板，成败都给一句纸面提示 */
+  async function copyAnswer(text: string) {
+    try {
+      await navigator.clipboard.writeText(text)
+      showNotice('回答已抄录，可粘贴至别处')
+    } catch {
+      showNotice('浏览器未允许复制，请手动选取文字')
+    }
+  }
 
   // 流式期间持续贴底，结束后停止接管
   useEffect(() => {
@@ -316,7 +347,10 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
   }
 
   async function send(text: string) {
-    if (!text || loading) return
+    // 同步防重：StrictMode 下挂载 effect 双跑会在 loading 落库前连发两路 SSE，
+    // 两路 delta 交错写进同一条气泡（出字重叠错乱）；ref 判定是同步的，可拦住
+    if (!text || sendingRef.current) return
+    sendingRef.current = true
     setMessages((prev) => [
       ...prev,
       { role: 'user', content: text },
@@ -325,6 +359,20 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
     setInput('')
     setLoading(true)
     let streamed = false
+    // delta 节流缓冲：SSE 每 1-3 字一个 chunk，若逐字 setState 会让整条消息
+    // （含 Markdown 全量重解析 + 证据链 JSX）每秒重渲染数十次，长回答越到后面越卡。
+    // 60ms 批量 flush 一次（约 16fps），出字观感依旧连贯，渲染量降约一个数量级。
+    let pending = ''
+    let lastFlush = 0
+    let flushTimer: ReturnType<typeof setTimeout> | null = null
+    const flush = () => {
+      flushTimer = null
+      if (!pending) return
+      const chunk = pending
+      pending = ''
+      lastFlush = performance.now()
+      patchLast((m) => ({ ...m, content: m.content + chunk }))
+    }
     try {
       await streamChat(
         { message: text, mode, session_id: sessionId },
@@ -340,15 +388,23 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
           },
           onDelta: (t) => {
             streamed = true
-            patchLast((m) => ({ ...m, content: m.content + t }))
+            pending += t
+            if (flushTimer === null) {
+              const wait = Math.max(0, 60 - (performance.now() - lastFlush))
+              flushTimer = setTimeout(flush, wait)
+            }
           },
           onDone: () => patchLast((m) => ({ ...m, streaming: false })),
         },
       )
+      if (flushTimer !== null) clearTimeout(flushTimer)
+      flush() // 收尾：保证最后一批字不丢失
       if (!streamed) throw new Error('流式连接中断')
       patchLast((m) => ({ ...m, streaming: false }))
     } catch (e) {
       // 流式不可用时回退一次性接口，保证功能不退化
+      if (flushTimer !== null) clearTimeout(flushTimer)
+      pending = ''
       try {
         const data = await sendChat({ message: text, mode, session_id: sessionId })
         setSessionId(data.session_id)
@@ -360,11 +416,13 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
       } catch {
         patchLast(() => ({
           role: 'assistant',
-          content: `出错了：${e instanceof Error ? e.message : '未知错误'}`,
+          content: `方才答话出了岔子，请稍候重试，或换个问法。（${e instanceof Error ? e.message : '未知错误'}）`,
           streaming: false,
+          failed: true,
         }))
       }
     } finally {
+      sendingRef.current = false
       setLoading(false)
     }
   }
@@ -396,11 +454,11 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
         const story = await generateStory(topic)
         setStories((prev) => ({ ...prev, [msgIndex]: stripEmojiDeep(story) }))
       } else if (action.type === 'lab') {
-        alert('请在顶部导航打开「活化实验室」')
+        showNotice('请在顶部导航打开「活化实验室」')
         return
       }
     } catch (e) {
-      alert(e instanceof Error ? e.message : '操作失败')
+      showNotice(e instanceof Error ? e.message : '操作失败')
     } finally {
       setActionBusy(null)
     }
@@ -450,7 +508,13 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
         </div>
       </header>
 
-      <div className="chat-list" ref={listRef}>
+      <div
+        className="chat-list"
+        ref={listRef}
+        role="log"
+        aria-live="polite"
+        aria-label="与承脉 AI 的对话记录"
+      >
         {messages.length === 0 && (
           <div
             className="mode-showcase"
@@ -484,16 +548,26 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
           </div>
         )}
         {messages.map((msg, i) => (
-          <div key={i} className={`bubble ${msg.role}`}>
+          <div
+            key={i}
+            className={`bubble ${msg.role}${msg.failed ? ' failed' : ''}`}
+            role={msg.failed ? 'alert' : undefined}
+          >
             {msg.role === 'user' ? (
               <div className="bubble-content">{msg.content}</div>
             ) : (
               <div className="answer">
                 <div className={`bubble-content${msg.streaming && !msg.content ? ' waiting' : ''}`}>
                   {msg.content ? (
-                    <div className="answer-text" key="text">
-                      {renderProse(msg.content)}
-                    </div>
+                    msg.streaming ? (
+                      <div className="answer-text chat-streaming-text" key="text">
+                        {msg.content}
+                      </div>
+                    ) : (
+                      <div className="answer-text" key="text">
+                        {renderProse(msg.content)}
+                      </div>
+                    )
                   ) : (
                     <span className="thinking" key="think">
                       <i className="think-dots" aria-hidden>
@@ -505,6 +579,22 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
                     </span>
                   )}
                 </div>
+
+                {/* 落款行：回答完毕后钤一方朱印，右侧附抄录按钮 */}
+                {!msg.streaming && msg.content && !msg.failed && (
+                  <div className="answer-sign">
+                    <button
+                      className="answer-copy"
+                      onClick={() => copyAnswer(msg.content)}
+                      aria-label="复制这段回答"
+                    >
+                      复制本答
+                    </button>
+                    <span className="answer-seal" aria-hidden>
+                      承
+                    </span>
+                  </div>
+                )}
 
                 {msg.data && (
                   <div className="bubble-meta">
@@ -558,7 +648,7 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
 
                     {plans[i] && (
                       <div className="plan-card">
-                        <div className="card-overline">学习路线 · 7 DAYS</div>
+                        <div className="card-overline">学习路线 · 7 天</div>
                         <div className="plan-title">「{plans[i].topic}」七日学习计划</div>
                         {plans[i].sources.length > 0 && (
                           <span className="plan-src">
@@ -587,7 +677,7 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
 
                     {quizzes[i] && (
                       <div className="quiz-card">
-                        <div className="card-overline">知识挑战 · QUIZ</div>
+                        <div className="card-overline">知识挑战</div>
                         <div className="plan-title">「{quizzes[i].topic}」随堂三问</div>
                         {quizzes[i].sources.length > 0 && (
                           <span className="plan-src">依据：{quizzes[i].sources.join('、')}</span>
@@ -635,7 +725,7 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
 
                     {stories[i] && (
                       <div className="story-card">
-                        <div className="card-overline">可传播故事 · STORY</div>
+                        <div className="card-overline">可传播故事</div>
                         <div className="plan-title">{stories[i].title}</div>
                         {stories[i].sections.map((s, si) => (
                           <div key={si} className="story-section">
@@ -663,17 +753,39 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
         ))}
       </div>
 
+      {notice && (
+        <div className="chat-notice" role="status">
+          {notice}
+        </div>
+      )}
+
       <footer className="chat-input">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+          onKeyDown={(e) => {
+            // 输入法组词期间（isComposing）不触发发送，避免回车确认候选词时误发
+            if (e.key === 'Enter' && !e.nativeEvent.isComposing) void handleSend()
+          }}
           placeholder="输入你想了解的非遗…"
+          aria-label="向承脉 AI 提问"
         />
         <button onClick={handleSend} disabled={loading}>
           发送
         </button>
       </footer>
+
+      {/* 墨竹双影：主色随问答模式流转（学者青碧/传承人朱红/青年描金），与模式卡片气质一致 */}
+      <Motif
+        kind="bamboo"
+        tone={
+          mode === 'scholar'
+            ? 'rgba(79, 143, 123, 0.5)'
+            : mode === 'inheritor'
+              ? 'rgba(176, 58, 46, 0.5)'
+              : 'rgba(232, 197, 107, 0.5)'
+        }
+      />
     </div>
   )
 }

@@ -1,0 +1,437 @@
+/* ============================================================
+   中华剪影（Motif）：内容列两侧留白处的水墨影戏
+   出场：毛笔逐笔描边（mf-draw）+ 墨色晕开（mf-ink）+ 整幅浮起（mf-side）
+   呼吸：各页专属微动（mf-idle-*），只动 transform/opacity
+   随行：滚动跟移 --scy 与指针视差 --sx/--sy 叠加于 .mf-svg
+   ============================================================ */
+
+.mf-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.mf-side {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 230px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: auto;
+  /* 出场：自纸下浮起 */
+  animation: mfSideIn 1.15s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.mf-side-left {
+  left: 0;
+}
+.mf-side-right {
+  right: 0;
+  animation-delay: 0.18s;
+}
+@keyframes mfSideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.mf-svg {
+  width: 100%;
+  height: 100%;
+  transform: translate(var(--sx, 0px), calc(var(--sy, 0px) + var(--scy, 0px)));
+  transition: transform 0.55s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.mf-side:focus-visible {
+  outline: none;
+}
+
+/* 各页配色（剪影主色），极低存在感 */
+.mf-opera {
+  color: rgba(232, 197, 107, 0.55);
+}
+.mf-bamboo {
+  color: rgba(79, 143, 123, 0.5);
+}
+.mf-steps {
+  color: rgba(176, 122, 60, 0.55);
+}
+/* 剪影主色过渡：承脉 AI 墨竹随问答模式平滑换色，不跳变 */
+.mf-layer {
+  transition: color 0.7s ease;
+}
+.mf-bamboo[style] {
+  color: var(--mf-tone, rgba(79, 143, 123, 0.5));
+}
+.mf-banner {
+  color: rgba(79, 143, 123, 0.52);
+}
+.mf-mountain {
+  color: rgba(201, 191, 174, 0.46);
+}
+.mf-lattice {
+  color: rgba(232, 197, 107, 0.5);
+}
+
+/* ===== 出场两式 ===== */
+/* 描边：笔锋自起笔走到收笔 */
+.mf-draw {
+  stroke: currentColor;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: mfDraw 1.05s cubic-bezier(0.45, 0.05, 0.25, 1) forwards;
+  animation-delay: var(--d, 0s);
+}
+@keyframes mfDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+/* 晕墨：色块自无到有，如墨渗入宣纸 */
+.mf-ink {
+  fill: currentColor;
+  opacity: 0;
+  animation: mfInkIn 1s ease-out forwards;
+  animation-delay: var(--d, 0.3s);
+}
+@keyframes mfInkIn {
+  0% {
+    opacity: 0;
+  }
+  55% {
+    opacity: calc(var(--o, 1) * 1.12);
+  }
+  100% {
+    opacity: var(--o, 1);
+  }
+}
+
+.mf-ribbon {
+  opacity: 0.5;
+}
+.mf-faint {
+  opacity: 0.45;
+}
+
+/* ===== 各页呼吸微动（idle） ===== */
+.mf-idle {
+  transform-box: fill-box;
+}
+/* 水袖：自肩起轻扬，双袖错拍 */
+.mf-idle-sleeve-l {
+  transform-origin: 92% 4%;
+  animation: mfSleeveL 6.8s ease-in-out 2.2s infinite alternate;
+}
+.mf-idle-sleeve-r {
+  transform-origin: 8% 4%;
+  animation: mfSleeveR 7.6s ease-in-out 2.6s infinite alternate;
+}
+@keyframes mfSleeveL {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(2.8deg);
+  }
+}
+@keyframes mfSleeveR {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-2.4deg);
+  }
+}
+/* 墨竹：整竿自根轻摇 */
+.mf-idle-sway {
+  transform-origin: 50% 100%;
+  animation: mfSway 8.5s ease-in-out 2s infinite;
+}
+@keyframes mfSway {
+  0%,
+  100% {
+    transform: rotate(-1.3deg);
+  }
+  50% {
+    transform: rotate(1.3deg);
+  }
+}
+/* 书山卷阶：星芒呼吸，足迹错拍轻吐 */
+.mf-idle-step-star {
+  transform-origin: center;
+  animation: mfStarPulse 4.8s ease-in-out 2.4s infinite;
+}
+@keyframes mfStarPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 1;
+  }
+}
+.mf-idle-step-dot-a {
+  animation: mfStepDotA 3.6s ease-in-out 2.2s infinite;
+}
+.mf-idle-step-dot-b {
+  animation: mfStepDotB 4.2s ease-in-out 2.8s infinite;
+}
+@keyframes mfStepDotA {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+@keyframes mfStepDotB {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.05);
+  }
+}
+/* 令旗：绕杆顶轻扬 */
+.mf-idle-banner {
+  transform-origin: 2% 6%;
+  animation: mfBannerWave 8s ease-in-out 2.2s infinite;
+}
+@keyframes mfBannerWave {
+  0%,
+  100% {
+    transform: rotate(-1.4deg) translateX(0);
+  }
+  50% {
+    transform: rotate(1.6deg) translateX(2px);
+  }
+}
+/* 飘带：自杆顶向屏外轻拂 */
+.mf-idle-tassel {
+  transform-origin: 100% 0%;
+  animation: mfStream 5.6s ease-in-out 1.8s infinite;
+}
+@keyframes mfStream {
+  0%,
+  100% {
+    transform: rotate(4deg) translateX(0);
+  }
+  50% {
+    transform: rotate(-5deg) translateX(-4px);
+  }
+}
+/* 飞鹤：凌空轻浮 */
+.mf-idle-crane {
+  animation: mfCraneBob 5.4s ease-in-out 2s infinite alternate;
+}
+@keyframes mfCraneBob {
+  from {
+    transform: translate(0, 0) rotate(-1deg);
+  }
+  to {
+    transform: translate(4px, -8px) rotate(1.5deg);
+  }
+}
+/* 梅花：三朵错拍轻颤 */
+.mf-idle-plum {
+  transform-origin: center;
+  animation: mfPlum 5.2s ease-in-out calc(2.4s + var(--d, 0s)) infinite;
+}
+@keyframes mfPlum {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.055);
+  }
+}
+/* 落瓣：一片循环飘坠 */
+.mf-petal-fall {
+  animation: mfPetalFall 7.5s ease-in 2.8s infinite;
+}
+@keyframes mfPetalFall {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.85;
+  }
+  68% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translate(-14px, 86px) rotate(44deg);
+    opacity: 0;
+  }
+}
+
+/* ===== 本体回应：点击时一式轻礼 ===== */
+.mf-burst .mf-svg {
+  animation: mfNod 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.mf-burst.mf-banner .mf-svg {
+  animation: mfBannerNod 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@keyframes mfNod {
+  0%,
+  100% {
+    transform: translate(var(--sx, 0px), calc(var(--sy, 0px) + var(--scy, 0px))) rotate(0deg);
+  }
+  32% {
+    transform: translate(var(--sx, 0px), calc(var(--sy, 0px) + var(--scy, 0px) - 6px))
+      rotate(-1.4deg);
+  }
+  64% {
+    transform: translate(var(--sx, 0px), calc(var(--sy, 0px) + var(--scy, 0px) + 3px))
+      rotate(1deg);
+  }
+}
+@keyframes mfBannerNod {
+  0%,
+  100% {
+    transform: translate(var(--sx, 0px), calc(var(--sy, 0px) + var(--scy, 0px))) rotate(0deg);
+  }
+  30% {
+    transform: translate(var(--sx, 0px), calc(var(--sy, 0px) + var(--scy, 0px))) rotate(-3.2deg);
+  }
+  66% {
+    transform: translate(var(--sx, 0px), calc(var(--sy, 0px) + var(--scy, 0px))) rotate(1.4deg);
+  }
+}
+/* 飞鹤：唯一起飞的本体 */
+.mf-crane {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.mf-burst .mf-crane {
+  animation: mfCraneUp 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes mfCraneUp {
+  0% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  45% {
+    transform: translate(10px, -34px) rotate(-6deg);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(-6px, -150px) rotate(3deg);
+    opacity: 0;
+  }
+}
+
+/* ===== 点击迸出的粒子（六种符号各不相同） ===== */
+.mf-particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  color: currentColor;
+  pointer-events: none;
+  opacity: 0;
+  animation: mfFly 1.25s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+@keyframes mfFly {
+  0% {
+    transform: translate(0, 0) scale(0.5) rotate(var(--rot));
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(var(--dx, 0), var(--dy, 0)) scale(1.05)
+      rotate(calc(var(--rot) + 140deg));
+    opacity: 0;
+  }
+}
+/* 水袖金粉：菱形 */
+.mf-p-diamond {
+  background: currentColor;
+  transform: rotate(45deg);
+  border-radius: 2px;
+}
+/* 竹叶：尖叶 */
+.mf-p-leaf {
+  width: 6px;
+  height: 12px;
+  background: currentColor;
+  border-radius: 100% 100% 4px 100%;
+}
+/* 纸页：轻飘的小书页，配书山卷阶 */
+.mf-p-page {
+  width: 7px;
+  height: 10px;
+  background: currentColor;
+  border-radius: 2px;
+  opacity: 0.85;
+}
+/* 令牌：小方印 */
+.mf-p-seal {
+  background: currentColor;
+  border-radius: 2px;
+}
+/* 鹤羽：长椭圆羽 */
+.mf-p-feather {
+  width: 5px;
+  height: 15px;
+  background: currentColor;
+  border-radius: 999px 999px 4px 4px;
+}
+/* 梅花：径向五晕 */
+.mf-p-bloom {
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  background: radial-gradient(circle, currentColor 0 22%, rgba(176, 58, 46, 0) 32%, transparent 72%);
+}
+
+/* 窄屏：留白不足，影戏收箱 */
+@media (max-width: 1180px) {
+  .mf-layer {
+    display: none;
+  }
+}
+
+/* 减弱动效：影戏化为纸上墨痕，终态可见，不描边、不摇、不迸粒子 */
+@media (prefers-reduced-motion: reduce) {
+  .mf-side,
+  .mf-draw,
+  .mf-ink,
+  .mf-idle,
+  .mf-petal-fall,
+  .mf-burst .mf-svg,
+  .mf-burst.mf-banner .mf-svg,
+  .mf-burst .mf-crane,
+  .mf-layer,
+  .mf-particle {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+  .mf-draw {
+    stroke-dashoffset: 0 !important;
+  }
+  .mf-ink {
+    opacity: var(--o, 1) !important;
+  }
+  .mf-particle {
+    display: none;
+  }
+}

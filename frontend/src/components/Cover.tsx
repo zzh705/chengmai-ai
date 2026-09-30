@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface CoverItem {
   image: string
@@ -11,9 +11,21 @@ interface CoverItem {
  */
 export default function Cover({ item, className }: { item: CoverItem; className: string }) {
   const [stage, setStage] = useState(0)
+  // 切换条目（item.image 变化）时回退状态归零，重新走三级回退
+  const imageRef = useRef(item.image)
+  useEffect(() => {
+    if (imageRef.current === item.image) return
+    imageRef.current = item.image
+    setStage(0)
+  }, [item.image])
+
   if (stage > 1) {
     return (
-      <div className={`${className} cover-fallback`} aria-hidden>
+      <div
+        className={`${className} cover-fallback`}
+        role="img"
+        aria-label={item.name}
+      >
         {item.name.slice(0, 1)}
       </div>
     )
@@ -25,6 +37,8 @@ export default function Cover({ item, className }: { item: CoverItem; className:
       src={src}
       alt={item.name}
       loading="lazy"
+      decoding="async"
+      style={{ background: '#1b1713' }}
       onError={() => setStage((s) => s + 1)}
     />
   )

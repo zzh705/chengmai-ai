@@ -8,7 +8,7 @@ const EMOJI_RE =
   // eslint-disable-next-line no-misleading-character-class
   /\p{Extended_Pictographic}|[\u{1F3FB}-\u{1F3FF}]|[\u{1F1E6}-\u{1F1FF}]|[\u{FE0E}\u{FE0F}\u{200D}\u{20E3}]|[\u{E0020}-\u{E007F}]/gu
 
-/** 去除 emoji、变体选择符、ZWJ、肤色与区域指示符（保留 → · — 等排版符号）。 */
+/** 去除 emoji、变体选择符、ZWJ、肤色与区域指示符（保留 → · 等排版符号）。 */
 export function stripEmoji(text: string): string {
   return text.replace(EMOJI_RE, '')
 }

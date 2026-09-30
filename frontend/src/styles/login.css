@@ -1,0 +1,560 @@
+/* 题名入馆：登录仪式页（暗墨底 · 描金 · 朱印盖章）*/
+.login-page {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 70% 46% at 50% -12%, rgba(176, 58, 46, 0.2), transparent),
+    radial-gradient(ellipse 60% 40% at 50% 116%, rgba(79, 143, 123, 0.1), transparent),
+    #14110f;
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.login-page.phase-signed {
+  opacity: 0;
+  transform: scale(1.025);
+  pointer-events: none;
+}
+.login-page .ember-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.7;
+}
+
+/* 浑天虚环：两层描金圆环极缓自转，刻度点静立 */
+.login-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.login-ring-outer,
+.login-ring-inner {
+  position: absolute;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+}
+.login-ring-outer {
+  width: 600px;
+  height: 600px;
+  border: 1px solid rgba(232, 197, 107, 0.14);
+  border-top-color: rgba(232, 197, 107, 0.4);
+  animation: loginRingSpin 80s linear infinite;
+}
+.login-ring-inner {
+  width: 420px;
+  height: 420px;
+  border: 1px dashed rgba(232, 197, 107, 0.1);
+  animation: loginRingSpin 60s linear infinite reverse;
+}
+@keyframes loginRingSpin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+.login-ring-tick {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(232, 197, 107, 0.35);
+}
+.login-ring-tick.t1 { transform: translate(-2.5px, -302px); }
+.login-ring-tick.t2 { transform: translate(297px, -2.5px); }
+.login-ring-tick.t3 { transform: translate(-2.5px, 297px); }
+.login-ring-tick.t4 { transform: translate(-307px, -2.5px); }
+
+/* 随指针的淡金墨晕 */
+.login-glow {
+  position: absolute;
+  left: var(--mx, 50%);
+  top: var(--my, 40%);
+  width: 420px;
+  height: 420px;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(232, 197, 107, 0.09), transparent 65%);
+  z-index: 1;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+
+/* 主舞台 */
+.login-stage {
+  position: relative;
+  z-index: 2;
+  width: calc(100% - 44px);
+  max-width: 400px;
+  text-align: center;
+}
+.login-head {
+  margin-bottom: 26px;
+}
+.login-kicker {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: #9a8f80;
+  animation: loginRise 0.7s 0.05s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.login-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 12px;
+  animation: loginRise 0.8s 0.14s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.login-title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 62px;
+  font-weight: 600;
+  letter-spacing: 14px;
+  text-indent: 14px;
+  color: #e8c56b;
+  text-shadow: 0 2px 24px rgba(232, 197, 107, 0.25);
+}
+.login-title-seal {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #b03a2e;
+  color: #f3ece2;
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0;
+  border-radius: 8px;
+  transform: rotate(-4deg);
+  box-shadow: 0 3px 12px rgba(176, 58, 46, 0.45);
+}
+.login-rule {
+  display: block;
+  width: 132px;
+  height: 2px;
+  margin: 16px auto 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, #e8c56b, transparent);
+  transform-origin: center;
+  animation: loginRuleGrow 0.9s 0.26s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes loginRuleGrow {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+.login-subtitle {
+  margin: 14px 0 0;
+  font-family: var(--font-kai);
+  font-size: 14px;
+  letter-spacing: 3px;
+  color: #c9bfae;
+  animation: loginRise 0.7s 0.32s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes loginRise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 题名纸 */
+.login-paper {
+  position: relative;
+  padding: 26px 26px 22px;
+  border: 1px solid rgba(232, 197, 107, 0.2);
+  border-radius: 12px;
+  background:
+    linear-gradient(160deg, rgba(232, 197, 107, 0.05), transparent 45%),
+    rgba(27, 23, 19, 0.86);
+  box-shadow: 0 24px 60px rgba(20, 17, 15, 0.45);
+  animation: loginRise 0.8s 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  transition: border-color 0.35s;
+}
+.login-paper:focus-within {
+  border-color: rgba(232, 197, 107, 0.5);
+}
+/* 入馆方式签：入馆 / 新客造册（纸上双签，金线作下划） */
+.login-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 18px;
+}
+.login-tabs button {
+  position: relative;
+  padding: 4px 2px 9px;
+  border: none;
+  background: transparent;
+  color: #9a8f80;
+  font-size: 13px;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: color 0.25s;
+}
+.login-tabs button::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: #e8c56b;
+  transform: translateX(-50%);
+  transition: width 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.login-tabs button.on {
+  color: #e8c56b;
+}
+.login-tabs button.on::after {
+  width: 100%;
+}
+.login-tabs button:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+.login-tabs button:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.login-label {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: #9a8f80;
+  margin-bottom: 10px;
+  text-align: left;
+}
+.login-input {
+  width: 100%;
+  padding: 10px 4px 12px;
+  border: none;
+  border-bottom: 1px solid #3a332c;
+  border-radius: 0;
+  background: transparent;
+  color: #f3ece2;
+  font-family: var(--font-kai);
+  font-size: 21px;
+  letter-spacing: 4px;
+  text-align: center;
+  transition: border-color 0.3s;
+}
+/* 实名制双栏：名号保书法气口，口令收敛字距 */
+.login-input-name {
+  font-size: 19px;
+}
+.login-input-pwd {
+  font-size: 15px;
+  letter-spacing: 2px;
+  margin-bottom: 2px;
+}
+/* 鼠标点击不残留焦点环，键盘焦点仍走全站 :focus-visible 金环 */
+.login-input:focus:not(:focus-visible) {
+  outline: none;
+}
+.login-input::placeholder {
+  color: #9a8f80;
+  letter-spacing: 2px;
+}
+.login-input:focus {
+  border-bottom-color: #e8c56b;
+}
+.login-input:disabled {
+  opacity: 0.7;
+}
+/* 聚焦时金线生长 */
+.login-brush {
+  display: block;
+  height: 2px;
+  width: 100%;
+  margin-top: -2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, #e8c56b, transparent);
+  transform: scaleX(0);
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.login-paper:focus-within .login-brush {
+  transform: scaleX(1);
+}
+.login-hint,
+.login-error {
+  margin: 12px 0 0;
+  font-size: 12px;
+  letter-spacing: 1px;
+  min-height: 16px;
+}
+.login-hint {
+  color: #9a8f80;
+}
+/* 错误不做小红字：纸色文字 + 朱红左条 */
+.login-error {
+  padding: 6px 10px;
+  text-align: left;
+  color: #c9bfae;
+  border-left: 2px solid #b03a2e;
+  background: rgba(176, 58, 46, 0.08);
+  border-radius: 0 8px 8px 0;
+}
+
+/* 朱印按钮：盖印的一瞬是整个仪式的落点 */
+.login-seal-btn {
+  position: relative;
+  display: block;
+  margin: 20px auto 0;
+  width: 132px;
+  height: 132px;
+  border: 4px double rgba(243, 236, 226, 0.6);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(243, 236, 226, 0.08), transparent 55%),
+    #b03a2e;
+  color: #f3ece2;
+  font-family: var(--font-serif);
+  font-size: 23px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-indent: 4px;
+  line-height: 1.35;
+  cursor: pointer;
+  transform: rotate(-4deg);
+  box-shadow:
+    inset 0 0 0 2px rgba(176, 58, 46, 0.9),
+    inset 0 2px 10px rgba(20, 17, 15, 0.35),
+    0 10px 30px rgba(176, 58, 46, 0.4);
+  transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
+  overflow: visible;
+  -webkit-tap-highlight-color: transparent;
+}
+.login-seal-btn:hover:not(:disabled) {
+  transform: rotate(-4deg) scale(1.05);
+}
+.login-seal-btn:active:not(:disabled) {
+  transform: rotate(-4deg) scale(0.96);
+}
+.login-seal-btn:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: 5px;
+}
+.login-seal-btn:disabled {
+  cursor: default;
+}
+.login-seal-face {
+  position: relative;
+  z-index: 2;
+}
+/* 盖章瞬间：印身下压 + 朱砂晕开 */
+.phase-stamping .login-seal-btn {
+  animation: sealPress 0.82s cubic-bezier(0.3, 0.9, 0.3, 1) forwards;
+}
+@keyframes sealPress {
+  0% {
+    transform: rotate(-4deg) scale(1);
+  }
+  28% {
+    transform: rotate(-2deg) scale(1.14);
+  }
+  46% {
+    transform: rotate(-7deg) scale(0.88);
+  }
+  68% {
+    transform: rotate(-4deg) scale(1.04);
+  }
+  100% {
+    transform: rotate(-4deg) scale(1);
+  }
+}
+.login-ink {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 60px;
+  height: 60px;
+  border-radius: 999px;
+  border: 2px solid rgba(232, 197, 107, 0.7);
+  transform: translate(-50%, -50%) scale(0);
+  pointer-events: none;
+  opacity: 0;
+}
+.phase-stamping .login-ink {
+  animation: inkBurst 0.82s ease-out forwards;
+}
+@keyframes inkBurst {
+  0% {
+    opacity: 0.85;
+    transform: translate(-50%, -50%) scale(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(4.2);
+  }
+}
+/* 盖印时纸面轻泛起朱砂色：伪元素静态朱晕，只动 opacity（不动画 border-color/box-shadow） */
+.login-paper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid rgba(176, 58, 46, 0.65);
+  box-shadow: inset 0 0 40px rgba(176, 58, 46, 0.18);
+  pointer-events: none;
+  opacity: 0;
+}
+.phase-stamping .login-paper::after {
+  animation: paperBlush 0.82s ease-out;
+}
+@keyframes paperBlush {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+}
+
+.login-guest {
+  display: block;
+  margin: 16px auto 0;
+  padding: 4px 10px;
+  border: none;
+  background: transparent;
+  color: #9a8f80;
+  font-size: 13px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: color 0.25s;
+}
+.login-guest:hover:not(:disabled) {
+  color: #e8c56b;
+}
+.login-guest:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+.login-foot {
+  margin: 24px 0 0;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #9a8f80;
+  animation: loginRise 0.7s 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@media (max-height: 720px) {
+  .login-ring-outer {
+    width: 440px;
+    height: 440px;
+  }
+  .login-ring-inner {
+    width: 300px;
+    height: 300px;
+  }
+  .login-title {
+    font-size: 48px;
+  }
+  .login-seal-btn {
+    width: 124px;
+    height: 124px;
+    font-size: 20px;
+  }
+}
+
+/* 矮屏横屏：允许纵向滚动，内容自顶部排起并压缩印章与间距，避免底部不可达 */
+@media (max-height: 600px) {
+  .login-page {
+    overflow-y: auto;
+    align-items: flex-start;
+    padding: 20px 0 28px;
+  }
+  .login-ring-outer {
+    width: 320px;
+    height: 320px;
+  }
+  .login-ring-inner {
+    width: 220px;
+    height: 220px;
+  }
+  .login-head {
+    margin-bottom: 12px;
+  }
+  .login-title {
+    font-size: 38px;
+  }
+  .login-title-seal {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+  .login-subtitle {
+    margin-top: 8px;
+  }
+  .login-paper {
+    padding: 18px 22px 16px;
+  }
+  .login-seal-btn {
+    width: 96px;
+    height: 96px;
+    margin-top: 14px;
+    font-size: 17px;
+    border-width: 3px;
+  }
+  .login-foot {
+    margin-top: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-ring-outer,
+  .login-ring-inner,
+  .login-rule,
+  .login-kicker,
+  .login-title-row,
+  .login-subtitle,
+  .login-paper,
+  .login-foot {
+    animation: none;
+  }
+  .login-kicker,
+  .login-title-row,
+  .login-rule,
+  .login-subtitle,
+  .login-paper,
+  .login-foot {
+    opacity: 1;
+    transform: none;
+  }
+  .login-glow {
+    display: none;
+  }
+  .phase-stamping .login-seal-btn,
+  .phase-stamping .login-paper,
+  .phase-stamping .login-paper::after {
+    animation: none;
+  }
+  .login-ink {
+    display: none;
+  }
+}

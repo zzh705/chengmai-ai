@@ -20,6 +20,9 @@ class CreationResult(BaseModel):
     ai_parts: list[str] = Field(default_factory=list, description="AI 可辅助部分")
     steps: list[str] = Field(default_factory=list, description="可实施步骤")
     guardrails: list[str] = Field(default_factory=list, description="不能随意改变的文化语义")
+    materials: list[str] = Field(default_factory=list, description="落地所需物料与资源准备")
+    risks: list[str] = Field(default_factory=list, description="执行风险与文化边界提醒")
+    metrics: list[str] = Field(default_factory=list, description="可量化的成效评估标尺")
 
 
 class CreationResponse(BaseModel):

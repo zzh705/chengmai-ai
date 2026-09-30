@@ -12,6 +12,10 @@ export default function CountUp({
 }) {
   const [n, setN] = useState(0)
   useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setN(value)
+      return
+    }
     let raf = 0
     const t0 = performance.now()
     const tick = (t: number) => {
@@ -22,5 +26,5 @@ export default function CountUp({
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
   }, [value, dur])
-  return <span className={className}>{n}</span>
+  return <span className={className} aria-label={String(value)}>{n}</span>
 }

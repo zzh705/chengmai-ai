@@ -9,6 +9,12 @@ export interface CreationResult {
   ai_parts: string[]
   steps: string[]
   guardrails: string[]
+  /** 落地物料与资源准备 */
+  materials?: string[]
+  /** 执行风险与文化边界 */
+  risks?: string[]
+  /** 可量化成效标尺 */
+  metrics?: string[]
 }
 
 export interface CreationResponse {

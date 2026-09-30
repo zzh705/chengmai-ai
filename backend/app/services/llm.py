@@ -43,9 +43,17 @@ def chat(
     history: list[dict] | None = None,
     system: str | None = None,
     temperature: float = 0.7,
+    timeout: float | None = None,
+    max_retries: int | None = None,
 ) -> str:
-    """发送一轮对话，返回模型回答文本。"""
-    resp = _get_client().chat.completions.create(
+    """发送一轮对话，返回模型回答文本。可覆盖超时与重试（结构化生成场景用短超时）。"""
+    client = _get_client()
+    if timeout is not None or max_retries is not None:
+        client = client.with_options(
+            timeout=timeout if timeout is not None else 45.0,
+            max_retries=max_retries if max_retries is not None else 2,
+        )
+    resp = client.chat.completions.create(
         model=os.getenv("LLM_MODEL", "qwen-plus"),
         messages=_build_messages(message, history, system),
         temperature=temperature,

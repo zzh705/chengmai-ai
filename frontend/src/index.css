@@ -4,17 +4,66 @@
 }
 
 :root {
-  /* 字体令牌：全站只用「黑体正文 / 宋体衬线 / 楷体点缀」三套，不再散落 6 种写法 */
+  /* 字体令牌：全站只用「黑体正文 / 宋体标题 / 楷体点缀」三套 */
   --font-sans: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   --font-serif: 'Songti SC', 'Noto Serif SC', serif;
   --font-display: Georgia, 'Songti SC', serif;
   --font-kai: 'Kaiti SC', 'KaiTi', 'STKaiti', serif;
+
+  /* 色板令牌（品牌红线，全站只许取此阶） */
+  --ink: #14110f; /* 暗墨底 */
+  --ink-1: #1b1713; /* 卡片底 */
+  --ink-2: #2e2823; /* 分隔线/弱边 */
+  --ink-3: #3a332c; /* 描边 */
+  --ink-faint: #9a8f80; /* 次要文字 */
+  --ink-soft: #c9bfae; /* 正文米字 */
+  --paper: #f3ece2; /* 高亮文字 */
+  --gold: #e8c56b; /* 描金 */
+  --vermilion: #b03a2e; /* 朱红/印章 */
+  --jade: #4f8f7b; /* 青碧 */
+
+  /* 矿彩数据阶：仅用于环形图/热力等分类数据可视化，不用于 UI 控件 */
+  --viz-vermilion: #b03a2e;
+  --viz-gold: #e8c56b;
+  --viz-jade: #4f8f7b;
+  --viz-indigo: #56688f; /* 黛蓝 */
+  --viz-purple: #965880; /* 绛紫 */
+  --viz-ochre: #b0743c; /* 赭石 */
+  --viz-pine: #65855a; /* 松绿 */
+
+  /* 圆角阶：只许 8 / 12 / 999 三档 */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-pill: 999px;
+
+  /* 动效令牌：位移/淡入一律走这两条曲线，颜色类反馈瞬切或 0.15-0.2s，不做长动画 */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.3, 1);
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* z-index 阶：内容 0 / 角饰 5 / 回纹罩 60 / 金线 70 / 跳链 90 / 弹层另注 */
+  --z-content: 0;
+  --z-corner: 5;
+  --z-weave: 60;
+  --z-route: 70;
+  --z-skip: 90;
+
+  color-scheme: dark;
+}
+
+html {
+  /* Firefox 滚动条入板 */
+  scrollbar-color: #3a332c #14110f;
 }
 
 body {
   margin: 0;
   background: #14110f;
+  color: #f3ece2;
   font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 /* 表单控件与按钮必须继承字体栈，否则 Chrome 会回落到 UA 默认 Arial（数字/拉丁与正文不一致）；
@@ -44,7 +93,7 @@ textarea {
   content: '';
   position: fixed;
   inset: 0;
-  z-index: 60;
+  z-index: var(--z-weave);
   pointer-events: none;
   opacity: 0.05;
   background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='56'%20height='56'%3E%3Cg%20fill='none'%20stroke='%23e8c56b'%20stroke-width='1.2'%3E%3Cpath%20d='M8%208h40v40H16V16h24v24'/%3E%3C/g%3E%3C/svg%3E");
@@ -56,7 +105,7 @@ textarea {
   align-items: center;
   gap: 16px;
   padding: 8px 16px;
-  background: #0e0c0a;
+  background: #14110f;
   border-bottom: 1px solid #2e2823;
 }
 .app-brand {
@@ -65,17 +114,20 @@ textarea {
   justify-content: center;
   width: 40px;
   height: 40px;
+  padding: 0;
   background: #b03a2e;
-  color: #f7ead2;
-  font-size: 14px;
+  color: #f3ece2;
+  font-family: var(--font-serif);
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 1px;
-  border-radius: 7px;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
   transform: rotate(-4deg);
   flex-shrink: 0;
   box-shadow: 0 3px 12px rgba(176, 58, 46, 0.4);
-  transition: transform 0.2s;
+  transition: transform 0.2s var(--ease-out);
 }
 .app-brand:hover {
   transform: rotate(0deg) scale(1.06);
@@ -83,20 +135,30 @@ textarea {
 .app-nav-links {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 8px;
+  flex-wrap: nowrap;
+  gap: 5px;
   flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.app-nav-links::-webkit-scrollbar {
+  display: none;
 }
 .app-nav button {
-  padding: 8px 18px;
+  padding: 7px 13px;
   border: 1px solid #3a332c;
   border-radius: 8px;
   background: transparent;
   color: #c9bfae;
   font-size: 14px;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background-color 0.2s;
+  flex: none;
+  white-space: nowrap;
 }
 .app-nav button:hover {
   border-color: #e8c56b;
@@ -105,7 +167,7 @@ textarea {
 .app-nav button.active {
   background: #b03a2e;
   border-color: #b03a2e;
-  color: #fff;
+  color: #f3ece2;
   box-shadow: 0 4px 14px rgba(176, 58, 46, 0.35);
   animation: none;
 }
@@ -117,7 +179,7 @@ textarea {
   flex-direction: column;
 }
 
-/* 页面切换动效：上浮 + 方向位移 + 轻微缩放 + 柔焦消散（方向由 --vt-x 驱动） */
+/* 页面切换动效：上浮 + 方向位移 + 轻微缩放（方向由 --vt-x 驱动，仅用合成层属性） */
 .page-transition {
   flex: 1;
   min-height: 0;
@@ -129,15 +191,10 @@ textarea {
   from {
     opacity: 0;
     transform: translate(calc(var(--vt-x, 34px) * 0.45), 16px) scale(0.995);
-    filter: blur(5px);
-  }
-  55% {
-    filter: blur(0);
   }
   to {
     opacity: 1;
     transform: none;
-    filter: blur(0);
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -159,16 +216,16 @@ textarea {
   animation-duration: var(--vt-dur, 0.5s);
   animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-/* 旧页与新页同时长、同缓动互补溶解（经典 dissolve）：背景同色不闪暗、不做双重曝光糊叠 */
+/* 旧页纯粹快速淡出（不推近、不位移）：避免旧页内容放大压向新页造成两页相撞的错觉 */
 ::view-transition-old(page-area) {
   animation-name: vtPageOut;
+  animation-duration: 0.3s;
 }
 ::view-transition-new(page-area) {
   animation-name: var(--vt-new-in, vtInRise);
 }
 @keyframes vtPageOut {
   to {
-    transform: scale(1.03);
     opacity: 0;
   }
 }
@@ -193,8 +250,7 @@ textarea {
 @keyframes vtInInk {
   from {
     opacity: 0;
-    transform: scale(1.03);
-    filter: blur(12px);
+    transform: scale(1.04);
   }
 }
 @keyframes vtInLift {
@@ -203,14 +259,15 @@ textarea {
     transform: translateY(28px) scale(0.985);
   }
 }
-/* VT 期间页面处于静态快照：把入口动画推迟到转场结束后再播，避免定格跳变 */
+/* VT 期间页面处于静态快照：内容动画推迟到转场后段起跑（0.34s），
+   真实 DOM 揭示时内容已在 20% 左右的淡入进程中，与页面溶解连成一笔，不弹跳 */
 .vt-running .page-transition *,
 .vt-running .page-transition *::before,
 .vt-running .page-transition *::after {
-  animation-delay: 0.5s !important;
+  animation-delay: 0.34s !important;
 }
 .vt-running .page-transition .reveal {
-  transition-delay: 0.5s !important;
+  transition-delay: 0.34s !important;
 }
 .has-vt .route-bar {
   animation-delay: 0.45s;
@@ -227,7 +284,7 @@ textarea {
   left: 0;
   right: 0;
   height: 2px;
-  z-index: 70;
+  z-index: var(--z-route);
   pointer-events: none;
   transform-origin: left center;
   background: linear-gradient(
@@ -260,7 +317,9 @@ textarea {
 /* 页面主标题：全站统一规格（正文页 26px / 移动 20px，hero 另行覆盖），
    各页 CSS 不再各自声明字号与字距，避免 34/28/26/24/22px 五套并存 */
 .app-body h1 {
+  font-family: var(--font-serif);
   font-size: 26px;
+  font-weight: 600;
   letter-spacing: 5px;
 }
 
@@ -272,7 +331,7 @@ textarea {
   height: 3px;
   margin: 10px auto 0;
   background: linear-gradient(90deg, transparent, #e8c56b, transparent);
-  border-radius: 2px;
+  border-radius: 999px;
   transform-origin: center;
   animation: h1Line 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.15s both;
 }
@@ -292,8 +351,9 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #3a2a26, #1b1713 60%, #24312f);
+  background: linear-gradient(135deg, #2e2823, #1b1713 60%, rgba(79, 143, 123, 0.18));
   color: #e8c56b;
+  font-family: var(--font-serif);
   font-size: 44px;
   font-weight: 700;
   letter-spacing: 4px;
@@ -308,25 +368,30 @@ textarea {
   }
 }
 
-/* 骨架屏：数据到达前占位，避免首屏空白/跳动（全站共享） */.skeleton {
-  background: linear-gradient(
-    90deg,
-    #1b1713 20%,
-    #2a241e 45%,
-    #352e26 50%,
-    #2a241e 55%,
-    #1b1713 80%
-  );
-  background-size: 220% 100%;
-  animation: skeletonShimmer 1.5s ease-in-out infinite;
+/* 骨架屏：数据到达前占位，避免首屏空白/跳动（全站共享）。
+   微光只用 transform 平移扫过，不逐帧重绘背景，且色值全部取自板色。 */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #1b1713;
   border-radius: 8px;
 }
-@keyframes skeletonShimmer {
-  from {
-    background-position: 120% 0;
-  }
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(232, 197, 107, 0.08),
+    transparent
+  );
+  animation: skeletonSweep 1.5s ease-in-out infinite;
+}
+@keyframes skeletonSweep {
   to {
-    background-position: -120% 0;
+    transform: translateX(100%);
   }
 }
 
@@ -336,7 +401,7 @@ textarea {
   height: 9px;
 }
 ::-webkit-scrollbar-track {
-  background: #0e0c0a;
+  background: #14110f;
 }
 ::-webkit-scrollbar-thumb {
   background: #3a332c;
@@ -348,18 +413,18 @@ textarea {
 
 ::selection {
   background: rgba(176, 58, 46, 0.6);
-  color: #fff;
+  color: #f3ece2;
 }
 
-/* 桌面窄宽（1024-1240）：收紧导航间距，保证 10 项仍在单行内（不折行） */
+/* 桌面窄宽（1024-1240）：进一步收紧导航间距 */
 @media (max-width: 1240px) {
   .app-nav button {
-    padding: 6px 10px;
+    padding: 6px 9px;
     font-size: 12px;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
   }
   .app-nav-links {
-    gap: 4px;
+    gap: 3px;
   }
 }
 
@@ -399,7 +464,7 @@ textarea {
   .app-nav button {
     flex: none;
     padding: 6px 12px;
-    font-size: 12.5px;
+    font-size: 13px;
     letter-spacing: 1px;
   }
   .app-body {
@@ -422,7 +487,7 @@ textarea {
   position: fixed;
   top: 8px;
   left: 8px;
-  z-index: 90;
+  z-index: var(--z-skip);
   padding: 10px 16px;
   background: #e8c56b;
   color: #14110f;
@@ -534,7 +599,6 @@ textarea {
   from {
     opacity: 0;
     transform: translateY(22px);
-    filter: blur(8px);
   }
 }
 
@@ -578,7 +642,7 @@ textarea {
   left: -40%;
   width: 34%;
   height: 200%;
-  background: linear-gradient(100deg, transparent, rgba(255, 244, 220, 0.32), transparent);
+  background: linear-gradient(100deg, transparent, rgba(243, 236, 226, 0.22), transparent);
   transform: rotate(16deg) translateX(-140%);
   transition: transform 0.75s cubic-bezier(0.3, 0.6, 0.2, 1);
   pointer-events: none;
@@ -596,7 +660,7 @@ textarea {
   position: fixed;
   inset: 74px 26px 24px;
   pointer-events: none;
-  z-index: 5;
+  z-index: var(--z-corner);
 }
 .zh-corner i {
   position: absolute;

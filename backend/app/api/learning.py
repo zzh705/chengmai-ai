@@ -11,7 +11,8 @@ router = APIRouter(prefix="/api", tags=["learning"])
 
 @router.post("/learning-plan", response_model=LearningPlanResponse)
 def learning_plan(req: LearningPlanRequest) -> LearningPlanResponse:
-    """生成学习路径：知识库检索 → LLM 规划 → 结构化返回。"""
-    days = generate_plan(req)
-    sources = [it["name"] for it in knowledge_search(req.topic, top_k=2)]
+    """生成学习路径：知识库检索 → LLM 规划（失败有兜底）→ 结构化返回。"""
+    items = knowledge_search(req.topic, top_k=2)
+    days = generate_plan(req, items)
+    sources = [it["name"] for it in items]
     return LearningPlanResponse(topic=req.topic, days=days, sources=sources)

@@ -4,7 +4,7 @@
   inset: 0;
   z-index: 100;
   transition: opacity 0.34s ease;
-  background: radial-gradient(ellipse at center, #191410 0%, #0e0c0a 70%);
+  background: radial-gradient(ellipse at center, #1b1713 0%, #14110f 70%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -27,24 +27,24 @@
   justify-content: center;
 }
 
-/* 卷轴金线：从中心向两侧展开 */
+/* 卷轴金线：定宽 + scaleX 从中心展开（不动画 width） */
 .splash-line {
   position: absolute;
   top: 96px;
   left: 50%;
   height: 2px;
-  width: 0;
-  transform: translateX(-50%);
+  width: min(460px, 82vw);
+  transform: translateX(-50%) scaleX(0);
   background: linear-gradient(90deg, transparent, #e8c56b 15%, #e8c56b 85%, transparent);
   animation: lineGrow 0.8s cubic-bezier(0.2, 0.9, 0.3, 1) 0.15s forwards;
 }
 @keyframes lineGrow {
   to {
-    width: 100%;
+    transform: translateX(-50%) scaleX(1);
   }
 }
 
-/* 品牌字：由模糊收拢显现 */
+/* 品牌字：由微缩状态收拢显现（只动 opacity + transform，不用 blur） */
 .splash-word {
   font-size: 64px;
   font-weight: 700;
@@ -52,14 +52,12 @@
   text-indent: 26px;
   color: #f3ece2;
   opacity: 0;
-  filter: blur(10px);
   transform: scale(1.15);
   animation: wordIn 0.9s ease 0.75s forwards;
 }
 @keyframes wordIn {
   to {
     opacity: 1;
-    filter: blur(0);
     transform: scale(1);
   }
 }
@@ -75,7 +73,7 @@
   align-items: center;
   justify-content: center;
   background: #b03a2e;
-  color: #f7ead2;
+  color: #f3ece2;
   font-size: 17px;
   font-weight: 700;
   letter-spacing: 2px;
@@ -127,17 +125,27 @@
   background: none;
   border: 1px solid #3a332c;
   color: #9a8f80;
-  font-size: 12.5px;
+  font-size: 13px;
   padding: 8px 16px;
   border-radius: 999px;
   cursor: pointer;
-  transition: all 0.2s;
+  /* 入场动画结束前不可点、不可聚焦（tabIndex 由组件同步控制） */
+  pointer-events: none;
+  transition:
+    opacity 0.2s,
+    transform 0.2s,
+    border-color 0.2s,
+    color 0.2s;
   opacity: 0;
   animation: subIn 0.5s ease 1.2s forwards;
+}
+.splash-skip.ready {
+  pointer-events: auto;
 }
 .splash-skip:hover {
   border-color: #e8c56b;
   color: #e8c56b;
+  transform: translateY(-1px);
 }
 
 /* 星火粒子层（首页 Hero 背景） */
@@ -177,4 +185,33 @@
 .splash.leaving .splash-stage {
   transform: scale(1.05);
   transition: transform 0.34s ease;
+}
+
+/* 本页减弱动效双保险（组件此时已直接 return null，仅兜底静态样式） */
+@media (prefers-reduced-motion: reduce) {
+  .splash,
+  .splash-line,
+  .splash-word,
+  .splash-seal,
+  .splash-sub,
+  .splash-skip {
+    animation: none;
+  }
+  .splash-line {
+    transform: translateX(-50%) scaleX(1);
+  }
+  .splash-word,
+  .splash-seal,
+  .splash-sub,
+  .splash-skip {
+    opacity: 1;
+    transform: none;
+  }
+  .splash-skip {
+    pointer-events: auto;
+  }
+  .splash.leaving,
+  .splash.leaving .splash-stage {
+    transition: none;
+  }
 }

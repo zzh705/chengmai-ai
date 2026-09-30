@@ -11,10 +11,30 @@ import { startAmbient, stopAmbient } from '../utils/ambient'
 import { speechSupported, speak, stopSpeaking } from '../utils/speech'
 import Cover from '../components/Cover'
 import { useRevealGroup } from '../hooks/useReveal'
+import Motif from '../components/Motif'
 import '../styles/knowledge.css'
 
 interface Credit {
   license?: string
+  source?: string
+}
+
+/** credits.json 来源代码 → 展示署名（与 About 页图片管线声明一一对应） */
+const SOURCE_LABEL: Record<string, string> = {
+  commons: 'Wikimedia Commons',
+  'commons-pool': 'Wikimedia Commons',
+  openverse: 'Openverse',
+  met: '大都会艺术博物馆 Open Access',
+  cleveland: '克利夫兰艺术博物馆 Open Access',
+  'dashscope-wanx-ai': 'AI 生成示意图 · 阿里云通义万相（非实景照片）',
+}
+
+function creditText(c: Credit): string {
+  if (c.source === 'dashscope-wanx-ai') {
+    return 'AI 生成示意图，非实景'
+  }
+  const platform = (c.source && SOURCE_LABEL[c.source]) || 'Wikimedia Commons'
+  return `图片 · ${platform}${c.license ? ` · ${c.license}` : ''}`
 }
 
 /** 卡片键盘激活：Enter/空格触发，与 click 等价 */
@@ -25,13 +45,17 @@ const onActivate = (e: KeyboardEvent, fn: () => void) => {
   }
 }
 
-/** 正文中的解释性破折号改为冒号（文案硬禁：——） */
-const clean = (s: string) => s.replace(/——/g, '：')
+/** 正文中的解释性破折号改为冒号（文案硬禁 em/en dash，兼容连续多个） */
+const clean = (s: string) => s.replace(/[—–]+/g, '：')
 
-/** 数字亮点：挂载后 0 → value 缓动滚动（easeOutCubic） */
+/** 数字亮点：挂载后 0 → value 缓动滚动（easeOutCubic）；reduced-motion 直出终值 */
 function WowNum({ value, suffix, label }: WowNumber) {
+  const prefersReduced =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const [n, setN] = useState(0)
   useEffect(() => {
+    if (prefersReduced) return
     let raf = 0
     const t0 = performance.now()
     const tick = (t: number) => {
@@ -41,11 +65,11 @@ function WowNum({ value, suffix, label }: WowNumber) {
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [value])
+  }, [prefersReduced, value])
   return (
     <div className="kb-wow-item">
       <em>
-        {n}
+        {prefersReduced ? value : n}
         <i>{suffix}</i>
       </em>
       <span>{label}</span>
@@ -93,12 +117,19 @@ export default function Knowledge({
     [],
   )
 
+  // 列表拉取独立成函数：错误态「重试」按钮复用
+  function loadList() {
+    setError('')
+    fetchHeritageList().then(setList).catch((e) => setError(`知识库暂未取到，请稍后重试（${e instanceof Error ? e.message : '网络异常'}）`))
+  }
+
   useEffect(() => {
-    fetchHeritageList().then(setList).catch((e) => setError(e.message))
+    loadList()
     fetch('/images/heritage/credits.json')
       .then((r) => (r.ok ? r.json() : {}))
       .then(setCredits)
       .catch(() => setCredits({}))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // 项目 id → 直达详情（异步 setState，挂载时只跑一次）
@@ -174,10 +205,13 @@ export default function Knowledge({
   if (detail) {
     const credit = credits[detail.id]
     const cat0 = detail.category.split(' · ')[0]
-    // 相关推荐：同类别优先，不足则同地域补足，最多三张
+    // 相关推荐：同类别优先，不足则同地域补足，最多三张；图与实物不符的项不进推荐位
     const related = (() => {
       const sameCat = list.filter(
-        (h) => h.id !== detail.id && h.category.split(' · ')[0] === cat0,
+        (h) =>
+          h.id !== detail.id &&
+          h.has_image !== false &&
+          h.category.split(' · ')[0] === cat0,
       )
       const sameRegion =
         sameCat.length >= 3
@@ -185,6 +219,7 @@ export default function Knowledge({
           : list.filter(
               (h) =>
                 h.id !== detail.id &&
+                h.has_image !== false &&
                 !sameCat.some((s) => s.id === h.id) &&
                 h.region.includes(detail.region.split('（')[0].slice(0, 2)),
             )
@@ -197,11 +232,7 @@ export default function Knowledge({
             ← 返回列表
           </button>
           <Cover item={detail} className="kb-detail-cover" />
-          {credit && (
-            <div className="kb-cover-credit">
-              图片：Wikimedia Commons · {credit.license || 'CC'}
-            </div>
-          )}
+          {credit && <div className="kb-cover-credit">{creditText(credit)}</div>}
           <h1>
             {detail.name}
             <span className="kb-level">{detail.level}</span>
@@ -219,17 +250,17 @@ export default function Knowledge({
               </button>
             )}
             <button className={bgm ? 'on' : ''} onClick={toggleBgm}>
-              {bgm ? '背景音 · 开' : '背景音 · 关'}
+              {bgm ? '背景音：开' : '背景音：关'}
             </button>
             {onNavigate && (
               <button
                 className="kb-audio-ai"
                 onClick={() => onNavigate('chat', `深入讲讲${detail.name}`)}
               >
-                让承脉 AI 把这项聊透
+                向承脉 AI 深入提问
               </button>
             )}
-            {speaking && <span className="kb-audio-hint">正在为你朗读钩子与故事</span>}
+            {speaking && <span className="kb-audio-hint">朗读中</span>}
           </div>
 
           {/* 悬念钩子：详情页第一记视觉重拳 */}
@@ -340,8 +371,7 @@ export default function Knowledge({
             <section className="reveal">
               <h3>条目来源</h3>
               <p className="kb-src-note">
-                文化和旅游部 · 中国非物质文化遗产网国家级名录条目，简介由承脉 AI
-                依据名录信息简述，深读档案另附完整证据链。
+                文化和旅游部 · 中国非物质文化遗产网国家级名录条目，简介据名录整理，证据链见档案。
               </p>
             </section>
           )}
@@ -364,6 +394,7 @@ export default function Knowledge({
             </section>
           )}
         </div>
+        <Motif kind="mountain" />
       </div>
     )
   }
@@ -380,6 +411,7 @@ export default function Knowledge({
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
           placeholder="搜索名称 / 类别 / 地域…"
+          aria-label="搜索非遗项目"
         />
         {/* 类别筛选：全部 + 各大类 */}
         {list.length > 0 && (
@@ -396,7 +428,14 @@ export default function Knowledge({
           </div>
         )}
       </header>
-      {error && <div className="kb-error">{error}</div>}
+      {error && (
+        <div className="kb-error" role="alert">
+          <p>{error}</p>
+          <button className="kb-retry" onClick={loadList}>
+            重试
+          </button>
+        </div>
+      )}
       <div className="kb-cards">
         {/* 数据未到时用骨架卡占位，形状与真实卡片一致，避免首屏空白 */}
         {list.length === 0 &&
@@ -437,9 +476,10 @@ export default function Knowledge({
       </div>
       {filtered.length > shown && (
         <button className="kb-more" onClick={() => setShown((s) => s + 60)}>
-          加载更多 · 还有 {filtered.length - shown} 项
+          加载更多（剩 {filtered.length - shown} 项）
         </button>
       )}
+      <Motif kind="mountain" />
     </div>
   )
 }

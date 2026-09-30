@@ -1,15 +1,12 @@
-/* 知识图谱页 · 星空星座图 */
+/* 非遗族谱页 · 径向类书目录 */
 .graph-page {
   display: flex;
   flex-direction: column;
   height: 100%;
   color: #f3ece2;
   position: relative;
-  /* 夜空：墨底 + 靛/朱双晕 + 中心一点青晕，靠 canvas 星云与星尘造纵深 */
-  background:
-    radial-gradient(ellipse 70% 55% at 50% 38%, rgba(74, 157, 143, 0.07), transparent 72%),
-    radial-gradient(ellipse 45% 40% at 85% 80%, rgba(176, 58, 46, 0.05), transparent 70%),
-    #12100e;
+  /* 纯墨底：族谱如古卷，去星空渐变与噪点覆层 */
+  background: #14110f;
   overflow: hidden;
 }
 
@@ -18,19 +15,45 @@
   border-bottom: 1px solid #2e2823;
   text-align: center;
   position: relative;
-  z-index: 6;
+  z-index: 2;
   flex: none;
+  background: rgba(20, 17, 15, 0.92);
 }
-.graph-header h1 {
+/* 头部：标题与统计同行（卷首题签式），图例与搜索同为工具行，压缩纵向留白给画布 */
+.graph-header-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.graph-header-top h1 {
   margin: 0;
-
-
+  font-family: var(--font-serif);
+  font-size: 24px;
   color: #e8c56b;
+  letter-spacing: 6px;
+  font-weight: 500;
 }
-.graph-header p {
-  margin: 6px 0 10px;
+.graph-header-sep {
+  width: 1px;
+  height: 14px;
+  align-self: center;
+  background: #3a332c;
+}
+.graph-header-top p {
+  margin: 0;
   color: #9a8f80;
   font-size: 13px;
+  letter-spacing: 1px;
+}
+.graph-tools {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 20px;
+  flex-wrap: wrap;
+  margin-top: 10px;
 }
 
 .graph-legend {
@@ -39,21 +62,21 @@
   gap: 8px 14px;
   align-items: center;
   font-size: 12px;
-  color: #b6ab9a;
+  color: #9a8f80;
   flex-wrap: wrap;
 }
 .graph-legend i {
   display: inline-block;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
   vertical-align: middle;
-  box-shadow: 0 0 6px currentColor;
 }
 .graph-legend-item {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  min-height: 32px;
   padding: 3px 11px;
   border: 1px solid transparent;
   border-radius: 999px;
@@ -63,46 +86,61 @@
   font-size: 12px;
   letter-spacing: 1px;
   cursor: pointer;
-  transition: all 0.2s;
-}
-.graph-legend-item em {
-  font-style: normal;
-  font-size: 12px;
-  color: #a89a86;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background-color 0.2s,
+    transform 0.15s;
 }
 .graph-legend-item:hover {
   border-color: rgba(232, 197, 107, 0.5);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(232, 197, 107, 0.06);
+}
+.graph-legend-item:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: 2px;
+}
+.graph-legend-item:active {
+  transform: scale(0.98);
 }
 .graph-legend-item.is-active {
   border-color: #e8c56b;
   background: rgba(232, 197, 107, 0.1);
   color: #f3ece2;
 }
-.graph-legend-item.is-active em {
-  color: #e8c56b;
-}
 .graph-reset {
+  min-height: 32px;
   padding: 4px 12px;
   border: 1px solid #e8c56b;
-  border-radius: 6px;
+  border-radius: 8px;
   background: transparent;
   color: #e8c56b;
   font-size: 12px;
   font-family: inherit;
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background-color 0.2s,
+    transform 0.15s;
 }
 .graph-reset:hover {
   background: #e8c56b;
   color: #14110f;
 }
+.graph-reset:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: 2px;
+}
+.graph-reset:active {
+  transform: scale(0.98);
+}
 
-/* 搜索：标题下方居中，结果浮层 */
+/* 搜索：与图例同处工具行，结果浮层 */
 .graph-search {
   position: relative;
-  max-width: 340px;
-  margin: 10px auto 0;
+  max-width: 300px;
+  flex: none;
 }
 .graph-search input {
   width: 100%;
@@ -116,10 +154,12 @@
   transition: border-color 0.2s;
 }
 .graph-search input::placeholder {
-  color: #a89a86;
+  color: #9a8f80;
 }
-.graph-search input:focus {
+.graph-search input:focus-visible {
   border-color: #e8c56b;
+  outline: 2px solid #e8c56b;
+  outline-offset: 1px;
 }
 .graph-search-list {
   position: absolute;
@@ -130,8 +170,8 @@
   border: 1px solid #e8c56b55;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
-  z-index: 9;
+  box-shadow: 0 12px 30px rgba(20, 17, 15, 0.7);
+  z-index: 3;
 }
 .graph-search-item {
   display: flex;
@@ -139,15 +179,19 @@
   justify-content: space-between;
   gap: 10px;
   width: 100%;
+  min-height: 40px;
   padding: 8px 14px;
   background: transparent;
   border: none;
   border-bottom: 1px solid #2e2823;
-  color: #d8cfc0;
+  color: #c9bfae;
   font-family: inherit;
   font-size: 13px;
   text-align: left;
   cursor: pointer;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
 }
 .graph-search-item:last-child {
   border-bottom: none;
@@ -156,51 +200,119 @@
   background: #2e2823;
   color: #e8c56b;
 }
+.graph-search-item:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: -2px;
+}
+.graph-search-item:active {
+  background: rgba(232, 197, 107, 0.12);
+}
 .graph-search-item span {
   font-size: 12px;
-  color: #a89a86;
+  color: #9a8f80;
   flex: none;
 }
 
-/* 星空画布 */
+/* 族谱画布：纯墨底 */
 .graph-sky {
   position: relative;
   flex: 1;
   min-height: 0;
+  background: #14110f;
+  /* 入场：画卷初展，整体一次成形（transform 不影响内部 d3 zoom 与尺寸测量）*/
+  animation: graphSkyEnter 1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
-.graph-canvas {
+@keyframes graphSkyEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* 三层极轻渐次：刻度环 → 连线 → 节点，不分段、不逐节点 */
+.graph-links,
+.graph-nodes {
+  animation: graphLayerFade 0.85s ease both;
+}
+.graph-links {
+  animation-duration: 0.9s;
+  animation-delay: 0.18s;
+}
+.graph-nodes {
+  animation-delay: 0.3s;
+}
+@keyframes graphLayerFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.graph-sky svg {
   display: block;
-  width: 100%;
-  height: 100%;
-  touch-action: none;
+  cursor: grab;
+  /* 320px 窄屏：SVG 随容器缩窄，不被裁切 */
+  max-width: 100%;
+  height: auto;
 }
-.graph-tip {
-  position: absolute;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  background: rgba(27, 23, 19, 0.94);
-  border: 1px solid #e8c56b55;
-  border-radius: 8px;
-  padding: 7px 11px;
-  font-size: 12px;
-  line-height: 1.5;
-  opacity: 0;
-  transition: opacity 0.15s;
-  z-index: 4;
-  max-width: 210px;
-}
-.graph-tip strong {
-  display: block;
-  color: #f3ece2;
-  font-size: 13px;
-}
-.graph-tip span {
-  color: #9a8f80;
-  font-size: 12px;
+.graph-sky svg:active {
+  cursor: grabbing;
 }
 
-/* 缩放控件：左侧垂直居中，避开右下角详情面板 */
+/* 连线：极淡墨色径向连线，邻域高亮描金 */
+.graph-link {
+  fill: none;
+  stroke: rgba(232, 197, 107, 0.2);
+  stroke-width: 0.6;
+  stroke-linecap: round;
+  transition: stroke 0.2s, stroke-width 0.2s;
+}
+.graph-link.is-hood {
+  stroke: rgba(232, 197, 107, 0.55);
+  stroke-width: 1.2;
+}
+
+/* 节点：默认 normal 态（SVG r 不做过渡：属几何属性，重绘昂贵） */
+.graph-node {
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.graph-node.dim {
+  opacity: 0.18;
+}
+.graph-node.hood circle {
+  filter: drop-shadow(0 0 3px rgba(232, 197, 107, 0.5));
+}
+
+/* 标签：宋体衬线，类别/非遗显，叶节点 hover 显 */
+.graph-label {
+  font-family: var(--font-serif);
+  fill: #c9bfae;
+  user-select: none;
+  pointer-events: none;
+}
+.graph-label--cat {
+  font-size: 13px;
+  fill: #e8c56b;
+  letter-spacing: 2px;
+}
+.graph-label--h {
+  font-size: 12px;
+  fill: #f3ece2;
+}
+.graph-label--leaf {
+  font-size: 12px;
+  fill: #9a8f80;
+}
+.graph-node.dim .graph-label {
+  opacity: 0;
+}
+
+/* 缩放控件：左侧垂直居中 */
 .graph-zoom {
   position: absolute;
   left: 20px;
@@ -208,25 +320,39 @@
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  z-index: 5;
+  gap: 8px;
+  z-index: 2;
 }
 .graph-zoom button {
-  width: 34px;
-  height: 34px;
+  width: 44px;
+  height: 44px;
   border: 1px solid #3a332c;
   border-radius: 12px;
   background: rgba(27, 23, 19, 0.85);
-  backdrop-filter: blur(4px);
   color: #c9bfae;
   font-size: 15px;
   line-height: 1;
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background-color 0.2s,
+    transform 0.15s;
 }
-.graph-zoom button:hover {
+.graph-zoom button:hover:not(:disabled) {
   border-color: #e8c56b;
   color: #e8c56b;
+}
+.graph-zoom button:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: 2px;
+}
+.graph-zoom button:active:not(:disabled) {
+  transform: scale(0.96);
+}
+.graph-zoom button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .graph-loading,
@@ -235,11 +361,35 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: #9a8f80;
-  z-index: 3;
+  z-index: 1;
+  width: min(420px, 72%);
 }
+/* 加载态：与画布同形的骨架卡 */
+.graph-skeleton {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+}
+/* 错误态：朱红只做边框底纹，正文用软文字 */
 .graph-error {
-  color: #e07a6a;
+  color: #c9bfae;
+  text-align: center;
+  background: rgba(176, 58, 46, 0.1);
+  border: 1px solid rgba(176, 58, 46, 0.55);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.graph-error p {
+  margin: 0;
+}
+.graph-retry {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
 }
 
 /* 详情面板（右下） */
@@ -258,9 +408,14 @@
   flex-direction: column;
   gap: 8px;
   font-size: 14px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 30px rgba(20, 17, 15, 0.6);
   animation: panelIn 0.25s ease;
-  z-index: 6;
+  z-index: 3;
+}
+@media (prefers-reduced-motion: reduce) {
+  .graph-detail {
+    animation: none;
+  }
 }
 @keyframes panelIn {
   from {
@@ -283,26 +438,68 @@
   font-size: 12px;
 }
 .graph-close {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   background: transparent;
-  color: #a89a86;
+  color: #9a8f80;
   font-size: 18px;
   cursor: pointer;
   line-height: 1;
   padding: 0;
+  margin: -6px -8px -6px 0;
+  border-radius: 8px;
+  transition:
+    color 0.2s,
+    background-color 0.2s;
 }
 .graph-close:hover {
-  color: #e07a6a;
+  color: #b03a2e;
+}
+.graph-close:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: 2px;
 }
 .graph-detail-info p {
   margin: 0 0 6px;
   font-size: 12px;
   line-height: 1.7;
-  color: #b6ab9a;
+  color: #9a8f80;
+}
+/* 简介：三行截断，不再 JS 硬切字数 */
+.graph-detail-desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* 简介失败重试 */
+.graph-detail-retry {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: #c9bfae;
+  background: rgba(176, 58, 46, 0.08);
+  border: 1px solid rgba(176, 58, 46, 0.45);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+.graph-detail-retry p {
+  margin: 0;
+  color: #c9bfae;
+}
+.graph-detail-retry .graph-btn {
+  min-height: 36px;
 }
 .graph-detail-info span {
   font-size: 12px;
-  color: #a89a86;
+  color: #9a8f80;
 }
 .graph-detail-actions {
   display: flex;
@@ -318,24 +515,35 @@
   font-size: 12px;
   font-family: inherit;
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background-color 0.2s,
+    transform 0.15s;
 }
 .graph-btn:hover {
   border-color: #e8c56b;
   color: #e8c56b;
 }
+.graph-btn:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: 2px;
+}
+.graph-btn:active {
+  transform: scale(0.98);
+}
 .graph-btn.primary {
   background: #b03a2e;
   border-color: #b03a2e;
-  color: #fff;
+  color: #f3ece2;
 }
 .graph-btn.primary:hover {
-  background: #c94a3a;
-  color: #fff;
+  background: #b03a2e;
+  border-color: #e8c56b;
+  color: #f3ece2;
 }
 .graph-loading-line {
-  color: #a89a86;
-  font-style: italic;
+  color: #9a8f80;
 }
 .graph-relations {
   border-top: 1px dashed #2e2823;
@@ -347,23 +555,27 @@
 .graph-relations em {
   font-style: normal;
   font-size: 12px;
-  color: #a89a86;
+  color: #9a8f80;
 }
 .graph-relation-line {
   display: flex;
   align-items: center;
   gap: 6px;
   width: 100%;
+  min-height: 40px;
   text-align: left;
   background: transparent;
   border: none;
-  border-radius: 6px;
-  padding: 4px 6px;
+  border-radius: 8px;
+  padding: 8px;
   font-family: inherit;
   font-size: 12px;
-  color: #d8cfc0;
+  color: #c9bfae;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s, transform 0.15s;
+  transition:
+    background-color 0.15s,
+    color 0.15s,
+    transform 0.15s;
 }
 .graph-relation-line:hover {
   background: #2e2823;
@@ -379,12 +591,220 @@
 .graph-relation-line:hover .graph-relation-arrow {
   opacity: 1;
 }
+.graph-relation-line:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: 2px;
+}
+.graph-relation-line:active {
+  transform: scale(0.98);
+}
 .graph-relation-tag {
   display: inline-block;
   background: #2e2823;
   color: #9a8f80;
-  border-radius: 4px;
+  border-radius: 8px;
   padding: 1px 6px;
   font-size: 12px;
   flex: none;
+}
+
+@media (max-width: 720px) {
+  .graph-header {
+    padding: 12px 12px 8px;
+  }
+  .graph-header-top {
+    gap: 8px;
+  }
+  .graph-header-top h1 {
+    font-size: 18px;
+    letter-spacing: 4px;
+  }
+  .graph-header-top p {
+    font-size: 12px;
+  }
+  .graph-tools {
+    margin-top: 8px;
+  }
+  .graph-legend {
+    gap: 6px 8px;
+  }
+  /* 移动端触控：缩放钮至少 40，其余控件 ≥44 */
+  .graph-legend-item,
+  .graph-reset,
+  .graph-search input,
+  .graph-btn {
+    min-height: 44px;
+  }
+  .graph-search input {
+    display: inline-flex;
+    align-items: center;
+  }
+  .graph-detail {
+    width: calc(100% - 24px);
+    right: 12px;
+    bottom: 12px;
+    max-height: 50%;
+  }
+  .graph-zoom {
+    left: 8px;
+    gap: 8px;
+  }
+  .graph-zoom button {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* ============================================================
+   动态美感层：浑天刻度环 · 节点呼吸 · 径向薪火 · 背景墨晕
+   贴合暗墨底 #14110f，遵循 quieter 原则，克制中国味
+   ============================================================ */
+
+/* 背景墨晕：径向渐变让族谱自暗中浮现，边缘融回 #14110f */
+.graph-sky::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 30%,
+    rgba(20, 17, 15, 0.6) 75%,
+    #14110f 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 星野环带：三千星尘环族谱一周，静如尘、密如河 */
+.graph-starfield {
+  pointer-events: none;
+  animation: graphLayerFade 1.6s ease 0.45s both;
+}
+.graph-starfield-note {
+  font-family: var(--font-serif);
+  font-size: 10px;
+  letter-spacing: 5px;
+  fill: rgba(232, 197, 107, 0.3);
+  pointer-events: none;
+}
+
+/* 浑天刻度环：缓慢自转（120s 一周，几近静止）；入场先淡入，与自转各控一属性 */
+.graph-armillary {
+  animation:
+    graphLayerFade 1.3s ease 0.08s both,
+    armillarySpin 120s linear infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+  pointer-events: none;
+}
+@keyframes armillarySpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.graph-armillary-label {
+  font-family: var(--font-serif);
+  font-size: 11px;
+  fill: rgba(232, 197, 107, 0.32);
+}
+
+/* 径向薪火粒子层（不参与交互，仅视觉）*/
+.graph-embers {
+  pointer-events: none;
+}
+
+/* 节点呼吸：category + heritage 主节点极缓脉动 */
+.graph-node--category circle,
+.graph-node--heritage circle {
+  animation: nodePulse 4.5s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.graph-node--heritage circle {
+  animation-duration: 5.5s;
+}
+@keyframes nodePulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 1;
+  }
+}
+
+/* hover 邻域过渡：更缓更自然（仅 opacity；SVG r 不做过渡） */
+.graph-node {
+  transition: opacity 0.45s ease;
+}
+
+/* ===== 墨晕涟漪：点击节点时同心圆扩散 ===== */
+.graph-ripples {
+  pointer-events: none;
+}
+.graph-ripple circle {
+  fill: none;
+  stroke: rgba(232, 197, 107, 0.35);
+  stroke-width: 1.2;
+  animation: graphRipple 1.15s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+@keyframes graphRipple {
+  from {
+    r: 0;
+    opacity: 0.9;
+    stroke-width: 2.4;
+  }
+  to {
+    r: 56;
+    opacity: 0;
+    stroke-width: 0.3;
+  }
+}
+
+/* ===== 寻脉链路：从当前节点逐跳追至根，整条链路描金高亮 ===== */
+.graph-node.is-trace circle {
+  stroke: #e8c56b;
+  stroke-width: 2.2;
+  filter: drop-shadow(0 0 4px rgba(232, 197, 107, 0.6));
+}
+.graph-link.is-trace {
+  stroke: rgba(232, 197, 107, 0.7);
+  stroke-width: 1.8;
+}
+
+/* ===== 节点入场 stagger：自中心向外淡入生长 =====
+   只用 backwards fill：动画结束后回落到层叠值，不遮盖 dim 态 0.18 透明度 */
+.graph-node {
+  animation: graphNodeEnter 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+}
+@keyframes graphNodeEnter {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Reduced-motion：关闭所有入场 / 自转 / 脉动 / 面板入场 */
+@media (prefers-reduced-motion: reduce) {
+  .graph-sky,
+  .graph-armillary,
+  .graph-starfield,
+  .graph-links,
+  .graph-nodes,
+  .graph-node--category circle,
+  .graph-node--heritage circle,
+  .graph-detail {
+    animation: none;
+  }
+  .graph-node {
+    animation: none;
+  }
+  .graph-ripple circle {
+    animation: none;
+    display: none;
+  }
 }

@@ -3,6 +3,7 @@ import { fetchHeritageList, type HeritageSummary } from '../api/heritage'
 import { fetchProfile, recordProgress, type Profile } from '../api/progress'
 import { generateQuiz, type QuizQuestion } from '../api/quiz'
 import { calcRank } from '../utils/rank'
+import Motif from '../components/Motif'
 import '../styles/challenge.css'
 
 interface Props {
@@ -51,6 +52,9 @@ interface WrongQ {
   exp: string
 }
 
+/* 正确率环：viewBox 120 内的描边半径；pathLength 归一到 100，dashoffset 即百分比 */
+const RING_R = 52
+
 export default function Challenge({ onNavigate }: Props) {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [list, setList] = useState<HeritageSummary[]>([])
@@ -72,7 +76,7 @@ export default function Challenge({ onNavigate }: Props) {
   const [openWrong, setOpenWrong] = useState<string | null>(null)
 
   useEffect(() => {
-    fetchProfile().then(setProfile).catch((e) => setError(e.message))
+    fetchProfile().then(setProfile).catch((e) => setError(`档案暂未取到，请稍后重试（${e instanceof Error ? e.message : '网络异常'}）`))
     fetchHeritageList('deep').then(setList).catch(() => setList([]))
   }, [])
 
@@ -166,8 +170,31 @@ export default function Challenge({ onNavigate }: Props) {
   }, [days])
   const weekDone = week.filter((d) => d.done).length
 
-  if (error) return <div className="ch-page ch-center">{error}</div>
-  if (!profile) return <div className="ch-page ch-center">加载中…</div>
+  function reloadProfile() {
+    setError('')
+    fetchProfile()
+      .then(setProfile)
+      .catch((e) => setError(`档案暂未取到，请稍后重试（${e instanceof Error ? e.message : '网络异常'}）`))
+    fetchHeritageList('deep')
+      .then(setList)
+      .catch(() => setList([]))
+  }
+
+  if (error)
+    return (
+      <div className="ch-page ch-center" role="alert">
+        <p className="ch-center-msg">{error}</p>
+        <button className="ch-center-retry" onClick={reloadProfile}>
+          重试
+        </button>
+      </div>
+    )
+  if (!profile)
+    return (
+      <div className="ch-page ch-center" role="status">
+        加载中…
+      </div>
+    )
 
   const { quiz, stats } = profile
   const pct = Math.round(quiz.accuracy * 100)
@@ -227,7 +254,26 @@ export default function Challenge({ onNavigate }: Props) {
       </header>
 
       <div className="ch-hero">
-        <div className="ch-ring" style={{ '--pct': shownPct } as React.CSSProperties}>
+        <div className="ch-ring">
+          <svg
+            className="ch-ring-svg"
+            viewBox="0 0 120 120"
+            role="img"
+            aria-label={`正确率 ${quiz.answered > 0 ? pct : 0}%`}
+          >
+            <circle className="ch-ring-track" cx="60" cy="60" r={RING_R} />
+            <circle
+              className="ch-ring-prog"
+              cx="60"
+              cy="60"
+              r={RING_R}
+              pathLength={100}
+              style={{
+                strokeDasharray: 100,
+                strokeDashoffset: 100 - shownPct,
+              }}
+            />
+          </svg>
           <div className="ch-ring-inner">
             <strong>{quiz.answered > 0 ? `${pct}%` : '0%'}</strong>
             <span>正确率</span>
@@ -298,14 +344,14 @@ export default function Challenge({ onNavigate }: Props) {
             {qLoading ? '出题中…' : q ? '换一题' : '抽一题'}
           </button>
         </div>
-        <div className="ch-daily-body">
+        <div className="ch-daily-body" aria-live="polite" aria-busy={qLoading}>
           {!q && !qLoading && !qError && (
             <p className="ch-daily-hint">
-              今日主题「{dailyTopic}」：点右上角抽题，AI 从知识库现场出题，答完立即判分并计入档案。
+              今日主题「{dailyTopic}」：点右侧「抽一题」，AI 从知识库现场出题，答完立即判分并计入档案。
             </p>
           )}
           {qLoading && (
-            <div className="ch-q-skeleton" aria-hidden>
+            <div className="ch-q-skeleton" aria-busy aria-label="正在出题">
               <div className="skeleton ch-q-sk-line" />
               <div className="skeleton ch-q-sk-opt" />
               <div className="skeleton ch-q-sk-opt" />
@@ -345,7 +391,7 @@ export default function Challenge({ onNavigate }: Props) {
                 <div className={`ch-q-result ${picked === q.answer ? 'ok' : 'no'}`}>
                   <strong>
                     {picked === q.answer
-                      ? `答对了 · EXP +6${streak > 1 ? ` · 连对 ×${streak}` : ''}`
+                      ? `答对了${streak > 1 ? ` · 连对 ×${streak}` : ''}`
                       : '答错了，已收进错题本'}
                   </strong>
                   <span>{q.explanation}</span>
@@ -365,15 +411,20 @@ export default function Challenge({ onNavigate }: Props) {
         {wrongs.length === 0 ? (
           <p className="ch-empty">还没有错题，答错了会自动收进这里</p>
         ) : (
-          wrongs.map((w) => (
+          wrongs.map((w, wi) => (
             <div key={w.q} className={`ch-wrong ${openWrong === w.q ? 'open' : ''}`}>
-              <button className="ch-wrong-head" onClick={() => setOpenWrong(openWrong === w.q ? null : w.q)}>
+              <button
+                className="ch-wrong-head"
+                onClick={() => setOpenWrong(openWrong === w.q ? null : w.q)}
+                aria-expanded={openWrong === w.q}
+                aria-controls={`ch-wrong-body-${wi}`}
+              >
                 <span className="ch-wrong-topic">{w.topic}</span>
                 <span className="ch-wrong-q">{w.q}</span>
                 <em>{openWrong === w.q ? '收起' : '复盘'}</em>
               </button>
               {openWrong === w.q && (
-                <div className="ch-wrong-body">
+                <div className="ch-wrong-body" id={`ch-wrong-body-${wi}`}>
                   <div className="ch-wrong-opts">
                     {w.options.map((o) => (
                       <span key={o} className={o === w.answer ? 'right' : ''}>
@@ -435,6 +486,8 @@ export default function Challenge({ onNavigate }: Props) {
           ))
         )}
       </section>
+
+      <Motif kind="banner" />
     </div>
   )
 }

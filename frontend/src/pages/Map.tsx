@@ -108,13 +108,27 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
   const [view, setView] = useState<'map' | 'grid'>('map')
   const [error, setError] = useState('')
 
-  useEffect(() => {
+  // 重试：地图底图与名录重新拉取
+  function reloadAll() {
+    setError('')
     fetch('/china.json')
       .then((r) => r.json())
       .then((g) => setGeo(fixWinding(g)))
-      .catch((e) => setError(`地图加载失败：${e.message}`))
-    fetchHeritageList().then(setList).catch((e) => setError(e.message))
+      .catch((e) => setError(`舆图暂未取到，请稍后重试（${e instanceof Error ? e.message : '网络异常'}）`))
+    fetchHeritageList().then(setList).catch((e) => setError(`名录暂未取到，请稍后重试（${e instanceof Error ? e.message : '网络异常'}）`))
+  }
+
+  useEffect(() => {
+    reloadAll()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // smooth 滚动须尊重 reduced-motion 偏好
+  const scrollBehavior: ScrollBehavior =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      ? 'auto'
+      : 'smooth'
 
   // 大类分布（全局，不受筛选影响）：按计数降序
   const catStats = useMemo(() => {
@@ -161,6 +175,20 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, 'zh'))
     .slice(0, 8)
 
+  // 巡礼卡封面：同一张图（多省共享的国家级扩展项目，如皮影戏）六卡内只许出现一次，
+  // 已被前省占用则顺延该省下一个有图项目，避免邻省撞图
+  const tourCovers: (HeritageSummary | undefined)[] = (() => {
+    const used = new Set<string>()
+    return ranking.slice(0, 6).map((p) => {
+      const cover =
+        p.items.find((it) => it.has_image !== false && !used.has(it.image)) ??
+        p.items.find((it) => it.has_image !== false) ??
+        p.items[0]
+      if (cover) used.add(cover.image)
+      return cover
+    })
+  })()
+
   // 方格视图数据：只保留有坐标的省，按 [row, col] 落格
   const gridTiles = useMemo(
     () =>
@@ -178,7 +206,7 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
     if (pool.length === 0) return
     const pick = pool[Math.floor(Math.random() * pool.length)]
     setSelected(pick.key)
-    document.querySelector('.map-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    document.querySelector('.map-panel')?.scrollIntoView({ behavior: scrollBehavior, block: 'start' })
   }
 
   // 选中兼容：图谱地域节点可能是"江苏省苏州市"这类全称，用省 key 前缀匹配
@@ -204,37 +232,65 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
     return idx >= 0 ? ranking[(idx + 1) % ranking.length] : ranking[0]
   }, [ranking, selectedProv])
 
-  // 热力色阶：0 档灰，1..5 档红色渐深
+  // 热力色阶：sqrt 拉开中小省差异，朱红透明度阶梯 → 实色朱红 → 灯火金 → 描金
+  // 中国是红色的国度：低密度如朱痕透纸，最高密度如灯火点亮至描金
+  const HEAT = [
+    'rgba(176,58,46,.18)',
+    'rgba(176,58,46,.30)',
+    'rgba(176,58,46,.45)',
+    'rgba(176,58,46,.65)',
+    '#b03a2e',
+    'rgba(232,197,107,.85)',
+    '#e8c56b',
+  ]
   const fillOf = (p: Province) =>
     p.count > 0
-      ? `rgba(176, 58, 46, ${0.3 + (0.7 * p.count) / maxCount})`
-      : '#241f1b'
+      ? HEAT[Math.min(HEAT.length - 1, Math.floor(Math.sqrt(p.count / maxCount) * HEAT.length))]
+      : '#1b1713'
+  // 名录到达判定：未到时统计数字以骨架占位（失败会进错误态，不会永远占位）
+  const listReady = list.length > 0
+  // 顶端两阶（灯火与描金）的省份触发灯火脉动
+  const isBright = (p: Province) =>
+    p.count > 0 &&
+    Math.floor(Math.sqrt(p.count / maxCount) * HEAT.length) >= HEAT.length - 2
 
   return (
     <div className="map-page">
       <header className="map-header">
         <h1>非遗地图</h1>
-        <p>按地域探索知识库中的非遗项目，颜色越深代表项目越多 · 点击省份查看详情</p>
+        <span className="map-subtitle">禹贡九州</span>
+        <p>华夏非遗，按地域铺陈。色愈亮则项目愈密，点击入省，下一站自见。</p>
       </header>
 
-      {error && <div className="map-error">{error}</div>}
+      {error && (
+        <div className="map-error" role="alert">
+          <p>{error}</p>
+          <button className="map-retry" onClick={reloadAll}>
+            重试
+          </button>
+        </div>
+      )}
 
-      {/* 全局统计条 */}
+      {/* 全局统计条：数据未到时显骨架占位，不冒充 0 */}
       <div className="map-stats">
         <div className="map-stat">
-          <em>{list.length}</em>
+          {listReady ? <em>{list.length}</em> : <em className="map-stat-pending" />}
           <span>收录项目</span>
         </div>
         <div className="map-stat">
-          <em>{covered}</em>
+          {listReady ? <em>{covered}</em> : <em className="map-stat-pending" />}
           <span>覆盖省级行政区</span>
         </div>
         <div className="map-stat">
-          <em>{catStats.length}</em>
+          {listReady ? <em>{catStats.length}</em> : <em className="map-stat-pending" />}
           <span>非遗大类</span>
         </div>
         <div className="map-stat">
-          <em>{list.filter((h) => h.region.includes('全国')).length}</em>
+          {listReady ? (
+            <em>{list.filter((h) => h.region.includes('全国')).length}</em>
+          ) : (
+            <em className="map-stat-pending" />
+          )}
           <span>全国流布项目</span>
         </div>
       </div>
@@ -255,10 +311,20 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
       {/* 视图工具条：舆图 / 方格 两种观看方式 + 随机落点 */}
       <div className="map-tools">
         <div className="map-views" role="tablist" aria-label="视图切换">
-          <button className={view === 'map' ? 'active' : ''} onClick={() => setView('map')}>
+          <button
+            role="tab"
+            aria-selected={view === 'map'}
+            className={view === 'map' ? 'active' : ''}
+            onClick={() => setView('map')}
+          >
             舆图
           </button>
-          <button className={view === 'grid' ? 'active' : ''} onClick={() => setView('grid')}>
+          <button
+            role="tab"
+            aria-selected={view === 'grid'}
+            className={view === 'grid' ? 'active' : ''}
+            onClick={() => setView('grid')}
+          >
             方格
           </button>
         </div>
@@ -270,17 +336,17 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
       <div className="map-main">
         {view === 'map' && (
           <div className="map-wrap">
+            {provinces.length === 0 && !error && <div className="map-loading">地图加载中…</div>}
             <svg viewBox={`0 0 ${W} ${H}`} className="map-svg">
-              {provinces.map((p, i) => (
+              {provinces.map((p) => (
                 <path
                   key={p.name}
                   d={p.path}
                   className={`map-prov ${isSelected(p) ? 'is-selected' : ''} ${
                     p.count > 0 ? 'has-items' : 'no-data'
-                  }`}
+                  } ${isBright(p) ? 'is-bright' : ''}`}
                   style={{
                     fill: fillOf(p),
-                    animationDelay: `${i * 35}ms`,
                   }}
                   role={p.count > 0 ? 'button' : undefined}
                   tabIndex={p.count > 0 ? 0 : -1}
@@ -299,21 +365,24 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
               ))}
             </svg>
 
+            {/* 朱印 · 舆图题款 */}
+            <span className="map-seal" aria-hidden="true">
+              舆
+            </span>
+
             {/* 色阶图例 */}
             <div className="map-legend">
               <span className="map-legend-label">项目密度</span>
               <span className="map-scale" aria-hidden>
-                <i style={{ background: '#241f1b' }} />
-                <i style={{ background: 'rgba(176,58,46,0.3)' }} />
-                <i style={{ background: 'rgba(176,58,46,0.475)' }} />
-                <i style={{ background: 'rgba(176,58,46,0.65)' }} />
-                <i style={{ background: 'rgba(176,58,46,0.825)' }} />
-                <i style={{ background: 'rgba(176,58,46,1)' }} />
+                <i style={{ background: '#1b1713' }} />
+                {HEAT.map((c) => (
+                  <i key={c} style={{ background: c }} />
+                ))}
               </span>
               <span className="map-legend-label">
                 0 → {maxCount} 项
               </span>
-              <span className="map-legend-note">灰色 = 暂无收录</span>
+              <span className="map-legend-note">暗色 = 暂无收录</span>
             </div>
 
             {hoverProv && (
@@ -343,6 +412,7 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
                     gridColumn: t.pos[1],
                     background: fillOf(t),
                   }}
+                  disabled={t.count === 0}
                   onMouseEnter={() => setHover(t.name)}
                   onMouseLeave={() => setHover(null)}
                   onClick={() => t.count > 0 && setSelected(isSelected(t) ? null : t.key)}
@@ -355,12 +425,10 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
             <div className="map-legend">
               <span className="map-legend-label">项目密度</span>
               <span className="map-scale" aria-hidden>
-                <i style={{ background: '#241f1b' }} />
-                <i style={{ background: 'rgba(176,58,46,0.3)' }} />
-                <i style={{ background: 'rgba(176,58,46,0.475)' }} />
-                <i style={{ background: 'rgba(176,58,46,0.65)' }} />
-                <i style={{ background: 'rgba(176,58,46,0.825)' }} />
-                <i style={{ background: 'rgba(176,58,46,1)' }} />
+                <i style={{ background: '#1b1713' }} />
+                {HEAT.map((c) => (
+                  <i key={c} style={{ background: c }} />
+                ))}
               </span>
               <span className="map-legend-note">按近似方位排布，数据与舆图同源</span>
             </div>
@@ -407,7 +475,15 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
               <div
                 key={c}
                 className={`map-cat ${category === c ? 'active' : ''}`}
+                role="button"
+                tabIndex={0}
                 onClick={() => setCategory(category === c ? '全部' : c)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    setCategory(category === c ? '全部' : c)
+                  }
+                }}
                 title="点击筛选该类别"
               >
                 <span>{c}</span>
@@ -426,28 +502,32 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
         <section className="map-tour">
           <div className="map-tour-head">
             <h2>省域巡礼</h2>
-            <span>从非遗最密集的地方开始，看见它的地理</span>
+            <span>按项目密度排列省份</span>
           </div>
           <div className="map-tour-row">
-            {ranking.slice(0, 6).map((p, i) => (
-              <button
-                key={p.key}
-                className={`map-tour-card ${isSelected(p) ? 'active' : ''}`}
-                onClick={() => {
-                  setSelected(p.key)
-                  document
-                    .querySelector('.map-panel')
-                    ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                }}
-              >
-                <span className="map-tour-no">{String(i + 1).padStart(2, '0')}</span>
-                {p.items[0] && <Cover item={p.items[0]} className="map-tour-img" />}
-                <strong>{p.name.replace(/(省|市)$/, '')}</strong>
-                <span className="map-tour-meta">
-                  {p.count} 项 · {p.items[0] ? catOf(p.items[0].category) : ''}
-                </span>
-              </button>
-            ))}
+            {ranking.slice(0, 6).map((p, i) => {
+              // 封面已按「同图不重样」顺延（tourCovers），这里只取用
+              const cover = tourCovers[i]
+              return (
+                <button
+                  key={p.key}
+                  className={`map-tour-card ${isSelected(p) ? 'active' : ''}`}
+                  onClick={() => {
+                    setSelected(p.key)
+                    document
+                      .querySelector('.map-panel')
+                      ?.scrollIntoView({ behavior: scrollBehavior, block: 'start' })
+                  }}
+                >
+                  <span className="map-tour-no">{String(i + 1).padStart(2, '0')}</span>
+                  {cover && <Cover item={cover} className="map-tour-img" />}
+                  <strong>{p.name.replace(/(省|市)$/, '')}</strong>
+                  <span className="map-tour-meta">
+                    {p.count} 项 · {cover ? catOf(cover.category) : ''}
+                  </span>
+                </button>
+              )
+            })}
           </div>
         </section>
       )}
@@ -479,10 +559,10 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
           </div>
         )}
         {selectedProv && selectedProv.items.length === 0 && (
-          <p className="map-empty">该省份暂无收录项目，去看看别的地方吧</p>
+          <p className="map-empty">该省份暂无收录</p>
         )}
         <div className="map-items">
-          {selectedProv?.items.slice(0, 12).map((it) => (
+          {selectedProv?.items.filter((it) => it.has_image !== false).slice(0, 12).map((it) => (
             <div
               key={it.id}
               className="map-item"
@@ -500,8 +580,11 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
             </div>
           ))}
         </div>
-        {selectedProv && selectedProv.items.length > 12 && (
-          <p className="map-items-note">展示前 12 项，本省共收录 {selectedProv.items.length} 项</p>
+        {selectedProv && selectedProv.items.filter((it) => it.has_image !== false).length > 12 && (
+          <p className="map-items-note">
+            展示前 12 项，本省共收录 {selectedProv.items.length} 项（含{' '}
+            {selectedProv.items.filter((it) => it.has_image === false).length} 项暂无配图）
+          </p>
         )}
         {selectedProv && selectedProv.items.length > 0 && (
           <button className="map-all" onClick={() => onNavigate('knowledge', `kw:${selectedProv.key}`)}>
@@ -516,7 +599,7 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
               setSelected(nextStop.key)
               document
                 .querySelector('.map-panel')
-                ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                ?.scrollIntoView({ behavior: scrollBehavior, block: 'start' })
             }}
           >
             下一站 · {nextStop.name.replace(/(省|市)$/, '')}（{nextStop.count} 项）

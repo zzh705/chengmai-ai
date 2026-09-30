@@ -8,9 +8,32 @@
 }
 .ch-center {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 14px;
   color: #9a8f80;
+}
+.ch-center-msg {
+  margin: 0;
+  color: #c9bfae;
+  font-size: 14px;
+}
+.ch-center-retry {
+  min-height: 40px;
+  padding: 0 18px;
+  border: 1px solid #3a332c;
+  border-radius: 999px;
+  background: transparent;
+  color: #c9bfae;
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
+}
+.ch-center-retry:hover {
+  border-color: #e8c56b;
+  color: #e8c56b;
 }
 .ch-header {
   text-align: center;
@@ -18,8 +41,6 @@
 }
 .ch-header h1 {
   margin: 0;
-
-
   color: #e8c56b;
 }
 .ch-header p {
@@ -28,7 +49,7 @@
   margin-top: 8px;
 }
 
-/* 正确率环 */
+/* 正确率环：SVG 双圆描边（底圆 + 进度圆），dashoffset 随百分比收缩 */
 .ch-hero {
   display: flex;
   align-items: center;
@@ -42,26 +63,12 @@
   flex-wrap: wrap;
   justify-content: center;
 }
-/* 注册自定义属性，让环形进度可平滑过渡 */
-@property --pct {
-  syntax: '<number>';
-  inherits: false;
-  initial-value: 0;
-}
 .ch-ring {
+  position: relative;
   width: 140px;
   height: 140px;
-  border-radius: 50%;
-  background: conic-gradient(
-    #e8c56b calc(var(--pct) * 1%),
-    #2e2823 0
-  );
-  display: flex;
-  align-items: center;
-  justify-content: center;
   flex-shrink: 0;
-  /* 挂载后由 0 平滑生长到实际正确率 */
-  transition: --pct 1.2s cubic-bezier(0.2, 0.8, 0.3, 1);
+  /* 挂载后由 0 平滑生长到实际正确率（生长在描边圆上完成） */
   animation: ringPop 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 @keyframes ringPop {
@@ -70,10 +77,34 @@
     opacity: 0;
   }
 }
+.ch-ring-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.ch-ring-track {
+  fill: none;
+  stroke: #2e2823;
+  stroke-width: 10;
+}
+.ch-ring-prog {
+  fill: none;
+  stroke: #e8c56b;
+  stroke-width: 10;
+  stroke-linecap: round;
+  /* 起顶：描边圆从 12 点方向开始 */
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  transform: rotate(-90deg);
+  transition: stroke-dashoffset 0.6s var(--ease-out);
+}
 .ch-ring-inner {
-  width: 108px;
-  height: 108px;
-  border-radius: 50%;
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 104px;
+  height: 104px;
+  border-radius: 999px;
   background: #1b1713;
   display: flex;
   flex-direction: column;
@@ -108,22 +139,28 @@
   padding: 13px 28px;
   border: none;
   border-radius: 999px;
-  background: linear-gradient(135deg, #96301f, #b85522);
-  color: #fff;
+  background: #b03a2e;
+  color: #f3ece2;
   font-size: 15px;
   letter-spacing: 2px;
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
+  transition: transform 0.15s var(--ease-out);
 }
 .ch-cta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(176, 58, 46, 0.45);
 }
 
 .ch-section {
   max-width: 760px;
   margin: 0 auto;
   padding: 0 20px;
+}
+/* 宽屏：内容列展至距两侧 Motif 剪影内缘约 30px，不留空带 */
+@media (min-width: 1180px) {
+  .ch-hero,
+  .ch-section {
+    max-width: min(980px, calc(100vw - 520px));
+  }
 }
 .ch-section h2 {
   font-size: 17px;
@@ -132,7 +169,7 @@
   margin: 24px 0 14px;
 }
 .ch-empty {
-  color: #a89a86;
+  color: #9a8f80;
   font-size: 14px;
 }
 
@@ -148,26 +185,12 @@
   border-radius: 12px;
   padding: 16px 12px;
   text-align: center;
-  transition: border-color 0.25s, box-shadow 0.25s;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s;
 }
 .ch-badge.earned {
   border-color: #e8c56b;
-  box-shadow: 0 4px 18px rgba(232, 197, 107, 0.12);
-}
-.ch-badge:nth-child(2) {
-  animation-delay: 60ms;
-}
-.ch-badge:nth-child(3) {
-  animation-delay: 120ms;
-}
-.ch-badge:nth-child(4) {
-  animation-delay: 180ms;
-}
-.ch-badge:nth-child(5) {
-  animation-delay: 240ms;
-}
-.ch-badge:nth-child(6) {
-  animation-delay: 300ms;
 }
 @keyframes badgeIn {
   from {
@@ -175,15 +198,9 @@
     opacity: 0;
   }
 }
-/* 已获得徽章：金边呼吸（无图标，靠光效区分） */
+/* 已获得徽章：金边入场（无图标，靠描边区分） */
 .ch-badge.earned {
-  animation: badgeIn 0.45s ease backwards, badgeGlow 2.8s ease-in-out 0.6s infinite;
-}
-@keyframes badgeGlow {
-  50% {
-    box-shadow: 0 4px 24px rgba(232, 197, 107, 0.4);
-    border-color: #f0d78f;
-  }
+  animation: badgeIn 0.45s ease backwards;
 }
 .ch-badge strong {
   display: block;
@@ -207,7 +224,7 @@
 .ch-topic-name {
   width: 130px;
   font-size: 14px;
-  color: #d8cfc0;
+  color: #c9bfae;
   flex-shrink: 0;
 }
 .ch-topic-bar {
@@ -256,16 +273,16 @@
 }
 .ch-rank-bar {
   height: 10px;
-  background: #241f1b;
-  border-radius: 6px;
+  background: #1b1713;
+  border-radius: 8px;
   overflow: hidden;
 }
 .ch-rank-bar i {
   display: block;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, #8f3529, #e8c56b);
-  border-radius: 6px;
+  background: linear-gradient(90deg, #b03a2e, #e8c56b);
+  border-radius: 8px;
   transform: scaleX(var(--x, 0));
   transform-origin: left center;
   transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.3, 1);
@@ -284,7 +301,7 @@
 }
 .ch-daily-refresh {
   flex: none;
-  border: 1px solid #e8c56b66;
+  border: 1px solid rgba(232, 197, 107, 0.4);
   background: linear-gradient(135deg, rgba(232, 197, 107, 0.14), rgba(176, 58, 46, 0.16));
   color: #e8c56b;
   border-radius: 999px;
@@ -292,12 +309,15 @@
   font-size: 13px;
   letter-spacing: 1px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    color 0.2s,
+    background-color 0.2s,
+    border-color 0.2s;
 }
 .ch-daily-refresh:hover:not(:disabled) {
   background: #e8c56b;
+  border-color: #e8c56b;
   color: #14110f;
-  box-shadow: 0 4px 16px rgba(232, 197, 107, 0.3);
 }
 .ch-daily-refresh:disabled {
   opacity: 0.6;
@@ -306,7 +326,7 @@
 .ch-daily-hint {
   margin: 0;
   color: #9a8f80;
-  font-size: 13.5px;
+  font-size: 13px;
   line-height: 1.8;
 }
 .ch-q-skeleton {
@@ -317,25 +337,41 @@
 .ch-q-sk-line {
   height: 18px;
   width: 76%;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 .ch-q-sk-opt {
   height: 42px;
   border-radius: 12px;
 }
+/* 错误条：朱红只做 2px 左边框与低透明底，正文走中性纸色 */
 .ch-q-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin: 0;
-  color: #e07a6a;
-  font-size: 13.5px;
+  padding: 10px 12px;
+  border-left: 2px solid #b03a2e;
+  border-radius: 8px;
+  background: rgba(176, 58, 46, 0.1);
+  color: #c9bfae;
+  font-size: 13px;
 }
 .ch-q-error button {
-  margin-left: 10px;
-  border: 1px solid #e07a6a66;
+  flex: none;
+  margin-left: auto;
+  border: 1px solid #3a332c;
   background: transparent;
-  color: #e07a6a;
-  border-radius: 6px;
+  color: #c9bfae;
+  border-radius: 8px;
   padding: 4px 12px;
   cursor: pointer;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
+}
+.ch-q-error button:hover {
+  border-color: #e8c56b;
+  color: #e8c56b;
 }
 .ch-q-card {
   background: #14110f;
@@ -346,7 +382,7 @@
 }
 .ch-q-text {
   margin: 0 0 14px;
-  font-size: 15.5px;
+  font-size: 16px;
   line-height: 1.8;
   color: #f3ece2;
 }
@@ -358,28 +394,36 @@
   text-align: left;
   border: 1px solid #3a332c;
   background: #1b1713;
-  color: #d8cfc0;
+  color: #c9bfae;
   border-radius: 12px;
   padding: 11px 14px;
   font-size: 14px;
   line-height: 1.6;
   cursor: pointer;
-  transition: all 0.18s;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s,
+    color 0.2s,
+    transform 0.2s;
 }
 .ch-q-opt:hover:not(:disabled) {
   border-color: #e8c56b;
   transform: translateX(4px);
 }
+.ch-q-opt:focus-visible {
+  outline: 2px solid #e8c56b;
+  outline-offset: 2px;
+}
 .ch-q-opt.right {
-  border-color: #4a9d8f;
-  background: rgba(74, 157, 143, 0.16);
-  color: #a8e6d9;
+  border-color: #4f8f7b;
+  background: rgba(79, 143, 123, 0.16);
+  color: #f3ece2;
   animation: qRight 0.4s ease;
 }
 .ch-q-opt.wrong {
-  border-color: #e07a6a;
-  background: rgba(224, 122, 106, 0.14);
-  color: #f0a99b;
+  border-color: #b03a2e;
+  background: rgba(176, 58, 46, 0.14);
+  color: #f3ece2;
   animation: qShake 0.35s ease;
 }
 .ch-q-opt.dim {
@@ -408,27 +452,27 @@
   margin-top: 13px;
   padding: 11px 13px;
   border-radius: 12px;
-  font-size: 13.5px;
+  font-size: 13px;
   line-height: 1.7;
   animation: riseIn 0.4s ease 0.15s backwards;
 }
 .ch-q-result.ok {
-  background: rgba(74, 157, 143, 0.12);
-  border: 1px solid #4a9d8f55;
+  background: rgba(79, 143, 123, 0.12);
+  border: 1px solid rgba(79, 143, 123, 0.33);
 }
 .ch-q-result.no {
-  background: rgba(224, 122, 106, 0.1);
-  border: 1px solid #e07a6a55;
+  background: rgba(176, 58, 46, 0.1);
+  border: 1px solid rgba(176, 58, 46, 0.33);
 }
 .ch-q-result strong {
   color: #e8c56b;
   letter-spacing: 1px;
 }
 .ch-q-result span {
-  color: #b6ab9a;
+  color: #9a8f80;
 }
 
-/* 徽章：解锁发光 / 未解锁进度 */
+/* 徽章：解锁描边 / 未解锁进度（入场延迟由内联 style 控制） */
 .ch-badge {
   display: flex;
   flex-direction: column;
@@ -436,9 +480,8 @@
   animation: riseIn 0.5s ease backwards;
 }
 .ch-badge.earned {
-  border-color: #e8c56b88;
+  border-color: rgba(232, 197, 107, 0.53);
   background: linear-gradient(150deg, rgba(232, 197, 107, 0.12), rgba(176, 58, 46, 0.08));
-  box-shadow: 0 0 18px rgba(232, 197, 107, 0.14);
 }
 .ch-badge-flag {
   font-size: 12px;
@@ -455,8 +498,8 @@
   width: 100%;
   height: 5px;
   flex: 1;
-  background: linear-gradient(90deg, #8f3529, #e8c56b);
-  border-radius: 3px;
+  background: linear-gradient(90deg, #b03a2e, #e8c56b);
+  border-radius: 8px;
   transform: scaleX(var(--x, 0));
   transform-origin: left center;
   transition: transform 0.8s ease;
@@ -468,7 +511,7 @@
   text-align: right;
 }
 
-/* 连对高亮 */
+/* 连对高亮：只做缩放，不做文字阴影 */
 .ch-hero-stats strong.hot {
   color: #e8c56b;
   animation: streakPop 0.45s ease;
@@ -476,7 +519,6 @@
 @keyframes streakPop {
   40% {
     transform: scale(1.28);
-    text-shadow: 0 0 14px rgba(232, 197, 107, 0.6);
   }
 }
 
@@ -507,7 +549,9 @@
   border: 1px solid #2e2823;
   border-radius: 12px;
   background: #1b1713;
-  transition: border-color 0.2s, transform 0.2s;
+  transition:
+    border-color 0.2s,
+    transform 0.2s;
 }
 .ch-week-day:hover {
   transform: translateY(-2px);
@@ -516,7 +560,7 @@
   display: block;
   font-style: normal;
   font-size: 12px;
-  color: #a89a86;
+  color: #9a8f80;
 }
 .ch-week-day b {
   display: block;
@@ -531,7 +575,7 @@
   font-style: normal;
   font-size: 12px;
   margin-top: 3px;
-  color: #a89a86;
+  color: #9a8f80;
 }
 .ch-week-day.on {
   border-color: rgba(232, 197, 107, 0.55);
@@ -541,16 +585,16 @@
   color: #e8c56b;
 }
 .ch-week-day.on em {
-  color: #c9a85c;
+  color: #e8c56b;
 }
 .ch-week-day.today {
   border-color: #b03a2e;
 }
 .ch-week-day.today:not(.on) b {
-  color: #d8cfc0;
+  color: #c9bfae;
 }
 .ch-week-day.today em {
-  color: #e07a6a;
+  color: #b03a2e;
 }
 
 /* 错题本 */
@@ -563,7 +607,7 @@
   transition: border-color 0.2s;
 }
 .ch-wrong.open {
-  border-color: #b03a2e66;
+  border-color: rgba(176, 58, 46, 0.4);
 }
 .ch-wrong-head {
   display: flex;
@@ -581,7 +625,7 @@
   flex: none;
   font-size: 12px;
   color: #e8c56b;
-  border: 1px solid #e8c56b44;
+  border: 1px solid rgba(232, 197, 107, 0.27);
   border-radius: 999px;
   padding: 1px 8px;
   white-space: nowrap;
@@ -589,8 +633,8 @@
 .ch-wrong-q {
   flex: 1;
   min-width: 0;
-  font-size: 13.5px;
-  color: #d8cfc0;
+  font-size: 13px;
+  color: #c9bfae;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -617,7 +661,7 @@
   margin-top: 12px;
 }
 .ch-wrong-opts span {
-  font-size: 12.5px;
+  font-size: 12px;
   color: #9a8f80;
   border: 1px solid #2e2823;
   border-radius: 8px;
@@ -631,7 +675,7 @@
 .ch-wrong-exp {
   font-size: 13px;
   line-height: 1.7;
-  color: #b9b0a2;
+  color: #c9bfae;
   margin: 12px 0;
 }
 .ch-wrong-ok {
@@ -642,12 +686,42 @@
   border-radius: 999px;
   padding: 5px 14px;
   cursor: pointer;
-  transition: color 0.2s, border-color 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
 }
 .ch-wrong-ok:hover {
   color: #e8c56b;
   border-color: #e8c56b;
 }
+
+/* 中文正文行长上限：每日一题提示 */
+.ch-daily-hint {
+  max-width: 34em;
+}
+
+@media (max-width: 720px) {
+  /* 收紧 hero 数据间距；重试/已掌握钮触控 ≥44px；主题标签省略号 */
+  .ch-hero {
+    gap: 18px;
+    padding: 18px;
+  }
+  .ch-hero-stats {
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .ch-q-error button,
+  .ch-wrong-ok {
+    min-height: 44px;
+  }
+  .ch-wrong-topic {
+    max-width: 42vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
 @media (max-width: 560px) {
   .ch-week {
     gap: 5px;
@@ -658,9 +732,4 @@
   .ch-week-day em {
     font-size: 12px;
   }
-}
-
-/* 中文正文行长上限：每日一题提示原为 53 字/行 */
-.ch-daily-hint {
-  max-width: 34em;
 }
