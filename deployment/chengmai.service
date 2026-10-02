@@ -1,0 +1,28 @@
+# ============================================================
+# 承脉 AI 后端 systemd 服务
+# 部署：sudo cp deployment/chengmai.service /etc/systemd/system/
+#       sudo systemctl daemon-reload
+#       sudo systemctl enable --now chengmai
+# 注意：内存型存储（用户档案/会话），只能单 worker，水平扩容需先换数据库
+# ============================================================
+
+[Unit]
+Description=Chengmai AI backend (FastAPI/uvicorn)
+After=network.target
+
+[Service]
+Type=simple
+User=chengmai
+Group=chengmai
+WorkingDirectory=/opt/chengmai-ai/backend
+# .env 由 python-dotenv 从仓库根目录 /opt/chengmai-ai/.env 自动加载，无需 EnvironmentFile
+ExecStart=/opt/chengmai-ai/backend/.venv/bin/uvicorn app.main:app \
+    --host 127.0.0.1 \
+    --port 8000 \
+    --workers 1
+Environment=PYTHONUNBUFFERED=1
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

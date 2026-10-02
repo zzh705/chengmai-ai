@@ -92,6 +92,11 @@ cd frontend && npm run lint && npx tsc --noEmit && npm run build
 - `frontend/scripts/gen-pitch.mjs`：pptxgenjs 路演 PPT 生成脚本
   （`npm i -D pptxgenjs && node scripts/gen-pitch.mjs`，输出 16 页《承脉AI_路演演示.pptx》）。
 
+## 服务器部署
+
+阿里云 ECS（Ubuntu）单机部署：Nginx 托管前端 + 反代后端（SSE 已适配）。
+服务器上执行 `deployment/server-init.sh` 一键初始化，以后用 `deployment/deploy.sh` 更新，完整步骤见 [docs/DEPLOY.md](docs/DEPLOY.md)。
+
 ## 分支规范
 
 - `main`：比赛正式版本，永远保持可演示
@@ -103,6 +108,7 @@ cd frontend && npm run lint && npx tsc --noEmit && npm run build
 - 总工程文档：`PROJECT_MASTER.md`（立项规划 + V0.2 实现状态对账）
 - 产品事实口径：`PRODUCT.md`
 - 接口合同：`docs/api_contract.md`（前后端唯一协作依据，改字段先改合同）
+- 部署指南：`docs/DEPLOY.md`（阿里云 ECS 单机部署与运维手册）
 
 ## 数据与许可声明
 
