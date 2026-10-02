@@ -1,12 +1,16 @@
-# 承脉 AI 接口合同 API Contract V1.0
+# 承脉 AI 接口合同 API Contract V1.1
 
 > 本文件是三人协作的"法律文件"。
 > 任何人要改接口字段，**必须先改这里**，再改代码，并在群里通知另外两人。
 
 - 统一前缀：`/api`
-- 数据格式：JSON（UTF-8）
+- 数据格式：JSON（UTF-8）；流式为 `text/event-stream`（SSE）
 - 字段命名：**snake_case**（如 `session_id`）
-- 认证：V1 版本暂不登录，后续用 `X-User-Id` 请求头
+- 认证（V1.1 更新）：题名入馆双轨制 ——
+  实名用户经 `/api/register`、`/api/login` 取得 HMAC 令牌（30 天有效）；
+  游客免登录，进度类接口以前端生成的匿名 `user_id` 承载。
+  令牌当前存于前端 localStorage，作为身份标识；V1 业务接口不强制校验令牌。
+- 版本记录：V1.0（2026-09-28）初版；V1.1（2026-10-02）补认证与流式接口、更新数据口径。
 
 ---
 
@@ -94,14 +98,17 @@
 
 ---
 
-## 接口清单（2026-09-28 更新）
+## 接口清单（2026-10-02 更新）
 
 | 状态 | 接口 | 用途 |
 |------|------|------|
+| ✅ 已实现 | POST /api/register | 实名注册（名号 + 口令，PBKDF2 哈希，返回 HMAC 令牌） |
+| ✅ 已实现 | POST /api/login | 实名登录，返回令牌 |
 | ✅ 已实现 | POST /api/chat | AI 对话（含意图/来源/证据分/动作） |
-| ✅ 已实现 | GET /api/heritage | 知识库列表（24 项） |
-| ✅ 已实现 | GET /api/heritage/{id} | 非遗项目详情（含 `image`、`sources`） |
-| ✅ 已实现 | GET /api/graph · /api/graph/{id} | 知识图谱全图 / 一跳子图（含 `source` 节点；节点可带 `extra`：heritage=类别/地域/等级，source=标题/发布方/链接/可信度） |
+| ✅ 已实现 | POST /api/chat/stream | AI 对话 SSE 流式版（meta → delta* → done） |
+| ✅ 已实现 | GET /api/heritage | 知识库列表（3299 项全量） |
+| ✅ 已实现 | GET /api/heritage/{id} | 非遗项目详情（含 `image`、`sources`、叙事化字段） |
+| ✅ 已实现 | GET /api/graph · /api/graph/{id} | 非遗族谱全图（371 节点/519 关系）/ 一跳子图 |
 | ✅ 已实现 | POST /api/learning-plan | 学习路径生成 |
 | ✅ 已实现 | POST /api/quiz/generate | 测验生成 |
 | ✅ 已实现 | POST /api/story/generate | 故事生成 |
@@ -109,6 +116,40 @@
 | ✅ 已实现 | POST /api/user/progress | 记录进度事件 |
 | ✅ 已实现 | GET /api/user/profile/{uid} | 个人传承档案 |
 | ✅ 已实现 | GET /api/health | 健康检查 |
+
+### POST /api/register · POST /api/login（V1.1 新增）
+
+请求：
+
+```json
+{ "name": "周子昊", "password": "abc123456" }
+```
+
+| 字段 | 类型 | 约束 | 说明 |
+|------|------|------|------|
+| `name` | string | 1-12 字符 | 名号；「游客」为保留名号；注册时 409 表示已被占用 |
+| `password` | string | 6-64 字符 | PBKDF2-HMAC-SHA256 + 每用户随机盐存储，不落明文 |
+
+返回（200）：
+
+```json
+{ "name": "周子昊", "token": "base64payload.32位hmac签名" }
+```
+
+令牌载荷为 `{name, exp}`（30 天有效），签名密钥存服务端
+`backend/data/auth_secret.key`（首次启动自动生成，已 gitignore）。
+
+### POST /api/chat/stream（V1.1 新增，SSE）
+
+请求体与 `/api/chat` 完全一致。响应为 `text/event-stream`，事件顺序：
+
+1. `meta`：LLM 出字前先到，前端立即渲染证据链
+   `{type:"meta", session_id, sources, related_items, actions, evidence_score, intent}`
+2. `delta`：答案增量，可多次
+   `{type:"delta", text:"苏绣"}`
+3. `done`：`{type:"done"}`
+
+半途失败时已生成部分仍写入会话，保证多轮上下文不断裂。
 
 ### POST /api/learning-plan（V2，2026-09-28 扩展）
 
