@@ -1,5 +1,6 @@
 /** 用户传承档案接口（POST /api/user/progress, GET /api/user/profile/{id}） */
 import { API_BASE } from './base'
+import { uuid } from '../utils/id'
 
 export type ProgressType = 'view' | 'learning_plan' | 'quiz_answer' | 'creation'
 
@@ -29,7 +30,7 @@ export interface Profile {
 export function getUserId(): string {
   let uid = localStorage.getItem('chengmai_uid')
   if (!uid) {
-    uid = `u_${crypto.randomUUID().slice(0, 8)}`
+    uid = `u_${uuid().slice(0, 8)}`
     localStorage.setItem('chengmai_uid', uid)
   }
   return uid
