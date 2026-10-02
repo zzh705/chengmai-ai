@@ -20,6 +20,7 @@ fi
 
 # ---------- 1. 拉取最新代码 ----------
 log "拉取 $BRANCH 最新代码"
+git config --system --add safe.directory "$APP_DIR" 2>/dev/null || true
 sudo -u "$APP_USER" git -C "$APP_DIR" fetch origin
 sudo -u "$APP_USER" git -C "$APP_DIR" reset --hard "origin/$BRANCH"
 

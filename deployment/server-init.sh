@@ -50,6 +50,8 @@ fi
 id "$APP_USER" >/dev/null 2>&1 || useradd -m -s /bin/bash "$APP_USER"
 
 # ---------- 5. 拉取代码 ----------
+# 兼容 root 预克隆的目录：系统级 git 信任，避免 chengmai 用户触发 dubious ownership
+git config --system --add safe.directory "$APP_DIR" 2>/dev/null || true
 if [[ ! -d "$APP_DIR/.git" ]]; then
   log "首次克隆代码到 $APP_DIR"
   git clone --branch "$BRANCH" "$REPO_URL" "$APP_DIR"
