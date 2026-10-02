@@ -1,4 +1,5 @@
 /** 故事生成接口（POST /api/story/generate） */
+import { API_BASE } from './base'
 
 export interface StorySection {
   heading: string
@@ -19,7 +20,7 @@ export async function generateStory(
   audience = '大学生',
   minutes = 2,
 ): Promise<StoryResponse> {
-  const resp = await fetch('/api/story/generate', {
+  const resp = await fetch(`${API_BASE}/api/story/generate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ topic, audience, minutes, mode: 'youth' }),

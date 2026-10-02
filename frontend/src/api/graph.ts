@@ -1,4 +1,5 @@
 /** 知识图谱接口（GET /api/graph, GET /api/graph/{id}） */
+import { API_BASE } from './base'
 
 export interface GraphNode {
   id: string
@@ -20,13 +21,13 @@ export interface GraphData {
 }
 
 export async function fetchFullGraph(): Promise<GraphData> {
-  const resp = await fetch('/api/graph')
+  const resp = await fetch(`${API_BASE}/api/graph`)
   if (!resp.ok) throw new Error(`图谱加载失败：HTTP ${resp.status}`)
   return (await resp.json()) as GraphData
 }
 
 export async function fetchItemGraph(itemId: string): Promise<GraphData> {
-  const resp = await fetch(`/api/graph/${itemId}`)
+  const resp = await fetch(`${API_BASE}/api/graph/${itemId}`)
   if (!resp.ok) throw new Error(`子图加载失败：HTTP ${resp.status}`)
   return (await resp.json()) as GraphData
 }

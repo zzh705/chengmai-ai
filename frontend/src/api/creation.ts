@@ -1,4 +1,5 @@
 /** 活化实验室接口（POST /api/creation/generate） */
+import { API_BASE } from './base'
 
 export interface CreationResult {
   title: string
@@ -40,7 +41,7 @@ export async function generateCreation(
   opts: CreationOptions | OutputType = {},
 ): Promise<CreationResponse> {
   const o: CreationOptions = typeof opts === 'string' ? { outputType: opts } : opts
-  const resp = await fetch('/api/creation/generate', {
+  const resp = await fetch(`${API_BASE}/api/creation/generate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

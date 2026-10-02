@@ -1,4 +1,5 @@
 /** 账号接口：POST /api/auth/register · POST /api/auth/login */
+import { API_BASE } from './base'
 
 export interface AuthSession {
   name: string
@@ -15,7 +16,7 @@ async function request(
   path: string,
   body: { name: string; password: string },
 ): Promise<AuthSession> {
-  const resp = await fetch(path, {
+  const resp = await fetch(API_BASE + path, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),

@@ -1,4 +1,5 @@
 /** 测验接口（POST /api/quiz/generate） */
+import { API_BASE } from './base'
 
 export interface QuizQuestion {
   id: number
@@ -17,7 +18,7 @@ export interface QuizResponse {
 }
 
 export async function generateQuiz(topic: string, count = 3): Promise<QuizResponse> {
-  const resp = await fetch('/api/quiz/generate', {
+  const resp = await fetch(`${API_BASE}/api/quiz/generate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ topic, count, difficulty: 'medium' }),

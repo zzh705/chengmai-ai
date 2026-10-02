@@ -1,4 +1,5 @@
 /** 非遗知识库接口（GET /api/heritage） */
+import { API_BASE } from './base'
 
 export interface HeritageSummary {
   id: string
@@ -28,7 +29,7 @@ export interface WowNumber {
 }
 
 export async function fetchHeritageList(tier?: 'all' | 'deep' | 'index'): Promise<HeritageSummary[]> {
-  const resp = await fetch(`/api/heritage${tier && tier !== 'all' ? `?tier=${tier}` : ''}`)
+  const resp = await fetch(`${API_BASE}/api/heritage${tier && tier !== 'all' ? `?tier=${tier}` : ''}`)
   if (!resp.ok) throw new Error(`知识库加载失败：HTTP ${resp.status}`)
   return (await resp.json()) as HeritageSummary[]
 }
@@ -50,7 +51,7 @@ export interface HeritageDetail extends HeritageSummary {
 }
 
 export async function fetchHeritageDetail(id: string): Promise<HeritageDetail> {
-  const resp = await fetch(`/api/heritage/${id}`)
+  const resp = await fetch(`${API_BASE}/api/heritage/${id}`)
   if (!resp.ok) throw new Error(`详情加载失败：HTTP ${resp.status}`)
   return (await resp.json()) as HeritageDetail
 }

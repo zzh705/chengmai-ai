@@ -1,4 +1,5 @@
 /** 学习路径接口（POST /api/learning-plan） */
+import { API_BASE } from './base'
 
 export interface LearningDay {
   day: number
@@ -32,7 +33,7 @@ export async function fetchLearningPlan(
   const onAbort = () => ctrl.abort(signal?.reason)
   signal?.addEventListener('abort', onAbort)
   try {
-    const resp = await fetch('/api/learning-plan', {
+    const resp = await fetch(`${API_BASE}/api/learning-plan`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

@@ -1,4 +1,5 @@
 /** 用户传承档案接口（POST /api/user/progress, GET /api/user/profile/{id}） */
+import { API_BASE } from './base'
 
 export type ProgressType = 'view' | 'learning_plan' | 'quiz_answer' | 'creation'
 
@@ -40,7 +41,7 @@ export function recordProgress(
   item?: { id?: string; name?: string },
   detail?: Record<string, unknown>,
 ): void {
-  void fetch('/api/user/progress', {
+  void fetch(`${API_BASE}/api/user/progress`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -54,7 +55,7 @@ export function recordProgress(
 }
 
 export async function fetchProfile(): Promise<Profile> {
-  const resp = await fetch(`/api/user/profile/${getUserId()}`)
+  const resp = await fetch(`${API_BASE}/api/user/profile/${getUserId()}`)
   if (!resp.ok) throw new Error(`档案加载失败：HTTP ${resp.status}`)
   return (await resp.json()) as Profile
 }

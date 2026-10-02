@@ -3,6 +3,7 @@ import CountUp from '../components/CountUp'
 import { useRevealGroup } from '../hooks/useReveal'
 import { fetchHeritageList, type HeritageSummary } from '../api/heritage'
 import type { GraphData, GraphNode } from '../api/graph'
+import { fetchFullGraph } from '../api/graph'
 import { extractProvince } from '../utils/geo'
 import '../styles/about.css'
 
@@ -102,8 +103,7 @@ export default function About() {
   const load = useCallback(() => {
     Promise.all([
       fetchHeritageList(),
-      fetch('/api/graph')
-        .then((r) => r.json())
+      fetchFullGraph()
         .catch(() => ({ nodes: [], links: [] })) as Promise<GraphData>,
     ])
       .then(([list, graph]) => {

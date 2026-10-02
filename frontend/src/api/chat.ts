@@ -3,6 +3,7 @@
  * 成员 B 只依赖本文件，不关心 AI 内部实现。
  */
 import { mockChatResponse } from './mock'
+import { API_BASE } from './base'
 
 export interface Source {
   id: string
@@ -58,7 +59,7 @@ export async function sendChat(req: ChatRequest): Promise<ChatResponse> {
     return { ...mockChatResponse, answer: `【MOCK】${req.message}` }
   }
 
-  const resp = await fetch('/api/chat', {
+  const resp = await fetch(`${API_BASE}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(req),
@@ -103,7 +104,7 @@ export async function streamChat(req: ChatRequest, handlers: StreamHandlers): Pr
     watchdog = setTimeout(() => controller.abort(), ms)
   }
 
-  const resp = await fetch('/api/chat/stream', {
+  const resp = await fetch(`${API_BASE}/api/chat/stream`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(req),
