@@ -18,7 +18,7 @@ const SECTIONS = [
   ['quality', '测试'],
   ['timeline', '里程碑'],
   ['team', '团队'],
-  ['advisor', '指导老师'],
+  ['advisor', '指导教师'],
 ] as const
 
 const AGENTS = [
@@ -523,34 +523,52 @@ export default function About() {
       </section>
 
       <section className="ab-card reveal" id="team">
-        <h2>团队分工</h2>
-        <p className="ab-team-school">北京科技大学天津学院 · 软件工程专业</p>
+        <h2>核心团队</h2>
+        <p className="ab-section-sub">三人成军，覆盖算法智能、工程基建与内容质量的完整闭环</p>
         <div className="ab-team">
           <div>
+            <span className="ab-role">项目负责人 · 首席架构师</span>
             <strong>周子昊</strong>
-            <span>AI 算法 / 多智能体架构 / 前端与交互设计</span>
+            <span>
+              统筹产品方向与总体技术架构；主导多智能体编排、RAG 检索增强体系，
+              以及国风视觉语言与全链路交互设计
+            </span>
           </div>
           <div>
+            <span className="ab-role">后端架构 · 数据工程负责人</span>
             <strong>马占赟</strong>
-            <span>后端服务 / 数据处理 / 部署运维</span>
+            <span>
+              主持 FastAPI 服务架构与非遗数据工程管线，负责知识底座建设、
+              云端部署运维与系统稳定性保障
+            </span>
           </div>
           <div>
+            <span className="ab-role">内容总监 · 质量与体验负责人</span>
             <strong>李思雨</strong>
-            <span>知识库内容编校与来源核验 / 用户体验测试 / 演示与汇报材料</span>
+            <span>
+              主持知识库内容编校与权威来源核验，把关史实准确与信源可信；
+              统筹用户体验测试与路演汇报体系
+            </span>
           </div>
         </div>
       </section>
 
-      <section className="ab-card reveal" id="advisor">
-        <h2>指导老师</h2>
+      <section className="ab-card reveal ab-advisor-card" id="advisor">
+        <p className="ab-adv-kicker">EXPERT MENTORSHIP · 专家指导</p>
+        <h2>指导教师</h2>
+        <p className="ab-section-sub">资深教授领衔把关，人工智能专业青年骨干教师全程技术督导</p>
         <div className="ab-team ab-advisors">
-          <div>
-            <strong>赵米傲</strong>
-            <span>人工智能学院 · 人工智能 · 讲师</span>
+          <div className="ab-adv-main">
+            <span className="ab-adv-badge">教授</span>
+            <strong>于静</strong>
+            <span className="ab-adv-field">计算机科学与技术</span>
+            <span className="ab-adv-duty">总体学术指导 · 选题方向与研究方法论把关</span>
           </div>
           <div>
-            <strong>于静</strong>
-            <span>人工智能学院 · 计算机科学与技术 · 教授</span>
+            <span className="ab-adv-badge ab-adv-badge-alt">讲师</span>
+            <strong>赵米傲</strong>
+            <span className="ab-adv-field">人工智能</span>
+            <span className="ab-adv-duty">智能体技术路线指导 · 工程实现全程督导</span>
           </div>
         </div>
       </section>

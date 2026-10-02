@@ -477,14 +477,87 @@
   font-size: 13px;
   color: #9a8f80;
 }
-.ab-team-school {
+.ab-section-sub {
   margin: -2px 0 14px;
   font-size: 13px;
-  letter-spacing: 2px;
-  color: #c9bfae;
+  letter-spacing: 1px;
+  color: #9a8f80;
+}
+.ab-role {
+  display: block !important;
+  margin-bottom: 8px;
+  font-size: 11px !important;
+  letter-spacing: 1px;
+  color: #e8c56b !important;
+}
+.ab-role::before {
+  content: '◆ ';
+  color: #b03a2e;
+  font-size: 9px;
+}
+
+/* 指导教师：独立重点板块 */
+.ab-advisor-card {
+  border-color: rgba(232, 197, 107, 0.35);
+  background:
+    linear-gradient(180deg, rgba(232, 197, 107, 0.06), rgba(28, 24, 20, 0.4) 45%),
+    #1c1814;
+  position: relative;
+}
+.ab-advisor-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #e8c56b 30%, #e8c56b 70%, transparent);
+}
+.ab-adv-kicker {
+  margin: 0 0 4px;
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: #b03a2e;
 }
 .ab-advisors div {
-  padding: 14px 16px;
+  padding: 18px 20px;
+  background: rgba(20, 17, 15, 0.7);
+  border: 1px solid rgba(232, 197, 107, 0.25);
+}
+.ab-adv-main {
+  border-color: rgba(232, 197, 107, 0.55) !important;
+  box-shadow: 0 0 0 1px rgba(232, 197, 107, 0.12), 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+.ab-adv-badge {
+  display: inline-block !important;
+  width: fit-content;
+  margin-bottom: 10px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 11px !important;
+  letter-spacing: 2px;
+  color: #14110f !important;
+  background: linear-gradient(135deg, #f0d98c, #e8c56b);
+  font-weight: 700;
+}
+.ab-adv-badge-alt {
+  color: #e8c56b !important;
+  background: transparent;
+  border: 1px solid rgba(232, 197, 107, 0.6);
+}
+.ab-adv-field {
+  display: block !important;
+  margin: 2px 0 8px;
+  font-size: 12px !important;
+  letter-spacing: 1px;
+  color: #c9bfae !important;
+}
+.ab-adv-duty {
+  display: block !important;
+  font-size: 12px !important;
+  line-height: 1.7;
+  color: #9a8f80 !important;
+}
+.ab-adv-main strong {
+  font-size: 20px;
 }
 
 .ab-footer {
