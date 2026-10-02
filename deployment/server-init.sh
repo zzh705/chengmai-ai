@@ -54,12 +54,11 @@ id "$APP_USER" >/dev/null 2>&1 || useradd -m -s /bin/bash "$APP_USER"
 git config --system --add safe.directory "$APP_DIR" 2>/dev/null || true
 if [[ ! -d "$APP_DIR/.git" ]]; then
   log "首次克隆代码到 $APP_DIR"
-  git clone --branch "$BRANCH" "$REPO_URL" "$APP_DIR"
+  git clone --depth 1 --branch "$BRANCH" "$REPO_URL" "$APP_DIR"
 else
-  log "代码已存在，更新到最新"
-  sudo -u "$APP_USER" git -C "$APP_DIR" fetch origin
-  sudo -u "$APP_USER" git -C "$APP_DIR" checkout "$BRANCH"
-  sudo -u "$APP_USER" git -C "$APP_DIR" pull --ff-only origin "$BRANCH"
+  log "代码已存在，更新到最新（国内网络抖动时自动跳过）"
+  timeout 90 sudo -u "$APP_USER" git -C "$APP_DIR" pull --ff-only origin "$BRANCH" \
+    || echo "WARN: 拉取最新代码失败，使用磁盘现有版本继续部署"
 fi
 chown -R "$APP_USER:$APP_USER" "$APP_DIR"
 
