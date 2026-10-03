@@ -432,7 +432,7 @@ const TOTAL = 16
   const layers = [
     { name: '前端表现层', tech: 'React 19 · TypeScript · Vite · D3.js', color: C.gold },
     { name: 'AI 智能体层', tech: '多 Agent 协作 · Intent 识别 · RAG 检索 · 知识图谱', color: C.teal },
-    { name: '大模型层', tech: 'DashScope Qwen-Plus（对话/生成） · text-embedding-v3（向量）', color: C.red },
+    { name: '大模型层', tech: 'DashScope qwen-plus（对话/生成） · text-embedding-v3（向量）', color: C.red },
     { name: '后端服务层', tech: 'FastAPI · PBKDF2 鉴权 · HMAC 令牌 · 会话/进度存储', color: C.goldDim },
     { name: '数据层', tech: '结构化 JSON 知识库 · 向量库 · 中国地图 GeoJSON · Commons 配图', color: C.muted },
   ]
@@ -479,7 +479,7 @@ const TOTAL = 16
   pageTitle(s, '团队', 'TEAM')
 
   const members = [
-    { name: '周子昊', role: 'AI / Agent 总工程师 + 前端 UI/UX', desc: 'Qwen3 · RAG · Agent · 知识图谱 · 页面与交互', c: C.gold },
+    { name: '周子昊', role: 'AI / Agent 总工程师 + 前端 UI/UX', desc: 'qwen-plus · RAG · Agent · 知识图谱 · 页面与交互', c: C.gold },
     { name: '马占赟', role: '后端 / 数据 / 部署', desc: 'FastAPI · 数据管线 · Docker · 公网部署', c: C.teal },
     { name: '李思雨', role: '内容 / 质量', desc: '知识库内容编校与来源核验 · 用户体验测试 · 演示材料', c: C.red },
   ]

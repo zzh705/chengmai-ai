@@ -16,7 +16,7 @@
 
 ## 1. POST /api/chat — 承脉 AI 对话（P0 核心接口）
 
-**调用链**：成员 B(React) → 成员 C(FastAPI) → 成员 A(Agent/RAG/Qwen3) → 返回
+**调用链**：成员 B(React) → 成员 C(FastAPI) → 成员 A(Agent/RAG/qwen-plus) → 返回
 
 ### 请求
 

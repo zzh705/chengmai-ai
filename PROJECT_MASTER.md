@@ -149,12 +149,12 @@
 
 首选模型：
 
-**Qwen3 系列。**
+**qwen-plus（阿里云百炼 DashScope，OpenAI 兼容协议 API）**
 
-Qwen3 官方 GitHub
-已提供模型、推理、Agent/工具调用等相关资料，并支持本地部署及多种推理框架。项目可以根据服务器资源采用
-API 或本地模型方案。\
-GitHub：https://github.com/QwenLM/Qwen3
+立项时调研过 Qwen3 开源权重（已提供模型、推理、Agent/工具调用等资料，支持本地部署）；
+综合开发资源与稳定性，实际落地采用 DashScope 托管的 qwen-plus API，
+向量化采用同平台 text-embedding-v3，无需自部署大模型权重。\
+Qwen3 开源仓库：https://github.com/QwenLM/Qwen3
 
 ## 1.3 智能体
 
@@ -469,7 +469,8 @@ Day 7：完成自己的传播作品
                               ↓
                      ┌──────────────────┐
                      │     大模型        │
-                     │      Qwen3       │
+                     │   qwen-plus      │
+                     │  (DashScope)     │
                      └────────┬─────────┘
                               ↓
           ┌───────────────────┼────────────────────┐
@@ -509,7 +510,7 @@ Day 7：完成自己的传播作品
 
 ### AI
 
--   Qwen3
+-   qwen-plus（阿里云百炼 DashScope，OpenAI 兼容协议 API）
 -   OpenAI-compatible API
 -   LangGraph / LangChain
 -   RAG
@@ -538,14 +539,11 @@ GitHub：https://github.com/pgvector/pgvector
 可选：
 
 -   BGE 系列
--   Qwen3-Embedding 系列
+-   DashScope text-embedding-v3（实际落地采用）
 
 BGE/FlagEmbedding 专注于检索增强场景，提供 embedding 和 reranker
 等组件。\
 GitHub：https://github.com/FlagOpen/FlagEmbedding
-
-Qwen3-Embedding 官方仓库提供文本 embedding 和 reranking 模型。\
-GitHub：https://github.com/QwenLM/Qwen3-Embedding
 
 ### 知识图谱
 
@@ -595,19 +593,20 @@ GitHub：https://github.com/langchain-ai/langchain
 
 首选：
 
-**Qwen3**
+**qwen-plus（阿里云百炼 DashScope）**
 
 原因：
 
--   国产；
--   开源权重；
--   支持工具调用；
--   支持 Agent 场景；
--   支持本地部署；
--   可通过 API 使用。
+-   国产大模型，通义千问系列；
+-   通过 DashScope OpenAI 兼容 API 调用，接入简单稳定；
+-   支持工具调用与 Agent 场景；
+-   支持 RAG 检索增强；
+-   服务端推理，无需本地部署大模型，适配学生机/轻量服务器资源；
+-   配合 DashScope text-embedding-v3 完成向量化检索。
 
-Qwen3 官方资料明确提供了工具调用、Agent、RAG、部署等相关使用方式。\
-GitHub：https://github.com/QwenLM/Qwen3
+> 立项时调研过 Qwen3 开源权重（https://github.com/QwenLM/Qwen3），
+> 综合资源与稳定性，实际落地采用 DashScope 托管的 qwen-plus API，
+> 未直接自部署 Qwen3 权重。
 
 ------------------------------------------------------------------------
 
@@ -615,7 +614,7 @@ GitHub：https://github.com/QwenLM/Qwen3
 
 ## 6.1 核心支撑项目
 
-### A. Qwen3
+### A. qwen-plus / DashScope
 
 用途：
 
@@ -624,9 +623,14 @@ GitHub：https://github.com/QwenLM/Qwen3
 -   Agent；
 -   内容生成。
 
-项目地址：
+实际调用方式：
 
-https://github.com/QwenLM/Qwen3
+-   通过阿里云百炼 DashScope 的 OpenAI 兼容协议 API 调用 `qwen-plus`；
+-   代码默认 `LLM_MODEL=qwen-plus`，向量模型 `text-embedding-v3`。
+
+参考（立项调研的开源备选，未直接自部署）：
+
+-   Qwen3 开源权重：https://github.com/QwenLM/Qwen3
 
 许可证/模型使用条件：
 
@@ -739,7 +743,7 @@ https://github.com/MEMEXProject/MEMEX-KG
 
 允许使用：
 
--   Qwen3；
+-   qwen-plus（DashScope API）；
 -   LangChain/LangGraph；
 -   BGE/Qwen Embedding；
 -   pgvector；
@@ -1560,7 +1564,9 @@ URL
   -------------------------------------------------------------------------------------------------
   项目                  用途                 版本           License                  使用方式
   --------------------- -------------------- -------------- ------------------------ --------------
-  Qwen3                 LLM                  实际版本       按模型许可               API/本地
+  qwen-plus             LLM                  DashScope       按阿里模型许可         API 调用
+
+  text-embedding-v3     Embedding            DashScope       按阿里模型许可         API 调用
 
   FlagEmbedding         Embedding/Reranker   实际版本       Apache-2.0               直接依赖
 
@@ -2058,7 +2064,7 @@ FastAPI
  ↓
 非遗知识检索
  ↓
-Qwen3
+qwen-plus（DashScope）
  ↓
 来源校验
  ↓
@@ -2091,34 +2097,37 @@ AIGC
 
 # 附录 A：参考 GitHub 项目
 
-1.  Qwen3\
+1.  qwen-plus / DashScope（实际落地，阿里云百炼 OpenAI 兼容 API）\
+    https://help.aliyun.com/zh/model-studio/
+
+2.  Qwen3（立项调研的开源备选，未直接自部署）\
     https://github.com/QwenLM/Qwen3
 
-2.  Qwen3-Embedding\
+3.  Qwen3-Embedding（立项调研的开源备选，实际采用 text-embedding-v3）\
     https://github.com/QwenLM/Qwen3-Embedding
 
-3.  FlagEmbedding\
+4.  FlagEmbedding\
     https://github.com/FlagOpen/FlagEmbedding
 
-4.  pgvector\
+5.  pgvector\
     https://github.com/pgvector/pgvector
 
-5.  LangChain\
+6.  LangChain\
     https://github.com/langchain-ai/langchain
 
-6.  RAGFlow\
+7.  RAGFlow\
     https://github.com/infiniflow/ragflow
 
-7.  ICHontology\
+8.  ICHontology\
     https://github.com/houxilong/ichontology
 
-8.  Xiangshan Culture Knowledge Graph\
+9.  Xiangshan Culture Knowledge Graph\
     https://github.com/waiyuchan/KGraph
 
-9.  Cultural Commonsense Knowledge Graph\
+10. Cultural Commonsense Knowledge Graph\
     https://github.com/JuniorTonga/Cultural_Commonsense_Knowledge_Graph
 
-10. MEMEX-KG\
+11. MEMEX-KG\
     https://github.com/MEMEXProject/MEMEX-KG
 
 ------------------------------------------------------------------------

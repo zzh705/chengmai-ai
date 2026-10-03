@@ -1,4 +1,4 @@
-"""Qwen3 大模型调用封装（OpenAI 兼容协议）。"""
+"""DashScope qwen-plus 大模型调用封装（OpenAI 兼容协议）。"""
 
 import os
 

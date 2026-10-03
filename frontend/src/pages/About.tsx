@@ -33,7 +33,7 @@ const AGENTS = [
 const TECH = [
   'Python 3.11',
   'FastAPI',
-  'Qwen3 大模型',
+  'qwen-plus 大模型（DashScope）',
   'text-embedding-v3 语义检索',
   'D3.js 知识图谱 + d3-geo 非遗地图',
   'React 19 + TypeScript + Vite',
@@ -367,7 +367,7 @@ export default function About() {
         <ul className="ab-list">
           <li>
             <strong>模型与能力：</strong>
-            对话与生成类能力使用 Qwen3（DashScope API），语义检索使用 text-embedding-v3
+            对话与生成类能力使用 qwen-plus（DashScope API），语义检索使用 text-embedding-v3
             向量化；两者均在后端服务端调用，前端不接触任何密钥。
           </li>
           <li>

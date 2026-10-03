@@ -105,7 +105,7 @@ def _sse(payload: dict) -> str:
 
 @router.post("/chat", response_model=ChatResponse)
 def chat(req: ChatRequest) -> ChatResponse:
-    """承脉 AI 对话：检索 → 意图识别 → 视角提示词+资料注入 → Qwen3 → 证据链返回。"""
+    """承脉 AI 对话：检索 → 意图识别 → 视角提示词+资料注入 → qwen-plus → 证据链返回。"""
     items, sources, intent, session_id, system_prompt, history = _prepare(req)
     answer = llm_chat(req.message, history=history, system=system_prompt)
 
