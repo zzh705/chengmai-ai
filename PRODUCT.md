@@ -24,8 +24,8 @@ web
 
 ## Operating Context
 
-- **比赛节点**：部署方案为 P0，10/5 截止；比赛材料 11 项见 `PROJECT_MASTER.md`。
-- **演示网络**：现场网络待定 —— 按「有稳定网、AI 实时调用 DashScope」准备，同时留意离线兜底方案（未决，不提前实现）。
+- **比赛节点**：公网部署已于 10/2 完成（P0 达成）；比赛材料 11 项见 `PROJECT_MASTER.md`。
+- **演示网络**：线上环境（http://123.56.18.7）按「有稳定网、AI 实时调用 DashScope」运行；现场以公网地址为主入口，本地运行为备用线，离线兜底不提前实现。
 - **团队**：3 人分工（成员 A：AI/Agent + 前端；成员 B：后端/数据/部署；成员 C：内容/质量）。开发与答辩材料由成员 A 承担主要工程。
 - **AI 依赖**：DashScope `qwen-plus`（对话/生成）+ `text-embedding-v3`（RAG），API Key 走 `.env`（gitignored）；配额耗尽时对话与出题不可用，需人工换 key/充值。
 - **数据管线**：内容扩充（`backend/scripts/expand_deep_fields.py`，断点续传）、配图（Commons 实拍 + 程序生成纹样字卡两层）、向量缓存（运行时自动构建，npz 落盘）均为手动/按需触发，不在服务内自动跑。
@@ -38,7 +38,7 @@ web
 - AI 对话三模式（学者 / 传承人 / 青年传播者）；Chat 深度模式与页面模式配色联动；同时提供 POST /api/chat 与 SSE /api/chat/stream。
 - 知识图谱为 SVG「非遗族谱」（d3.hierarchy 树状布局：根 → 十大类 → 非遗 → 传承人外叶，371 节点 / 519 关系），三千星尘环带拟全量收录，支持缩放/搜索/详情/关系跳转；地域节点在图例口径不进族谱。
 - **约束**：中文单语（不做 i18n）；内容口径宁缺毋滥、不编造；配图许可必须如实标注（Commons 实拍 + 程序生成纹样字卡两层）；密钥与用户库不进仓库。
-- **未决**：公网部署平台未选型；V1 存储为 JSON 文件 + 内存（进度/向量），PostgreSQL/pgvector 为规划项而非现状。
+- **未决**：V1 存储为 JSON 文件 + 内存（进度/向量），PostgreSQL/pgvector 为规划项而非现状；域名备案与 HTTPS 为比赛后规划，当前以 http://公网IP 提供服务。
 
 ## Brand Commitments
 
@@ -55,7 +55,8 @@ web
 - `PROJECT_MASTER.md`：11 项比赛材料清单与进度。
 - 路演材料：`frontend/scripts/gen-pitch.mjs` 生成 16 页 pptx。
 - 回归资产：`frontend/e2e.mjs` 全流程断言 + 手动截图巡检。
-- **缺失（不得虚构）**：无真实用户测试数据、无线上部署地址、无比赛演示视频成稿。
+- **缺失（不得虚构）**：无真实用户测试数据、无比赛演示视频成稿。
+- **线上现状（可验证）**：公网地址 http://123.56.18.7（阿里云 ECS 北京，Ubuntu 22.04，Nginx + systemd，开机自启），`/api/health` 实时可验；部署/更新脚本在 `deployment/`。
 
 ## Product Principles
 

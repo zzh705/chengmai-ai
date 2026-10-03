@@ -4,6 +4,12 @@
 
 **承脉 AI（CHENGMAI）** — 2026 大学生计算机应用大赛 · 大模型与智能体应用赛道
 
+## 在线体验
+
+**公网地址：http://123.56.18.7**（阿里云 ECS · 北京，7×24 运行，浏览器直接访问，无需本地安装）
+
+线上版本与 `main` 分支保持一致；知识库、图谱、地图等数据功能开箱即用，AI 对话/学习/创作功能由服务端 DashScope Key 驱动。
+
 ## 项目一句话
 
 把国家级非遗名录全量结构化为 AI 可讲、可教、可玩、可传的知识资产，
@@ -92,10 +98,15 @@ cd frontend && npm run lint && npx tsc --noEmit && npm run build
 - `frontend/scripts/gen-pitch.mjs`：pptxgenjs 路演 PPT 生成脚本
   （`npm i -D pptxgenjs && node scripts/gen-pitch.mjs`，输出 16 页《承脉AI_路演演示.pptx》）。
 
-## 服务器部署
+## 服务器部署（已上线）
 
-阿里云 ECS（Ubuntu）单机部署：Nginx 托管前端 + 反代后端（SSE 已适配）。
-服务器上执行 `deployment/server-init.sh` 一键初始化，以后用 `deployment/deploy.sh` 更新，完整步骤见 [docs/DEPLOY.md](docs/DEPLOY.md)。
+项目**已完成公网部署**：阿里云 ECS（北京，Ubuntu 22.04，2核2G）单机架构，
+Nginx 80 端口同时托管前端静态资源与反代后端 API（SSE 流式已关缓冲），uvicorn 以 systemd 守护、开机自启。
+
+- **线上地址**：http://123.56.18.7
+- 首次初始化：服务器执行 `deployment/server-init.sh`（装环境 / 建 swap / 构建 / 起服务，幂等）
+- 后续更新：服务器执行 `deployment/deploy.sh`（拉代码 → 构建 → 重启 → 自检，一条命令）
+- 完整步骤、运维命令与排障见 [docs/DEPLOY.md](docs/DEPLOY.md)
 
 ## 分支规范
 
