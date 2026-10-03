@@ -4,7 +4,7 @@
   inset: 0;
   z-index: 100;
   transition: opacity 0.34s ease;
-  background: radial-gradient(ellipse at center, #1b1713 0%, #14110f 70%);
+  background: radial-gradient(ellipse at center, var(--ink-1) 0%, var(--ink) 70%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -35,7 +35,7 @@
   height: 2px;
   width: min(460px, 82vw);
   transform: translateX(-50%) scaleX(0);
-  background: linear-gradient(90deg, transparent, #e8c56b 15%, #e8c56b 85%, transparent);
+  background: linear-gradient(90deg, transparent, var(--gold) 15%, var(--gold) 85%, transparent);
   animation: lineGrow 0.8s cubic-bezier(0.2, 0.9, 0.3, 1) 0.15s forwards;
 }
 @keyframes lineGrow {
@@ -50,7 +50,7 @@
   font-weight: 700;
   letter-spacing: 26px;
   text-indent: 26px;
-  color: #f3ece2;
+  color: var(--paper);
   opacity: 0;
   transform: scale(1.15);
   animation: wordIn 0.9s ease 0.75s forwards;
@@ -72,15 +72,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #b03a2e;
-  color: #f3ece2;
+  background: var(--vermilion);
+  color: var(--paper);
   font-size: 17px;
   font-weight: 700;
   letter-spacing: 2px;
   border-radius: 8px;
   opacity: 0;
   transform: translateY(-70px) scale(1.9) rotate(-14deg);
-  box-shadow: 0 10px 30px rgba(176, 58, 46, 0.5);
+  box-shadow: 0 10px 30px rgba(var(--red-rgb), 0.5);
   animation: sealDrop 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.6s forwards;
 }
 @keyframes sealDrop {
@@ -103,7 +103,7 @@
   font-size: 13px;
   letter-spacing: 10px;
   text-indent: 10px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   opacity: 0;
   animation: subIn 0.7s ease 2.15s forwards;
 }
@@ -123,8 +123,8 @@
   right: 26px;
   bottom: 24px;
   background: none;
-  border: 1px solid #3a332c;
-  color: #9a8f80;
+  border: 1px solid var(--ink-3);
+  color: var(--ink-faint);
   font-size: 13px;
   padding: 8px 16px;
   border-radius: 999px;
@@ -143,8 +143,8 @@
   pointer-events: auto;
 }
 .splash-skip:hover {
-  border-color: #e8c56b;
-  color: #e8c56b;
+  border-color: var(--gold);
+  color: var(--gold);
   transform: translateY(-1px);
 }
 

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type KeyboardEvent } from 'react'
 import { geoMercator, geoPath } from 'd3-geo'
 import { fetchHeritageList, type HeritageSummary } from '../api/heritage'
 import Cover from '../components/Cover'
+import { useTheme } from '../utils/theme'
 import '../styles/map.css'
 
 interface Props {
@@ -234,19 +235,32 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
 
   // 热力色阶：sqrt 拉开中小省差异，朱红透明度阶梯 → 实色朱红 → 灯火金 → 描金
   // 中国是红色的国度：低密度如朱痕透纸，最高密度如灯火点亮至描金
-  const HEAT = [
-    'rgba(176,58,46,.18)',
-    'rgba(176,58,46,.30)',
-    'rgba(176,58,46,.45)',
-    'rgba(176,58,46,.65)',
-    '#b03a2e',
-    'rgba(232,197,107,.85)',
-    '#e8c56b',
-  ]
+  const theme = useTheme()
+  const HEAT =
+    theme === 'light'
+      ? [
+          'rgba(159,48,36,.14)',
+          'rgba(159,48,36,.26)',
+          'rgba(159,48,36,.42)',
+          'rgba(159,48,36,.62)',
+          '#9f3024',
+          'rgba(176,136,47,.9)',
+          '#b0882f',
+        ]
+      : [
+          'rgba(176,58,46,.18)',
+          'rgba(176,58,46,.30)',
+          'rgba(176,58,46,.45)',
+          'rgba(176,58,46,.65)',
+          '#b03a2e',
+          'rgba(232,197,107,.85)',
+          '#e8c56b',
+        ]
+  const emptyFill = theme === 'light' ? '#f1eadb' : '#1b1713'
   const fillOf = (p: Province) =>
     p.count > 0
       ? HEAT[Math.min(HEAT.length - 1, Math.floor(Math.sqrt(p.count / maxCount) * HEAT.length))]
-      : '#1b1713'
+      : emptyFill
   // 名录到达判定：未到时统计数字以骨架占位（失败会进错误态，不会永远占位）
   const listReady = list.length > 0
   // 顶端两阶（灯火与描金）的省份触发灯火脉动
@@ -374,7 +388,7 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
             <div className="map-legend">
               <span className="map-legend-label">项目密度</span>
               <span className="map-scale" aria-hidden>
-                <i style={{ background: '#1b1713' }} />
+                <i style={{ background: emptyFill }} />
                 {HEAT.map((c) => (
                   <i key={c} style={{ background: c }} />
                 ))}
@@ -425,7 +439,7 @@ export default function MapPage({ onNavigate, openRegion }: Props) {
             <div className="map-legend">
               <span className="map-legend-label">项目密度</span>
               <span className="map-scale" aria-hidden>
-                <i style={{ background: '#1b1713' }} />
+                <i style={{ background: emptyFill }} />
                 {HEAT.map((c) => (
                   <i key={c} style={{ background: c }} />
                 ))}

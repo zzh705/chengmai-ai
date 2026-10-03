@@ -2,20 +2,20 @@
 .pf-page {
   height: 100%;
   overflow-y: auto;
-  background: #14110f;
-  color: #f3ece2;
+  background: var(--ink);
+  color: var(--paper);
   padding-bottom: 50px;
 }
 .pf-center {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #9a8f80;
+  color: var(--ink-faint);
 }
 /* 加载失败/空态：友好提示 + 重试 */
 .pf-state {
   text-align: center;
-  color: #c9bfae;
+  color: var(--ink-soft);
 }
 .pf-state p {
   margin: 0 0 14px;
@@ -24,21 +24,21 @@
 }
 .pf-retry {
   padding: 8px 22px;
-  border: 1px solid rgba(232, 197, 107, 0.5);
+  border: 1px solid rgba(var(--gold-rgb), 0.5);
   border-radius: 999px;
   background: transparent;
-  color: #e8c56b;
+  color: var(--gold);
   font-size: 13px;
   letter-spacing: 2px;
   cursor: pointer;
   transition: background-color 0.25s, color 0.25s;
 }
 .pf-retry:hover {
-  background: #e8c56b;
-  color: #14110f;
+  background: var(--gold);
+  color: var(--ink);
 }
 .pf-retry:focus-visible {
-  outline: 2px solid #e8c56b;
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 
@@ -52,10 +52,10 @@
   font-size: 26px;
   font-weight: 600;
   letter-spacing: 6px;
-  color: #e8c56b;
+  color: var(--gold);
 }
 .pf-header p {
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-size: 13px;
   margin-top: 8px;
   word-break: break-all;
@@ -70,8 +70,8 @@
   padding: 0 20px;
 }
 .pf-stat {
-  background: #1b1713;
-  border: 1px solid #2e2823;
+  background: var(--ink-1);
+  border: 1px solid var(--ink-2);
   border-radius: 12px;
   padding: 18px;
   text-align: center;
@@ -79,11 +79,11 @@
 .pf-stat strong {
   display: block;
   font-size: 30px;
-  color: #e8c56b;
+  color: var(--gold);
 }
 .pf-stat span {
   font-size: 12px;
-  color: #9a8f80;
+  color: var(--ink-faint);
 }
 
 .pf-grid {
@@ -95,18 +95,18 @@
   padding: 0 20px;
 }
 .pf-card {
-  background: #1b1713;
-  border: 1px solid #2e2823;
+  background: var(--ink-1);
+  border: 1px solid var(--ink-2);
   border-radius: 12px;
   padding: 16px 18px;
 }
 .pf-card h3 {
   margin: 0 0 12px;
   font-size: 15px;
-  color: #e8c56b;
+  color: var(--gold);
 }
 .pf-empty {
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-size: 13px;
 }
 .pf-line {
@@ -114,13 +114,13 @@
   justify-content: space-between;
   padding: 7px 0;
   font-size: 14px;
-  color: #c9bfae;
+  color: var(--ink-soft);
 }
 .pf-line:not(:last-child) {
-  border-bottom: 1px dashed #2e2823;
+  border-bottom: 1px dashed var(--ink-2);
 }
 .pf-line span {
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-size: 12px;
 }
 
@@ -131,9 +131,9 @@
   align-items: center;
   gap: 22px;
   background:
-    radial-gradient(240px 120px at 0% 0%, rgba(232, 197, 107, 0.12), transparent),
-    #1b1713;
-  border: 1px solid rgba(232, 197, 107, 0.45);
+    radial-gradient(240px 120px at 0% 0%, rgba(var(--gold-rgb), 0.12), transparent),
+    var(--ink-1);
+  border: 1px solid rgba(var(--gold-rgb), 0.45);
   border-radius: 12px;
   padding: 22px 26px;
   margin-bottom: 14px;
@@ -152,10 +152,10 @@
   flex: none;
   width: 64px;
   height: 64px;
-  border: 2px solid #b03a2e;
+  border: 2px solid var(--vermilion);
   border-radius: 12px;
-  background: #b03a2e;
-  color: #f3ece2;
+  background: var(--vermilion);
+  color: var(--paper);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -164,7 +164,7 @@
   font-weight: 700;
   letter-spacing: 0;
   transform: rotate(-7deg);
-  box-shadow: 0 2px 0 #1b1713;
+  box-shadow: 0 2px 0 var(--ink-1);
 }
 .pf-hero-main {
   flex: 1;
@@ -175,8 +175,8 @@
 .pf-hero-lv {
   display: inline-block;
   font-size: 12px;
-  color: #14110f;
-  background: #e8c56b;
+  color: var(--ink);
+  background: var(--gold);
   border-radius: 999px;
   padding: 2px 10px;
   font-weight: 700;
@@ -185,13 +185,13 @@
 .pf-hero-main h2 {
   margin: 6px 0 4px;
   font-size: 24px;
-  color: #f3ece2;
+  color: var(--paper);
   letter-spacing: 4px;
 }
 .pf-hero-main p {
   margin: 0;
   font-size: 13px;
-  color: #9a8f80;
+  color: var(--ink-faint);
 }
 /* 名号行：大字名号 + 入馆日期 + 入馆方式徽记 */
 .pf-hero-name {
@@ -203,22 +203,22 @@
   font-family: var(--font-serif);
   font-size: 22px;
   letter-spacing: 4px;
-  color: #e8c56b;
+  color: var(--gold);
 }
 .pf-hero-name em {
   font-style: normal;
   font-family: var(--font-sans);
   font-size: 11px;
   letter-spacing: 1px;
-  color: #9a8f80;
+  color: var(--ink-faint);
 }
 .pf-hero-kind {
   font-style: normal;
   font-family: var(--font-sans);
   font-size: 11px;
   letter-spacing: 1px;
-  color: #4f8f7b;
-  border: 1px solid rgba(79, 143, 123, 0.5);
+  color: var(--jade);
+  border: 1px solid rgba(var(--jade-rgb), 0.5);
   border-radius: 999px;
   padding: 1px 9px;
   line-height: 1.5;
@@ -234,14 +234,14 @@
   display: flex;
   justify-content: space-between;
   font-size: 12px;
-  color: #e8c56b;
+  color: var(--gold);
   margin-bottom: 6px;
   letter-spacing: 1px;
 }
 .pf-hero-exp-bar {
   height: 12px;
-  background: #14110f;
-  border: 1px solid #3a332c;
+  background: var(--ink);
+  border: 1px solid var(--ink-3);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -249,7 +249,7 @@
   display: block;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, #b03a2e, #e8c56b);
+  background: linear-gradient(90deg, var(--vermilion), var(--gold));
   border-radius: 8px;
   transform: scaleX(var(--x, 0));
   transform-origin: left center;
@@ -280,7 +280,7 @@
   top: 8px;
   bottom: 8px;
   width: 1px;
-  background: linear-gradient(#e8c56b44, #b03a2e44);
+  background: linear-gradient(var(--gold)44, var(--vermilion)44);
 }
 .pf-timeline li {
   position: relative;
@@ -300,30 +300,30 @@
   width: 9px;
   height: 9px;
   border-radius: 999px;
-  background: #14110f;
-  border: 2px solid #e8c56b;
+  background: var(--ink);
+  border: 2px solid var(--gold);
   transition: transform 0.2s, background-color 0.2s;
 }
 .pf-timeline li:hover .pf-tl-dot {
   transform: translateY(-50%) scale(1.3);
-  background: #e8c56b;
+  background: var(--gold);
 }
 .pf-tl-label {
-  color: #e8c56b;
-  border: 1px solid #e8c56b44;
+  color: var(--gold);
+  border: 1px solid var(--gold)44;
   border-radius: 999px;
   padding: 1px 8px;
   font-size: 12px;
   white-space: nowrap;
 }
 .pf-tl-name {
-  color: #c9bfae;
+  color: var(--ink-soft);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .pf-tl-ts {
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-size: 12px;
   white-space: nowrap;
 }
@@ -353,21 +353,21 @@
 }
 .pf-radar-ring {
   fill: none;
-  stroke: #3a332c;
+  stroke: var(--ink-3);
   stroke-width: 1;
 }
 .pf-radar-axis {
-  stroke: #3a332c;
+  stroke: var(--ink-3);
   stroke-width: 1;
 }
 .pf-radar-shape {
-  fill: rgba(232, 197, 107, 0.26);
-  stroke: #e8c56b;
+  fill: rgba(var(--gold-rgb), 0.26);
+  stroke: var(--gold);
   stroke-width: 2;
   stroke-linejoin: round;
 }
 .pf-radar-label {
-  fill: #9a8f80;
+  fill: var(--ink-faint);
   font-size: 12px;
 }
 
@@ -389,7 +389,7 @@
 }
 .pf-card-head span {
   font-size: 12px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   letter-spacing: 1px;
 }
 
@@ -406,16 +406,16 @@
   min-width: 0;
   text-align: center;
   padding: 10px 4px 9px;
-  border: 1px solid #2e2823;
+  border: 1px solid var(--ink-2);
   border-radius: 12px;
-  background: #1b1713;
+  background: var(--ink-1);
   transition: border-color 0.25s, transform 0.25s;
 }
 .pf-ladder-step i {
   display: block;
   font-style: normal;
   font-size: 12px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   letter-spacing: 1px;
 }
 .pf-ladder-step em {
@@ -424,25 +424,25 @@
   font-size: 12px;
   line-height: 1.5;
   margin-top: 4px;
-  color: #c9bfae;
+  color: var(--ink-soft);
   white-space: nowrap;
   letter-spacing: 1px;
 }
 .pf-ladder-step.done {
-  border-color: #3a332c;
+  border-color: var(--ink-3);
 }
 .pf-ladder-step.done i,
 .pf-ladder-step.done em {
-  color: #e8c56b;
+  color: var(--gold);
 }
 .pf-ladder-step.now {
-  border-color: #e8c56b;
-  background: linear-gradient(180deg, rgba(232, 197, 107, 0.12), rgba(232, 197, 107, 0.03));
-  box-shadow: 0 0 0 1px rgba(232, 197, 107, 0.25), 0 4px 14px rgba(232, 197, 107, 0.12);
+  border-color: var(--gold);
+  background: linear-gradient(180deg, rgba(var(--gold-rgb), 0.12), rgba(var(--gold-rgb), 0.03));
+  box-shadow: 0 0 0 1px rgba(var(--gold-rgb), 0.25), 0 4px 14px rgba(var(--gold-rgb), 0.12);
 }
 .pf-ladder-step.now i,
 .pf-ladder-step.now em {
-  color: #e8c56b;
+  color: var(--gold);
   font-weight: 700;
 }
 @media (max-width: 720px) {
@@ -460,12 +460,12 @@
 }
 .pf-heat-head span {
   font-size: 15px;
-  color: #e8c56b;
+  color: var(--gold);
 }
 .pf-heat-head em {
   font-style: normal;
   font-size: 12px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   letter-spacing: 1px;
 }
 .pf-heat {
@@ -477,7 +477,7 @@
   grid-template-rows: repeat(7, 1fr);
   gap: 5px;
   font-size: 12px;
-  color: #9a8f80;
+  color: var(--ink-faint);
 }
 .pf-heat-weekdays span {
   display: flex;
@@ -495,31 +495,31 @@
   width: 17px;
   height: 17px;
   border-radius: 8px;
-  background: #1b1713;
-  border: 1px solid #2e2823;
+  background: var(--ink-1);
+  border: 1px solid var(--ink-2);
   transition: transform 0.15s, border-color 0.15s;
 }
 .pf-heat-cell:hover {
   transform: scale(1.25);
-  border-color: #9a8f80;
+  border-color: var(--ink-faint);
 }
 .pf-heat-cell.fut {
   background: transparent;
   border-style: dashed;
-  border-color: #1b1713;
+  border-color: var(--ink-1);
 }
 .pf-heat-cell.l1 {
-  background: rgba(232, 197, 107, 0.28);
-  border-color: rgba(232, 197, 107, 0.4);
+  background: rgba(var(--gold-rgb), 0.28);
+  border-color: rgba(var(--gold-rgb), 0.4);
 }
 .pf-heat-cell.l2 {
-  background: rgba(232, 197, 107, 0.6);
-  border-color: rgba(232, 197, 107, 0.75);
+  background: rgba(var(--gold-rgb), 0.6);
+  border-color: rgba(var(--gold-rgb), 0.75);
 }
 .pf-heat-cell.l3 {
-  background: #e8c56b;
-  border-color: #e8c56b;
-  box-shadow: 0 0 6px rgba(232, 197, 107, 0.5);
+  background: var(--gold);
+  border-color: var(--gold);
+  box-shadow: 0 0 6px rgba(var(--gold-rgb), 0.5);
 }
 .pf-heat-legend {
   display: flex;
@@ -527,29 +527,29 @@
   gap: 5px;
   margin-top: 10px;
   font-size: 12px;
-  color: #9a8f80;
+  color: var(--ink-faint);
 }
 .pf-heat-legend i {
   width: 12px;
   height: 12px;
   border-radius: 8px;
-  background: #1b1713;
-  border: 1px solid #2e2823;
+  background: var(--ink-1);
+  border: 1px solid var(--ink-2);
 }
 .pf-heat-legend i.l1 {
-  background: rgba(232, 197, 107, 0.28);
+  background: rgba(var(--gold-rgb), 0.28);
 }
 .pf-heat-legend i.l2 {
-  background: rgba(232, 197, 107, 0.6);
+  background: rgba(var(--gold-rgb), 0.6);
 }
 .pf-heat-legend i.l3 {
-  background: #e8c56b;
+  background: var(--gold);
 }
 
 /* 答题分析 */
 .pf-quiz-sum {
   font-size: 12px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   margin: 0 0 12px;
 }
 .pf-topic {
@@ -561,21 +561,21 @@
   font-size: 13px;
 }
 .pf-topic-name {
-  color: #c9bfae;
+  color: var(--ink-soft);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .pf-topic-bar {
   height: 6px;
-  background: #2e2823;
+  background: var(--ink-2);
   border-radius: 999px;
   overflow: hidden;
 }
 .pf-topic-bar i {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, #b03a2e, #e8c56b);
+  background: linear-gradient(90deg, var(--vermilion), var(--gold));
   border-radius: 999px;
   transform: scaleX(var(--x, 0));
   transform-origin: left center;
@@ -584,7 +584,7 @@
 .pf-topic em {
   font-style: normal;
   font-size: 12px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   white-space: nowrap;
 }
 
@@ -607,7 +607,7 @@
   align-items: center;
   gap: 7px;
   padding: 14px 6px 11px;
-  border: 1px solid #2e2823;
+  border: 1px solid var(--ink-2);
   border-radius: 12px;
   background: transparent;
   font-family: inherit;
@@ -618,11 +618,11 @@
   cursor: pointer;
 }
 .pf-badge.ok:hover {
-  border-color: rgba(232, 197, 107, 0.5);
+  border-color: rgba(var(--gold-rgb), 0.5);
   transform: translateY(-2px);
 }
 .pf-badge:focus-visible {
-  outline: 2px solid #e8c56b;
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 .pf-badge-seal {
@@ -637,16 +637,16 @@
   font-weight: 700;
   letter-spacing: 1px;
   /* 未解锁：虚线空印，静候盖落 */
-  border: 1.5px dashed #3a332c;
-  color: #9a8f80;
+  border: 1.5px dashed var(--ink-3);
+  color: var(--ink-faint);
   opacity: 0.65;
 }
 .pf-badge.ok .pf-badge-seal {
-  border: 1.5px solid #b03a2e;
-  background: #b03a2e;
-  color: #f3ece2;
+  border: 1.5px solid var(--vermilion);
+  background: var(--vermilion);
+  color: var(--paper);
   opacity: 0.94;
-  box-shadow: 0 2px 8px rgba(20, 17, 15, 0.45);
+  box-shadow: 0 2px 8px rgba(var(--ink-rgb), 0.45);
   /* 盖印：自高按下、回旋定版、倾角自然（both：延时段隐藏，终态留 -4° 倾角） */
   animation: pfStamp 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
@@ -666,15 +666,15 @@
 }
 .pf-badge-name {
   font-size: 13px;
-  color: #c9bfae;
+  color: var(--ink-soft);
   letter-spacing: 2px;
 }
 .pf-badge.ok .pf-badge-name {
-  color: #e8c56b;
+  color: var(--gold);
 }
 .pf-badge-cond {
   font-size: 11px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   letter-spacing: 1px;
   white-space: nowrap;
 }
@@ -694,25 +694,25 @@
   gap: 12px;
   padding: 18px 12px;
   min-height: 150px;
-  border: 1px solid rgba(232, 197, 107, 0.5);
+  border: 1px solid rgba(var(--gold-rgb), 0.5);
   border-radius: 999px 999px 8px 8px;
   background:
-    radial-gradient(ellipse 90% 40% at 50% 0%, rgba(232, 197, 107, 0.1), transparent 70%),
-    #1b1713;
+    radial-gradient(ellipse 90% 40% at 50% 0%, rgba(var(--gold-rgb), 0.1), transparent 70%),
+    var(--ink-1);
   font-family: var(--font-serif);
   font-size: 17px;
   letter-spacing: 5px;
-  color: #e8c56b;
+  color: var(--gold);
   writing-mode: vertical-rl;
   text-orientation: upright;
-  box-shadow: 0 4px 14px rgba(20, 17, 15, 0.4);
+  box-shadow: 0 4px 14px rgba(var(--ink-rgb), 0.4);
 }
 .pf-sign-slip i {
   width: 7px;
   height: 7px;
   border-radius: 999px;
-  background: #b03a2e;
-  box-shadow: 0 0 0 3px rgba(176, 58, 46, 0.18);
+  background: var(--vermilion);
+  box-shadow: 0 0 0 3px rgba(var(--red-rgb), 0.18);
 }
 .pf-sign-side {
   display: flex;
@@ -723,7 +723,7 @@
 }
 .pf-sign-from {
   font-size: 13px;
-  color: #4f8f7b;
+  color: var(--jade);
   letter-spacing: 2px;
 }
 .pf-sign-note {
@@ -731,7 +731,7 @@
   font-family: var(--font-kai);
   font-size: 14px;
   line-height: 1.9;
-  color: #c9bfae;
+  color: var(--ink-soft);
 }
 .pf-sign-pending {
   display: flex;
@@ -743,7 +743,7 @@
 .pf-sign-pending p {
   margin: 0;
   font-size: 13px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   letter-spacing: 1px;
 }
 .pf-sign-pot {
@@ -752,10 +752,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1.5px solid rgba(232, 197, 107, 0.55);
+  border: 1.5px solid rgba(var(--gold-rgb), 0.55);
   border-radius: 999px 999px 10px 10px;
-  background: #14110f;
-  color: #e8c56b;
+  background: var(--ink);
+  color: var(--gold);
   font-family: var(--font-serif);
   font-size: 20px;
 }
@@ -773,10 +773,10 @@
 }
 .pf-sign-draw {
   padding: 8px 24px;
-  border: 1px solid rgba(232, 197, 107, 0.5);
+  border: 1px solid rgba(var(--gold-rgb), 0.5);
   border-radius: 999px;
   background: transparent;
-  color: #e8c56b;
+  color: var(--gold);
   font-family: inherit;
   font-size: 13px;
   letter-spacing: 2px;
@@ -784,15 +784,15 @@
   transition: background-color 0.25s, color 0.25s;
 }
 .pf-sign-draw:hover:not(:disabled) {
-  background: #e8c56b;
-  color: #14110f;
+  background: var(--gold);
+  color: var(--ink);
 }
 .pf-sign-draw:disabled {
   opacity: 0.6;
   cursor: wait;
 }
 .pf-sign-draw:focus-visible {
-  outline: 2px solid #e8c56b;
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 
@@ -800,22 +800,22 @@
 .pf-logout {
   flex: none;
   padding: 10px 24px;
-  border: 1px solid rgba(176, 58, 46, 0.55);
+  border: 1px solid rgba(var(--red-rgb), 0.55);
   border-radius: 999px;
   background: transparent;
-  color: #b03a2e;
+  color: var(--vermilion);
   font-size: 13px;
   letter-spacing: 3px;
   cursor: pointer;
   transition: background-color 0.25s, color 0.25s, border-color 0.25s;
 }
 .pf-logout:hover {
-  background: #b03a2e;
-  border-color: #b03a2e;
-  color: #f3ece2;
+  background: var(--vermilion);
+  border-color: var(--vermilion);
+  color: var(--paper);
 }
 .pf-logout:focus-visible {
-  outline: 2px solid #e8c56b;
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 @media (max-width: 560px) {

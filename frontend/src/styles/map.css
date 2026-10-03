@@ -2,8 +2,8 @@
 .map-page {
   height: 100%;
   overflow-y: auto;
-  background: #14110f;
-  color: #f3ece2;
+  background: var(--ink);
+  color: var(--paper);
   padding-bottom: 40px;
 }
 .map-header {
@@ -14,10 +14,10 @@
   margin: 0;
   /* 字号 26 / 字重 600 / 宋体由全局 h1 统一承载，此处只补本页字距与色 */
   letter-spacing: 4px;
-  color: #e8c56b;
+  color: var(--gold);
 }
 .map-header p {
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-size: 13px;
   margin-top: 8px;
 }
@@ -27,9 +27,9 @@
   margin: 12px auto 0;
   padding: 16px;
   text-align: center;
-  color: #c9bfae;
-  background: rgba(176, 58, 46, 0.1);
-  border: 1px solid rgba(176, 58, 46, 0.55);
+  color: var(--ink-soft);
+  background: rgba(var(--red-rgb), 0.1);
+  border: 1px solid rgba(var(--red-rgb), 0.55);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -43,10 +43,10 @@
 .map-retry {
   min-height: 44px;
   padding: 0 24px;
-  background: rgba(176, 58, 46, 0.13);
-  border: 1px solid #b03a2e;
+  background: rgba(var(--red-rgb), 0.13);
+  border: 1px solid var(--vermilion);
   border-radius: 999px;
-  color: #c9bfae;
+  color: var(--ink-soft);
   font-size: 14px;
   letter-spacing: 2px;
   cursor: pointer;
@@ -57,8 +57,8 @@
     transform 0.15s;
 }
 .map-retry:hover {
-  border-color: #e8c56b;
-  color: #e8c56b;
+  border-color: var(--gold);
+  color: var(--gold);
 }
 .map-retry:active {
   transform: scale(0.98);
@@ -74,8 +74,8 @@
   gap: 10px;
 }
 .map-stat {
-  background: linear-gradient(160deg, #1b1713, #14110f);
-  border: 1px solid #2e2823;
+  background: linear-gradient(160deg, var(--ink-1), var(--ink));
+  border: 1px solid var(--ink-2);
   border-radius: 12px;
   padding: 10px 12px;
   text-align: center;
@@ -91,7 +91,7 @@
   max-width: 80%;
   margin: 0 auto;
   border-radius: 8px;
-  background: #1b1713;
+  background: var(--ink-1);
 }
 .map-stat-pending::after {
   content: '';
@@ -101,7 +101,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(232, 197, 107, 0.08),
+    rgba(var(--gold-rgb), 0.08),
     transparent
   );
   animation: skeletonSweep 1.5s ease-in-out infinite;
@@ -120,12 +120,12 @@
   font-style: normal;
   font-size: 26px;
   font-weight: 700;
-  color: #e8c56b;
+  color: var(--gold);
   letter-spacing: 1px;
 }
 .map-stat span {
   font-size: 12px;
-  color: #9a8f80;
+  color: var(--ink-faint);
 }
 @media (max-width: 720px) {
   .map-stats {
@@ -143,9 +143,9 @@
   gap: 8px;
 }
 .map-filters button {
-  background: #1b1713;
-  border: 1px solid #2e2823;
-  color: #c9bfae;
+  background: var(--ink-1);
+  border: 1px solid var(--ink-2);
+  color: var(--ink-soft);
   font-size: 12px;
   padding: 6px 12px;
   border-radius: 999px;
@@ -157,7 +157,7 @@
     transform 0.15s;
 }
 .map-filters button:focus-visible {
-  outline: 2px solid #e8c56b;
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 .map-filters button:active {
@@ -165,20 +165,20 @@
 }
 .map-filters button em {
   font-style: normal;
-  color: #9a8f80; /* AA: 小字需 4.5:1，原更暗的灰褐在深底上仅约 3.1:1 */
+  color: var(--ink-faint); /* AA: 小字需 4.5:1，原更暗的灰褐在深底上仅约 3.1:1 */
   margin-left: 3px;
 }
 .map-filters button:hover {
-  border-color: #e8c56b;
-  color: #f3ece2;
+  border-color: var(--gold);
+  color: var(--paper);
 }
 .map-filters button.active {
-  background: rgba(176, 58, 46, 0.25);
-  border-color: #e8c56b;
-  color: #e8c56b;
+  background: rgba(var(--red-rgb), 0.25);
+  border-color: var(--gold);
+  color: var(--gold);
 }
 .map-filters button.active em {
-  color: #e8c56b;
+  color: var(--gold);
 }
 
 /* 地图 + 右侧数据栏 */
@@ -199,7 +199,7 @@
 .map-wrap {
   position: relative;
   min-width: 0;
-  border: 1px solid rgba(232, 197, 107, 0.15);
+  border: 1px solid rgba(var(--gold-rgb), 0.15);
   border-radius: 12px;
   padding: 14px;
 }
@@ -209,7 +209,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-size: 14px;
   letter-spacing: 2px;
 }
@@ -232,7 +232,7 @@
 }
 /* 省界交互只改 stroke：选中 2.4px 金、hover 2px 金；不做 brightness/saturate 滤镜 */
 .map-prov {
-  stroke: #1b1713;
+  stroke: var(--ink-1);
   stroke-width: 1.2;
   cursor: pointer;
   transition:
@@ -244,15 +244,15 @@
 }
 .map-prov:focus-visible {
   outline: none;
-  stroke: #e8c56b;
+  stroke: var(--gold);
   stroke-width: 2.4;
 }
 .map-prov.has-items:hover {
-  stroke: #e8c56b;
+  stroke: var(--gold);
   stroke-width: 2;
 }
 .map-prov.is-selected {
-  stroke: #e8c56b;
+  stroke: var(--gold);
   stroke-width: 2.4;
 }
 .map-prov:not(.has-items) {
@@ -271,7 +271,7 @@
   justify-content: center;
   flex-wrap: wrap;
   gap: 8px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-size: 12px;
   margin-top: 4px;
 }
@@ -281,7 +281,7 @@
 }
 .map-scale {
   display: inline-flex;
-  border: 1px solid #2e2823;
+  border: 1px solid var(--ink-2);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -291,7 +291,7 @@
   display: block;
 }
 .map-legend-note {
-  color: #9a8f80;
+  color: var(--ink-faint);
 }
 
 /* 悬停提示卡 */
@@ -300,8 +300,8 @@
   top: 8px;
   right: 12px;
   background: rgba(27, 23, 19, 0.95);
-  border: 1px solid #e8c56b;
-  color: #e8c56b;
+  border: 1px solid var(--gold);
+  color: var(--gold);
   padding: 8px 12px;
   border-radius: 8px;
   font-size: 13px;
@@ -310,7 +310,7 @@
   flex-direction: column;
   gap: 2px;
   max-width: 260px;
-  box-shadow: 0 8px 20px rgba(20, 17, 15, 0.5);
+  box-shadow: 0 8px 20px rgba(var(--ink-rgb), 0.5);
   animation: tipIn 0.15s ease;
   z-index: 4;
 }
@@ -326,25 +326,25 @@
   letter-spacing: 2px;
 }
 .map-tip span {
-  color: #c9bfae;
+  color: var(--ink-soft);
   font-size: 12px;
 }
 
 /* 右侧数据栏 */
 .map-side {
-  background: #1b1713;
-  border: 1px solid #2e2823;
+  background: var(--ink-1);
+  border: 1px solid var(--ink-2);
   border-radius: 12px;
   padding: 14px 16px;
   animation: riseIn 0.55s ease 0.15s backwards;
 }
 .map-side h2 {
   font-size: 13px;
-  color: #e8c56b;
+  color: var(--gold);
   letter-spacing: 3px;
   margin: 0 0 10px;
   padding-bottom: 6px;
-  border-bottom: 1px solid #2e2823;
+  border-bottom: 1px solid var(--ink-2);
 }
 .map-side h2:not(:first-child) {
   margin-top: 18px;
@@ -371,17 +371,17 @@
 }
 .map-rank li:hover,
 .map-cat:hover {
-  background: rgba(232, 197, 107, 0.08);
+  background: rgba(var(--gold-rgb), 0.08);
 }
 .map-rank li.active {
-  background: rgba(176, 58, 46, 0.22);
+  background: rgba(var(--red-rgb), 0.22);
 }
 .map-cat.active {
-  background: rgba(176, 58, 46, 0.22);
+  background: rgba(var(--red-rgb), 0.22);
 }
 .map-rank li:focus-visible,
 .map-cat:focus-visible {
-  outline: 2px solid #e8c56b;
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 .map-rank li:active,
@@ -389,14 +389,14 @@
   transform: scale(0.98);
 }
 .rank-name {
-  color: #c9bfae;
+  color: var(--ink-soft);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .rank-bar {
   height: 8px;
-  background: #1b1713;
+  background: var(--ink-1);
   border-radius: 8px;
   overflow: hidden;
   display: block;
@@ -404,7 +404,7 @@
 .rank-bar i {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, #b03a2e, #e8c56b);
+  background: linear-gradient(90deg, var(--vermilion), var(--gold));
   border-radius: 8px;
   transform-origin: left center;
   animation: barGrow 0.6s cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
@@ -417,7 +417,7 @@
 .map-rank em,
 .map-cat em {
   font-style: normal;
-  color: #e8c56b;
+  color: var(--gold);
   text-align: right;
 }
 .map-cats {
@@ -427,7 +427,7 @@
 }
 .map-cat {
   grid-template-columns: 74px 1fr 24px;
-  color: #c9bfae;
+  color: var(--ink-soft);
 }
 
 .map-panel {
@@ -438,12 +438,12 @@
 .map-panel h2 {
   font-family: var(--font-kai);
   font-size: 16px;
-  color: #e8c56b;
+  color: var(--gold);
   letter-spacing: 2px;
   margin: 14px 0 10px;
 }
 .map-empty {
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-size: 13px;
 }
 .map-items {
@@ -455,8 +455,8 @@
   display: flex;
   gap: 12px;
   align-items: center;
-  background: #1b1713;
-  border: 1px solid #2e2823;
+  background: var(--ink-1);
+  border: 1px solid var(--ink-2);
   border-radius: 12px;
   padding: 10px 12px;
   cursor: pointer;
@@ -466,11 +466,11 @@
     background-color 0.2s;
 }
 .map-item:hover {
-  border-color: #e8c56b;
+  border-color: var(--gold);
   transform: translateY(-2px);
 }
 .map-item:focus-visible {
-  outline: 2px solid #e8c56b;
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 .map-item:active {
@@ -482,7 +482,7 @@
   border-radius: 8px;
   object-fit: cover;
   flex: none;
-  border: 1px solid #2e2823;
+  border: 1px solid var(--ink-2);
   transition: transform 0.3s ease;
 }
 .map-item:hover .map-item-img {
@@ -495,11 +495,11 @@
   min-width: 0;
 }
 .map-item-txt strong {
-  color: #f3ece2;
+  color: var(--paper);
   font-size: 15px;
 }
 .map-item-txt span {
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-size: 12px;
   white-space: nowrap;
   overflow: hidden;
@@ -508,8 +508,8 @@
 .map-all {
   margin-top: 12px;
   background: none;
-  border: 1px dashed #3a332c;
-  color: #c9bfae;
+  border: 1px dashed var(--ink-3);
+  color: var(--ink-soft);
   font-size: 13px;
   padding: 9px 16px;
   border-radius: 8px;
@@ -520,8 +520,8 @@
     background-color 0.2s;
 }
 .map-all:hover {
-  border-color: #e8c56b;
-  color: #e8c56b;
+  border-color: var(--gold);
+  color: var(--gold);
 }
 
 /* ===== 地图扩充：视图工具条 / 方格视图 / 省域巡礼 / 面板深挖 ===== */
@@ -535,7 +535,7 @@
 }
 .map-views {
   display: flex;
-  border: 1px solid #3a332c;
+  border: 1px solid var(--ink-3);
   border-radius: 999px;
   /* 不裁焦点金环；按钮自身已是全圆角 */
   overflow: visible;
@@ -543,7 +543,7 @@
 .map-views button {
   border: none;
   background: none;
-  color: #c9bfae;
+  color: var(--ink-soft);
   padding: 7px 22px;
   font-size: 13px;
   letter-spacing: 3px;
@@ -554,18 +554,18 @@
   border-radius: 999px;
 }
 .map-views button:focus-visible {
-  outline: 2px solid #e8c56b;
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 .map-views button.active {
-  background: #b03a2e;
-  color: #f3ece2;
+  background: var(--vermilion);
+  color: var(--paper);
 }
 .map-random {
   background: none;
-  border: 1px solid #3a332c;
+  border: 1px solid var(--ink-3);
   border-radius: 999px;
-  color: #e8c56b;
+  color: var(--gold);
   padding: 7px 18px;
   font-size: 13px;
   letter-spacing: 2px;
@@ -576,15 +576,15 @@
     transform 0.15s;
 }
 .map-random:focus-visible {
-  outline: 2px solid #e8c56b;
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 .map-random:active {
   transform: scale(0.98);
 }
 .map-random:hover {
-  border-color: #e8c56b;
-  background: #e8c56b14;
+  border-color: var(--gold);
+  background: var(--gold)14;
 }
 
 /* 方格视图：报纸天气图式省块；小屏横向滑动，不挤压省块 */
@@ -601,7 +601,7 @@
 }
 .map-tile {
   aspect-ratio: 1;
-  border: 1px solid #2e2823;
+  border: 1px solid var(--ink-2);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -609,7 +609,7 @@
   justify-content: center;
   gap: 3px;
   cursor: pointer;
-  color: #c9bfae;
+  color: var(--ink-soft);
   font-family: inherit;
   transition:
     transform 0.2s,
@@ -624,21 +624,21 @@
 .map-tile em {
   font-style: normal;
   font-size: 12px;
-  color: #e8c56b;
+  color: var(--gold);
 }
 .map-tile.no-data {
-  color: #9a8f80;
+  color: var(--ink-faint);
 }
 .map-tile.no-data em {
-  color: #9a8f80;
+  color: var(--ink-faint);
 }
 .map-tile:not(:disabled):hover {
   transform: translateY(-3px);
-  border-color: #e8c56b;
+  border-color: var(--gold);
   z-index: 1;
 }
 .map-tile:focus-visible {
-  outline: 2px solid #e8c56b;
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 .map-tile:not(:disabled):active {
@@ -649,8 +649,8 @@
   opacity: 0.55;
 }
 .map-tile.is-selected {
-  border-color: #e8c56b;
-  box-shadow: 0 0 0 2px #e8c56b44;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px var(--gold)44;
 }
 .map-tip-grid {
   position: absolute;
@@ -676,11 +676,11 @@
   font-family: var(--font-kai);
   font-size: 15px;
   letter-spacing: 3px;
-  color: #e8c56b;
+  color: var(--gold);
 }
 .map-tour-head span {
   font-size: 13px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   letter-spacing: 1px;
 }
 .map-tour-row {
@@ -693,8 +693,8 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  background: #1b1713;
-  border: 1px solid #2e2823;
+  background: var(--ink-1);
+  border: 1px solid var(--ink-2);
   border-radius: 12px;
   padding: 10px;
   cursor: pointer;
@@ -705,19 +705,19 @@
     background-color 0.25s;
 }
 .map-tour-card:hover {
-  border-color: #e8c56b;
+  border-color: var(--gold);
   transform: translateY(-3px);
 }
 .map-tour-card:focus-visible {
-  outline: 2px solid #e8c56b;
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 .map-tour-card:active {
   transform: scale(0.98);
 }
 .map-tour-card.active {
-  border-color: #e8c56b;
-  background: #1b1713;
+  border-color: var(--gold);
+  background: var(--ink-1);
 }
 .map-tour-no {
   position: absolute;
@@ -725,7 +725,7 @@
   right: 16px;
   font-family: var(--font-kai);
   font-size: 13px;
-  color: #e8c56b;
+  color: var(--gold);
   letter-spacing: 1px;
 }
 .map-tour-img {
@@ -738,13 +738,13 @@
 }
 .map-tour-card strong {
   font-family: var(--font-kai);
-  color: #f3ece2;
+  color: var(--paper);
   font-size: 14px;
   text-align: left;
   font-weight: 600;
 }
 .map-tour-meta {
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-size: 12px;
   text-align: left;
 }
@@ -755,7 +755,7 @@
 }
 .map-prov-line {
   margin: 0 0 10px;
-  color: #c9bfae;
+  color: var(--ink-soft);
   font-size: 14px;
   letter-spacing: 1px;
 }
@@ -770,7 +770,7 @@
   align-items: center;
   gap: 10px;
   font-size: 13px;
-  color: #9a8f80;
+  color: var(--ink-faint);
 }
 .map-prov-cat > span:first-child {
   width: 64px;
@@ -783,15 +783,15 @@
   font-style: normal;
   width: 22px;
   text-align: right;
-  color: #e8c56b;
+  color: var(--gold);
 }
 .map-next {
   display: block;
   margin: 16px auto 0;
   background: none;
-  border: 1px dashed #3a332c;
+  border: 1px dashed var(--ink-3);
   border-radius: 999px;
-  color: #c9bfae;
+  color: var(--ink-soft);
   padding: 9px 22px;
   font-size: 13px;
   letter-spacing: 2px;
@@ -799,8 +799,8 @@
   transition: color 0.2s, border-color 0.2s;
 }
 .map-next:hover {
-  border-color: #e8c56b;
-  color: #e8c56b;
+  border-color: var(--gold);
+  color: var(--gold);
 }
 
 @media (max-width: 900px) {
@@ -868,26 +868,26 @@
 .map-items-note {
   margin: 8px 0 0;
   font-size: 13px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   letter-spacing: 1px;
 }
 
 /* ============================================================
    中国韵味层：舆图宣纸晕 · 朱印 · 禹贡题款 · 灯火脉动
-   贴合暗墨底 #14110f，遵循 quieter 原则
+   贴合暗墨底 var(--ink)，遵循 quieter 原则
    ============================================================ */
 
 /* 舆图副题：禹贡九州（古典地理志典）*/
 .map-subtitle {
   display: block;
   font-family: var(--font-kai);
-  color: rgba(232, 197, 107, 0.5);
+  color: rgba(var(--gold-rgb), 0.5);
   font-size: 11px;
   letter-spacing: 4px;
   margin-top: 4px;
 }
 
-/* 舆图宣纸晕：地图边缘融回 #14110f */
+/* 舆图宣纸晕：地图边缘融回 var(--ink) */
 .map-wrap::before {
   content: '';
   position: absolute;
@@ -895,7 +895,7 @@
   background: radial-gradient(
     ellipse at center,
     transparent 55%,
-    rgba(20, 17, 15, 0.85) 100%
+    rgba(var(--ink-rgb), 0.85) 100%
   );
   pointer-events: none;
   z-index: 2;
@@ -911,15 +911,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #b03a2e;
-  color: #f3ece2;
+  background: var(--vermilion);
+  color: var(--paper);
   font-family: var(--font-serif);
   font-size: 18px;
   font-weight: 700;
   border-radius: 8px;
   transform: rotate(-4deg);
   opacity: 0.85;
-  box-shadow: 0 2px 0 #1b1713;
+  box-shadow: 0 2px 0 var(--ink-1);
   z-index: 3;
   pointer-events: none;
   user-select: none;

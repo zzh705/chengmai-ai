@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { subscribeTheme } from '../utils/theme'
 import '../styles/splash.css'
 
 interface Ember {
@@ -41,6 +42,16 @@ export default function EmberCanvas({ active = true }: { active?: boolean }) {
     let running = false
     let last = 0
     const dpr = window.devicePixelRatio || 1
+
+    // 粒子色随主题走：暗墨=金/朱火星，亮纸=深金/沉朱光尘（读 RGB 通道令牌）
+    const readRgb = (name: string): string =>
+      getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '232, 197, 107'
+    let goldRgb = readRgb('--gold-rgb')
+    let redRgb = readRgb('--red-rgb')
+    const offTheme = subscribeTheme(() => {
+      goldRgb = readRgb('--gold-rgb')
+      redRgb = readRgb('--red-rgb')
+    })
 
     const resize = () => {
       const w = host.clientWidth
@@ -107,8 +118,8 @@ export default function EmberCanvas({ active = true }: { active?: boolean }) {
         ctx.beginPath()
         ctx.arc(x, y, p.r, 0, Math.PI * 2)
         ctx.fillStyle = p.warm
-          ? `rgba(176, 58, 46, ${(a * 0.55).toFixed(3)})`
-          : `rgba(232, 197, 107, ${a.toFixed(3)})`
+          ? `rgba(${redRgb}, ${(a * 0.55).toFixed(3)})`
+          : `rgba(${goldRgb}, ${a.toFixed(3)})`
         ctx.fill()
       }
       raf = requestAnimationFrame(draw)
@@ -139,6 +150,7 @@ export default function EmberCanvas({ active = true }: { active?: boolean }) {
       running = false
       cancelAnimationFrame(raf)
       starterRef.current = null
+      offTheme()
       window.removeEventListener('resize', resize)
       document.removeEventListener('visibilitychange', onVis)
     }

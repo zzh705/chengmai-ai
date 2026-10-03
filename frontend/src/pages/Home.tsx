@@ -6,6 +6,7 @@ import Cover from '../components/Cover'
 import CountUp from '../components/CountUp'
 import EmberCanvas from '../components/EmberCanvas'
 import { useRevealGroup } from '../hooks/useReveal'
+import { useTheme } from '../utils/theme'
 import { MASTERS } from '../data/masters'
 import '../styles/home.css'
 
@@ -22,8 +23,9 @@ const DAY_INDEX = (() => {
 })()
 
 // 非遗全景环形图矿彩阶（对应 index.css --viz-*：朱红/藤黄/青碧/黛蓝/绛紫/赭石/松绿，
-// 仅用于分类数据可视化，与 UI 控件色板隔离）
-const VIZ_COLORS = ['#b03a2e', '#e8c56b', '#4f8f7b', '#56688f', '#965880', '#b0743c', '#65855a']
+// 仅用于分类数据可视化，与 UI 控件色板隔离；亮纸主题下金色段加深）
+const VIZ_COLORS_INK = ['#b03a2e', '#e8c56b', '#4f8f7b', '#56688f', '#965880', '#b0743c', '#65855a']
+const VIZ_COLORS_LIGHT = ['#b03a2e', '#b0882f', '#36705e', '#56688f', '#965880', '#a86e38', '#5b7a50']
 
 // 首页固定展示位：今日非遗 = 昆曲（百戏之祖）；一分钟认识 = 长洲太平清醮 / 粤剧 / 湘绣
 const FIXED_FEATURED_ID = 'h_kunqu'
@@ -31,6 +33,14 @@ const FIXED_STORY_IDS = ['h_n15160', 'h_yueju_gd', 'h_xiangxiu']
 
 // 名家手卷预览：取前六位开宗立派的大师，其余进名家录
 const MASTERS_PREVIEW = MASTERS.slice(0, 6)
+
+// 影像非遗：四支 Commons 授权影像（已落本地 public/videos/，同名缺失时自动回落征集海报）
+const HERITAGE_REELS = [
+  { id: 'h_kunqu', file: 'kunqu', note: '百戏之祖，水磨腔调婉转六百年', duration: '03:41', credit: 'CC BY 3.0' },
+  { id: 'h_jianzhi', file: 'jianzhi', note: '一剪之巧，红纸生花夺天工', duration: '04:01', credit: 'CC BY 3.0' },
+  { id: 'h_piying', file: 'piying', note: '一口叙千古事，双手对舞百万兵', duration: '00:19', credit: 'CC BY-SA 4.0' },
+  { id: 'h_n14304', file: 'zharan', note: '大理风物，蓝白之间染出人间烟火', duration: '01:07', credit: 'CC BY 4.0' },
+] as const
 
 // 探索矩阵：首页功能总入口（序号+文字，不用小图标）
 const GATES = [
@@ -50,6 +60,97 @@ const onActivate = (e: KeyboardEvent, fn: () => void) => {
   }
 }
 
+/**
+ * 影像卡：HEAD 探测 /videos/{file}.webm 是否就位。
+ * 就位 → 原生播放器（海报为项目配图）；未就位 → 影像征集海报，点击进入该名录详情。
+ */
+function ReelCard({
+  src,
+  posterItem,
+  badge,
+  duration,
+  title,
+  meta,
+  note,
+  credit,
+  onOpen,
+}: {
+  src: string
+  posterItem?: HeritageSummary
+  badge: string
+  duration?: string
+  title: string
+  meta?: string
+  note: string
+  credit?: string
+  onOpen?: () => void
+}) {
+  // null=探测中；true=影像可播；false=尚未收录
+  const [avail, setAvail] = useState<boolean | null>(null)
+  useEffect(() => {
+    let alive = true
+    // 仅当响应确为视频媒体时才算就位：开发/部署环境的 SPA 回退会把不存在的路径
+    // 返回成 index.html（200 text/html），单看状态码会把海报误判成坏视频
+    fetch(src, { method: 'HEAD' })
+      .then((r) =>
+        alive && setAvail(r.ok && (r.headers.get('content-type') ?? '').startsWith('video/')),
+      )
+      .catch(() => alive && setAvail(false))
+    return () => {
+      alive = false
+    }
+  }, [src])
+
+  const pending = avail === false
+  return (
+    <article className={`home-reel ${pending ? 'is-pending' : ''}`}>
+      <div
+        className="home-reel-media"
+        role={pending && onOpen ? 'button' : undefined}
+        tabIndex={pending && onOpen ? 0 : undefined}
+        aria-label={pending ? `影像征集中，进入「${title}」详情` : undefined}
+        onClick={pending ? onOpen : undefined}
+        onKeyDown={pending && onOpen ? (e) => onActivate(e, onOpen) : undefined}
+      >
+        {avail === true ? (
+          <video src={src} controls preload="metadata" playsInline poster={posterItem?.image} />
+        ) : (
+          <>
+            {posterItem && <Cover item={posterItem} className="home-reel-poster" />}
+            <div className={`home-reel-veil ${avail === null ? 'is-loading' : ''}`}>
+              <span className="home-reel-play" aria-hidden>
+                {avail === null ? (
+                  <i className="home-reel-spinner" />
+                ) : (
+                  <svg viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                )}
+              </span>
+              {pending && (
+                <>
+                  <em className="home-reel-status">影像征集中</em>
+                  {onOpen && <b className="home-reel-goto">先看它的故事</b>}
+                </>
+              )}
+            </div>
+          </>
+        )}
+        <span className="home-reel-badge">{badge}</span>
+        {duration && avail === true && <span className="home-reel-dur">{duration}</span>}
+      </div>
+      <div className="home-reel-txt">
+        <strong>{title}</strong>
+        <p>
+          {note}
+          {meta && <span>{meta}</span>}
+          {credit && <span>{credit}</span>}
+        </p>
+      </div>
+    </article>
+  )
+}
+
 export default function Home({ onNavigate, entered = true }: Props) {
   const [list, setList] = useState<HeritageSummary[]>([])
   const [profile, setProfile] = useState<Profile | null>(null)
@@ -57,6 +158,8 @@ export default function Home({ onNavigate, entered = true }: Props) {
   const [error, setError] = useState('')
   const [hoverSeg, setHoverSeg] = useState<string | null>(null)
   const rootRef = useRevealGroup<HTMLDivElement>([list.length])
+  const theme = useTheme()
+  const VIZ_COLORS = theme === 'light' ? VIZ_COLORS_LIGHT : VIZ_COLORS_INK
 
   useEffect(() => {
     loadList()
@@ -95,6 +198,16 @@ export default function Home({ onNavigate, entered = true }: Props) {
     for (let i = 0; picks.length < 3 && i < pool.length; i++) picks.push(pool[i])
     return picks
   }, [pictured, featured])
+
+  // 影像非遗：把留位名录与列表数据对上（拿真实名称、地域与配图）
+  const reelPicks = useMemo(
+    () =>
+      HERITAGE_REELS.map((r) => ({
+        ...r,
+        item: pictured.find((h) => h.id === r.id),
+      })).filter((r) => Boolean(r.item)),
+    [pictured],
+  )
 
   // 地域探索：与地图同口径（含「全国」只记全国）；否则该省出现即计入
   // （多省项目如"陕西、河北唐山…"会同时给相关省份计数，避免首页与地图数字打架）
@@ -308,6 +421,30 @@ export default function Home({ onNavigate, entered = true }: Props) {
           </div>
         </section>
       )}
+
+      {/* 今日非遗 · 影像：三项名录影像（同页内嵌，不另开页面） */}
+      <section className="home-section home-reels reveal">
+        <div className="home-sec-head">
+          <h2>今日非遗 · 影像</h2>
+          <span className="home-sec-note">一帧光影，一程传承</span>
+        </div>
+        <div className="home-reels-grid">
+          {reelPicks.map((r) => (
+            <ReelCard
+              key={r.id}
+              src={`/videos/${r.file}.webm`}
+              posterItem={r.item}
+              badge="非遗影像"
+              duration={r.duration}
+              title={r.item!.name}
+              note={r.note}
+              meta={`${r.item!.region} · ${r.item!.category.split(' · ')[0]}`}
+              credit={`视频 · Wikimedia Commons · ${r.credit}`}
+              onOpen={() => onNavigate('knowledge', r.id)}
+            />
+          ))}
+        </div>
+      </section>
 
       {/* 名家风采：开宗立派的大师手卷，横向浏览 */}
       <section className="home-section home-masters reveal">

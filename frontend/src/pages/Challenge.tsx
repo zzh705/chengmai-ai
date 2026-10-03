@@ -3,6 +3,8 @@ import { fetchHeritageList, type HeritageSummary } from '../api/heritage'
 import { fetchProfile, recordProgress, type Profile } from '../api/progress'
 import { generateQuiz, type QuizQuestion } from '../api/quiz'
 import { calcRank } from '../utils/rank'
+import Games from '../components/Games'
+import type { GameRound } from '../components/games/types'
 import Motif from '../components/Motif'
 import '../styles/challenge.css'
 
@@ -116,11 +118,11 @@ export default function Challenge({ onNavigate }: Props) {
     }
   }
 
-  function pick(opt: string) {
+  async function pick(opt: string) {
     if (!q || picked) return
     setPicked(opt)
     const correct = opt === q.answer
-    recordProgress('quiz_answer', { name: dailyTopic }, { correct, question: q.question })
+    const synced = recordProgress('quiz_answer', { name: dailyTopic }, { correct, question: q.question })
     if (correct) {
       const ns = streak + 1
       setStreak(ns)
@@ -143,7 +145,40 @@ export default function Challenge({ onNavigate }: Props) {
         saveJSON('ch_wrongs', next)
       }
     }
-    // 即时刷新档案：正确率/等级条随答题变化
+    // 即时刷新档案：等进度落库后再读，避免写后读竞态
+    synced.then(() => fetchProfile()).then(setProfile).catch(() => {})
+  }
+
+  // 游艺坊每局结算：与每日一题同口径记账（正确率/分主题/连对/打卡/错题/徽章自动联动）
+  async function handleGameRound(r: GameRound) {
+    const synced = recordProgress(
+      'quiz_answer',
+      { name: r.topic },
+      { correct: r.correct, question: r.wrong?.q ?? r.summary, source: 'game', score: r.score },
+    )
+    if (r.correct) {
+      const ns = streak + 1
+      setStreak(ns)
+      saveJSON('ch_streak', ns)
+      const d = dayStr()
+      if (!days.includes(d)) {
+        const next = [...days, d].slice(-60)
+        setDays(next)
+        saveJSON('ch_days', next)
+      }
+    } else {
+      setStreak(0)
+      saveJSON('ch_streak', 0)
+      if (r.wrong && !wrongs.some((w) => w.q === r.wrong?.q)) {
+        const next: WrongQ[] = [
+          { topic: r.topic, q: r.wrong.q, options: [r.wrong.answer], answer: r.wrong.answer, exp: r.wrong.exp },
+          ...wrongs,
+        ].slice(0, 20)
+        setWrongs(next)
+        saveJSON('ch_wrongs', next)
+      }
+    }
+    await synced
     fetchProfile().then(setProfile).catch(() => {})
   }
 
@@ -401,6 +436,9 @@ export default function Challenge({ onNavigate }: Props) {
           )}
         </div>
       </section>
+
+      {/* 非遗游艺坊：剪纸/书法/翻牌/投令旗/点色五款小游戏，战绩与挑战同档 */}
+      <Games onRound={handleGameRound} />
 
       {/* 错题本：答错的题自动收录，可复盘与移除 */}
       <section className="ch-section">

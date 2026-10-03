@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import { flushSync } from 'react-dom'
 import Splash from './components/Splash'
 import About from './pages/About'
@@ -13,6 +13,7 @@ import MapPage from './pages/Map'
 import Masters from './pages/Masters'
 import Path from './pages/Path'
 import ProfilePage from './pages/Profile'
+import ThemeToggle from './components/ThemeToggle'
 import { clearSession, getSession } from './utils/auth'
 
 type Page =
@@ -99,6 +100,18 @@ function App() {
   const [masterParam, setMasterParam] = useState<string | undefined>(undefined)
   const splash = phase === 'splash'
 
+  // 窄屏导航横向溢出时，保证当前页按钮居中可见（避免 active 项被裁成一条红边）
+  useLayoutEffect(() => {
+    if (phase !== 'app') return
+    const links = document.querySelector<HTMLDivElement>('.app-nav-links')
+    const activeBtn = links?.querySelector<HTMLButtonElement>('button.active')
+    if (!links || !activeBtn) return
+    const lb = links.getBoundingClientRect()
+    const bb = activeBtn.getBoundingClientRect()
+    const delta = bb.left - lb.left - (lb.width - bb.width) / 2
+    if (Math.abs(delta) > 1) links.scrollLeft += delta
+  }, [page, phase])
+
   /** 退出登录：清会话回到题名仪式页 */
   function logout() {
     clearSession()
@@ -176,6 +189,7 @@ function App() {
             </button>
           ))}
         </div>
+        <ThemeToggle />
       </nav>
       {/* 路由金线：每次切页重挂载，自左向右扫过后淡出（转场指示器） */}
       {!splash && <div key={page} className="route-bar" aria-hidden />}

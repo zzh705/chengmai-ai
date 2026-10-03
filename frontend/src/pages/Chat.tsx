@@ -12,6 +12,7 @@ import { generateQuiz, type QuizResponse } from '../api/quiz'
 import { generateStory, type StoryResponse } from '../api/story'
 import { recordProgress } from '../api/progress'
 import { cleanLLM, stripEmojiDeep } from '../utils/text'
+import { useTheme } from '../utils/theme'
 import Motif from '../components/Motif'
 import '../styles/chat.css'
 
@@ -262,6 +263,8 @@ function ModeScene({ mode }: { mode: Mode }) {
 }
 
 export default function Chat({ initialQuery }: { initialQuery?: string }) {
+  const theme = useTheme()
+  const lightTone = theme === 'light'
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [mode, setMode] = useState<Mode>(() => {
@@ -780,10 +783,16 @@ export default function Chat({ initialQuery }: { initialQuery?: string }) {
         kind="bamboo"
         tone={
           mode === 'scholar'
-            ? 'rgba(79, 143, 123, 0.5)'
+            ? lightTone
+              ? 'rgba(54, 112, 94, 0.52)'
+              : 'rgba(79, 143, 123, 0.5)'
             : mode === 'inheritor'
-              ? 'rgba(176, 58, 46, 0.5)'
-              : 'rgba(232, 197, 107, 0.5)'
+              ? lightTone
+                ? 'rgba(159, 48, 36, 0.5)'
+                : 'rgba(176, 58, 46, 0.5)'
+              : lightTone
+                ? 'rgba(150, 115, 31, 0.52)'
+                : 'rgba(232, 197, 107, 0.5)'
         }
       />
     </div>

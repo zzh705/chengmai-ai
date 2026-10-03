@@ -6,48 +6,48 @@
   max-width: 860px;
   width: 100%;
   margin: 0 auto;
-  background: #14110f;
-  color: #f3ece2;
+  background: var(--ink);
+  color: var(--paper);
   font-family: var(--font-sans);
-  --mode: #e8c56b;
+  --mode: var(--gold);
 }
 /* 模式配色：学者=青碧 / 传承人=朱红 / 青年=描金，特写与页签随模式换气质 */
 .chat-page[data-mode='scholar'] {
-  --mode: #4f8f7b;
-  --msc-a: rgba(79, 143, 123, 0.3);
-  --msc-b: #1b1713;
-  --msc-glow: rgba(79, 143, 123, 0.1);
-  --msc-accent: #4f8f7b;
+  --mode: var(--jade);
+  --msc-a: rgba(var(--jade-rgb), 0.3);
+  --msc-b: var(--ink-1);
+  --msc-glow: rgba(var(--jade-rgb), 0.1);
+  --msc-accent: var(--jade);
 }
 .chat-page[data-mode='inheritor'] {
-  --mode: #b03a2e;
-  --msc-a: rgba(176, 58, 46, 0.28);
-  --msc-b: #1b1713;
-  --msc-glow: rgba(176, 58, 46, 0.1);
-  --msc-accent: #b03a2e;
+  --mode: var(--vermilion);
+  --msc-a: rgba(var(--red-rgb), 0.28);
+  --msc-b: var(--ink-1);
+  --msc-glow: rgba(var(--red-rgb), 0.1);
+  --msc-accent: var(--vermilion);
 }
 .chat-page[data-mode='youth'] {
-  --mode: #e8c56b;
-  --msc-a: rgba(232, 197, 107, 0.3);
-  --msc-b: #1b1713;
-  --msc-glow: rgba(232, 197, 107, 0.1);
-  --msc-accent: #e8c56b;
+  --mode: var(--gold);
+  --msc-a: rgba(var(--gold-rgb), 0.3);
+  --msc-b: var(--ink-1);
+  --msc-glow: rgba(var(--gold-rgb), 0.1);
+  --msc-accent: var(--gold);
 }
 
 .chat-header {
   padding: 28px 24px 16px;
-  border-bottom: 1px solid #2e2823;
+  border-bottom: 1px solid var(--ink-2);
   text-align: center;
 }
 .chat-header h1 {
   margin: 0;
 
 
-  color: #e8c56b;
+  color: var(--gold);
 }
 .chat-header p {
   margin: 6px 0 14px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-size: 13px;
 }
 
@@ -58,10 +58,10 @@
 }
 .mode-tabs button {
   padding: 7px 16px;
-  border: 1px solid #3a332c;
+  border: 1px solid var(--ink-3);
   border-radius: 999px;
   background: transparent;
-  color: #c9bfae;
+  color: var(--ink-soft);
   font-size: 13px;
   cursor: pointer;
   transition:
@@ -71,9 +71,9 @@
 }
 .mode-tabs button.active {
   /* active 页签统一金底墨字：三种模式下都满足 AA 对比 */
-  background: #e8c56b;
-  border-color: #e8c56b;
-  color: #14110f;
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--ink);
   font-weight: 600;
 }
 
@@ -92,7 +92,7 @@
   min-height: 430px;
   padding: 40px 8px 36px;
   background:
-    radial-gradient(110% 85% at 90% 10%, var(--msc-glow, rgba(232, 197, 107, 0.07)), transparent 62%);
+    radial-gradient(110% 85% at 90% 10%, var(--msc-glow, rgba(var(--gold-rgb), 0.07)), transparent 62%);
   animation: mscIn 0.45s ease both;
 }
 /* 切模式：整卡淡化入场，文案错峰淡入，剪影随后浮现（不做横移） */
@@ -135,7 +135,7 @@
   font-size: 22px;
   font-weight: 600;
   letter-spacing: 4px;
-  color: #f3ece2;
+  color: var(--paper);
   --d: 0.12s;
   animation: mscText 0.5s both;
   animation-delay: var(--d);
@@ -146,14 +146,14 @@
   font-style: normal;
   font-weight: 400;
   letter-spacing: 2px;
-  color: #9a8f80;
+  color: var(--ink-faint);
 }
 .msc-lede {
   margin: 0 0 18px;
   max-width: 34em;
   font-size: 14px;
   line-height: 2;
-  color: #c9bfae;
+  color: var(--ink-soft);
   --d: 0.18s;
   animation: mscText 0.5s both;
   animation-delay: var(--d);
@@ -181,7 +181,7 @@
 }
 .msc-points span {
   font-size: 13px;
-  color: #c9bfae;
+  color: var(--ink-soft);
   letter-spacing: 1px;
 }
 .msc-hint {
@@ -231,22 +231,22 @@
 }
 .msc-floor,
 .msc-ink {
-  fill: #14110f;
+  fill: var(--ink);
 }
 .msc-stalk {
   fill: none;
-  stroke: #14110f;
+  stroke: var(--ink);
   stroke-width: 5;
   stroke-linecap: round;
 }
 .msc-node {
   fill: none;
-  stroke: #14110f;
+  stroke: var(--ink);
   stroke-width: 3;
 }
 .msc-arm {
   fill: none;
-  stroke: #14110f;
+  stroke: var(--ink);
   stroke-width: 7;
   stroke-linecap: round;
 }
@@ -254,7 +254,7 @@
   fill: var(--msc-accent);
 }
 .msc-book {
-  fill: #f3ece2;
+  fill: var(--paper);
 }
 .msc-star {
   fill: var(--msc-accent);
@@ -262,17 +262,17 @@
 }
 .msc-string {
   fill: none;
-  stroke: rgba(232, 197, 107, 0.75);
+  stroke: rgba(var(--gold-rgb), 0.75);
   stroke-width: 1.5;
 }
 .msc-kite-line {
   fill: none;
-  stroke: rgba(232, 197, 107, 0.85);
+  stroke: rgba(var(--gold-rgb), 0.85);
   stroke-width: 1.6;
 }
 .msc-tail {
   fill: none;
-  stroke: rgba(232, 197, 107, 0.75);
+  stroke: rgba(var(--gold-rgb), 0.75);
   stroke-width: 1.6;
 }
 
@@ -299,8 +299,8 @@
   padding: 11px 16px;
   border-radius: 12px;
   border-bottom-right-radius: 8px;
-  background: #b03a2e;
-  color: #f3ece2;
+  background: var(--vermilion);
+  color: var(--paper);
   line-height: 1.7;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -309,11 +309,11 @@
 /* AI 回答：文档式排版，左缘一道墨线，上下收以描金轴头；纸面铺极淡宣纸纹 */
 .bubble.assistant .answer {
   position: relative;
-  border-left: 1px solid #2e2823;
+  border-left: 1px solid var(--ink-2);
   padding-left: 18px;
   background-image:
-    repeating-linear-gradient(0deg, rgba(232, 197, 107, 0.016) 0 1px, transparent 1px 4px),
-    repeating-linear-gradient(90deg, rgba(232, 197, 107, 0.012) 0 1px, transparent 1px 5px);
+    repeating-linear-gradient(0deg, rgba(var(--gold-rgb), 0.016) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(90deg, rgba(var(--gold-rgb), 0.012) 0 1px, transparent 1px 5px);
 }
 .bubble.assistant .answer::before,
 .bubble.assistant .answer::after {
@@ -323,21 +323,21 @@
   width: 9px;
   height: 9px;
   pointer-events: none;
-  border-left: 2px solid rgba(232, 197, 107, 0.55);
+  border-left: 2px solid rgba(var(--gold-rgb), 0.55);
 }
 .bubble.assistant .answer::before {
   top: -2px;
-  border-top: 2px solid rgba(232, 197, 107, 0.55);
+  border-top: 2px solid rgba(var(--gold-rgb), 0.55);
 }
 .bubble.assistant .answer::after {
   bottom: -2px;
-  border-bottom: 2px solid rgba(232, 197, 107, 0.55);
+  border-bottom: 2px solid rgba(var(--gold-rgb), 0.55);
 }
 /* 失败气泡：朱红只做 2px 左边框与低透明底，正文用中性纸色 */
 .bubble.assistant.failed .answer {
-  border-left: 2px solid #b03a2e;
+  border-left: 2px solid var(--vermilion);
   border-radius: 8px;
-  background: rgba(176, 58, 46, 0.1);
+  background: rgba(var(--red-rgb), 0.1);
   padding: 12px 14px;
 }
 .bubble.assistant.failed .answer::before,
@@ -345,10 +345,10 @@
   display: none;
 }
 .bubble.assistant.failed .bubble-content {
-  color: #c9bfae;
+  color: var(--ink-soft);
 }
 .bubble.assistant .bubble-content {
-  color: #f3ece2;
+  color: var(--paper);
   font-size: 16px;
   line-height: 1.95;
   overflow-wrap: anywhere;
@@ -364,7 +364,7 @@
   font-family: var(--font-serif);
   font-size: 17px;
   font-weight: 600;
-  color: #e8c56b;
+  color: var(--gold);
   letter-spacing: 1px;
 }
 .bubble.assistant .bubble-content h4:first-child {
@@ -374,17 +374,17 @@
   margin: 1.1em 0 0.45em;
   font-size: 15px;
   font-weight: 600;
-  color: #c9bfae;
+  color: var(--ink-soft);
   letter-spacing: 1px;
 }
 .bubble.assistant .bubble-content .inline-code {
   padding: 1px 6px;
-  border: 1px solid #3a332c;
+  border: 1px solid var(--ink-3);
   border-radius: 8px;
-  background: #1b1713;
+  background: var(--ink-1);
   font-family: var(--font-sans);
   font-size: 0.86em;
-  color: #e8c56b;
+  color: var(--gold);
 }
 .bubble.assistant .bubble-content em {
   font-style: normal;
@@ -400,14 +400,14 @@
   line-height: 1.85;
 }
 .bubble.assistant .bubble-content ul li::marker {
-  color: #b03a2e;
+  color: var(--vermilion);
 }
 .bubble.assistant .bubble-content ol li::marker {
-  color: #e8c56b;
+  color: var(--gold);
   font-family: var(--font-serif);
 }
 .bubble.assistant .bubble-content strong {
-  color: #f3ece2;
+  color: var(--paper);
   font-weight: 600;
 }
 
@@ -419,7 +419,7 @@
   height: 1.05em;
   margin-left: 2px;
   vertical-align: -0.16em;
-  background: #e8c56b;
+  background: var(--gold);
   animation: caretBlink 1s steps(2, start) infinite;
 }
 @keyframes caretBlink {
@@ -432,7 +432,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-size: 14px;
   letter-spacing: 2px;
   animation: thinkIn 0.4s ease both;
@@ -495,10 +495,10 @@
 }
 .answer-copy {
   padding: 4px 13px;
-  border: 1px solid #3a332c;
+  border: 1px solid var(--ink-3);
   border-radius: 999px;
   background: transparent;
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-family: inherit;
   font-size: 12px;
   letter-spacing: 2px;
@@ -506,11 +506,11 @@
   transition: color 0.2s, border-color 0.2s, transform 0.15s;
 }
 .answer-copy:hover {
-  border-color: #e8c56b;
-  color: #e8c56b;
+  border-color: var(--gold);
+  color: var(--gold);
 }
 .answer-copy:focus-visible {
-  outline: 2px solid #e8c56b;
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 .answer-copy:active {
@@ -522,13 +522,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #b03a2e;
-  color: #f3ece2;
+  background: var(--vermilion);
+  color: var(--paper);
   font-family: var(--font-serif);
   font-size: 14px;
   font-weight: 700;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(176, 58, 46, 0.35);
+  box-shadow: 0 2px 8px rgba(var(--red-rgb), 0.35);
   animation: sealStamp 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) 0.15s both;
 }
 @keyframes sealStamp {
@@ -546,9 +546,9 @@
 .bubble-meta {
   margin-top: 16px;
   padding-top: 14px;
-  border-top: 1px solid #2e2823;
+  border-top: 1px solid var(--ink-2);
   font-size: 13px;
-  color: #9a8f80;
+  color: var(--ink-faint);
 }
 .meta-block {
   margin-bottom: 10px;
@@ -559,12 +559,12 @@
   gap: 10px;
   font-size: 12px;
   letter-spacing: 3px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   margin-bottom: 8px;
 }
 .meta-label-note {
   letter-spacing: 0;
-  color: #9a8f80;
+  color: var(--ink-faint);
 }
 .source-item {
   display: flex;
@@ -577,22 +577,22 @@
   flex: none;
   width: 18px;
   font-family: var(--font-serif);
-  color: #e8c56b;
+  color: var(--gold);
 }
 .source-title {
-  color: #c9bfae;
+  color: var(--ink-soft);
 }
 .source-pub {
   margin-left: auto;
   flex: none;
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-size: 12px;
 }
 .meta-stats {
   display: flex;
   flex-wrap: wrap;
   gap: 8px 18px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-size: 12px;
 }
 .evidence {
@@ -604,14 +604,14 @@
   display: inline-block;
   width: 64px;
   height: 3px;
-  background: #3a332c;
+  background: var(--ink-3);
   border-radius: 999px;
   overflow: hidden;
 }
 .evidence b {
   display: block;
   height: 100%;
-  background: #e8c56b;
+  background: var(--gold);
 }
 .action-row {
   display: flex;
@@ -621,10 +621,10 @@
 }
 .action-btn {
   padding: 6px 14px;
-  border: 1px solid #3a332c;
+  border: 1px solid var(--ink-3);
   border-radius: 999px;
   background: transparent;
-  color: #e8c56b;
+  color: var(--gold);
   font-size: 12px;
   cursor: pointer;
   transition:
@@ -633,8 +633,8 @@
     border-color 0.2s;
 }
 .action-btn:hover:not(:disabled) {
-  border-color: #e8c56b;
-  background: #e8c56b22;
+  border-color: var(--gold);
+  background: var(--gold)22;
 }
 .action-btn:disabled {
   opacity: 0.5;
@@ -647,30 +647,30 @@
   padding: 16px 20px;
   /* iOS 底部安全区：全面屏手势条不遮挡输入栏 */
   padding-bottom: calc(16px + env(safe-area-inset-bottom));
-  border-top: 1px solid #2e2823;
+  border-top: 1px solid var(--ink-2);
 }
 .chat-input input {
   flex: 1;
   min-width: 0;
   padding: 12px 16px;
-  border: 1px solid #3a332c;
+  border: 1px solid var(--ink-3);
   border-radius: 8px;
-  background: #1b1713;
-  color: #f3ece2;
+  background: var(--ink-1);
+  color: var(--paper);
   font-size: 15px;
 }
 .chat-input input::placeholder {
-  color: #9a8f80;
+  color: var(--ink-faint);
 }
 .chat-input input:focus {
-  border-color: #e8c56b;
+  border-color: var(--gold);
 }
 .chat-input button {
   padding: 0 26px;
   border: none;
   border-radius: 8px;
-  background: #b03a2e;
-  color: #f3ece2;
+  background: var(--vermilion);
+  color: var(--paper);
   font-size: 15px;
   cursor: pointer;
 }
@@ -683,10 +683,10 @@
 .chat-notice {
   margin: 0 20px 4px;
   padding: 10px 14px;
-  border-left: 2px solid #b03a2e;
+  border-left: 2px solid var(--vermilion);
   border-radius: 8px;
-  background: rgba(176, 58, 46, 0.12);
-  color: #c9bfae;
+  background: rgba(var(--red-rgb), 0.12);
+  color: var(--ink-soft);
   font-size: 13px;
   line-height: 1.6;
 }
@@ -695,7 +695,7 @@
 .card-overline {
   font-size: 12px;
   letter-spacing: 3px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   margin-bottom: 6px;
 }
 .plan-card,
@@ -703,13 +703,13 @@
 .story-card {
   margin-top: 16px;
   padding: 18px 20px;
-  background: #1b1713;
-  border: 1px solid #2e2823;
+  background: var(--ink-1);
+  border: 1px solid var(--ink-2);
   border-radius: 12px;
   font-size: 14px;
 }
 .plan-title {
-  color: #f3ece2;
+  color: var(--paper);
   font-family: var(--font-serif);
   font-size: 16px;
   font-weight: 600;
@@ -719,7 +719,7 @@
 .plan-src {
   display: block;
   font-size: 12px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   margin-bottom: 8px;
 }
 
@@ -739,34 +739,34 @@
   flex: none;
   font-size: 12px;
   letter-spacing: 2px;
-  color: #e8c56b;
+  color: var(--gold);
 }
 .plan-day-title {
-  color: #f3ece2;
+  color: var(--paper);
   font-weight: 600;
 }
 .plan-day ul {
   margin: 6px 0 0;
   padding-left: 1.3em;
-  color: #9a8f80;
+  color: var(--ink-faint);
   line-height: 1.8;
 }
 .plan-day ul li {
   margin: 0.25em 0;
 }
 .plan-day ul li::marker {
-  color: #b03a2e;
+  color: var(--vermilion);
 }
 
 /* 测验 */
 .quiz-q {
-  border-top: 1px solid #2e2823;
+  border-top: 1px solid var(--ink-2);
   padding: 14px 0 6px;
 }
 .quiz-question {
   display: flex;
   gap: 10px;
-  color: #f3ece2;
+  color: var(--paper);
   margin-bottom: 10px;
   line-height: 1.7;
 }
@@ -775,13 +775,13 @@
   width: 22px;
   height: 22px;
   margin-top: 3px;
-  border: 1px solid #3a332c;
+  border: 1px solid var(--ink-3);
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: 12px;
-  color: #e8c56b;
+  color: var(--gold);
 }
 .quiz-options {
   display: flex;
@@ -792,10 +792,10 @@
 .quiz-opt {
   text-align: left;
   padding: 9px 14px;
-  border: 1px solid #3a332c;
+  border: 1px solid var(--ink-3);
   border-radius: 8px;
-  background: #14110f;
-  color: #c9bfae;
+  background: var(--ink);
+  color: var(--ink-soft);
   font-size: 13px;
   cursor: pointer;
   transition:
@@ -804,45 +804,45 @@
     color 0.2s;
 }
 .quiz-opt:not(:disabled):hover {
-  border-color: #e8c56b;
+  border-color: var(--gold);
 }
 .quiz-opt:not(:disabled):focus-visible {
-  outline: 2px solid #e8c56b;
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 /* 判定态：朱红/青碧只做描边与低透明底，文字统一纸色保证对比 */
 .quiz-opt.correct {
-  border-color: #4f8f7b;
-  background: rgba(79, 143, 123, 0.14);
-  color: #f3ece2;
+  border-color: var(--jade);
+  background: rgba(var(--jade-rgb), 0.14);
+  color: var(--paper);
 }
 .quiz-opt.wrong {
-  border-color: #b03a2e;
-  background: rgba(176, 58, 46, 0.14);
-  color: #f3ece2;
+  border-color: var(--vermilion);
+  background: rgba(var(--red-rgb), 0.14);
+  color: var(--paper);
 }
 .quiz-explain {
   margin: 10px 0 0;
   padding: 10px 14px;
-  border-left: 2px solid #3a332c;
+  border-left: 2px solid var(--ink-3);
   font-size: 13px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   line-height: 1.8;
 }
 .quiz-explain .ok,
 .quiz-explain .no {
-  color: #f3ece2;
+  color: var(--paper);
   margin-right: 6px;
 }
 
 /* 故事 */
 .story-section {
-  border-top: 1px solid #2e2823;
+  border-top: 1px solid var(--ink-2);
   padding: 12px 0;
 }
 .story-section strong {
   display: block;
-  color: #e8c56b;
+  color: var(--gold);
   font-family: var(--font-serif);
   font-size: 15px;
   font-weight: 600;
@@ -850,25 +850,25 @@
 }
 .story-section p {
   margin: 0;
-  color: #c9bfae;
+  color: var(--ink-soft);
   line-height: 1.9;
 }
 .story-tips {
-  border-top: 1px solid #2e2823;
+  border-top: 1px solid var(--ink-2);
   padding-top: 12px;
-  color: #c9bfae;
+  color: var(--ink-soft);
 }
 .story-tips ul {
   margin: 6px 0 0;
   padding-left: 1.3em;
   line-height: 1.8;
-  color: #9a8f80;
+  color: var(--ink-faint);
 }
 .story-tips ul li {
   margin: 0.3em 0;
 }
 .story-tips ul li::marker {
-  color: #b03a2e;
+  color: var(--vermilion);
 }
 
 /* 消息气泡入场 */

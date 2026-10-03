@@ -3,13 +3,14 @@ import * as d3 from 'd3'
 import { fetchHeritageDetail, type HeritageDetail } from '../api/heritage'
 import { fetchFullGraph, type GraphData, type GraphNode } from '../api/graph'
 import { extractProvince } from '../utils/geo'
+import { useTheme } from '../utils/theme'
 import '../styles/graph.css'
 
 interface Props {
   onNavigate: (page: string, param?: string) => void
 }
 
-/** 节点类型 → 传统色（低饱和、墨底上如墨色层次） */
+/** 节点类型 → 传统色（暗墨主题：低饱和、墨底上如墨色层次） */
 const TYPE_COLOR: Record<GraphNode['type'], string> = {
   heritage: '#b03a2e', // 朱红：非遗本体
   category: '#e8c56b', // 描金：十大类
@@ -17,6 +18,16 @@ const TYPE_COLOR: Record<GraphNode['type'], string> = {
   person: '#4f8f7b', // 青碧：传承人
   work: '#b03a2e', // 朱红：代表作品
   source: '#e8c56b', // 描金：出处
+}
+
+/** 节点类型 → 传统色（亮纸主题：描金、青碧加深，朱红不变） */
+const TYPE_COLOR_LIGHT: Record<GraphNode['type'], string> = {
+  heritage: '#b03a2e',
+  category: '#96731f',
+  region: '#36705e',
+  person: '#36705e',
+  work: '#b03a2e',
+  source: '#96731f',
 }
 
 const TYPE_LABEL: Record<GraphNode['type'], string> = {
@@ -39,13 +50,15 @@ const COLLECTION_TOTAL = 3299
 /** 星野环带：以三千星尘拟全量收录（静态、aria-hidden，memo 隔离 hover 重渲染） */
 const StarField = memo(function StarField({
   stars,
+  color,
 }: {
   stars: { x: string; y: string; r: number; o: number }[]
+  color: string
 }) {
   return (
     <g className="graph-starfield" aria-hidden>
       {stars.map((s, i) => (
-        <circle key={i} cx={s.x} cy={s.y} r={s.r} fill="#e8c56b" opacity={s.o} />
+        <circle key={i} cx={s.x} cy={s.y} r={s.r} fill={color} opacity={s.o} />
       ))}
     </g>
   )
@@ -102,6 +115,17 @@ function radialXY(d: HNode): { x: number; y: number } {
 }
 
 export default function KnowledgeGraph({ onNavigate }: Props) {
+  const theme = useTheme()
+  const isLight = theme === 'light'
+  const typeColor = isLight ? TYPE_COLOR_LIGHT : TYPE_COLOR
+  // 装饰金（星尘/薪火/刻度环/选中描边）随主题换色
+  const goldEmber = isLight ? '#b0882f' : '#e8c56b'
+  const selStroke = isLight ? '#211b14' : '#f3ece2'
+  const glowStroke = isLight ? 'rgba(150,115,31,0.65)' : 'rgba(232,197,107,0.6)'
+  const ringStroke = isLight ? 'rgba(150,115,31,0.22)' : 'rgba(232,197,107,0.12)'
+  const ringStrokeFaint = isLight ? 'rgba(150,115,31,0.12)' : 'rgba(232,197,107,0.06)'
+  const tickStroke = isLight ? 'rgba(150,115,31,0.3)' : 'rgba(232,197,107,0.18)'
+  const starFill = isLight ? 'rgba(150,115,31,0.5)' : 'rgba(232,197,107,0.4)'
   const wrapRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
   const gRef = useRef<SVGGElement>(null)
@@ -254,7 +278,7 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
         const r = radius * 0.5
         const x = r * Math.cos(e.angle - Math.PI / 2)
         const y = r * Math.sin(e.angle - Math.PI / 2)
-        return <circle key={i} cx={x} cy={y} r={e.size} fill="#e8c56b" opacity={0.25} />
+        return <circle key={i} cx={x} cy={y} r={e.size} fill={goldEmber} opacity={0.25} />
       })
     }
     return emberInit.map((e, i) => {
@@ -276,13 +300,13 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
           cx={0}
           cy={0}
           r={e.size}
-          fill="#e8c56b"
+          fill={goldEmber}
           opacity={opacity}
           transform={`translate(${x.toFixed(2)},${y.toFixed(2)})`}
         />
       )
     })
-  }, [size.w, size.h, prefersReducedMotion, emberInit])
+  }, [size.w, size.h, prefersReducedMotion, emberInit, goldEmber])
 
   // 薪火 rAF：cycleT 0→1 用 ~10s；到 0 即归位外环重启
   useEffect(() => {
@@ -619,7 +643,7 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
                 onClick={() => focusOnType(t)}
                 title={`高亮「${TYPE_LABEL[t]}」节点`}
               >
-                <i style={{ background: TYPE_COLOR[t] }} />
+                <i style={{ background: typeColor[t] }} />
                 {TYPE_LABEL[t]}
               </button>
             ))}
@@ -691,7 +715,7 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
           >
             <g ref={gRef}>
               {/* 0. 星野：三千星尘拟全量收录，环族谱一周（静态、不参与交互） */}
-              <StarField stars={dustField.stars} />
+              <StarField stars={dustField.stars} color={goldEmber} />
               <text
                 className="graph-starfield-note"
                 x={0}
@@ -704,9 +728,9 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
 
               {/* 1. 浑天刻度环：缓慢自转的星宿背景（pointer-events 由 CSS 关闭）*/}
               <g className="graph-armillary">
-                <circle r={armillary.outerR} fill="none" stroke="rgba(232,197,107,0.12)" strokeWidth={0.6} />
-                <circle r={80} fill="none" stroke="rgba(232,197,107,0.06)" strokeWidth={0.4} />
-                <circle r={160} fill="none" stroke="rgba(232,197,107,0.06)" strokeWidth={0.4} />
+                <circle r={armillary.outerR} fill="none" stroke={ringStroke} strokeWidth={0.6} />
+                <circle r={80} fill="none" stroke={ringStrokeFaint} strokeWidth={0.4} />
+                <circle r={160} fill="none" stroke={ringStrokeFaint} strokeWidth={0.4} />
                 {armillary.ticks.map((t, i) => (
                   <line
                     key={i}
@@ -714,7 +738,7 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
                     y1={t.y1}
                     x2={t.x2}
                     y2={t.y2}
-                    stroke="rgba(232,197,107,0.18)"
+                    stroke={tickStroke}
                     strokeWidth={0.6}
                   />
                 ))}
@@ -736,7 +760,7 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
                     cx={s.cx}
                     cy={s.cy}
                     r={0.6}
-                    fill="rgba(232,197,107,0.4)"
+                    fill={starFill}
                     opacity={s.opacity}
                   />
                 ))}
@@ -782,7 +806,7 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
                   const isSel = selId === n.data.id
                   const isHov = hoverId === n.data.id
                   const isTrace = trace?.nodeIds.has(n.data.id) ?? false
-                  const color = TYPE_COLOR[n.data.type]
+                  const color = typeColor[n.data.type]
                   // 标签显示：主节点常显，叶节点 hover/选中时显
                   const showLabel =
                     isMajor || isSel || isHov || isTrace || (st === 'hood' && n.depth > 1)
@@ -810,7 +834,7 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
                         r={isMajor ? (n.data.type === 'category' ? 7.2 : 5.8) : 3.6}
                         fill={color}
                         stroke={
-                          isSel ? '#f3ece2' : isHov ? 'rgba(232,197,107,0.6)' : 'none'
+                          isSel ? selStroke : isHov ? glowStroke : 'none'
                         }
                         strokeWidth={isSel ? 1.6 : isHov ? 1.1 : 0}
                       />
@@ -876,7 +900,7 @@ export default function KnowledgeGraph({ onNavigate }: Props) {
             <strong>{selectedNode.label}</strong>
             <span
               className="graph-detail-type"
-              style={{ color: TYPE_COLOR[selectedNode.type] }}
+              style={{ color: typeColor[selectedNode.type] }}
             >
               {TYPE_LABEL[selectedNode.type]}
             </span>

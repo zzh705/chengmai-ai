@@ -36,13 +36,13 @@ export function getUserId(): string {
   return uid
 }
 
-/** 记录进度（失败静默，不打扰用户） */
+/** 记录进度（失败静默，不打扰用户）；需要随后读档案时可 await，避免写后读竞态 */
 export function recordProgress(
   eventType: ProgressType,
   item?: { id?: string; name?: string },
   detail?: Record<string, unknown>,
-): void {
-  void fetch(`${API_BASE}/api/user/progress`, {
+): Promise<void> {
+  return fetch(`${API_BASE}/api/user/progress`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -52,7 +52,9 @@ export function recordProgress(
       item_name: item?.name ?? null,
       detail: detail ?? null,
     }),
-  }).catch(() => {})
+  })
+    .then(() => undefined)
+    .catch(() => undefined)
 }
 
 export async function fetchProfile(): Promise<Profile> {

@@ -21,6 +21,14 @@
   --gold: #e8c56b; /* 描金 */
   --vermilion: #b03a2e; /* 朱红/印章 */
   --jade: #4f8f7b; /* 青碧 */
+  --on-brand: #f6f0e4; /* 品牌色按钮上的固定浅字（两主题通用） */
+
+  /* RGB 通道令牌：供 rgba(var(--x-rgb), a) 半透明场景随主题换色 */
+  --ink-rgb: 20, 17, 15;
+  --paper-rgb: 243, 236, 226;
+  --gold-rgb: 232, 197, 107;
+  --red-rgb: 176, 58, 46;
+  --jade-rgb: 79, 143, 123;
 
   /* 矿彩数据阶：仅用于环形图/热力等分类数据可视化，不用于 UI 控件 */
   --viz-vermilion: #b03a2e;
@@ -50,15 +58,66 @@
   color-scheme: dark;
 }
 
+/* ===== 亮纸主题：白色为基调的暖宣纸版本（第二种风格） =====
+   仅覆写色板令牌与矿彩数据阶，字体/圆角/动效/z 阶全部沿用，保证两套风格同源。 */
+:root[data-theme='light'] {
+  --ink: #f5f1e8; /* 页面底：暖宣纸白 */
+  --ink-1: #fffdf7; /* 卡片：亮纸 */
+  --ink-2: #e4dbca; /* 分隔线：浅米 */
+  --ink-3: #c9bb9f; /* 描边：浅赭 */
+  --ink-faint: #857965; /* 次要文字 */
+  --ink-soft: #443c30; /* 正文：深褐墨 */
+  --paper: #211b14; /* 主文字：近墨 */
+  --gold: #96731f; /* 描金加深，白底可读 */
+  --vermilion: #9f3024; /* 朱红微沉 */
+  --jade: #36705e; /* 青碧加深 */
+  --on-brand: #f6f0e4;
+
+  --ink-rgb: 245, 241, 232;
+  --paper-rgb: 33, 27, 20;
+  --gold-rgb: 150, 115, 31;
+  --red-rgb: 159, 48, 36;
+  --jade-rgb: 54, 112, 94;
+
+  /* 白底上金色数据段加深，其余矿彩保持 */
+  --viz-gold: #b0882f;
+
+  color-scheme: light;
+}
+
+/* 主题切换瞬态过渡：只染颜色/阴影属性，不碰 transform/opacity，
+   切换后 0.5s 摘除，避免长期拖累 hover 与滚动动效（JS 控制 .theme-x 挂删） */
+.theme-x,
+.theme-x *,
+.theme-x *::before,
+.theme-x *::after {
+  transition:
+    background-color 0.45s ease,
+    border-color 0.45s ease,
+    color 0.35s ease,
+    fill 0.45s ease,
+    stroke 0.45s ease,
+    box-shadow 0.4s ease,
+    outline-color 0.3s ease !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-x,
+  .theme-x *,
+  .theme-x *::before,
+  .theme-x *::after {
+    transition: none !important;
+  }
+}
+
 html {
   /* Firefox 滚动条入板 */
-  scrollbar-color: #3a332c #14110f;
+  scrollbar-color: var(--ink-3) var(--ink);
 }
 
 body {
   margin: 0;
-  background: #14110f;
-  color: #f3ece2;
+  background: var(--ink);
+  color: var(--paper);
   font-family: var(--font-sans);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -99,14 +158,19 @@ textarea {
   background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='56'%20height='56'%3E%3Cg%20fill='none'%20stroke='%23e8c56b'%20stroke-width='1.2'%3E%3Cpath%20d='M8%208h40v40H16V16h24v24'/%3E%3C/g%3E%3C/svg%3E");
   background-size: 56px 56px;
 }
+/* 亮纸主题：回纹换深金、略提可见度 */
+:root[data-theme='light'] .app-shell::before {
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='56'%20height='56'%3E%3Cg%20fill='none'%20stroke='%2396731f'%20stroke-width='1.2'%3E%3Cpath%20d='M8%208h40v40H16V16h24v24'/%3E%3C/g%3E%3C/svg%3E");
+}
 
 .app-nav {
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 8px 16px;
-  background: #14110f;
-  border-bottom: 1px solid #2e2823;
+  background: var(--ink);
+  border-bottom: 1px solid var(--ink-2);
 }
 .app-brand {
   display: inline-flex;
@@ -115,8 +179,8 @@ textarea {
   width: 40px;
   height: 40px;
   padding: 0;
-  background: #b03a2e;
-  color: #f3ece2;
+  background: var(--vermilion);
+  color: var(--on-brand);
   font-family: var(--font-serif);
   font-size: 15px;
   font-weight: 700;
@@ -126,7 +190,7 @@ textarea {
   cursor: pointer;
   transform: rotate(-4deg);
   flex-shrink: 0;
-  box-shadow: 0 3px 12px rgba(176, 58, 46, 0.4);
+  box-shadow: 0 3px 12px rgba(var(--red-rgb), 0.4);
   transition: transform 0.2s var(--ease-out);
 }
 .app-brand:hover {
@@ -146,10 +210,10 @@ textarea {
 }
 .app-nav button {
   padding: 7px 13px;
-  border: 1px solid #3a332c;
+  border: 1px solid var(--ink-3);
   border-radius: 8px;
   background: transparent;
-  color: #c9bfae;
+  color: var(--ink-soft);
   font-size: 14px;
   letter-spacing: 1px;
   cursor: pointer;
@@ -161,14 +225,14 @@ textarea {
   white-space: nowrap;
 }
 .app-nav button:hover {
-  border-color: #e8c56b;
-  color: #e8c56b;
+  border-color: var(--gold);
+  color: var(--gold);
 }
 .app-nav button.active {
-  background: #b03a2e;
-  border-color: #b03a2e;
-  color: #f3ece2;
-  box-shadow: 0 4px 14px rgba(176, 58, 46, 0.35);
+  background: var(--vermilion);
+  border-color: var(--vermilion);
+  color: var(--on-brand);
+  box-shadow: 0 4px 14px rgba(var(--red-rgb), 0.35);
   animation: none;
 }
 
@@ -177,6 +241,42 @@ textarea {
   min-height: 0;
   display: flex;
   flex-direction: column;
+}
+
+/* 风格切换钮：日/月 + 二字小标，与导航钮同高，金描边 */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border: 1px solid var(--gold);
+  border-radius: 999px;
+  background: rgba(var(--gold-rgb), 0.08);
+  color: var(--gold);
+  font-size: 12px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    background-color 0.2s,
+    border-color 0.2s,
+    transform 0.2s var(--ease-out);
+}
+.theme-toggle:hover {
+  background: rgba(var(--gold-rgb), 0.16);
+  transform: translateY(-1px);
+}
+.theme-toggle svg {
+  display: block;
+}
+@media (max-width: 720px) {
+  .theme-toggle span {
+    display: none;
+  }
+  .theme-toggle {
+    padding: 7px 9px;
+  }
 }
 
 /* 页面切换动效：上浮 + 方向位移 + 轻微缩放（方向由 --vt-x 驱动，仅用合成层属性） */
@@ -290,8 +390,8 @@ textarea {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    var(--route-a, #e8c56b) 35%,
-    var(--route-b, #b03a2e) 75%,
+    var(--route-a, var(--gold)) 35%,
+    var(--route-b, var(--vermilion)) 75%,
     transparent 100%
   );
   animation: routeBar 1s cubic-bezier(0.3, 0.6, 0.2, 1) forwards;
@@ -330,7 +430,7 @@ textarea {
   width: 72px;
   height: 3px;
   margin: 10px auto 0;
-  background: linear-gradient(90deg, transparent, #e8c56b, transparent);
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
   border-radius: 999px;
   transform-origin: center;
   animation: h1Line 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.15s both;
@@ -351,8 +451,8 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #2e2823, #1b1713 60%, rgba(79, 143, 123, 0.18));
-  color: #e8c56b;
+  background: linear-gradient(135deg, var(--ink-2), var(--ink-1) 60%, rgba(var(--jade-rgb), 0.18));
+  color: var(--gold);
   font-family: var(--font-serif);
   font-size: 44px;
   font-weight: 700;
@@ -373,7 +473,7 @@ textarea {
 .skeleton {
   position: relative;
   overflow: hidden;
-  background: #1b1713;
+  background: var(--ink-1);
   border-radius: 8px;
 }
 .skeleton::after {
@@ -384,7 +484,7 @@ textarea {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(232, 197, 107, 0.08),
+    rgba(var(--gold-rgb), 0.08),
     transparent
   );
   animation: skeletonSweep 1.5s ease-in-out infinite;
@@ -401,19 +501,19 @@ textarea {
   height: 9px;
 }
 ::-webkit-scrollbar-track {
-  background: #14110f;
+  background: var(--ink);
 }
 ::-webkit-scrollbar-thumb {
-  background: #3a332c;
+  background: var(--ink-3);
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #e8c56b;
+  background: var(--gold);
 }
 
 ::selection {
-  background: rgba(176, 58, 46, 0.6);
-  color: #f3ece2;
+  background: rgba(var(--red-rgb), 0.6);
+  color: var(--on-brand);
 }
 
 /* 桌面窄宽（1024-1240）：进一步收紧导航间距 */
@@ -478,7 +578,7 @@ textarea {
 
 /* ===== 键盘可达性：统一金环焦点指示（替代 6 处 input/select 的 outline:none） ===== */
 :focus-visible {
-  outline: 2px solid #e8c56b;
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 
@@ -489,7 +589,7 @@ textarea {
   left: 8px;
   z-index: var(--z-skip);
   padding: 10px 16px;
-  background: #e8c56b;
+  background: var(--gold);
   color: #14110f;
   font-size: 14px;
   border-radius: 8px;
@@ -642,7 +742,7 @@ textarea {
   left: -40%;
   width: 34%;
   height: 200%;
-  background: linear-gradient(100deg, transparent, rgba(243, 236, 226, 0.22), transparent);
+  background: linear-gradient(100deg, transparent, rgba(var(--paper-rgb), 0.22), transparent);
   transform: rotate(16deg) translateX(-140%);
   transition: transform 0.75s cubic-bezier(0.3, 0.6, 0.2, 1);
   pointer-events: none;
@@ -692,6 +792,10 @@ textarea {
   .zh-corner {
     display: none;
   }
+}
+/* 亮纸主题：四角回纹换深金 */
+:root[data-theme='light'] .zh-corner i {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34' fill='none'%3E%3Cpath d='M1 15V1h14M7 21V7h14' stroke='%2396731f' stroke-width='1.5'/%3E%3C/svg%3E");
 }
 
 /* 按压反馈：全站按钮与可点元素统一（filter 不与元素自身 transform 冲突） */

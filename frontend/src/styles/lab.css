@@ -3,8 +3,8 @@
   position: relative;
   height: 100%;
   overflow-y: auto;
-  background: #14110f;
-  color: #f3ece2;
+  background: var(--ink);
+  color: var(--paper);
   padding-bottom: 60px;
 }
 
@@ -16,10 +16,10 @@
 }
 .lab-header h1 {
   margin: 0;
-  color: #e8c56b;
+  color: var(--gold);
 }
 .lab-header p {
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-size: 13px;
   margin-top: 8px;
 }
@@ -30,8 +30,8 @@
   max-width: 860px;
   margin: 16px auto;
   padding: 20px;
-  background: #1b1713;
-  border: 1px solid #2e2823;
+  background: var(--ink-1);
+  border: 1px solid var(--ink-2);
   border-radius: 12px;
   display: flex;
   flex-direction: column;
@@ -40,19 +40,19 @@
 .lab-form select,
 .lab-form textarea {
   padding: 11px 14px;
-  background: #14110f;
-  border: 1px solid #3a332c;
+  background: var(--ink);
+  border: 1px solid var(--ink-3);
   border-radius: 8px;
-  color: #f3ece2;
+  color: var(--paper);
   font-size: 14px;
   font-family: inherit;
 }
 .lab-form textarea::placeholder {
-  color: #9a8f80;
+  color: var(--ink-faint);
 }
 .lab-form textarea:focus,
 .lab-form select:focus {
-  border-color: #e8c56b;
+  border-color: var(--gold);
 }
 .lab-types {
   display: flex;
@@ -61,10 +61,10 @@
 .lab-types button {
   flex: 1;
   padding: 8px;
-  border: 1px solid #3a332c;
+  border: 1px solid var(--ink-3);
   border-radius: 8px;
   background: transparent;
-  color: #c9bfae;
+  color: var(--ink-soft);
   cursor: pointer;
   font-size: 13px;
   transition:
@@ -74,20 +74,20 @@
     transform 0.2s;
 }
 .lab-types button:hover {
-  border-color: #e8c56b;
-  color: #e8c56b;
+  border-color: var(--gold);
+  color: var(--gold);
   transform: translateY(-2px);
 }
 .lab-types button:focus-visible {
-  outline: 2px solid #e8c56b;
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 .lab-types button.active {
-  background: #b03a2e;
-  border-color: #b03a2e;
-  color: #f3ece2;
+  background: var(--vermilion);
+  border-color: var(--vermilion);
+  color: var(--paper);
   animation: labOn 0.3s ease;
-  box-shadow: 0 4px 14px rgba(176, 58, 46, 0.4);
+  box-shadow: 0 4px 14px rgba(var(--red-rgb), 0.4);
 }
 @keyframes labOn {
   from {
@@ -99,8 +99,8 @@
   padding: 12px;
   border: none;
   border-radius: 8px;
-  background: #b03a2e;
-  color: #f3ece2;
+  background: var(--vermilion);
+  color: var(--paper);
   font-size: 15px;
   letter-spacing: 2px;
   cursor: pointer;
@@ -119,19 +119,19 @@
   align-items: center;
   gap: 12px;
   padding: 10px 14px;
-  border-left: 2px solid #b03a2e;
+  border-left: 2px solid var(--vermilion);
   border-radius: 8px;
-  background: rgba(176, 58, 46, 0.1);
-  color: #c9bfae;
+  background: rgba(var(--red-rgb), 0.1);
+  color: var(--ink-soft);
   font-size: 13px;
 }
 .lab-error-retry {
   flex: none;
   padding: 4px 14px;
-  border: 1px solid #3a332c;
+  border: 1px solid var(--ink-3);
   border-radius: 8px;
   background: transparent;
-  color: #c9bfae;
+  color: var(--ink-soft);
   font-size: 12px;
   cursor: pointer;
   transition:
@@ -139,8 +139,8 @@
     border-color 0.2s;
 }
 .lab-error-retry:hover {
-  border-color: #e8c56b;
-  color: #e8c56b;
+  border-color: var(--gold);
+  color: var(--gold);
 }
 
 .lab-result {
@@ -156,11 +156,11 @@
   position: relative;
   margin-top: 26px;
   padding: 24px 26px;
-  border: 1px solid rgba(232, 197, 107, 0.4);
+  border: 1px solid rgba(var(--gold-rgb), 0.4);
   border-radius: 12px;
   background:
-    linear-gradient(120deg, rgba(232, 197, 107, 0.13), rgba(176, 58, 46, 0.12) 55%, transparent),
-    #1b1713;
+    linear-gradient(120deg, rgba(var(--gold-rgb), 0.13), rgba(var(--red-rgb), 0.12) 55%, transparent),
+    var(--ink-1);
   overflow: hidden;
   animation: labHeadIn 0.65s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
@@ -172,7 +172,7 @@
   left: 0;
   width: 46%;
   height: 220%;
-  background: linear-gradient(100deg, transparent, rgba(232, 197, 107, 0.14), transparent);
+  background: linear-gradient(100deg, transparent, rgba(var(--gold-rgb), 0.14), transparent);
   transform: rotate(18deg) translateX(-240%);
   animation: labShine 1.5s ease 0.35s both;
   pointer-events: none;
@@ -194,17 +194,17 @@
 .lab-result-kicker {
   display: inline-block;
   padding: 4px 12px;
-  border: 1px solid rgba(232, 197, 107, 0.45);
+  border: 1px solid rgba(var(--gold-rgb), 0.45);
   border-radius: 999px;
-  background: rgba(232, 197, 107, 0.1);
-  color: #e8c56b;
+  background: rgba(var(--gold-rgb), 0.1);
+  color: var(--gold);
   font-size: 12px;
   letter-spacing: 2px;
 }
 .lab-result-head h2 {
   position: relative;
   z-index: 1;
-  color: #f3ece2;
+  color: var(--paper);
   font-size: 24px;
   letter-spacing: 1px;
   margin: 14px 0 10px;
@@ -217,9 +217,9 @@
   font-family: var(--font-display);
   font-size: 19px;
   font-style: italic;
-  color: #e8c56b;
+  color: var(--gold);
   letter-spacing: 2px;
-  text-shadow: 0 0 18px rgba(232, 197, 107, 0.35);
+  text-shadow: 0 0 18px rgba(var(--gold-rgb), 0.35);
   animation: sloganIn 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) 0.35s both;
 }
 @keyframes sloganIn {
@@ -236,20 +236,20 @@
   position: relative;
   z-index: 1;
   font-size: 13px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   padding-left: 14px;
-  border-left: 2px solid rgba(232, 197, 107, 0.53);
+  border-left: 2px solid rgba(var(--gold-rgb), 0.53);
 }
 
 .lab-guard {
-  background: #1b1713;
-  border: 1px solid rgba(176, 58, 46, 0.4);
+  background: var(--ink-1);
+  border: 1px solid rgba(var(--red-rgb), 0.4);
   border-radius: 12px;
   padding: 14px 18px;
   margin-bottom: 16px;
 }
 .lab-guard h3 {
-  color: #e8c56b;
+  color: var(--gold);
   margin: 0 0 8px;
   font-size: 15px;
 }
@@ -259,7 +259,7 @@
   padding-left: 18px;
   line-height: 1.8;
   font-size: 14px;
-  color: #c9bfae;
+  color: var(--ink-soft);
 }
 
 .lab-grid {
@@ -270,8 +270,8 @@
 }
 .lab-grid section {
   position: relative;
-  background: #1b1713;
-  border: 1px solid #2e2823;
+  background: var(--ink-1);
+  border: 1px solid var(--ink-2);
   border-radius: 12px;
   padding: 16px 18px;
   overflow: hidden;
@@ -280,7 +280,7 @@
     transform 0.2s;
 }
 .lab-grid section:hover {
-  border-color: rgba(232, 197, 107, 0.5);
+  border-color: rgba(var(--gold-rgb), 0.5);
   transform: translateY(-3px);
 }
 .lab-grid section:hover::before {
@@ -291,7 +291,7 @@
   margin: 0 0 10px;
   font-size: 14px;
   letter-spacing: 2px;
-  color: #e8c56b;
+  color: var(--gold);
 }
 .lab-grid li {
   animation: labItemIn 0.5s ease backwards;
@@ -328,21 +328,21 @@
   top: 9px;
   width: 6px;
   height: 6px;
-  background: #e8c56b;
+  background: var(--gold);
   transform: rotate(45deg);
   opacity: 0.8;
 }
 
 .lab-steps {
-  background: #1b1713;
-  border: 1px solid #2e2823;
+  background: var(--ink-1);
+  border: 1px solid var(--ink-2);
   border-radius: 12px;
   padding: 16px 20px;
 }
 .lab-steps h3 {
   margin: 0 0 10px;
   font-size: 15px;
-  color: #e8c56b;
+  color: var(--gold);
 }
 .lab-steps ol {
   counter-reset: labstep;
@@ -358,7 +358,7 @@
   top: 22px;
   bottom: 22px;
   width: 2px;
-  background: linear-gradient(180deg, #e8c56b, rgba(176, 58, 46, 0.55));
+  background: linear-gradient(180deg, var(--gold), rgba(var(--red-rgb), 0.55));
   transform-origin: top;
   animation: labLine 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.2s both;
 }
@@ -376,7 +376,7 @@
   padding: 12px 0 12px 60px;
   font-size: 14px;
   line-height: 1.8;
-  color: #c9bfae;
+  color: var(--ink-soft);
   animation: labItemIn 0.55s ease backwards;
 }
 .lab-steps li:nth-child(1) { animation-delay: 0.2s; }
@@ -396,13 +396,13 @@
   display: grid;
   place-items: center;
   border-radius: 999px;
-  background: #14110f;
-  border: 1px solid rgba(232, 197, 107, 0.55);
-  color: #e8c56b;
+  background: var(--ink);
+  border: 1px solid rgba(var(--gold-rgb), 0.55);
+  color: var(--gold);
   font-family: var(--font-display);
   font-size: 14px;
   font-weight: 700;
-  box-shadow: 0 0 14px rgba(232, 197, 107, 0.18);
+  box-shadow: 0 0 14px rgba(var(--gold-rgb), 0.18);
 }
 
 /* 风格/受众/类型选择区 */
@@ -414,7 +414,7 @@
 .lab-opt .lab-opt-label {
   display: block;
   font-size: 12px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   letter-spacing: 2px;
   margin-bottom: 6px;
 }
@@ -425,10 +425,10 @@
 }
 .lab-presets button {
   padding: 6px 13px;
-  border: 1px dashed #3a332c;
+  border: 1px dashed var(--ink-3);
   border-radius: 999px;
   background: transparent;
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-size: 12px;
   cursor: pointer;
   transition:
@@ -437,8 +437,8 @@
     background-color 0.2s;
 }
 .lab-presets button:hover {
-  border-color: #e8c56b;
-  color: #e8c56b;
+  border-color: var(--gold);
+  color: var(--gold);
 }
 .lab-actions {
   display: flex;
@@ -450,10 +450,10 @@
 }
 .lab-clear {
   padding: 0 18px;
-  border: 1px solid #3a332c;
+  border: 1px solid var(--ink-3);
   border-radius: 8px;
   background: transparent;
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-size: 13px;
   cursor: pointer;
   transition:
@@ -461,8 +461,8 @@
     border-color 0.2s;
 }
 .lab-clear:hover {
-  border-color: #b03a2e;
-  color: #b03a2e;
+  border-color: var(--vermilion);
+  color: var(--vermilion);
 }
 
 /* 历史方案 */
@@ -475,14 +475,14 @@
 }
 .lab-history h3 {
   font-size: 14px;
-  color: #e8c56b;
+  color: var(--gold);
   letter-spacing: 2px;
   margin: 0 0 10px;
 }
 .lab-history h3 em {
   font-style: normal;
   font-size: 12px;
-  color: #9a8f80;
+  color: var(--ink-faint);
 }
 .lab-history-list {
   display: flex;
@@ -491,8 +491,8 @@
 }
 .lab-history-list button {
   text-align: left;
-  background: #1b1713;
-  border: 1px solid #2e2823;
+  background: var(--ink-1);
+  border: 1px solid var(--ink-2);
   border-radius: 8px;
   padding: 10px 14px;
   cursor: pointer;
@@ -505,15 +505,15 @@
 }
 .lab-history-list button:hover,
 .lab-history-list button.active {
-  border-color: #e8c56b;
+  border-color: var(--gold);
 }
 .lab-history-list strong {
-  color: #f3ece2;
+  color: var(--paper);
   font-size: 14px;
   font-weight: 600;
 }
 .lab-history-list span {
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-size: 12px;
 }
 
@@ -530,18 +530,18 @@
   gap: 8px;
   font-size: 13px;
   letter-spacing: 2px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   transition: color 0.2s;
 }
 .lab-stages span.on {
-  color: #e8c56b;
+  color: var(--gold);
 }
 .lab-stages span.on::after {
   content: '';
   display: inline-block;
   width: 26px;
   height: 1px;
-  background: rgba(232, 197, 107, 0.53);
+  background: rgba(var(--gold-rgb), 0.53);
   transform: translate(-8px, -4px);
 }
 
@@ -566,16 +566,16 @@
 }
 .lab-materials,
 .lab-metrics {
-  background: #1b1713;
-  border: 1px solid #2e2823;
+  background: var(--ink-1);
+  border: 1px solid var(--ink-2);
   border-radius: 12px;
   padding: 16px 20px;
 }
 .lab-materials {
-  border-left: 2px solid rgba(79, 143, 123, 0.55);
+  border-left: 2px solid rgba(var(--jade-rgb), 0.55);
 }
 .lab-metrics {
-  border-left: 2px solid rgba(232, 197, 107, 0.55);
+  border-left: 2px solid rgba(var(--gold-rgb), 0.55);
 }
 .lab-materials h3,
 .lab-metrics h3,
@@ -583,7 +583,7 @@
   margin: 0 0 10px;
   font-size: 15px;
   letter-spacing: 2px;
-  color: #e8c56b;
+  color: var(--gold);
 }
 .lab-materials ul,
 .lab-risks ul {
@@ -591,7 +591,7 @@
   padding-left: 18px;
   line-height: 1.8;
   font-size: 14px;
-  color: #c9bfae;
+  color: var(--ink-soft);
 }
 .lab-materials li,
 .lab-risks li {
@@ -611,7 +611,7 @@
   padding-left: 22px;
   font-size: 14px;
   line-height: 1.7;
-  color: #c9bfae;
+  color: var(--ink-soft);
 }
 .lab-metric-dot {
   position: absolute;
@@ -620,15 +620,15 @@
   width: 9px;
   height: 9px;
   border-radius: 999px;
-  border: 2px solid #e8c56b;
-  background: #14110f;
+  border: 2px solid var(--gold);
+  background: var(--ink);
 }
 .lab-metric-dot::after {
   content: '';
   position: absolute;
   inset: 1px;
   border-radius: 999px;
-  background: #e8c56b;
+  background: var(--gold);
   transform: scale(0);
   transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
@@ -639,15 +639,15 @@
 /* 风险与边界：朱红提醒卷，不抢正文 */
 .lab-risks {
   background:
-    linear-gradient(160deg, rgba(176, 58, 46, 0.08), transparent 55%),
-    #1b1713;
-  border: 1px solid rgba(176, 58, 46, 0.4);
+    linear-gradient(160deg, rgba(var(--red-rgb), 0.08), transparent 55%),
+    var(--ink-1);
+  border: 1px solid rgba(var(--red-rgb), 0.4);
   border-radius: 12px;
   padding: 16px 20px;
   margin-bottom: 16px;
 }
 .lab-risks li::marker {
-  color: #b03a2e;
+  color: var(--vermilion);
 }
 
 /* 结果落款：抄录整案 + 朱印 */
@@ -660,10 +660,10 @@
 }
 .lab-copy {
   padding: 7px 18px;
-  border: 1px solid #3a332c;
+  border: 1px solid var(--ink-3);
   border-radius: 999px;
   background: transparent;
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-family: inherit;
   font-size: 12px;
   letter-spacing: 2px;
@@ -671,11 +671,11 @@
   transition: color 0.2s, border-color 0.2s, transform 0.15s;
 }
 .lab-copy:hover {
-  border-color: #e8c56b;
-  color: #e8c56b;
+  border-color: var(--gold);
+  color: var(--gold);
 }
 .lab-copy:focus-visible {
-  outline: 2px solid #e8c56b;
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 .lab-copy:active {
@@ -687,12 +687,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #b03a2e;
-  color: #f3ece2;
+  background: var(--vermilion);
+  color: var(--paper);
   font-family: var(--font-serif);
   font-size: 15px;
   font-weight: 700;
   border-radius: 8px;
   transform: rotate(-4deg);
-  box-shadow: 0 2px 8px rgba(176, 58, 46, 0.35);
+  box-shadow: 0 2px 8px rgba(var(--red-rgb), 0.35);
 }

@@ -10,12 +10,13 @@ export default function CountUp({
   dur?: number
   className?: string
 }) {
-  const [n, setN] = useState(0)
+  // 偏好减少动态：初始即为终值，effect 不再跑动画，避免级联 setState
+  const [reduced] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  )
+  const [n, setN] = useState(() => (reduced ? value : 0))
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setN(value)
-      return
-    }
+    if (reduced) return
     let raf = 0
     const t0 = performance.now()
     const tick = (t: number) => {
@@ -25,6 +26,6 @@ export default function CountUp({
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [value, dur])
+  }, [value, dur, reduced])
   return <span className={className} aria-label={String(value)}>{n}</span>
 }

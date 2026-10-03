@@ -54,10 +54,10 @@
 
 /* 各页配色（剪影主色），极低存在感 */
 .mf-opera {
-  color: rgba(232, 197, 107, 0.55);
+  color: rgba(var(--gold-rgb), 0.55);
 }
 .mf-bamboo {
-  color: rgba(79, 143, 123, 0.5);
+  color: rgba(var(--jade-rgb), 0.5);
 }
 .mf-steps {
   color: rgba(176, 122, 60, 0.55);
@@ -67,16 +67,40 @@
   transition: color 0.7s ease;
 }
 .mf-bamboo[style] {
-  color: var(--mf-tone, rgba(79, 143, 123, 0.5));
+  color: var(--mf-tone, rgba(var(--jade-rgb), 0.5));
 }
 .mf-banner {
-  color: rgba(79, 143, 123, 0.52);
+  color: rgba(var(--jade-rgb), 0.52);
 }
 .mf-mountain {
   color: rgba(201, 191, 174, 0.46);
 }
 .mf-lattice {
-  color: rgba(232, 197, 107, 0.5);
+  color: rgba(var(--gold-rgb), 0.5);
+}
+
+/* ===== 亮纸主题：剪影由淡金/淡墨改为深彩半透明，立在白纸上仍如水墨影戏 ===== */
+:root[data-theme='light'] .mf-opera {
+  color: rgba(150, 115, 31, 0.5);
+}
+:root[data-theme='light'] .mf-bamboo {
+  color: rgba(54, 112, 94, 0.52);
+}
+:root[data-theme='light'] .mf-steps {
+  color: rgba(150, 104, 52, 0.55);
+}
+:root[data-theme='light'] .mf-bamboo[style] {
+  /* 模式换色仍由 --mf-tone 决定，此处仅兜底（学者/传承人/青年三态在亮纸下加深） */
+  color: var(--mf-tone, rgba(54, 112, 94, 0.52));
+}
+:root[data-theme='light'] .mf-banner {
+  color: rgba(54, 112, 94, 0.5);
+}
+:root[data-theme='light'] .mf-mountain {
+  color: rgba(68, 60, 48, 0.4);
+}
+:root[data-theme='light'] .mf-lattice {
+  color: rgba(150, 115, 31, 0.52);
 }
 
 /* ===== 出场两式 ===== */
@@ -399,7 +423,7 @@
   width: 11px;
   height: 11px;
   border-radius: 999px;
-  background: radial-gradient(circle, currentColor 0 22%, rgba(176, 58, 46, 0) 32%, transparent 72%);
+  background: radial-gradient(circle, currentColor 0 22%, rgba(var(--red-rgb), 0) 32%, transparent 72%);
 }
 
 /* 窄屏：留白不足，影戏收箱 */

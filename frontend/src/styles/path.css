@@ -2,8 +2,8 @@
 .path-page {
   height: 100%;
   overflow-y: auto;
-  background: #14110f;
-  color: #f3ece2;
+  background: var(--ink);
+  color: var(--paper);
   padding-bottom: 50px;
 }
 
@@ -13,10 +13,10 @@
 }
 .path-header h1 {
   margin: 0;
-  color: #e8c56b;
+  color: var(--gold);
 }
 .path-header p {
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-size: 13px;
   margin-top: 8px;
 }
@@ -25,8 +25,8 @@
   max-width: 680px;
   margin: 16px auto;
   padding: 20px;
-  background: #1b1713;
-  border: 1px solid #2e2823;
+  background: var(--ink-1);
+  border: 1px solid var(--ink-2);
   border-radius: 12px;
   display: flex;
   flex-direction: column;
@@ -35,17 +35,17 @@
 .path-form select,
 .path-form input {
   padding: 11px 14px;
-  background: #14110f;
-  border: 1px solid #3a332c;
+  background: var(--ink);
+  border: 1px solid var(--ink-3);
   border-radius: 8px;
-  color: #f3ece2;
+  color: var(--paper);
   font-size: 14px;
 }
 .path-form input::placeholder {
-  color: #9a8f80;
+  color: var(--ink-faint);
 }
 .path-form input:focus {
-  border-color: #e8c56b;
+  border-color: var(--gold);
 }
 .path-days {
   display: flex;
@@ -54,10 +54,10 @@
 .path-days button {
   flex: 1;
   padding: 9px;
-  border: 1px solid #3a332c;
+  border: 1px solid var(--ink-3);
   border-radius: 8px;
   background: transparent;
-  color: #c9bfae;
+  color: var(--ink-soft);
   cursor: pointer;
   transition:
     color 0.2s,
@@ -66,35 +66,35 @@
     transform 0.2s;
 }
 .path-days button:hover {
-  border-color: #e8c56b;
-  color: #e8c56b;
+  border-color: var(--gold);
+  color: var(--gold);
   transform: translateY(-2px);
 }
 .path-days button:focus-visible {
-  outline: 2px solid #e8c56b;
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 .path-days button.active {
-  background: #b03a2e;
-  border-color: #b03a2e;
-  color: #f3ece2;
+  background: var(--vermilion);
+  border-color: var(--vermilion);
+  color: var(--paper);
   animation: labOn 0.3s ease;
-  box-shadow: 0 4px 14px rgba(176, 58, 46, 0.4);
+  box-shadow: 0 4px 14px rgba(var(--red-rgb), 0.4);
 }
 .path-generate {
   padding: 12px;
   border: none;
   border-radius: 8px;
-  background: #b03a2e;
-  color: #f3ece2;
+  background: var(--vermilion);
+  color: var(--paper);
   font-size: 15px;
   letter-spacing: 2px;
   cursor: pointer;
 }
 .path-generate:disabled {
   background: transparent;
-  border: 1px solid #3a332c;
-  color: #9a8f80;
+  border: 1px solid var(--ink-3);
+  color: var(--ink-faint);
   box-shadow: none;
   cursor: not-allowed;
 }
@@ -104,19 +104,19 @@
   align-items: center;
   gap: 12px;
   padding: 10px 14px;
-  border-left: 2px solid #b03a2e;
+  border-left: 2px solid var(--vermilion);
   border-radius: 8px;
-  background: rgba(176, 58, 46, 0.1);
-  color: #c9bfae;
+  background: rgba(var(--red-rgb), 0.1);
+  color: var(--ink-soft);
   font-size: 13px;
 }
 .path-retry {
   flex: none;
   padding: 4px 14px;
-  border: 1px solid #3a332c;
+  border: 1px solid var(--ink-3);
   border-radius: 8px;
   background: transparent;
-  color: #c9bfae;
+  color: var(--ink-soft);
   font-size: 12px;
   cursor: pointer;
   transition:
@@ -125,8 +125,8 @@
     background-color 0.2s;
 }
 .path-retry:hover {
-  border-color: #e8c56b;
-  color: #e8c56b;
+  border-color: var(--gold);
+  color: var(--gold);
 }
 .path-loading-foot {
   display: flex;
@@ -135,16 +135,16 @@
   gap: 12px;
   min-height: 26px;
   font-size: 12px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   letter-spacing: 1px;
 }
 .path-cancel {
   margin-left: auto;
   padding: 3px 14px;
-  border: 1px solid #3a332c;
+  border: 1px solid var(--ink-3);
   border-radius: 8px;
   background: transparent;
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-size: 12px;
   cursor: pointer;
   transition:
@@ -152,8 +152,8 @@
     border-color 0.2s;
 }
 .path-cancel:hover {
-  border-color: #e8c56b;
-  color: #e8c56b;
+  border-color: var(--gold);
+  color: var(--gold);
 }
 
 .path-result {
@@ -173,20 +173,20 @@
 }
 .path-result h2 {
   font-size: 19px;
-  color: #e8c56b;
+  color: var(--gold);
   margin: 20px 0 16px;
 }
 .path-src {
   display: block;
   font-size: 12px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-weight: 400;
   margin-top: 6px;
   letter-spacing: 1px;
 }
 
 .path-timeline {
-  border-left: 2px solid #3a332c;
+  border-left: 2px solid var(--ink-3);
   margin-left: 22px;
   padding-left: 22px;
 }
@@ -201,8 +201,8 @@
   width: 40px;
   height: 40px;
   border-radius: 999px;
-  background: #b03a2e;
-  color: #f3ece2;
+  background: var(--vermilion);
+  color: var(--paper);
   font-family: var(--font-display);
   font-size: 13px;
   letter-spacing: 1px;
@@ -212,14 +212,14 @@
   font-weight: 600;
 }
 .path-day-body {
-  background: #1b1713;
-  border: 1px solid #2e2823;
+  background: var(--ink-1);
+  border: 1px solid var(--ink-2);
   border-radius: 12px;
   padding: 14px 18px;
   transition: border-color 0.25s, box-shadow 0.25s;
 }
 .path-day-body:hover {
-  border-color: #3a332c;
+  border-color: var(--ink-3);
 }
 /* 日卡题头：整行可点的展/收卷轴 */
 .path-day-head {
@@ -234,34 +234,34 @@
   cursor: pointer;
 }
 .path-day-head:focus-visible {
-  outline: 2px solid #e8c56b;
+  outline: 2px solid var(--gold);
   outline-offset: 3px;
   border-radius: 8px;
 }
 .path-day-head strong {
-  color: #e8c56b;
+  color: var(--gold);
   font-size: 15px;
   letter-spacing: 1px;
 }
 .path-day-time {
   margin-left: auto;
   font-size: 12px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   letter-spacing: 1px;
   flex: none;
 }
 .path-day-toggle {
   flex: none;
   font-size: 12px;
-  color: #9a8f80;
-  border: 1px solid #3a332c;
+  color: var(--ink-faint);
+  border: 1px solid var(--ink-3);
   border-radius: 999px;
   padding: 1px 9px;
   transition: color 0.2s, border-color 0.2s;
 }
 .path-day-head:hover .path-day-toggle {
-  color: #e8c56b;
-  border-color: rgba(232, 197, 107, 0.5);
+  color: var(--gold);
+  border-color: rgba(var(--gold-rgb), 0.5);
 }
 /* 里程碑小印：启程 / 精进 / 出师 */
 .path-ms {
@@ -273,17 +273,17 @@
   border: 1px solid;
 }
 .path-ms-启程 {
-  color: #4f8f7b;
-  border-color: rgba(79, 143, 123, 0.55);
+  color: var(--jade);
+  border-color: rgba(var(--jade-rgb), 0.55);
 }
 .path-ms-精进 {
-  color: #e8c56b;
-  border-color: rgba(232, 197, 107, 0.55);
+  color: var(--gold);
+  border-color: rgba(var(--gold-rgb), 0.55);
 }
 .path-ms-出师 {
-  color: #f3ece2;
-  background: #b03a2e;
-  border-color: #b03a2e;
+  color: var(--paper);
+  background: var(--vermilion);
+  border-color: var(--vermilion);
 }
 /* 日卡功课：grid-rows 平滑展收 */
 .path-day-body ul {
@@ -304,7 +304,7 @@
 .path-opt-group .path-opt-label {
   display: block;
   font-size: 12px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   letter-spacing: 2px;
   margin-bottom: 7px;
 }
@@ -320,10 +320,10 @@
 .path-goals button {
   flex: 1;
   padding: 9px 6px;
-  border: 1px solid #3a332c;
+  border: 1px solid var(--ink-3);
   border-radius: 8px;
   background: transparent;
-  color: #c9bfae;
+  color: var(--ink-soft);
   font-size: 13px;
   cursor: pointer;
   display: flex;
@@ -336,21 +336,21 @@
     border-color 0.2s;
 }
 .path-goals button:hover {
-  border-color: #e8c56b;
-  color: #e8c56b;
+  border-color: var(--gold);
+  color: var(--gold);
 }
 .path-goals button em {
   font-style: normal;
   font-size: 12px;
-  color: #9a8f80;
+  color: var(--ink-faint);
 }
 .path-goals button.active {
-  background: #b03a2e;
-  border-color: #b03a2e;
-  color: #f3ece2;
+  background: var(--vermilion);
+  border-color: var(--vermilion);
+  color: var(--paper);
 }
 .path-goals button.active em {
-  color: #f3ece2;
+  color: var(--paper);
 }
 
 /* 进度条 */
@@ -360,19 +360,19 @@
   gap: 12px;
   margin-bottom: 16px;
   font-size: 13px;
-  color: #9a8f80;
+  color: var(--ink-faint);
 }
 .path-progress-bar {
   flex: 1;
   height: 10px;
-  background: #2e2823;
+  background: var(--ink-2);
   border-radius: 999px;
   overflow: hidden;
 }
 .path-progress-fill {
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, #4f8f7b, #e8c56b);
+  background: linear-gradient(90deg, var(--jade), var(--gold));
   border-radius: 999px;
   transform: scaleX(var(--x, 0));
   transform-origin: left center;
@@ -380,10 +380,10 @@
 }
 .path-reset {
   padding: 5px 12px;
-  border: 1px solid #3a332c;
+  border: 1px solid var(--ink-3);
   border-radius: 8px;
   background: transparent;
-  color: #9a8f80;
+  color: var(--ink-faint);
   font-size: 12px;
   cursor: pointer;
   transition:
@@ -391,8 +391,8 @@
     border-color 0.2s;
 }
 .path-reset:hover {
-  border-color: #e8c56b;
-  color: #e8c56b;
+  border-color: var(--gold);
+  color: var(--gold);
 }
 
 /* 任务勾选：原生框藏入屏后，前置一枚观/习/作小方印 */
@@ -408,7 +408,7 @@
   padding: 5px 0;
   font-size: 14px;
   line-height: 1.7;
-  color: #c9bfae;
+  color: var(--ink-soft);
   cursor: pointer;
 }
 .path-day-body input[type='checkbox'] {
@@ -431,7 +431,7 @@
   font-family: var(--font-serif);
   border-radius: 8px;
   border: 1px solid;
-  background: #14110f;
+  background: var(--ink);
   transition: background-color 0.25s, color 0.25s, transform 0.2s, box-shadow 0.25s;
 }
 .path-day-head,
@@ -439,41 +439,41 @@
   position: relative;
 }
 .path-check-观 {
-  color: #4f8f7b;
-  border-color: rgba(79, 143, 123, 0.5);
+  color: var(--jade);
+  border-color: rgba(var(--jade-rgb), 0.5);
 }
 .path-check-习 {
-  color: #e8c56b;
-  border-color: rgba(232, 197, 107, 0.5);
+  color: var(--gold);
+  border-color: rgba(var(--gold-rgb), 0.5);
 }
 .path-check-作 {
-  color: #b03a2e;
-  border-color: rgba(176, 58, 46, 0.55);
+  color: var(--vermilion);
+  border-color: rgba(var(--red-rgb), 0.55);
 }
 .path-day-body li label:hover .path-check {
   transform: translateY(-1px);
 }
 .path-day-body input:focus-visible ~ .path-check {
-  outline: 2px solid #e8c56b;
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 .path-day-body input:checked ~ .path-check {
-  color: #f3ece2;
+  color: var(--paper);
   background: currentColor;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 .path-day-body input:checked ~ .path-check-观 {
-  background: #4f8f7b;
+  background: var(--jade);
 }
 .path-day-body input:checked ~ .path-check-习 {
-  background: #e8c56b;
-  color: #14110f;
+  background: var(--gold);
+  color: var(--ink);
 }
 .path-day-body input:checked ~ .path-check-作 {
-  background: #b03a2e;
+  background: var(--vermilion);
 }
 .task-done span {
-  color: #9a8f80;
+  color: var(--ink-faint);
   text-decoration: line-through;
   animation: taskCheck 0.3s ease;
 }
@@ -484,25 +484,25 @@
   }
 }
 .path-node.day-done .path-day-badge {
-  background: #4f8f7b;
+  background: var(--jade);
 }
 .path-node.day-done .path-day-body {
-  border-color: rgba(79, 143, 123, 0.4);
+  border-color: rgba(var(--jade-rgb), 0.4);
 }
 /* 出师卷：青碧宣底 + 右上「成」字朱印盖下 */
 .path-finish {
   position: relative;
   margin-top: 18px;
   padding: 20px 24px;
-  background: linear-gradient(120deg, rgba(79, 143, 123, 0.18), rgba(232, 197, 107, 0.12));
-  border: 1px solid #4f8f7b;
+  background: linear-gradient(120deg, rgba(var(--jade-rgb), 0.18), rgba(var(--gold-rgb), 0.12));
+  border: 1px solid var(--jade);
   border-radius: 12px;
   overflow: hidden;
 }
 .path-finish p {
   margin: 0;
   padding-right: 70px;
-  color: #4f8f7b;
+  color: var(--jade);
   font-size: 14px;
   line-height: 1.9;
   letter-spacing: 1px;
@@ -516,8 +516,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #b03a2e;
-  color: #f3ece2;
+  background: var(--vermilion);
+  color: var(--paper);
   font-family: var(--font-serif);
   font-size: 28px;
   border-radius: 12px;
@@ -538,9 +538,9 @@
   margin: 18px 0 16px;
   padding: 22px 24px 20px;
   background:
-    radial-gradient(300px 120px at 100% 0%, rgba(232, 197, 107, 0.08), transparent),
-    #1b1713;
-  border: 1px solid rgba(232, 197, 107, 0.35);
+    radial-gradient(300px 120px at 100% 0%, rgba(var(--gold-rgb), 0.08), transparent),
+    var(--ink-1);
+  border: 1px solid rgba(var(--gold-rgb), 0.35);
   border-radius: 12px;
   overflow: hidden;
 }
@@ -552,7 +552,7 @@
   left: 12%;
   right: 12%;
   height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(232, 197, 107, 0.6), transparent);
+  background: linear-gradient(90deg, transparent, rgba(var(--gold-rgb), 0.6), transparent);
 }
 .path-scroll-head {
   display: flex;
@@ -566,22 +566,22 @@
 .path-copy {
   flex: none;
   padding: 7px 18px;
-  border: 1px solid rgba(232, 197, 107, 0.5);
+  border: 1px solid rgba(var(--gold-rgb), 0.5);
   border-radius: 999px;
   background: transparent;
-  color: #e8c56b;
+  color: var(--gold);
   font-size: 13px;
   letter-spacing: 2px;
   cursor: pointer;
   transition: background-color 0.25s, color 0.25s, transform 0.2s;
 }
 .path-copy:hover {
-  background: #e8c56b;
-  color: #14110f;
+  background: var(--gold);
+  color: var(--ink);
   transform: translateY(-1px);
 }
 .path-copy:focus-visible {
-  outline: 2px solid #e8c56b;
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 /* 总览四格 */
@@ -592,8 +592,8 @@
   margin: 16px 0 14px;
 }
 .path-overview div {
-  background: #14110f;
-  border: 1px solid #2e2823;
+  background: var(--ink);
+  border: 1px solid var(--ink-2);
   border-radius: 12px;
   padding: 12px 8px;
   text-align: center;
@@ -603,23 +603,23 @@
   font-style: normal;
   font-size: 26px;
   font-weight: 700;
-  color: #e8c56b;
+  color: var(--gold);
   line-height: 1.2;
 }
 .path-overview span {
   font-size: 12px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   letter-spacing: 1px;
 }
 /* 师承寄语：左缘朱线小引 */
 .path-motto {
   margin: 0;
   padding: 2px 0 2px 14px;
-  border-left: 2px solid rgba(176, 58, 46, 0.55);
+  border-left: 2px solid rgba(var(--red-rgb), 0.55);
   font-family: var(--font-kai);
   font-size: 14px;
   line-height: 1.95;
-  color: #c9bfae;
+  color: var(--ink-soft);
 }
 /* 资料行囊：横向签条 */
 .path-kit {
@@ -633,7 +633,7 @@
   flex: none;
   font-size: 12px;
   letter-spacing: 2px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   padding-top: 4px;
 }
 .path-kit-tags {
@@ -643,8 +643,8 @@
 }
 .path-kit-tag {
   font-size: 12px;
-  color: #4f8f7b;
-  border: 1px solid rgba(79, 143, 123, 0.45);
+  color: var(--jade);
+  border: 1px solid rgba(var(--jade-rgb), 0.45);
   border-radius: 999px;
   padding: 3px 12px;
   letter-spacing: 1px;
@@ -663,18 +663,18 @@
   gap: 8px;
   font-size: 13px;
   letter-spacing: 2px;
-  color: #9a8f80;
+  color: var(--ink-faint);
   transition: color 0.2s;
 }
 .path-stages span.on {
-  color: #e8c56b;
+  color: var(--gold);
 }
 .path-stages span.on::after {
   content: '';
   display: inline-block;
   width: 26px;
   height: 1px;
-  background: rgba(232, 197, 107, 0.53);
+  background: rgba(var(--gold-rgb), 0.53);
   transform: translate(-8px, -4px);
 }
 .path-result-head {
@@ -684,7 +684,7 @@
   display: block;
   font-size: 12px;
   letter-spacing: 4px;
-  color: #e8c56b;
+  color: var(--gold);
   margin-bottom: 6px;
 }
 
