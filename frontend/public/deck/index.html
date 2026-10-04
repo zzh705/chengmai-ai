@@ -1044,7 +1044,11 @@ body.cover-mode #corner{opacity:0}
         var ext = exts[i];
         var url = 'assets/'+slot+'.'+ext;
         fetch(url,{method:'HEAD',cache:'no-store'}).then(function(r){
-          if(r.status===404){ tryExt(i+1); return; }
+          // SPA 兜底会把不存在的文件也返回 200(text/html)，必须用 Content-Type 判真伪
+          var ct = (r.headers.get('content-type')||'').toLowerCase();
+          var isVideo = (ext==='mp4'||ext==='webm');
+          var ok = !r.ok ? false : (isVideo ? ct.indexOf('video/')===0 : ct.indexOf('image/')===0);
+          if(!ok){ tryExt(i+1); return; }
           var badge = document.createElement('span');
           badge.className = 'slot-badge';
           if(ext==='mp4'||ext==='webm'){
