@@ -43,3 +43,19 @@ data/structured/http_cache/
 **/*.bak
 *.bak.*
 **/*.bak.*
+
+# ===== 路演 PPT 媒体素材（体积大，不入库，直接传服务器 dist/deck/assets/）=====
+demo/guofeng-deck/assets/*.mp4
+demo/guofeng-deck/assets/*.webm
+demo/guofeng-deck/assets/*.mov
+demo/guofeng-deck/assets/*.png
+demo/guofeng-deck/assets/*.jpg
+demo/guofeng-deck/assets/*.jpeg
+demo/guofeng-deck/assets/*.gif
+frontend/public/deck/assets/*.mp4
+frontend/public/deck/assets/*.webm
+frontend/public/deck/assets/*.mov
+frontend/public/deck/assets/*.png
+frontend/public/deck/assets/*.jpg
+frontend/public/deck/assets/*.jpeg
+frontend/public/deck/assets/*.gif
