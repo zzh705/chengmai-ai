@@ -29,10 +29,26 @@ log "同步后端依赖"
 sudo -u "$APP_USER" "$APP_DIR/backend/.venv/bin/pip" install -r "$APP_DIR/backend/requirements.txt"
 
 # ---------- 3. 前端构建 ----------
+# 构建前先备份路演 PPT 的动图素材（用户后续上传到 dist/deck/assets/，不入库）
+DECK_ASSETS="$APP_DIR/frontend/dist/deck/assets"
+DECK_BAK="/tmp/deck-assets-bak"
+if [[ -d "$DECK_ASSETS" ]]; then
+  log "备份路演 PPT 动图素材"
+  rm -rf "$DECK_BAK"
+  cp -a "$DECK_ASSETS" "$DECK_BAK"
+fi
 log "构建前端"
 sudo -u "$APP_USER" npm --prefix "$APP_DIR/frontend" ci
 sudo -u "$APP_USER" env NODE_OPTIONS=--max-old-space-size=1024 \
   npm --prefix "$APP_DIR/frontend" run build
+# 构建完成后恢复动图素材
+if [[ -d "$DECK_BAK" ]]; then
+  log "恢复路演 PPT 动图素材"
+  mkdir -p "$DECK_ASSETS"
+  cp -a "$DECK_BAK"/. "$DECK_ASSETS"/
+  chown -R "$APP_USER":"$APP_USER" "$DECK_ASSETS"
+  rm -rf "$DECK_BAK"
+fi
 
 # ---------- 4. 刷新服务与 Nginx 配置 ----------
 log "重启服务"

@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>承脉AI · 中华非遗智能传承与活化智能体 · 追光小队</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   承脉AI · 答辩演示 · 青绿山水 grammar
+   绢底 / 石青石绿 / 赭石 / 朱印 · 连绵群山为跨页母题
+   ============================================================ */
+:root{
+  --paper1:#f7f2e5; --paper2:#ece3cc;
+  --ink:#22332c; --ink2:#47554d; --ink3:#6d7b72;
+  --jade:#2e7d68; --jade-d:#1f5a4a; --jade2:#4f9078; --jade-l:#8fb3a4; --jade-ll:#c3d8cd;
+  --zhe:#b07a3c; --gold:#e0a85c; --zhu:#b03a2e; --zhu-d:#8c2d22;
+  --line:rgba(46,110,95,.28);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#0d110e;
+  font-family:'Noto Serif SC',serif;color:var(--ink)}
+#stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#canvas{position:relative;width:1920px;height:1080px;transform-origin:center center;flex:none;
+  background:linear-gradient(180deg,#f8f3e6 0%,#f2ecd9 52%,#e9e0c8 78%,#e2d8be 100%);
+  box-shadow:0 30px 90px rgba(0,0,0,.55);overflow:hidden}
+
+/* ---------- 跨页母题：日 · 群山 · 江水（连绵长卷） ---------- */
+#sun{position:absolute;top:96px;right:210px;width:118px;height:118px;border-radius:50%;z-index:2;
+  background:radial-gradient(circle at 42% 38%,#fbe0ac,#e9b765 68%,rgba(233,183,101,0));
+  animation:sunBreath 7s ease-in-out infinite alternate}
+@keyframes sunBreath{from{transform:scale(1);opacity:.85}to{transform:scale(1.12);opacity:1}}
+.mtn{position:absolute;left:-60px;right:-60px;bottom:0;z-index:1;pointer-events:none}
+.mtn svg{display:block;width:100%}
+.mtn.l3{animation:drift 30s ease-in-out infinite alternate}
+.mtn.l2{animation:drift 44s ease-in-out infinite alternate-reverse}
+.mtn.l1{animation:drift 58s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translateX(-34px)}to{transform:translateX(34px)}}
+#river{position:absolute;left:0;right:0;bottom:64px;height:90px;z-index:1;opacity:.55}
+#river path{fill:none;stroke:#7fa6b2;stroke-width:3;stroke-dasharray:2 16;stroke-linecap:round;
+  animation:riverFlow 9s linear infinite}
+@keyframes riverFlow{to{stroke-dashoffset:-180}}
+
+/* 前景小舟（只在部分篇章页显隐由 body class 控制，此处默认有） */
+#boat{position:absolute;left:300px;bottom:96px;z-index:3;animation:boatFloat 8s ease-in-out infinite alternate}
+@keyframes boatFloat{from{transform:translateY(0) rotate(-1.5deg)}to{transform:translateY(-9px) rotate(1.5deg)}}
+
+/* ---------- 幻灯片通用 ---------- */
+.slide{position:absolute;inset:0;z-index:5;padding:96px 128px 230px;
+  opacity:0;pointer-events:none;transition:opacity .55s ease}
+.slide.active{opacity:1;pointer-events:auto}
+.kk{font-size:21px;letter-spacing:.52em;color:var(--jade);margin-bottom:18px;display:flex;align-items:center;gap:18px}
+.kk::before{content:'';width:46px;height:3px;border-radius:3px;
+  background:linear-gradient(90deg,var(--jade),var(--jade-l))}
+.h2{font-family:'Ma Shan Zheng',serif;font-size:66px;line-height:1.18;color:var(--ink);margin-bottom:20px}
+.h2 .j{color:var(--jade)} .h2 .z{color:var(--zhe)} .h2 .r{color:var(--zhu)}
+.lead{font-size:23px;line-height:1.85;color:var(--ink2);max-width:1600px;margin-bottom:42px}
+.lead b{color:var(--jade-d)}
+.anim{opacity:0}
+.slide.active .anim{animation:rise .95s cubic-bezier(.2,.7,.2,1) both}
+.slide.active .d1{animation-delay:.10s}.slide.active .d2{animation-delay:.24s}
+.slide.active .d3{animation-delay:.38s}.slide.active .d4{animation-delay:.52s}
+.slide.active .d5{animation-delay:.66s}.slide.active .d6{animation-delay:.80s}
+.slide.active .d7{animation-delay:.94s}
+@keyframes rise{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.slide.active .brush{animation:brushIn 1.1s cubic-bezier(.2,.7,.2,1) .15s both}
+@keyframes brushIn{0%{clip-path:inset(0 100% 0 0);filter:blur(6px);opacity:.2}
+  60%{clip-path:inset(0 0 0 0);filter:blur(0)}100%{clip-path:inset(0 0 0 0);opacity:1}}
+.slide.active .stamp{animation:stamp .7s cubic-bezier(.2,1.5,.4,1) .5s both}
+@keyframes stamp{0%{opacity:0;transform:rotate(6deg) scale(2.6)}100%{opacity:1;transform:rotate(6deg) scale(1)}}
+
+/* ---------- 顶部进度与页脚 ---------- */
+#progress{position:absolute;top:0;left:0;height:4px;width:0;z-index:60;
+  background:linear-gradient(90deg,var(--jade),var(--jade-l) 55%,var(--gold));
+  box-shadow:0 0 12px rgba(46,125,104,.55);transition:width .5s ease}
+#footL,#footR{position:absolute;bottom:30px;z-index:60;font-size:16px;letter-spacing:.22em;color:var(--ink3)}
+#footL{left:128px}#footR{right:128px;font-variant-numeric:tabular-nums}
+body.cover-mode #footL,body.cover-mode #footR{opacity:0}
+#corner{position:absolute;top:28px;right:120px;z-index:60;font-family:'Ma Shan Zheng',serif;font-size:24px;color:var(--zhu-d);opacity:.85}
+body.cover-mode #corner{opacity:0}
+
+/* ---------- 封面 / 封底 ---------- */
+.cover{display:flex;flex-direction:column;justify-content:center;padding:0 128px 180px}
+.cover .kk{font-size:25px;margin-bottom:40px}
+.cover .kk::before{display:none}
+.bigtitle{font-family:'Ma Shan Zheng',serif;font-size:206px;line-height:1.04;letter-spacing:.1em;color:var(--ink);
+  text-shadow:3px 4px 0 rgba(224,168,92,.45)}
+.bigtitle .j{color:var(--jade)}
+.ensub{font-size:31px;letter-spacing:.4em;color:#5f7d6f;margin-top:34px}
+.sealrow{display:flex;align-items:center;gap:34px;margin-top:56px}
+.seal{width:96px;height:96px;border-radius:13px;background:linear-gradient(150deg,#c14738,#9c2f23);color:#f7f2e5;
+  display:flex;align-items:center;justify-content:center;font-family:'Ma Shan Zheng',serif;font-size:50px;
+  box-shadow:3px 7px 0 rgba(46,61,51,.18),0 10px 26px rgba(176,58,46,.35);flex:none}
+.cover-meta{font-size:22px;color:var(--ink2);letter-spacing:.24em;line-height:2}
+.cover-meta .small{font-size:18px;color:var(--ink3);letter-spacing:.2em}
+.closing{align-items:center;text-align:center;justify-content:center;display:flex;flex-direction:column}
+.closing .bigtitle{font-size:150px}
+.closing .url{margin-top:40px;font-size:26px;letter-spacing:.18em;color:var(--ink2);
+  border:1.5px solid var(--line);border-radius:999px;padding:16px 44px;background:rgba(255,253,246,.75)}
+.closing .url b{color:var(--zhu-d);letter-spacing:.12em}
+
+/* ---------- 情感引言页 ---------- */
+.quote-wrap{display:flex;flex-direction:column;justify-content:center;height:100%;max-width:1500px}
+.bigquote{font-family:'Ma Shan Zheng',serif;font-size:60px;line-height:1.7;color:var(--ink);position:relative}
+.bigquote .qmark{font-size:120px;color:var(--jade-l);line-height:0;vertical-align:-.42em;margin-right:10px}
+.bigquote .j{color:var(--jade-d)} .bigquote .r{color:var(--zhu-d)}
+.quote-sub{margin-top:44px;font-size:25px;line-height:2.1;color:var(--ink2);max-width:1300px}
+.quote-from{margin-top:34px;font-size:19px;letter-spacing:.3em;color:var(--zhe)}
+
+/* ---------- 卡片 ---------- */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:36px}
+.card{background:rgba(255,253,246,.86);border:1px solid var(--line);border-radius:16px;
+  padding:40px 38px;box-shadow:0 14px 34px rgba(46,61,51,.10);position:relative}
+.card::before{content:'';position:absolute;left:0;top:0;right:0;height:7px;border-radius:16px 16px 0 0;
+  background:linear-gradient(90deg,var(--jade),var(--jade-l) 55%,var(--gold))}
+.card .cn{font-family:'Ma Shan Zheng',serif;font-size:30px;color:var(--zhe);margin-bottom:14px}
+.card h3{font-size:29px;color:var(--ink);margin-bottom:12px}
+.card p{font-size:19px;line-height:1.85;color:var(--ink2)}
+.card.zhu::before{background:linear-gradient(90deg,var(--zhu),var(--gold))}
+
+/* ---------- 五步链路 ---------- */
+.chain{display:flex;align-items:stretch;gap:0;margin-top:10px}
+.chain .step{flex:1;background:rgba(255,253,246,.9);border:1px solid var(--line);border-radius:14px;
+  padding:34px 20px;text-align:center;position:relative;box-shadow:0 10px 26px rgba(46,61,51,.08)}
+.chain .step .n{font-family:'Ma Shan Zheng',serif;font-size:40px;color:var(--jade)}
+.chain .step h4{font-size:26px;margin:8px 0 6px;color:var(--ink)}
+.chain .step span{font-size:15px;color:var(--ink3);letter-spacing:.08em}
+.chain .arrow{display:flex;align-items:center;padding:0 10px;color:var(--gold);font-size:34px;font-weight:700}
+.answer-line{margin-top:44px;font-size:26px;line-height:1.9;color:var(--ink);text-align:center}
+.answer-line b{color:var(--zhu-d)}
+
+/* ---------- 数据页 ---------- */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;margin-bottom:26px}
+.stat{background:rgba(255,253,246,.9);border:1px solid var(--line);border-radius:16px;padding:26px 26px 22px;text-align:center;
+  box-shadow:0 12px 30px rgba(46,61,51,.09);position:relative;overflow:hidden}
+.stat::after{content:'';position:absolute;bottom:0;left:0;right:0;height:5px;
+  background:linear-gradient(90deg,var(--jade),var(--gold))}
+.stat .v{font-family:'Ma Shan Zheng',serif;font-size:62px;line-height:1;color:var(--jade-d)}
+.stat .v small{font-size:28px;color:var(--zhe)}
+.stat .k{margin-top:14px;font-size:19px;color:var(--ink2);letter-spacing:.1em}
+.menlei{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:26px}
+.chip{border:1px solid var(--line);border-radius:999px;padding:9px 22px;font-size:18px;color:var(--jade-d);
+  background:rgba(255,253,246,.7)}
+.chip.g{color:var(--zhu-d);border-color:rgba(176,58,46,.35)}
+.data-note{font-size:19px;color:var(--ink2);line-height:1.9}
+.data-note b{color:var(--zhe)}
+
+/* ---------- 图文两栏 ---------- */
+.split{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,9fr);gap:52px;align-items:center}
+.split.rev{grid-template-columns:minmax(0,9fr) minmax(0,7fr)}
+.flist{list-style:none}
+.flist li{padding:18px 0 18px 44px;position:relative;font-size:21px;line-height:1.75;color:var(--ink2);
+  border-bottom:1px dashed var(--line)}
+.flist li:last-child{border-bottom:none}
+.flist li::before{content:'';position:absolute;left:6px;top:27px;width:12px;height:12px;border-radius:3px;
+  background:var(--jade);transform:rotate(45deg)}
+.flist li b{color:var(--ink);font-weight:700}
+.flist li .tag{display:inline-block;font-size:14px;color:#fff;background:var(--zhu);border-radius:6px;
+  padding:2px 10px;margin-right:10px;vertical-align:2px;letter-spacing:.1em}
+
+/* ---------- 截图画框 ---------- */
+.win{border-radius:12px;overflow:hidden;border:1px solid rgba(46,110,95,.4);
+  box-shadow:0 22px 48px rgba(46,61,51,.22);background:#fffdf6}
+.win-bar{height:38px;background:linear-gradient(180deg,#3c564b,#2b4037);display:flex;align-items:center;gap:8px;padding:0 16px}
+.win-bar i{width:11px;height:11px;border-radius:50%;display:block}
+.win-bar i:nth-child(1){background:#d98b7e}.win-bar i:nth-child(2){background:#e8c56b}.win-bar i:nth-child(3){background:#8fb3a4}
+.win-url{margin:0 auto 0 14px;font-size:13px;color:rgba(255,255,255,.78);background:rgba(255,255,255,.13);
+  border-radius:999px;padding:4px 18px;letter-spacing:.06em}
+.win-body{aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+  background:
+    repeating-linear-gradient(45deg,rgba(46,110,95,.025) 0 12px,transparent 12px 24px),
+    linear-gradient(180deg,#fbf7ec,#f0e9d6);
+  color:var(--ink3)}
+.win-body .ph{width:74px;height:74px;border-radius:18px;border:2px dashed var(--jade-l);display:flex;
+  align-items:center;justify-content:center;font-size:34px;color:var(--jade);animation:phPulse 3s ease-in-out infinite}
+@keyframes phPulse{0%,100%{transform:scale(1);opacity:.75}50%{transform:scale(1.08);opacity:1}}
+.win-body .ph-t{font-size:22px;color:var(--jade-d);letter-spacing:.12em;font-weight:600}
+.win-body .ph-h{font-size:15px;color:var(--ink3);letter-spacing:.08em}
+.win.sm .win-body{aspect-ratio:16/10}
+.fcap{margin-top:14px;font-size:18px;color:var(--ink2);text-align:center;letter-spacing:.06em}
+.fcap b{color:var(--zhu-d)}
+
+/* ---------- 影像页 ---------- */
+.films{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
+.film .win-body{position:relative;cursor:default}
+.film .play{width:66px;height:66px;border-radius:50%;background:rgba(176,58,46,.92);display:flex;
+  align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(176,58,46,.45)}
+.film .play::after{content:'';border-left:20px solid #fdf6e9;border-top:13px solid transparent;border-bottom:13px solid transparent;margin-left:6px}
+.film .dur{position:absolute;right:12px;bottom:12px;background:rgba(20,17,15,.72);color:#f3ece2;font-size:14px;
+  padding:3px 10px;border-radius:6px;letter-spacing:.08em}
+.film .cc{position:absolute;left:12px;top:12px;background:rgba(46,110,104,.92);color:#f3faf5;font-size:13px;
+  padding:3px 10px;border-radius:6px;letter-spacing:.06em}
+.film h4{font-size:23px;color:var(--ink);margin:14px 2px 4px;font-family:'Ma Shan Zheng',serif;font-weight:400}
+.film p{font-size:16px;line-height:1.7;color:var(--ink2);padding:0 2px}
+
+/* ---------- 游戏页 ---------- */
+.games-row{display:flex;gap:18px;margin-bottom:36px}
+.gm{flex:1;text-align:center;background:rgba(255,253,246,.9);border:1px solid var(--line);border-radius:14px;padding:20px 8px;
+  box-shadow:0 8px 20px rgba(46,61,51,.08)}
+.gm .gi{font-family:'Ma Shan Zheng',serif;font-size:30px;color:var(--zhu-d)}
+.gm .gt{font-size:17px;color:var(--ink2);margin-top:6px}
+.gm::after{content:'缝';display:none}
+
+/* ---------- 架构页 ---------- */
+.layers{display:flex;flex-direction:column;gap:13px}
+.layer{display:flex;align-items:center;gap:22px;padding:19px 28px;border-radius:12px;color:#f3faf3;
+  background:linear-gradient(90deg,var(--jade-d),var(--jade2));box-shadow:0 8px 20px rgba(31,90,74,.25)}
+.layer:nth-child(2){background:linear-gradient(90deg,#276553,#56a083)}
+.layer:nth-child(3){background:linear-gradient(90deg,#2f7358,#68ab87)}
+.layer:nth-child(4){background:linear-gradient(90deg,#8a5c2c,#c9913f)}
+.layer:nth-child(5){background:linear-gradient(90deg,#9c362c,#c15440)}
+.layer .ln{font-family:'Ma Shan Zheng',serif;font-size:27px;width:230px;flex:none}
+.layer .ld{font-size:17px;opacity:.92;letter-spacing:.04em}
+.agents{display:flex;flex-wrap:wrap;gap:12px;margin:10px 0 22px}
+.agent{border:1px solid rgba(176,58,46,.4);color:var(--zhu-d);border-radius:999px;padding:9px 20px;font-size:18px;background:rgba(255,253,246,.8)}
+.techgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;margin-top:6px}
+.techgrid div{font-size:17px;color:var(--ink2);padding-left:22px;position:relative}
+.techgrid div::before{content:'◆';position:absolute;left:0;color:var(--gold);font-size:12px;top:4px}
+.techgrid div b{color:var(--ink)}
+
+/* ---------- 反馈闭环页 ---------- */
+.fb-row{display:grid;grid-template-columns:1fr 70px 1fr;align-items:center;gap:0;margin-bottom:30px}
+.fb-q{background:rgba(176,58,46,.07);border:1.5px solid rgba(176,58,46,.35);border-radius:14px;padding:24px 30px;position:relative}
+.fb-q::after{content:'';position:absolute;right:-16px;top:50%;transform:translateY(-50%);
+  border-left:16px solid rgba(176,58,46,.35);border-top:13px solid transparent;border-bottom:13px solid transparent}
+.fb-q .who{font-size:15px;letter-spacing:.2em;color:var(--zhu-d);margin-bottom:8px}
+.fb-q .say{font-family:'Ma Shan Zheng',serif;font-size:28px;color:var(--ink);line-height:1.4}
+.fb-arrow{text-align:center;color:var(--gold);font-size:34px}
+.fb-a{background:rgba(255,253,246,.92);border:1px solid var(--line);border-radius:14px;padding:24px 30px;box-shadow:0 10px 26px rgba(46,61,51,.1)}
+.fb-a h4{font-size:24px;color:var(--jade-d);margin-bottom:8px}
+.fb-a p{font-size:17px;line-height:1.7;color:var(--ink2)}
+.loop{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:6px;flex-wrap:wrap}
+.loop span{font-size:19px;color:var(--ink2);border:1px solid var(--line);border-radius:999px;padding:10px 24px;background:rgba(255,253,246,.75)}
+.loop i{color:var(--gold);font-style:normal;font-size:22px}
+
+/* ---------- 团队页 ---------- */
+.team{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:8px}
+.member{background:rgba(255,253,246,.92);border:1px solid var(--line);border-radius:16px;padding:32px 28px;text-align:center;
+  box-shadow:0 12px 28px rgba(46,61,51,.1)}
+.member .av{width:86px;height:86px;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;
+  font-family:'Ma Shan Zheng',serif;font-size:42px;color:#f7f2e5;background:linear-gradient(150deg,var(--jade2),var(--jade-d))}
+.member h4{font-size:28px;color:var(--ink);margin-bottom:8px}
+.member p{font-size:17px;color:var(--ink2);line-height:1.7}
+.teachers{margin-top:24px;text-align:center;font-size:20px;color:var(--ink2);letter-spacing:.14em}
+.teachers b{color:var(--zhu-d)}
+.eng-tags{display:flex;flex-wrap:wrap;gap:11px;margin-bottom:22px}
+.eng-tags .chip{font-size:17px;padding:8px 18px}
+.deploy-card{background:linear-gradient(150deg,#23483d,#1c3b33);color:#e9f2ec;border-radius:16px;padding:28px 32px;
+  box-shadow:0 14px 34px rgba(28,59,51,.3)}
+.deploy-card h4{font-family:'Ma Shan Zheng',serif;font-size:28px;margin-bottom:12px;color:#f3d8a0}
+.deploy-card p{font-size:17px;line-height:1.85;opacity:.92}
+.deploy-card .ip{display:inline-block;margin-top:12px;font-size:22px;letter-spacing:.1em;color:#f3d8a0;
+  border:1px solid rgba(243,216,160,.5);border-radius:999px;padding:8px 24px}
+
+/* ---------- 动图 / 截图位自动载入 ---------- */
+.win-body[data-slot]{position:relative}
+.slot-badge{position:absolute;right:10px;top:10px;z-index:3;font-size:12px;letter-spacing:.16em;
+  color:#fdf6e9;background:rgba(176,58,46,.82);border-radius:6px;padding:3px 11px;pointer-events:none}
+.win-body.media-ok{padding:0;gap:0;background:#10150f}
+.win-body.media-ok img,.win-body.media-ok video{width:100%;height:100%;object-fit:cover;display:block}
+.win-body.media-ok .slot-badge{background:rgba(20,17,15,.72)}
+
+/* ---------- 02 序章 · 皮影灯幕 ---------- */
+.p02{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:56px;align-items:center;height:100%}
+.p02 .quote-side{max-width:820px}
+.screen-stage{justify-self:center;position:relative;width:700px;height:600px}
+.screen-stage .ssg{width:100%;height:100%;overflow:visible}
+.ssg .screen-cloth{fill:url(#clothGlow);stroke:#5a3a20;stroke-width:3}
+.ssg .rod{fill:url(#rodWood)}
+.ssg .pup{fill:#21403a;stroke:#21403a;stroke-linecap:round;stroke-linejoin:round}
+.ssg .pup.sec{fill:#2c5247;stroke:#2c5247;opacity:.92}
+.ssg .ctrlline{stroke:#6b4a2a;stroke-width:2;stroke-linecap:round;fill:none;opacity:.8}
+.ssg .lantern-body{fill:url(#lanternGlow);stroke:#8c5a24;stroke-width:2}
+.ssg .lantern-string{stroke:#8c5a24;stroke-width:2}
+.ssg .tassel{stroke:#b03a2e;stroke-width:2.5;stroke-linecap:round}
+.sg-caption{fill:#7a5326;font-size:19px;letter-spacing:.42em;font-family:'Noto Serif SC',serif}
+@keyframes pupSwayA{0%,100%{transform:rotate(-1.8deg)}50%{transform:rotate(1.5deg)}}
+@keyframes pupSwayB{0%,100%{transform:rotate(1.4deg)}50%{transform:rotate(-1.8deg)}}
+.ssg .pup-wrap-l{transform-origin:300px 150px;animation:pupSwayA 7s ease-in-out infinite}
+.ssg .pup-wrap-r{transform-origin:470px 150px;animation:pupSwayB 8.4s ease-in-out infinite}
+.ssg .lantern{transform-origin:150px 96px;animation:pupSwayA 6s ease-in-out infinite}
+
+/* ---------- 03 痛点页补充 ---------- */
+.door-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.door-tags span{font-size:15px;color:var(--ink2);border:1px dashed rgba(46,110,95,.45);
+  border-radius:999px;padding:5px 14px;background:rgba(255,253,246,.65)}
+.door-foot{margin-top:34px;display:flex;align-items:center;gap:30px;
+  background:linear-gradient(100deg,rgba(31,90,74,.96),rgba(46,125,108,.93));
+  border-radius:12px;padding:24px 40px;box-shadow:0 16px 34px rgba(31,90,74,.3)}
+.door-foot .df-seal{flex:none;width:74px;height:74px;border-radius:12px;background:linear-gradient(150deg,#c14738,#9c2f23);
+  color:#f7f2e5;display:flex;align-items:center;justify-content:center;
+  font-family:'Ma Shan Zheng',serif;font-size:34px;box-shadow:3px 5px 0 rgba(20,17,15,.22)}
+.door-foot .df-t{font-family:'Ma Shan Zheng',serif;font-size:30px;color:#f3d8a0;white-space:nowrap}
+.door-foot p{font-size:19px;line-height:1.8;color:#e9f2ec;opacity:.96}
+.door-foot p b{color:#f3d8a0}
+
+/* ---------- 04 链路页补充 ---------- */
+.chain .step .n{width:66px;height:66px;margin:0 auto 6px;border-radius:50%;
+  background:linear-gradient(150deg,var(--jade2),var(--jade-d));color:#f7f2e5;
+  display:flex;align-items:center;justify-content:center;font-size:32px;
+  box-shadow:0 8px 16px rgba(31,90,74,.32)}
+.chain .step .feats{list-style:none;margin-top:16px;padding-top:14px;border-top:1px dashed var(--line);
+  display:flex;flex-direction:column;gap:10px}
+.chain .step .feats li{font-size:16.5px;color:var(--ink2);line-height:1.4}
+.chain .step .feats li::before{content:'·';color:var(--zhu);font-weight:700;margin-right:8px}
+.page-strip{margin-top:30px;text-align:center}
+.page-strip .ps-l{font-size:17px;letter-spacing:.3em;color:var(--zhe);margin-bottom:14px}
+.page-strip .chips{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.page-strip .chips span{font-size:16px;border:1px solid var(--line);border-radius:999px;
+  padding:6px 18px;color:var(--jade-d);background:rgba(255,253,246,.72)}
+
+/* ---------- 05 数据页补充 ---------- */
+.assets2{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:30px}
+.acard{background:rgba(255,253,246,.93);border:1px solid var(--line);border-radius:16px;
+  padding:26px 32px;box-shadow:0 12px 28px rgba(46,61,51,.09)}
+.acard h4{font-size:23px;color:var(--jade-d);margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.acard h4::before{content:'';width:10px;height:10px;border-radius:3px;background:var(--zhu);transform:rotate(45deg);flex:none}
+.fields5{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.fields5 span{font-size:17px;border:1px solid var(--line);border-radius:999px;
+  padding:7px 18px;background:rgba(255,255,255,.65);color:var(--ink)}
+.acard .ac-sub{font-size:16px;color:var(--ink3);line-height:1.7}
+.pipe{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.pipe b{font-size:16.5px;font-weight:600;color:#fff;background:linear-gradient(120deg,#2f7358,#4f9078);
+  border-radius:8px;padding:8px 15px}
+.pipe i{color:var(--gold);font-style:normal;font-size:20px}
+.acard p.ac-line{font-size:16.5px;color:var(--ink2);line-height:1.8}
+.acard p.ac-line b{color:var(--zhe)}
+.trust-strip{margin-top:26px}
+.trust-strip .ts-l{text-align:center;font-size:16px;letter-spacing:.34em;color:var(--zhe);margin-bottom:14px}
+.trust-strip .ts-row{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.titem{background:rgba(255,253,246,.92);border:1px solid var(--line);border-top:3px solid rgba(47,115,88,.6);
+  border-radius:14px;padding:18px 26px;display:flex;align-items:center;gap:18px;box-shadow:0 10px 22px rgba(46,61,51,.07)}
+.titem b{font-family:'Ma Shan Zheng',serif;font-size:34px;line-height:1;color:var(--jade-d);white-space:nowrap}
+.titem b span{font-family:inherit;font-size:15px;color:var(--ink3);margin-left:5px;font-weight:400}
+.titem p{font-size:15.5px;color:var(--ink2);line-height:1.5}
+.titem.wide b{font-size:20px;letter-spacing:.02em}
+
+/* ---------- 13 架构页补充 ---------- */
+.layer .ln{display:flex;align-items:center;gap:12px}
+.layer .ln::after{content:'';width:8px;height:8px;border-radius:50%;background:rgba(243,216,160,.85);
+  box-shadow:0 0 10px rgba(243,216,160,.9)}
+.guard{margin-top:18px;background:rgba(255,253,246,.9);border:1px solid var(--line);border-radius:12px;
+  padding:16px 22px;font-size:16px;color:var(--ink2);line-height:1.85}
+.guard b{color:var(--ink)}
+.flow{margin-top:24px;background:rgba(255,253,246,.94);border:1px solid var(--line);border-radius:16px;
+  padding:22px 34px 26px;box-shadow:0 12px 28px rgba(46,61,51,.09);position:relative}
+.flow h4{font-family:'Ma Shan Zheng',serif;font-size:26px;color:var(--zhu-d);margin-bottom:20px}
+.flow-track{display:flex;align-items:flex-start;position:relative}
+.flow-line{position:absolute;left:64px;right:64px;top:23px;height:2px;
+  background:repeating-linear-gradient(90deg,var(--jade-l) 0 12px,transparent 12px 24px);
+  background-size:24px 2px;animation:dashFlow 1.3s linear infinite;opacity:.65}
+@keyframes dashFlow{to{background-position:24px 0}}
+.fnode{flex:1;text-align:center;padding:0 4px;position:relative;z-index:2}
+.fnode .fdot{width:46px;height:46px;margin:0 auto 10px;border-radius:50%;
+  background:linear-gradient(150deg,var(--jade2),var(--jade-d));color:#f7f2e5;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Ma Shan Zheng',serif;font-size:22px;box-shadow:0 6px 14px rgba(31,90,74,.3)}
+.fnode span{display:block;font-size:15px;color:var(--ink2);line-height:1.45}
+.farrow{flex:none;width:30px;text-align:center;padding-top:10px;color:var(--gold);font-size:22px}
+
+/* ---------- 15 团队页改版 ---------- */
+.team-v{display:flex;flex-direction:column;gap:16px}
+.member{display:flex;gap:16px;align-items:flex-start;text-align:left;padding:22px 24px;position:relative}
+.member .av{width:60px;height:60px;font-size:29px;margin:0;flex:none}
+.member h4{font-size:21px;margin:2px 0 8px}
+.member p{font-size:15px;line-height:1.7}
+.member .role{position:absolute;top:16px;right:18px;font-size:13px;letter-spacing:.12em;
+  color:#fff;background:var(--zhu);border-radius:6px;padding:3px 11px}
+.teacher-label{margin:30px 0 16px;font-size:17px;letter-spacing:.34em;color:var(--zhe)}
+.teacher-row{display:grid;grid-template-columns:1fr 1fr;gap:30px}
+.tcard{display:flex;gap:24px;align-items:center;
+  background:linear-gradient(110deg,rgba(176,58,46,.09),rgba(255,253,246,.96));
+  border:1.5px solid rgba(176,58,46,.32);border-radius:16px;padding:24px 34px;
+  box-shadow:0 12px 28px rgba(46,61,51,.1)}
+.tcard .av{width:88px;height:88px;border-radius:50%;flex:none;
+  background:linear-gradient(150deg,#c14738,#9c2f23);color:#f7f2e5;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Ma Shan Zheng',serif;font-size:42px;box-shadow:0 8px 20px rgba(176,58,46,.32)}
+.tcard .tname{font-size:27px;color:var(--ink);font-weight:700;letter-spacing:.08em}
+.tcard .ttitle{display:inline-block;font-size:14px;color:#fff;background:var(--zhu-d);
+  border-radius:6px;padding:2px 12px;margin-left:12px;vertical-align:4px;letter-spacing:.1em}
+.tcard p{font-size:17px;line-height:1.75;color:var(--ink2);margin-top:8px}
+
+/* ---------- HUD ---------- */
+#hud{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:99;display:flex;gap:12px;align-items:center;
+  background:rgba(28,40,34,.82);border:1px solid rgba(143,179,164,.35);border-radius:999px;padding:9px 20px;
+  color:#cdd8d0;font-size:14px;backdrop-filter:blur(6px)}
+#hud button{background:none;border:1px solid rgba(143,179,164,.5);color:#cfe7d8;border-radius:999px;
+  width:32px;height:32px;cursor:pointer;font-size:15px;line-height:1}
+#hud button:hover{background:rgba(143,179,164,.2)}
+#hud .hint{color:#8fa398;font-size:12.5px;letter-spacing:.14em;padding:0 6px}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001s !important;animation-iteration-count:1 !important;transition-duration:.001s !important}
+  .anim{opacity:1}
+}
+</style>
+</head>
+<body class="cover-mode">
+<div id="stage"><div id="canvas">
+
+  <!-- 跨页母题层 -->
+  <div id="sun"></div>
+  <div class="mtn l3">
+    <svg viewBox="0 0 2048 300" preserveAspectRatio="none" style="height:300px">
+      <path d="M0,300 L0,200 L150,120 L300,190 L460,90 L620,200 L780,130 L940,210 L1120,110 L1300,205 L1480,140 L1660,215 L1840,150 L2048,200 L2048,300 Z" fill="#a7c7b7" opacity=".55"/>
+    </svg>
+  </div>
+  <div class="mtn l2">
+    <svg viewBox="0 0 2048 250" preserveAspectRatio="none" style="height:250px">
+      <path d="M0,250 L0,170 L200,90 L400,180 L600,70 L820,185 L1020,105 L1240,190 L1460,95 L1680,185 L1900,120 L2048,170 L2048,250 Z" fill="#5e9c83" opacity=".72"/>
+    </svg>
+  </div>
+  <div class="mtn l1">
+    <svg viewBox="0 0 2048 190" preserveAspectRatio="none" style="height:190px">
+      <path d="M0,190 L0,140 L260,80 L520,150 L780,70 L1060,155 L1340,85 L1620,155 L1900,95 L2048,130 L2048,190 Z" fill="#2e6e5f" opacity=".92"/>
+    </svg>
+  </div>
+  <svg id="river" viewBox="0 0 1920 90" preserveAspectRatio="none">
+    <path d="M-40,30 C300,70 620,8 960,40 S1620,72 1960,30"/>
+    <path d="M-40,62 C320,24 660,84 980,52 S1640,18 1960,58" style="animation-duration:13s"/>
+  </svg>
+  <svg id="boat" width="86" height="50" viewBox="0 0 86 50">
+    <path d="M6,26 L80,26 L68,42 L18,42 Z" fill="#7a4a22"/>
+    <path d="M43,4 L43,26 L68,26 Z" fill="#e9e0c4" stroke="#7a4a22" stroke-width="2"/>
+    <rect x="40" y="26" width="6" height="18" fill="#5a3719"/>
+  </svg>
+
+  <div id="progress"></div>
+  <div id="corner">承脉</div>
+  <div id="footL">承脉AI · 中华非遗智能传承与活化智能体</div>
+  <div id="footR"><span id="pn">1</span> / 16</div>
+
+  <!-- ============ 01 封面 ============ -->
+  <section class="slide cover" data-chrome="0">
+    <div class="kk anim">中华非遗智能传承与活化智能体</div>
+    <div class="bigtitle brush">承<span class="j">脉</span></div>
+    <div class="ensub anim d2">让 AI 读懂非遗 · 让年轻人成为传承者</div>
+    <div class="sealrow anim d3">
+      <div class="seal stamp">追光</div>
+      <div class="cover-meta">
+        追光小队 · 周子昊　马占赟　李思雨<br>
+        <span class="small">指导教师：于静 教授　赵米傲 讲师　｜　2026 华北五省（市、自治区）及港澳台大学生计算机应用大赛 · 天津赛区</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 02 序章·情感 ============ -->
+  <section class="slide">
+    <div class="p02">
+      <div class="quote-side">
+        <div class="kk anim">序章 · 一声念白</div>
+        <div class="bigquote brush">
+          <span class="qmark">「</span>一口叙说<span class="j">千古事</span>，<br>双手对舞<span class="r">百万兵</span>。
+        </div>
+        <div class="quote-sub anim d2">
+          这是皮影戏班代代相传的旧联。如今，念白的人正在老去，听戏的人越来越少。<br>
+          不是年轻人不想听——是那些声音与手艺，还没有走到他们眼前。
+        </div>
+        <div class="quote-from anim d3">—— 3299 项国家级非遗，许多正面临同样的沉默</div>
+      </div>
+      <div class="screen-stage anim d2">
+        <svg class="ssg" viewBox="0 0 700 600" aria-hidden="true">
+          <defs>
+            <radialGradient id="clothGlow" cx="50%" cy="42%" r="72%">
+              <stop offset="0%" stop-color="#fcebc6"/>
+              <stop offset="62%" stop-color="#f1d9a8"/>
+              <stop offset="100%" stop-color="#dfc189"/>
+            </radialGradient>
+            <linearGradient id="rodWood" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#7a4f28"/><stop offset="100%" stop-color="#4a2d16"/>
+            </linearGradient>
+            <radialGradient id="lanternGlow" cx="46%" cy="40%" r="70%">
+              <stop offset="0%" stop-color="#fff0c8"/><stop offset="55%" stop-color="#f3bf66"/><stop offset="100%" stop-color="#d98c35"/>
+            </radialGradient>
+          </defs>
+
+          <!-- 幕布与木轴 -->
+          <rect class="rod" x="26" y="84" width="648" height="22" rx="11"/>
+          <rect class="rod" x="54" y="470" width="592" height="18" rx="9"/>
+          <rect class="screen-cloth" x="60" y="106" width="580" height="364" rx="10"/>
+          <ellipse cx="382" cy="446" rx="286" ry="26" fill="#fff7e2" opacity=".55"/>
+          <path d="M118 156 q18 -16 38 0 q20 -16 40 0" fill="none" stroke="#a07c46" stroke-width="3" opacity=".18"/>
+          <path d="M512 150 q18 -16 38 0 q20 -16 40 0" fill="none" stroke="#a07c46" stroke-width="3" opacity=".18"/>
+
+          <!-- 灯笼 -->
+          <g class="lantern">
+            <line class="lantern-string" x1="150" y1="96" x2="150" y2="128"/>
+            <circle cx="150" cy="172" r="52" fill="#f7d794" opacity=".45"/>
+            <rect x="138" y="130" width="24" height="8" rx="3" fill="#8c5a24"/>
+            <ellipse class="lantern-body" cx="150" cy="172" rx="32" ry="37"/>
+            <rect x="138" y="205" width="24" height="8" rx="3" fill="#8c5a24"/>
+            <line class="tassel" x1="150" y1="213" x2="150" y2="244"/>
+            <line class="tassel" x1="144" y1="216" x2="146" y2="240" opacity=".7"/>
+            <line class="tassel" x1="156" y1="216" x2="154" y2="240" opacity=".7"/>
+          </g>
+
+          <!-- 左影人（持枪将） -->
+          <g class="pup-wrap-l">
+            <g transform="translate(300 0)">
+              <line class="ctrlline" x1="-32" y1="96" x2="-24" y2="300"/>
+              <line class="ctrlline" x1="-18" y1="96" x2="58" y2="248"/>
+              <!-- 靠旗 -->
+              <path class="pup" d="M-26 236 L-78 176 L-62 244 Z"/>
+              <path class="pup" d="M26 236 L78 178 L62 244 Z"/>
+              <!-- 枪 -->
+              <line class="pup" x1="60" y1="132" x2="60" y2="384" stroke-width="5"/>
+              <path class="pup" d="M60 112 L50 138 L70 138 Z"/>
+              <path d="M52 158 q8 8 16 0 M52 168 q8 8 16 0" fill="none" stroke="#b03a2e" stroke-width="2.5" stroke-linecap="round"/>
+              <!-- 头与盔 -->
+              <circle class="pup" cx="0" cy="190" r="24"/>
+              <path class="pup" d="M-24 174 L-13 148 L0 170 L13 148 L24 174 Z"/>
+              <path d="M-13 150 Q-40 128 -50 104 M13 150 Q40 128 50 104" fill="none" class="pup" stroke-width="4"/>
+              <path d="M20 192 q10 3 4 11" fill="none" class="pup" stroke-width="4"/>
+              <rect class="pup" x="-6" y="212" width="12" height="12"/>
+              <!-- 袍甲 -->
+              <path class="pup" d="M-30 224 Q-40 262 -44 300 L-50 362 L50 362 L44 300 Q40 262 30 224 Z"/>
+              <rect class="pup" x="-44" y="286" width="88" height="12"/>
+              <path d="M-22 250 q14 12 0 24 q-14 12 0 24 M22 250 q-14 12 0 24 q14 12 0 24"
+                fill="none" stroke="#d9bd86" stroke-width="2" opacity=".55"/>
+              <path d="M-50 362 Q-40 352 -30 362 Q-20 352 -10 362 Q0 352 10 362 Q20 352 30 362 Q40 352 50 362"
+                fill="none" stroke-width="4"/>
+              <!-- 手臂 -->
+              <line class="pup" x1="-24" y1="236" x2="60" y2="250" stroke-width="11"/>
+              <line class="pup" x1="24" y1="236" x2="-26" y2="306" stroke-width="11"/>
+              <ellipse class="pup" cx="-34" cy="372" rx="16" ry="7"/>
+              <ellipse class="pup" cx="30" cy="372" rx="16" ry="7"/>
+            </g>
+          </g>
+
+          <!-- 右影人（镜像 · 对枪） -->
+          <g class="pup-wrap-r">
+            <g transform="translate(744 29) scale(-0.92 0.92)">
+              <g transform="translate(300 0)">
+                <line class="ctrlline" x1="-32" y1="96" x2="-24" y2="300"/>
+                <line class="ctrlline" x1="-18" y1="96" x2="58" y2="248"/>
+                <path class="pup sec" d="M-26 236 L-78 176 L-62 244 Z"/>
+                <path class="pup sec" d="M26 236 L78 178 L62 244 Z"/>
+                <line class="pup sec" x1="60" y1="132" x2="60" y2="384" stroke-width="5"/>
+                <path class="pup sec" d="M60 112 L50 138 L70 138 Z"/>
+                <path d="M52 158 q8 8 16 0 M52 168 q8 8 16 0" fill="none" stroke="#b03a2e" stroke-width="2.5" stroke-linecap="round"/>
+                <circle class="pup sec" cx="0" cy="190" r="24"/>
+                <path class="pup sec" d="M-24 174 L-13 148 L0 170 L13 148 L24 174 Z"/>
+                <path d="M-13 150 Q-40 128 -50 104 M13 150 Q40 128 50 104" fill="none" class="pup sec" stroke-width="4"/>
+                <path d="M20 192 q10 3 4 11" fill="none" class="pup sec" stroke-width="4"/>
+                <rect class="pup sec" x="-6" y="212" width="12" height="12"/>
+                <path class="pup sec" d="M-30 224 Q-40 262 -44 300 L-50 362 L50 362 L44 300 Q40 262 30 224 Z"/>
+                <rect class="pup sec" x="-44" y="286" width="88" height="12"/>
+                <path d="M-22 250 q14 12 0 24 q-14 12 0 24 M22 250 q-14 12 0 24 q14 12 0 24"
+                  fill="none" stroke="#d9bd86" stroke-width="2" opacity=".55"/>
+                <path d="M-50 362 Q-40 352 -30 362 Q-20 352 -10 362 Q0 352 10 362 Q20 352 30 362 Q40 352 50 362"
+                  fill="none" stroke-width="4"/>
+                <line class="pup sec" x1="-24" y1="236" x2="60" y2="250" stroke-width="11"/>
+                <line class="pup sec" x1="24" y1="236" x2="-26" y2="306" stroke-width="11"/>
+                <ellipse class="pup sec" cx="-34" cy="372" rx="16" ry="7"/>
+                <ellipse class="pup sec" cx="30" cy="372" rx="16" ry="7"/>
+              </g>
+            </g>
+          </g>
+
+          <text class="sg-caption" x="350" y="532" text-anchor="middle">一 盏 灯　·　一 块 白 布　·　一 出 千 年</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 03 痛点·三重门 ============ -->
+  <section class="slide">
+    <div class="kk anim">我们面对的 · 三重门</div>
+    <h2 class="h2 brush">非遗的数字化，为何仍隔着<span class="r">三重门</span>？</h2>
+    <p class="lead anim d1">已有的数字化成果大多停留在「名录检索 + 图文展示」——用户能查到项目，却难以真正走进项目。</p>
+    <div class="grid3">
+      <div class="card anim d2"><div class="cn">壹</div><h3>查得到，看不懂</h3>
+        <p>名录里只有名称、编号与类别。一门技艺为何诞生、如何流转、与谁师承，无人向年轻人讲清楚。</p>
+        <div class="door-tags"><span>无源流</span><span>无故事</span><span>无人讲</span></div></div>
+      <div class="card anim d3"><div class="cn">贰</div><h3>看得见，摸不着</h3>
+        <p>图文隔着屏幕。不能追问、不能跟着学、不能检验自己是否真的记住，更无从动手参与。</p>
+        <div class="door-tags"><span>不能问</span><span>不能学</span><span>不能练</span></div></div>
+      <div class="card anim d4"><div class="cn">叁</div><h3>记不住，传不开</h3>
+        <p>读完即走、看完就忘。没有任务、没有反馈、没有作品，知识无法变成年轻人愿意转述的故事。</p>
+        <div class="door-tags"><span>无任务</span><span>无反馈</span><span>无作品</span></div></div>
+    </div>
+    <div class="door-foot anim d5">
+      <div class="df-seal stamp">破局</div>
+      <div class="df-t">三扇门后，是同一件事</div>
+      <p>知识从来没有变成一段<b>可参与、可练习、可带走</b>的旅程。承脉AI 要做的，正是把「检索框」推开成一条<b>走得完的传承之路</b>。</p>
+    </div>
+  </section>
+
+  <!-- ============ 04 我们的回答 ============ -->
+  <section class="slide">
+    <div class="kk anim">我们的回答</div>
+    <h2 class="h2 brush">让 AI 不只是「告诉」，而是<span class="j">带着走完一程</span></h2>
+    <p class="lead anim d1">承脉AI 把「了解非遗」转化为一条完整的传承链路——五个环节环环相扣，每一步都有对应的产品功能支撑。</p>
+    <div class="chain anim d2">
+      <div class="step"><div class="n">知</div><h4>知识</h4><span>Knowledge</span>
+        <ul class="feats"><li>非遗知识库</li><li>省域舆图</li><li>名家风采</li></ul></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="n">解</div><h4>理解</h4><span>Understanding</span>
+        <ul class="feats"><li>三视角对话</li><li>证据链来源卡</li><li>径向知识族谱</li></ul></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="n">习</div><h4>实践</h4><span>Practice</span>
+        <ul class="feats"><li>个性化学习路径</li><li>游艺坊五戏</li><li>测验徽章错题本</li></ul></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="n">创</div><h4>创作</h4><span>Creation</span>
+        <ul class="feats"><li>活化实验室</li><li>文化护栏</li><li>抄录整案</li></ul></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="n">传</div><h4>传播</h4><span>Sharing</span>
+        <ul class="feats"><li>今日非遗影像</li><li>传承人名录</li><li>个人中心名片</li></ul></div>
+    </div>
+    <div class="answer-line anim d3" style="margin-top:28px">可信知识底座 · 证据链回答 · 多智能体编排 · 生成式互动——<b>让每个年轻人都成为传承者</b>。</div>
+    <div class="page-strip anim d4">
+      <div class="ps-l">11 个页面，把链路真正走通</div>
+      <div class="chips">
+        <span>首页影像</span><span>知识库</span><span>承脉AI 对话</span><span>知识族谱</span><span>非遗舆图</span>
+        <span>名家风采</span><span>学习路径</span><span>活化实验室</span><span>非遗挑战</span><span>传承人名录</span><span>个人中心</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 05 知识资产底座 ============ -->
+  <section class="slide">
+    <div class="kk anim">底座 · 知识资产</div>
+    <h2 class="h2 brush">先有<span class="z">可信的山河</span>，再谈智能</h2>
+    <div class="stats">
+      <div class="stat anim d1"><div class="v" data-count="3299">0</div><div class="k">国家级非遗代表性项目</div></div>
+      <div class="stat anim d2"><div class="v" data-count="3064">0</div><div class="k">开放许可配图（条）</div></div>
+      <div class="stat anim d3"><div class="v" data-count="92.9" data-decimals="1">0<small>%</small></div><div class="k">配图覆盖率</div></div>
+      <div class="stat anim d4"><div class="v" data-count="119">0</div><div class="k">地域标注</div></div>
+    </div>
+    <div class="menlei anim d4" style="margin-bottom:8px">
+      <span class="chip">民间文学</span><span class="chip">传统音乐</span><span class="chip">传统舞蹈</span>
+      <span class="chip">传统戏剧</span><span class="chip">曲艺</span><span class="chip">传统体育游艺与杂技</span>
+      <span class="chip">传统美术</span><span class="chip">传统技艺</span><span class="chip">传统医药</span><span class="chip">民俗</span>
+    </div>
+    <div class="assets2">
+      <div class="acard anim d5">
+        <h4>每一项，都被重新讲过</h4>
+        <div class="fields5">
+          <span>钩子开场</span><span>冷知识</span><span>历史时间线</span><span>工艺流程</span><span>文化内涵</span>
+        </div>
+        <p class="ac-sub">3299 项全部完成叙事化扩写，另对 <b style="color:var(--zhu-d)">49 项</b>关联权威来源做深读加工——让名录里的词条，变成年轻人读得下去的故事。</p>
+      </div>
+      <div class="acard anim d6">
+        <h4>每一张图，都问得出来路</h4>
+        <div class="pipe">
+          <b>开放许可实拍</b><i>→</i><b>AI 生成示意</b><i>→</i><b>描金字卡兜底</b>
+        </div>
+        <p class="ac-line">三层管线支撑 <b>3064</b> 张配图，许可信息逐条记录于 <b>credits.json</b>——规模与可信，缺一不可。</p>
+      </div>
+    </div>
+    <div class="trust-strip anim d6">
+      <div class="ts-l">可 信 凭 据 · 条 条 有 出 处</div>
+      <div class="ts-row">
+        <div class="titem"><b>49<span>项</span></b><p>关联权威来源<br>深读加工</p></div>
+        <div class="titem"><b>371<span>节点</span></b><p>知识族谱<br>519 条关系</p></div>
+        <div class="titem"><b>16<span>位</span></b><p>开宗立派名家<br>逐一建档</p></div>
+        <div class="titem wide"><b>GS(2024)1158号</b><p>标准地图审图号<br>舆图合规可考</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 06 创新一：三视角证据链对话 ============ -->
+  <section class="slide">
+    <div class="kk anim">创新壹 · 承脉AI 对话</div>
+    <h2 class="h2 brush">同一个问题，<span class="j">三种人的讲法</span></h2>
+    <div class="split">
+      <ul class="flist anim d1">
+        <li><b>三视角回答</b>：学者讲源流文献，传承人讲手艺心法，青年传播者讲短视频表达</li>
+        <li><b>证据链可信 AI</b>：每条回答附来源与证据分，机制性抑制大模型幻觉</li>
+        <li><span class="tag">流式</span><b>SSE 逐字输出</b>：Nginx 专项关闭缓冲，回答如墨落纸面</li>
+        <li><b>一问深读</b>：可继续生成测验卡、故事卡与个性化学习计划</li>
+      </ul>
+      <div class="anim d2">
+        <div class="win">
+          <div class="win-bar"><i></i><i></i><i></i><div class="win-url">123.56.18.7 · 承脉AI · 学者 / 传承人 / 青年</div></div>
+          <div class="win-body" data-slot="p06"><span class="slot-badge">动图 / 截图</span><div class="ph">问</div><div class="ph-t">动图位 · 三视角流式对话</div>
+            <div class="ph-h">建议录 10-20 秒：提问 → 三视角切换 → 逐字输出 → 来源卡（文件放 assets/p06）</div></div>
+        </div>
+        <div class="fcap">图 · 三视角证据链对话（上线后实机截取）</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 07 创新二：知识族谱 ============ -->
+  <section class="slide">
+    <div class="kk anim">创新贰 · 知识族谱</div>
+    <h2 class="h2 brush">三千星尘，<span class="j">各有所承</span></h2>
+    <div class="split rev">
+      <div class="anim d1">
+        <div class="win">
+          <div class="win-bar"><i></i><i></i><i></i><div class="win-url">123.56.18.7 · 知识族谱</div></div>
+          <div class="win-body" data-slot="p07"><span class="slot-badge">动图 / 截图</span><div class="ph">谱</div><div class="ph-t">动图位 · 径向非遗族谱</div>
+            <div class="ph-h">建议录 10-20 秒：缩放进入族谱 → hover 节点邻域点亮 → 打开详情（assets/p07）</div></div>
+        </div>
+        <div class="fcap">图 · SVG 非遗族谱（d3.hierarchy 径向布局）</div>
+      </div>
+      <ul class="flist anim d2">
+        <li><b>371 节点 · 519 条关系</b>：根 → 十大门类 → 非遗 → 传承人，四层径向族谱</li>
+        <li><b>三千星尘环带</b>：3299 颗确定性描金微尘，环绕一整圈国家级名录</li>
+        <li><b>悬停邻域高亮</b>：0.35s 中式缓动，相关师承脉络渐次点亮</li>
+        <li><b>搜索 · 缩放 · 详情 · 子图聚焦</b>：从一个项目不断走向整个文化网络</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ 08 创新三：地图 + 名家 ============ -->
+  <section class="slide">
+    <div class="kk anim">创新叁 · 山河与北斗</div>
+    <h2 class="h2 brush">省域有<span class="z">灯火</span>，星河<span class="r">认北斗</span></h2>
+    <div class="grid2" style="margin-top:6px">
+      <div class="anim d1">
+        <div class="win sm">
+          <div class="win-bar"><i></i><i></i><i></i><div class="win-url">123.56.18.7 · 非遗地图</div></div>
+          <div class="win-body" data-slot="p08-map"><span class="slot-badge">动图 / 截图</span><div class="ph">舆</div><div class="ph-t">动图位 · 中国省域舆图</div>
+            <div class="ph-h">建议录 10-20 秒：悬停省份七色阶渐变与灯火脉动 → 省域详情（assets/p08-map）</div></div>
+        </div>
+        <div class="fcap">图 · 非遗地图：d3-geo 省域分布 · 审图号 <b>GS(2024)1158号</b></div>
+      </div>
+      <div class="anim d2">
+        <div class="win sm">
+          <div class="win-bar"><i></i><i></i><i></i><div class="win-url">123.56.18.7 · 名家风采</div></div>
+          <div class="win-body" data-slot="p08-master"><span class="slot-badge">动图 / 截图</span><div class="ph">名</div><div class="ph-t">动图位 · 名家风采</div>
+            <div class="ph-h">建议录 10-20 秒：名家卡片墙横展 → 进入某位名家年表页（assets/p08-master）</div></div>
+        </div>
+        <div class="fcap">图 · 16 位开宗立派名家，仅录有公版影像者，无图用字印卡</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 09 创新四：学习路径 + 活化实验室 ============ -->
+  <section class="slide">
+    <div class="kk anim">创新肆 · 习与创</div>
+    <h2 class="h2 brush">有<span class="j">功课</span>，也有<span class="z">活化的边界</span></h2>
+    <div class="grid2" style="margin-top:6px">
+      <div class="anim d1">
+        <div class="win sm">
+          <div class="win-bar"><i></i><i></i><i></i><div class="win-url">123.56.18.7 · 学习路径</div></div>
+          <div class="win-body" data-slot="p09-path"><span class="slot-badge">动图 / 截图</span><div class="ph">阶</div><div class="ph-t">动图位 · 个性化学习路径</div>
+            <div class="ph-h">建议录 10-20 秒：选目标 / 天数 / 时长 → 卷头总览展开 → 日卡打卡（assets/p09-path）</div></div>
+        </div>
+        <div class="fcap">图 · 目标（了解/掌握/传播）× 天数 × 时长生成计划，打卡持久化</div>
+      </div>
+      <div class="anim d2">
+        <div class="win sm">
+          <div class="win-bar"><i></i><i></i><i></i><div class="win-url">123.56.18.7 · 活化实验室</div></div>
+          <div class="win-body" data-slot="p09-lab"><span class="slot-badge">动图 / 截图</span><div class="ph">创</div><div class="ph-t">动图位 · 活化方案</div>
+            <div class="ph-h">建议录 10-20 秒：三维选择 → 结构化方案流式生成 → 抄录整案（assets/p09-lab）</div></div>
+        </div>
+        <div class="fcap">图 · 文化护栏 + 步骤 / 物料 / 风险边界 / 成效标尺，可「抄录整案」</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 10 创新五：游艺坊 ★ ============ -->
+  <section class="slide">
+    <div class="kk anim">创新伍 · 游艺坊 <span style="color:var(--zhu)">★</span></div>
+    <h2 class="h2 brush">非遗挑战 · <span class="r">游艺坊五戏</span></h2>
+    <div class="games-row">
+      <div class="gm anim d1"><div class="gi">剪</div><div class="gt">剪纸补花</div></div>
+      <div class="gm anim d1"><div class="gi">书</div><div class="gt">书法临帖</div></div>
+      <div class="gm anim d2"><div class="gi">纹</div><div class="gt">纹样翻牌</div></div>
+      <div class="gm anim d2"><div class="gi">旗</div><div class="gt">投令旗</div></div>
+      <div class="gm anim d3"><div class="gi">染</div><div class="gt">点色成画</div></div>
+    </div>
+    <div class="split" style="grid-template-columns:minmax(0,9fr) minmax(0,7fr)">
+      <div class="anim d3">
+        <div class="win">
+          <div class="win-bar"><i></i><i></i><i></i><div class="win-url">123.56.18.7 · 非遗挑战 · 游艺坊</div></div>
+          <div class="win-body" data-slot="p10"><span class="slot-badge">动图 / 截图</span><div class="ph">戏</div><div class="ph-t">动图位 · 游艺坊五戏</div>
+            <div class="ph-h">建议录 15-25 秒：完整玩一局剪纸补花或书法临帖，含结算与徽章（assets/p10）</div></div>
+        </div>
+        <div class="fcap">图 · 游戏视觉随暗墨 / 亮纸双主题同步换肤</div>
+      </div>
+      <div class="card zhu anim d4" style="align-self:stretch;display:flex;flex-direction:column;justify-content:center">
+        <div class="cn">玩中学，学中记</div>
+        <h3>不是孤零零的游戏</h3>
+        <p style="margin-bottom:14px">每一局成绩都实时汇入挑战主体系，落库后再刷新档案：</p>
+        <p>✓ 正确率统计环<br>✓ 徽章激励体系<br>✓ 分主题战绩<br>✓ 错题本自动归集<br>✓ 连对打卡节奏</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 11 创新六：今日非遗·影像 ★ ============ -->
+  <section class="slide">
+    <div class="kk anim">创新陆 · 今日非遗 <span style="color:var(--zhu)">★</span></div>
+    <h2 class="h2 brush">首页内嵌 <span class="r">今日非遗 · 影像</span></h2>
+    <p class="lead anim d1" style="margin-bottom:30px">用户说「首页要是有视频就好了」——四支经 CC 协议授权的真实影像随即落位首页，让千年技艺在指尖开口说话。</p>
+    <div class="films">
+      <div class="film anim d2">
+        <div class="win"><div class="win-bar"><i></i><i></i><i></i></div>
+          <div class="win-body"><div class="cc">CC BY 3.0</div><div class="play"></div><div class="dur">03:41</div></div></div>
+        <h4>昆曲</h4><p>百戏之祖，水磨腔调婉转六百年</p>
+      </div>
+      <div class="film anim d3">
+        <div class="win"><div class="win-bar"><i></i><i></i><i></i></div>
+          <div class="win-body"><div class="cc">CC BY 3.0</div><div class="play"></div><div class="dur">04:01</div></div></div>
+        <h4>剪纸</h4><p>一剪之巧，红纸生花夺天工</p>
+      </div>
+      <div class="film anim d4">
+        <div class="win"><div class="win-bar"><i></i><i></i><i></i></div>
+          <div class="win-body"><div class="cc">CC BY-SA 4.0</div><div class="play"></div><div class="dur">00:19</div></div></div>
+        <h4>皮影</h4><p>一口叙说千古事，双手对舞百万兵</p>
+      </div>
+      <div class="film anim d5">
+        <div class="win"><div class="win-bar"><i></i><i></i><i></i></div>
+          <div class="win-body"><div class="cc">CC BY 4.0</div><div class="play"></div><div class="dur">01:07</div></div></div>
+        <h4>扎染</h4><p>大理风物，蓝白之间染出人间烟火</p>
+      </div>
+    </div>
+    <p class="data-note anim d6" style="margin-top:26px">影像全部来自 <b>Wikimedia Commons</b> 开放授权资源，逐支标注协议与时长；点击卡片即跳转对应知识库详情，影像与知识相互连通。</p>
+  </section>
+
+  <!-- ============ 12 创新七：双主题 + 语音 ★ ============ -->
+  <section class="slide">
+    <div class="kk anim">创新柒 · 双主题与语音 <span style="color:var(--zhu)">★</span></div>
+    <h2 class="h2 brush">暗墨 / 亮纸，<span class="j">一双眼睛一种月光</span></h2>
+    <div class="grid2" style="margin-bottom:26px">
+      <div class="anim d1">
+        <div class="win sm">
+          <div class="win-bar"><i></i><i></i><i></i><div class="win-url">暗墨主题</div></div>
+          <div class="win-body" data-slot="p12-dark" style="background:linear-gradient(180deg,#1d1a16,#14110f);color:#c9bfae">
+            <span class="slot-badge">动图 / 截图</span>
+            <div class="ph" style="border-color:#7a6d55;color:#e8c56b">墨</div>
+            <div class="ph-t" style="color:#e8c56b">动图位 · 暗墨首页</div>
+            <div class="ph-h" style="color:#9a8f80">建议录 8-12 秒：一键切到暗墨，UI / 剪影 / 图谱同频换肤（assets/p12-dark）</div></div>
+        </div>
+      </div>
+      <div class="anim d2">
+        <div class="win sm">
+          <div class="win-bar"><i></i><i></i><i></i><div class="win-url">亮纸主题</div></div>
+          <div class="win-body" data-slot="p12-light" style="background:linear-gradient(180deg,#fdfaf3,#f3ece2)">
+            <span class="slot-badge">动图 / 截图</span>
+            <div class="ph">纸</div><div class="ph-t">动图位 · 亮纸首页</div>
+            <div class="ph-h">建议录 8-12 秒：亮纸模式下首页与知识库浏览（assets/p12-light）</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card anim d3" style="padding:24px 34px">
+      <p style="font-size:19px;line-height:1.9">
+        <b style="color:var(--jade-d)">双主题一键切换：</b>CSS 自定义属性令牌驱动，全站 UI、六类中华剪影、知识图谱与游戏画布 0.45s 自然过渡，localStorage 记住偏好；并提供 prefers-reduced-motion 动效降级。
+        <b style="color:var(--zhu-d)">语音自然化：</b>优先选用微软神经声、调校语速与停顿，三种对话模式各自匹配声线，告别机械感。
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ 13 技术架构 ============ -->
+  <section class="slide">
+    <div class="kk anim">实现 · 总体架构</div>
+    <h2 class="h2 brush">五层架构，<span class="z">五智能体</span>协同</h2>
+    <div class="split" style="grid-template-columns:minmax(0,11fr) minmax(0,6fr);gap:44px">
+      <div class="layers anim d1">
+        <div class="layer"><div class="ln">Web 体验层</div><div class="ld">React 19 + TypeScript + Vite · 11 个页面 · D3 可视化 · 双主题系统</div></div>
+        <div class="layer"><div class="ln">多 Agent 智能层</div><div class="ld">意图识别统一调度，学习 / 测验 / 故事 / 创作各司其职</div></div>
+        <div class="layer"><div class="ln">RAG 检索层</div><div class="ld">关键词 + 向量混合召回 Top-K 证据，证据分加权后送生成模型</div></div>
+        <div class="layer"><div class="ln">知识资产层</div><div class="ld">3299 项结构化字段 · text-embedding-v3 向量化 · npz 缓存随版本分发</div></div>
+        <div class="layer"><div class="ln">内容数据层</div><div class="ld">国家级名录采集清洗 · 开放资源许可核验 · 配图三层管线</div></div>
+      </div>
+      <div class="anim d2">
+        <div class="agents">
+          <span class="agent">对话 Agent</span><span class="agent">学习 Agent</span><span class="agent">Quiz Agent</span>
+          <span class="agent">故事 Agent</span><span class="agent">创作 Agent</span>
+        </div>
+        <div class="techgrid">
+          <div><b>qwen-plus</b> 对话/生成</div>
+          <div><b>text-embedding-v3</b> 向量化</div>
+          <div><b>FastAPI</b> 后端服务</div>
+          <div><b>SSE</b> 流式接口</div>
+          <div><b>d3-hierarchy</b> 族谱布局</div>
+          <div><b>d3-geo</b> 地图渲染</div>
+          <div><b>PBKDF2 + HMAC</b> 鉴权</div>
+          <div><b>numpy npz</b> 向量缓存</div>
+        </div>
+        <div class="guard"><b>工程护栏：</b>npz 向量缓存随版本分发避免冷启动重建 · Nginx 关闭缓冲保 SSE 流畅 · systemd 守护崩溃自拉起 · 敏感信息仅存 .env。</div>
+      </div>
+    </div>
+    <div class="flow anim d3">
+      <h4>一次提问的旅程 · 从入馆到落纸</h4>
+      <div class="flow-track">
+        <div class="flow-line"></div>
+        <div class="fnode"><div class="fdot">问</div><span>游客或实名提问入馆</span></div>
+        <div class="farrow">→</div>
+        <div class="fnode"><div class="fdot">识</div><span>意图识别分派智能体</span></div>
+        <div class="farrow">→</div>
+        <div class="fnode"><div class="fdot">索</div><span>关键词 + 向量混合召回</span></div>
+        <div class="farrow">→</div>
+        <div class="fnode"><div class="fdot">衡</div><span>证据分加权 Top-K</span></div>
+        <div class="farrow">→</div>
+        <div class="fnode"><div class="fdot">生</div><span>qwen-plus 带证据生成</span></div>
+        <div class="farrow">→</div>
+        <div class="fnode"><div class="fdot">落</div><span>SSE 逐字落纸</span></div>
+        <div class="farrow">→</div>
+        <div class="fnode"><div class="fdot">证</div><span>来源卡随答附呈</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 14 用户反馈闭环（情感）★ ============ -->
+  <section class="slide">
+    <div class="kk anim">迭代 · 来自真实用户的三句话</div>
+    <h2 class="h2 brush">最好的设计，<span class="r">长在用户的声音里</span></h2>
+    <div class="fb-row anim d1">
+      <div class="fb-q"><div class="who">公网用户 · 视觉反馈</div><div class="say">「整体太暗了，看久了眼睛累。」</div></div>
+      <div class="fb-arrow">→</div>
+      <div class="fb-a"><h4>暗墨 / 亮纸双主题</h4><p>CSS 令牌驱动全站换肤，UI、剪影、图谱、游戏画布同频流转，偏好持久化。</p></div>
+    </div>
+    <div class="fb-row anim d2">
+      <div class="fb-q"><div class="who">公网用户 · 内容反馈</div><div class="say">「首页要是能直接看视频就好了。」</div></div>
+      <div class="fb-arrow">→</div>
+      <div class="fb-a"><h4>今日非遗 · 影像</h4><p>四支 CC 授权实拍影像（昆曲 / 剪纸 / 皮影 / 扎染）内嵌首页，即点即播。</p></div>
+    </div>
+    <div class="fb-row anim d3">
+      <div class="fb-q"><div class="who">公网用户 · 趣味反馈</div><div class="say">「答题挺完整，但还不够上头。」</div></div>
+      <div class="fb-arrow">→</div>
+      <div class="fb-a"><h4>非遗挑战 · 游艺坊</h4><p>五款主题小游戏联动正确率环、徽章、战绩与错题本，知识在游戏里被记住。</p></div>
+    </div>
+    <div class="loop anim d4">
+      <span>发布试用</span><i>→</i><span>用户反馈</span><i>→</i><span>筛选验证</span><i>→</i>
+      <span>版本更新</span><i>→</i><span>回归测试</span><i>↻</i>
+    </div>
+  </section>
+
+  <!-- ============ 15 工程完成度 + 团队 ============ -->
+  <section class="slide">
+    <div class="kk anim">交付 · 工程完成度与团队</div>
+    <h2 class="h2 brush">已公网运行，<span class="j">不是概念稿</span></h2>
+    <div class="split" style="grid-template-columns:minmax(0,9fr) minmax(0,8fr);gap:38px;align-items:start">
+      <div class="anim d1">
+        <div class="eng-tags">
+          <span class="chip">11 个导航页面</span><span class="chip">pytest 8 核心用例</span>
+          <span class="chip g">oxlint 0 警告</span><span class="chip">tsc 类型检查</span>
+          <span class="chip">游客 / 实名双轨</span><span class="chip">PBKDF2 盐哈希</span>
+          <span class="chip">HMAC 30 天令牌</span><span class="chip">一键部署脚本</span>
+        </div>
+        <div class="deploy-card">
+          <h4>公网部署 · 阿里云 ECS</h4>
+          <p>Ubuntu 22.04 · 2 核 2GB（运行内存占用约 600MB，2GB swap 兜底）<br>
+          Nginx 80 端口托管前端静态文件，/api 反代本机 Uvicorn；SSE 关闭代理缓冲与 gzip；systemd 守护开机自启、崩溃自动拉起。</p>
+          <span class="ip">http://123.56.18.7</span>
+        </div>
+      </div>
+      <div class="team-v anim d2">
+        <div class="member">
+          <div class="av">周</div>
+          <div><h4>周子昊<span class="role">队长</span></h4>
+          <p>总体架构与项目统筹；AI 与多智能体设计（qwen-plus 接入、RAG 链路、Agent 编排）；知识族谱与前端界面、交互与视觉系统实现。</p></div>
+        </div>
+        <div class="member">
+          <div class="av">马</div>
+          <div><h4>马占赟<span class="role">队员</span></h4>
+          <p>后端服务与数据管线（FastAPI 接口、数据清洗结构化、向量缓存）；接口联调；云服务器部署、Nginx 与运维脚本。</p></div>
+        </div>
+        <div class="member">
+          <div class="av">李</div>
+          <div><h4>李思雨<span class="role">队员</span></h4>
+          <p>知识内容编校与来源核验；配图许可台账管理；功能与体验测试；演示视频、作品简介等参赛材料制作。</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="teacher-label anim d3">指 导 教 师 · 为 学 与 工 程 双 护 航</div>
+    <div class="teacher-row anim d4">
+      <div class="tcard">
+        <div class="av">于</div>
+        <div>
+          <div class="tname">于 静<span class="ttitle">教授</span></div>
+          <p>负责选题论证与总体方向把关，指导知识工程方法、内容严谨性与学术规范，为作品的文化底色与可信底座定向。</p>
+        </div>
+      </div>
+      <div class="tcard">
+        <div class="av">赵</div>
+        <div>
+          <div class="tname">赵米傲<span class="ttitle">讲师</span></div>
+          <p>负责工程实现与系统架构指导，协调开发资源并指导竞赛组织事务，护航从原型到公网运行的全程落地。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 16 封底 ============ -->
+  <section class="slide closing" data-chrome="0">
+    <div class="kk anim" style="justify-content:center">尾声 · 承</div>
+    <div class="bigtitle brush" style="font-size:128px;letter-spacing:.16em">文脉不绝 · 其命维新</div>
+    <p class="quote-sub anim d2" style="text-align:center;max-width:1200px;margin-top:30px">
+      承，是承接——接住三千项非遗的来路；<br>也是承诺——让年轻一代，成为它们的去路。
+    </p>
+    <div class="url anim d3">欢迎现场体验 · <b>http://123.56.18.7</b></div>
+    <div class="sealrow anim d4" style="justify-content:center">
+      <div class="seal stamp" style="width:84px;height:84px;font-size:44px">追光</div>
+      <div class="cover-meta" style="text-align:left">追光小队 · 周子昊　马占赟　李思雨<br><span class="small">2026 华北五省（市、自治区）及港澳台大学生计算机应用大赛 · 天津赛区</span></div>
+    </div>
+  </section>
+
+</div></div>
+
+<div id="hud">
+  <button id="prev" title="上一页">‹</button>
+  <span id="hc">1 / 16</span>
+  <button id="next" title="下一页">›</button>
+  <span class="hint">← → 翻页 · F 全屏</span>
+</div>
+
+<script>
+(function(){
+  var canvas = document.getElementById('canvas');
+  function fit(){
+    var s = Math.min(window.innerWidth/1920, window.innerHeight/1080);
+    canvas.style.transform = 'scale('+s+')';
+  }
+  window.addEventListener('resize', fit); fit();
+
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var idx = 0, counted = {};
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function runCounters(slide){
+    slide.querySelectorAll('[data-count]').forEach(function(el){
+      var target = parseFloat(el.getAttribute('data-count'));
+      var dec = parseInt(el.getAttribute('data-decimals')||'0',10);
+      var suffixNode = el.querySelector('small');
+      if(reduce){ el.firstChild && (el.firstChild.nodeValue = target.toFixed(dec)); return; }
+      var start = performance.now(), dur = 1300;
+      function tick(now){
+        var p = Math.min(1,(now-start)/dur);
+        var e = 1-Math.pow(1-p,3);
+        var val = (target*e).toFixed(dec);
+        el.firstChild.nodeValue = val;
+        if(p<1) requestAnimationFrame(tick);
+      }
+      el.firstChild.nodeValue = (0).toFixed(dec);
+      requestAnimationFrame(tick);
+    });
+  }
+
+  /* 动图/截图自动载入：把录制好的文件按 assets/<位名>.<ext> 放入即自动替换占位 */
+  function hydrateSlots(){
+    var exts = ['mp4','webm','gif','png','jpg','jpeg'];
+    document.querySelectorAll('.win-body[data-slot]').forEach(function(body){
+      if(body.dataset.done) return;
+      var slot = body.getAttribute('data-slot');
+      (function tryExt(i){
+        if(i>=exts.length){ body.dataset.done='1'; return; }
+        var url = 'assets/'+slot+'.'+exts[i];
+        fetch(url,{method:'HEAD'}).then(function(r){
+          if(!r.ok) { tryExt(i+1); return; }
+          var badge = document.createElement('span');
+          badge.className = 'slot-badge';
+          if(exts[i]==='mp4'||exts[i]==='webm'){
+            var v = document.createElement('video');
+            v.src=url; v.muted=true; v.loop=true; v.autoplay=true; v.playsInline=true;
+            v.setAttribute('aria-label',slot+' 操作录屏');
+            body.innerHTML=''; body.classList.add('media-ok'); body.appendChild(v);
+            body.appendChild(badge); body.dataset.done='1';
+            v.play().catch(function(){});
+          }else{
+            var im = new Image();
+            im.onload=function(){
+              im.alt = slot+' 截图';
+              body.innerHTML=''; body.classList.add('media-ok'); body.appendChild(im);
+              body.appendChild(badge); body.dataset.done='1';
+            };
+            im.onerror=function(){ tryExt(i+1); };
+            im.src=url;
+          }
+        }).catch(function(){ body.dataset.done='1'; });
+      })(0);
+    });
+  }
+
+  function show(n){
+    idx = Math.max(0, Math.min(slides.length-1, n));
+    slides.forEach(function(s,i){ s.classList.toggle('active', i===idx); });
+    var noChrome = slides[idx].getAttribute('data-chrome') === '0';
+    document.body.classList.toggle('cover-mode', noChrome);
+    document.getElementById('pn').textContent = idx+1;
+    document.getElementById('hc').textContent = (idx+1)+' / 16';
+    document.getElementById('progress').style.width = ((idx+1)/slides.length*100)+'%';
+    runCounters(slides[idx]);
+  }
+  document.getElementById('next').onclick = function(){show(idx+1)};
+  document.getElementById('prev').onclick = function(){show(idx-1)};
+  document.addEventListener('keydown', function(e){
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(idx+1)}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(idx-1)}
+    else if(e.key==='Home'){show(0)} else if(e.key==='End'){show(slides.length-1)}
+    else if(e.key==='f'||e.key==='F'){
+      if(!document.fullscreenElement){ document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); }
+      else { document.exitFullscreen && document.exitFullscreen(); }
+    }
+  });
+  // 触屏滑动
+  var tx=0;
+  document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX},{passive:true});
+  document.addEventListener('touchend',function(e){
+    var dx=e.changedTouches[0].clientX-tx;
+    if(Math.abs(dx)>60){ dx<0?show(idx+1):show(idx-1); }
+  },{passive:true});
+
+  var qp = parseInt(new URLSearchParams(location.search).get('p'),10);
+  show(isNaN(qp) ? 0 : qp-1);
+  hydrateSlots();
+  // 封面太阳加强
+})();
+</script>
+</body>
+</html>
