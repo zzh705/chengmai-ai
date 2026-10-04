@@ -1053,7 +1053,7 @@ body.cover-mode #corner{opacity:0}
           badge.className = 'slot-badge';
           if(ext==='mp4'||ext==='webm'){
             var v = document.createElement('video');
-            v.src=url+'?v=1'; v.muted=true; v.loop=true; v.autoplay=true; v.playsInline=true;
+            v.src=url+'?v=1'; v.muted=true; v.loop=true; v.playsInline=true;
             v.preload='auto'; v.setAttribute('aria-label',slot+' 操作录屏');
             body.innerHTML=''; body.classList.add('media-ok'); body.appendChild(v);
             body.appendChild(badge); body.dataset.done='1';
@@ -1077,7 +1077,13 @@ body.cover-mode #corner{opacity:0}
 
   function show(n){
     idx = Math.max(0, Math.min(slides.length-1, n));
+    // 暂停非当前页的视频（保留播放位置），当前页视频从上次位置继续播放
+    slides.forEach(function(s,i){
+      if(i===idx) return;
+      s.querySelectorAll('video').forEach(function(v){ v.pause(); });
+    });
     slides.forEach(function(s,i){ s.classList.toggle('active', i===idx); });
+    slides[idx].querySelectorAll('video').forEach(function(v){ v.play().catch(function(){}); });
     var noChrome = slides[idx].getAttribute('data-chrome') === '0';
     document.body.classList.toggle('cover-mode', noChrome);
     document.getElementById('pn').textContent = idx+1;
