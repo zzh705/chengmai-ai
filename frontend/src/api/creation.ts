@@ -39,19 +39,37 @@ export async function generateCreation(
   heritage: string,
   requirement: string,
   opts: CreationOptions | OutputType = {},
+  signal?: AbortSignal,
 ): Promise<CreationResponse> {
   const o: CreationOptions = typeof opts === 'string' ? { outputType: opts } : opts
-  const resp = await fetch(`${API_BASE}/api/creation/generate`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      heritage,
-      requirement,
-      output_type: o.outputType ?? 'plan',
-      style: o.style ?? 'guochao',
-      audience: o.audience ?? 'campus',
-    }),
-  })
-  if (!resp.ok) throw new Error(`方案生成失败：HTTP ${resp.status}`)
-  return (await resp.json()) as CreationResponse
+  // 30s 前端超时兜底（后端 22s 超时 + 本地兜底，正常应在 5～22s 内返回）
+  const ctrl = new AbortController()
+  const timer = window.setTimeout(() => ctrl.abort('timeout'), 30_000)
+  const onAbort = () => ctrl.abort(signal?.reason)
+  signal?.addEventListener('abort', onAbort)
+  try {
+    const resp = await fetch(`${API_BASE}/api/creation/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        heritage,
+        requirement,
+        output_type: o.outputType ?? 'plan',
+        style: o.style ?? 'guochao',
+        audience: o.audience ?? 'campus',
+      }),
+      signal: ctrl.signal,
+    })
+    if (!resp.ok) throw new Error(`方案生成失败：HTTP ${resp.status}`)
+    return (await resp.json()) as CreationResponse
+  } catch (e) {
+    if (ctrl.signal.aborted) {
+      if (signal?.aborted) throw new Error('已取消生成')
+      throw new Error('方案生成超时，请检查网络后重试')
+    }
+    throw e instanceof Error ? e : new Error('方案生成失败，请重试')
+  } finally {
+    window.clearTimeout(timer)
+    signal?.removeEventListener('abort', onAbort)
+  }
 }

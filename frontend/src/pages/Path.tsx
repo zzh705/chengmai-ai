@@ -35,6 +35,11 @@ export default function Path() {
   const [days, setDays] = useState(7)
   const [goal, setGoal] = useState<PlanGoal>('understand')
   const [minutes, setMinutes] = useState(60)
+  /** 自定义天数/分钟输入：选中「自定义」按钮时切换为输入框 */
+  const [daysCustom, setDaysCustom] = useState(false)
+  const [minsCustom, setMinsCustom] = useState(false)
+  const [daysInput, setDaysInput] = useState('10')
+  const [minsInput, setMinsInput] = useState('45')
   const [loading, setLoading] = useState(false)
   const [stage, setStage] = useState(-1)
   const [plan, setPlan] = useState<LearningPlan | null>(null)
@@ -102,17 +107,19 @@ export default function Path() {
     return { total, done, pct: total ? Math.round((done / total) * 100) : 0 }
   }, [plan, checks, prefix])
 
-  /** 卷头总览：日数 / 功课数 / 每日时辰 / 全程学时 */
+  /** 卷头总览：日数 / 功课数 / 每日时辰 / 全程学时
+   *  若当前处于自定义模式且输入合法，总览按自定义值展示，与生成时一致 */
+  const effMinutes = minsCustom && /^\d+$/.test(minsInput) ? parseInt(minsInput, 10) : minutes
   const overview = useMemo(() => {
     if (!plan) return null
-    const hours = (plan.days.length * minutes) / 60
+    const hours = (plan.days.length * effMinutes) / 60
     return {
       days: plan.days.length,
       tasks: progress.total,
-      minutes,
+      minutes: effMinutes,
       hours: hours % 1 === 0 ? String(hours) : hours.toFixed(1),
     }
-  }, [plan, minutes, progress.total])
+  }, [plan, effMinutes, progress.total])
 
   /** 里程碑：首日启程、中半精进、末日出师 */
   const milestoneOf = (day: number, n: number): string => {
@@ -127,7 +134,7 @@ export default function Path() {
     if (!plan) return
     const lines: string[] = [
       `「${plan.topic}」${plan.days.length} 天学习路线`,
-      `目标：${GOALS.find((g) => g.key === goal)?.label ?? ''} · 每日 ${minutes} 分钟 · 共 ${progress.total} 项功课`,
+      `目标：${GOALS.find((g) => g.key === goal)?.label ?? ''} · 每日 ${effMinutes} 分钟 · 共 ${progress.total} 项功课`,
       '',
     ]
     for (const d of plan.days) {
@@ -153,12 +160,31 @@ export default function Path() {
 
   async function handleGenerate() {
     if (!topic.trim() || loading) return
+    // 解析自定义天数/分钟：失败给出友好提示，不进入请求
+    let useDays = days
+    let useMinutes = minutes
+    if (daysCustom) {
+      const n = parseInt(daysInput, 10)
+      if (!n || n < 1 || n > 30) {
+        setError('自定义天数请填 1 至 30 之间的整数')
+        return
+      }
+      useDays = n
+    }
+    if (minsCustom) {
+      const m = parseInt(minsInput, 10)
+      if (!m || m < 15 || m > 240) {
+        setError('自定义每日投入请填 15 至 240 之间的整数')
+        return
+      }
+      useMinutes = m
+    }
     setLoading(true)
     setError('')
     setStage(0)
     setElapsed(0)
     // 阶段反馈跟随真实节奏放慢，避免「三步走完却还在等」的假进度
-    timersRef.current = [1200, 4000].map((ms, i) =>
+    timersRef.current = [900, 3000].map((ms, i) =>
       window.setTimeout(() => setStage(i + 1), ms),
     )
     intervalRef.current = window.setInterval(() => setElapsed((s) => s + 1), 1000)
@@ -167,7 +193,7 @@ export default function Path() {
     try {
       const p = await fetchLearningPlan(
         topic.trim(),
-        { days, goal, dailyMinutes: minutes },
+        { days: useDays, goal, dailyMinutes: useMinutes },
         ctrl.signal,
       )
       if (!ctrl.signal.aborted) {
@@ -254,14 +280,39 @@ export default function Path() {
               {DAYS.map((d) => (
                 <button
                   key={d}
-                  className={days === d ? 'active' : ''}
-                  onClick={() => setDays(d)}
-                  aria-pressed={days === d}
+                  className={!daysCustom && days === d ? 'active' : ''}
+                  onClick={() => {
+                    setDaysCustom(false)
+                    setDays(d)
+                  }}
+                  aria-pressed={!daysCustom && days === d}
                 >
                   {d} 天
                 </button>
               ))}
+              <button
+                className={daysCustom ? 'active' : ''}
+                onClick={() => setDaysCustom(true)}
+                aria-pressed={daysCustom}
+                title="自定义天数（1-30）"
+              >
+                自定义
+              </button>
             </div>
+            {daysCustom && (
+              <div className="path-custom-input">
+                <input
+                  type="number"
+                  min={1}
+                  max={30}
+                  value={daysInput}
+                  onChange={(e) => setDaysInput(e.target.value)}
+                  placeholder="1-30"
+                  aria-label="自定义天数"
+                />
+                <span>天</span>
+              </div>
+            )}
           </div>
           <div className="path-opt-group" role="group" aria-label="每日投入">
             <span className="path-opt-label">每日投入</span>
@@ -269,14 +320,40 @@ export default function Path() {
               {MINUTES.map((m) => (
                 <button
                   key={m}
-                  className={minutes === m ? 'active' : ''}
-                  onClick={() => setMinutes(m)}
-                  aria-pressed={minutes === m}
+                  className={!minsCustom && minutes === m ? 'active' : ''}
+                  onClick={() => {
+                    setMinsCustom(false)
+                    setMinutes(m)
+                  }}
+                  aria-pressed={!minsCustom && minutes === m}
                 >
                   {m} 分钟
                 </button>
               ))}
+              <button
+                className={minsCustom ? 'active' : ''}
+                onClick={() => setMinsCustom(true)}
+                aria-pressed={minsCustom}
+                title="自定义每日投入（15-240）"
+              >
+                自定义
+              </button>
             </div>
+            {minsCustom && (
+              <div className="path-custom-input">
+                <input
+                  type="number"
+                  min={15}
+                  max={240}
+                  step={5}
+                  value={minsInput}
+                  onChange={(e) => setMinsInput(e.target.value)}
+                  placeholder="15-240"
+                  aria-label="自定义每日投入分钟数"
+                />
+                <span>分钟</span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -298,7 +375,7 @@ export default function Path() {
               ))}
             </div>
             <div className="path-loading-foot">
-              {elapsed >= 15 && <span>模型正在撰写，通常 10～30 秒完成</span>}
+              {elapsed >= 12 && <span>模型正在撰写，通常 5～18 秒完成</span>}
               <button className="path-cancel" onClick={() => abortRef.current?.abort()}>
                 取消
               </button>
@@ -394,7 +471,7 @@ export default function Path() {
                     >
                       <strong>{d.title}</strong>
                       {ms && <span className={`path-ms path-ms-${ms}`}>{ms}</span>}
-                      <span className="path-day-time">约 {minutes} 分钟</span>
+                      <span className="path-day-time">约 {effMinutes} 分钟</span>
                       <span className="path-day-toggle" aria-hidden>
                         {open ? '收' : '展'}
                       </span>

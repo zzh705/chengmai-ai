@@ -251,6 +251,9 @@ export default function About() {
           面向青少年与海外中文学习者，围绕国家级非物质文化遗产提供“检索问答、知识图谱、非遗地图、学习路径、
           活化创作、知识挑战”六位一体的服务。系统以可溯源的结构化知识库为底座，以多智能体协作为核心，
           让每一次回答都带来源，让每一份创作都有依据，让学习进度可记录、可展示。
+          项目已于 2026 年 10 月完成公网部署（<a href="http://123.56.18.7" target="_blank" rel="noopener noreferrer">http://123.56.18.7</a>），
+          提供「暗墨」与「亮纸」双主题切换、三视角（学者 / 传承人 / 青年传播者）流式对话、
+          十一屏叙事型页面与全量 3299 项国家级名录结构化收录，向量缓存落盘加速冷启动。
         </p>
         <div className="ab-nums">
           {failed ? (
@@ -519,6 +522,14 @@ export default function About() {
               {ready ? num(stat.provs) : '…'} 省级行政区、地图数据大屏、骨架屏与端到端回归
             </span>
           </li>
+          <li>
+            <span className="tl-when">上线</span>
+            <strong>公网部署与双主题</strong>
+            <span>
+              阿里云 ECS 公网上线（http://123.56.18.7），暗墨 / 亮纸双主题切换、
+              三视角差异化对话、向量缓存 npz 落盘、systemd 服务守护与 Nginx 反代
+            </span>
+          </li>
         </ul>
       </section>
 
@@ -556,19 +567,25 @@ export default function About() {
       <section className="ab-card reveal ab-advisor-card" id="advisor">
         <p className="ab-adv-kicker">EXPERT MENTORSHIP · 专家指导</p>
         <h2>指导教师</h2>
-        <p className="ab-section-sub">资深教授领衔把关，人工智能专业青年骨干教师全程技术督导</p>
+        <p className="ab-section-sub">两位导师并肩把关：学术方向与技术路线同等权重，全程护航选题、研究方法与工程落地</p>
         <div className="ab-team ab-advisors">
-          <div className="ab-adv-main">
+          <div className="ab-adv-card">
             <span className="ab-adv-badge">教授</span>
             <strong>于静</strong>
             <span className="ab-adv-field">计算机科学与技术</span>
-            <span className="ab-adv-duty">总体学术指导 · 选题方向与研究方法论把关</span>
+            <span className="ab-adv-duty">
+              总体学术指导：选题方向与研究方法论把关，统筹项目学术口径与论文章节评审，
+              确保非遗知识与 AI 工程结合的合理性与可发表性
+            </span>
           </div>
-          <div>
-            <span className="ab-adv-badge ab-adv-badge-alt">讲师</span>
+          <div className="ab-adv-card">
+            <span className="ab-adv-badge">讲师</span>
             <strong>赵米傲</strong>
             <span className="ab-adv-field">人工智能</span>
-            <span className="ab-adv-duty">智能体技术路线指导 · 工程实现全程督导</span>
+            <span className="ab-adv-duty">
+              智能体技术路线指导：多智能体编排、RAG 检索与流式对话工程实现全程督导，
+              负责模型选型、Prompt 工程与上线稳定性评审
+            </span>
           </div>
         </div>
       </section>

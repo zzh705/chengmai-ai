@@ -496,7 +496,7 @@
   font-size: 9px;
 }
 
-/* 指导教师：独立重点板块 */
+/* 指导教师：独立重点板块，两位导师同等权重同等视觉 */
 .ab-advisor-card {
   border-color: rgba(var(--gold-rgb), 0.35);
   background:
@@ -517,14 +517,20 @@
   letter-spacing: 4px;
   color: var(--vermilion);
 }
-.ab-advisors div {
+/* 两位导师卡：完全同款同权重，无主次之分 */
+.ab-advisors .ab-adv-card,
+.ab-advisors div.ab-adv-card {
   padding: 18px 20px;
   background: rgba(var(--ink-rgb), 0.7);
-  border: 1px solid rgba(var(--gold-rgb), 0.25);
+  border: 1px solid rgba(var(--gold-rgb), 0.4);
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px rgba(var(--gold-rgb), 0.08), 0 6px 18px rgba(0, 0, 0, 0.18);
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s var(--ease-out);
 }
-.ab-adv-main {
-  border-color: rgba(var(--gold-rgb), 0.55) !important;
-  box-shadow: 0 0 0 1px rgba(var(--gold-rgb), 0.12), 0 8px 24px rgba(0, 0, 0, 0.35);
+.ab-advisors .ab-adv-card:hover {
+  border-color: rgba(var(--gold-rgb), 0.6);
+  box-shadow: 0 0 0 1px rgba(var(--gold-rgb), 0.16), 0 10px 26px rgba(0, 0, 0, 0.22);
+  transform: translateY(-2px);
 }
 .ab-adv-badge {
   display: inline-block !important;
@@ -538,11 +544,6 @@
   background: linear-gradient(135deg, #f0d98c, var(--gold));
   font-weight: 700;
 }
-.ab-adv-badge-alt {
-  color: var(--gold) !important;
-  background: transparent;
-  border: 1px solid rgba(var(--gold-rgb), 0.6);
-}
 .ab-adv-field {
   display: block !important;
   margin: 2px 0 8px;
@@ -552,12 +553,14 @@
 }
 .ab-adv-duty {
   display: block !important;
-  font-size: 12px !important;
-  line-height: 1.7;
-  color: var(--ink-faint) !important;
+  font-size: 12.5px !important;
+  line-height: 1.85;
+  color: var(--ink-soft) !important;
 }
-.ab-adv-main strong {
+.ab-adv-card strong {
   font-size: 20px;
+  display: block;
+  margin-bottom: 2px;
 }
 
 .ab-footer {
@@ -846,6 +849,10 @@
   color: #14110f !important;
   background: linear-gradient(135deg, #f0d98c, #d9b24e);
 }
-:root[data-theme='light'] .ab-adv-main {
-  box-shadow: 0 0 0 1px rgba(150, 115, 31, 0.18), 0 8px 24px rgba(60, 45, 20, 0.12);
+/* 亮纸下两位导师卡同款暖灰阴影，避免暗墨重黑影在白底过重 */
+:root[data-theme='light'] .ab-advisors .ab-adv-card {
+  box-shadow: 0 0 0 1px rgba(150, 115, 31, 0.14), 0 6px 18px rgba(60, 45, 20, 0.1);
+}
+:root[data-theme='light'] .ab-advisors .ab-adv-card:hover {
+  box-shadow: 0 0 0 1px rgba(150, 115, 31, 0.22), 0 10px 26px rgba(60, 45, 20, 0.14);
 }

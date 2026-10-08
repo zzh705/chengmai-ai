@@ -171,6 +171,11 @@ textarea {
   padding: 8px 16px;
   background: var(--ink);
   border-bottom: 1px solid var(--ink-2);
+  /* 关键：建立独立堆叠上下文并置于 Motif 剪影层之上，确保切换钮在所有页面可点。
+     否则 .mf-layer (fixed, inset:0, z-index:0) 的右侧 .mf-side-right
+     (pointer-events:auto, top:0, width:230px) 会盖住导航右端的切换钮。 */
+  position: relative;
+  z-index: 80;
 }
 .app-brand {
   display: inline-flex;
@@ -816,4 +821,243 @@ button:not(:disabled):active,
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* =====================================================================
+   亮纸主题整体精修（仅作用于 [data-theme='light']，不影响暗墨原效果）
+   原则：暗墨下成立的「重黑阴影 / 暗底叠层 / 高对比描金」在亮纸下会显脏或失重，
+   此处仅做必要的轻量化与对比校正，不替换任何暗墨下的视觉表达。
+   ===================================================================== */
+:root[data-theme='light'] {
+  /* 阴影令牌：暖灰取代纯黑，亮纸下不再「脏」或过重 */
+  --shadow-card: 0 2px 10px rgba(60, 45, 20, 0.08);
+  --shadow-card-hover: 0 6px 22px rgba(60, 45, 20, 0.14);
+  --shadow-brand: 0 4px 14px rgba(var(--red-rgb), 0.22);
+  --shadow-gold: 0 2px 10px rgba(var(--gold-rgb), 0.18);
+}
+
+/* 卡片级重黑阴影统一换成暖灰浅影（覆盖各页 box-shadow 中的纯黑重影） */
+:root[data-theme='light'] .path-day-body,
+:root[data-theme='light'] .path-scroll,
+:root[data-theme='light'] .path-overview div,
+:root[data-theme='light'] .lab-form,
+:root[data-theme='light'] .lab-result,
+:root[data-theme='light'] .kb-detail,
+:root[data-theme='light'] .kb-card,
+:root[data-theme='light'] .ch-message.ch-user,
+:root[data-theme='light'] .ch-message.ch-assistant,
+:root[data-theme='light'] .map-panel,
+:root[data-theme='light'] .graph-panel,
+:root[data-theme='light'] .ms-card,
+:root[data-theme='light'] .ab-section,
+:root[data-theme='light'] .pf-card,
+:root[data-theme='light'] .home-roam,
+:root[data-theme='light'] .home-regions button {
+  box-shadow: var(--shadow-card);
+}
+
+:root[data-theme='light'] .path-day-body:hover,
+:root[data-theme='light'] .lab-form:hover,
+:root[data-theme='light'] .kb-card:hover,
+:root[data-theme='light'] .ms-card:hover,
+:root[data-theme='light'] .home-roam:hover,
+:root[data-theme='light'] .home-regions button:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* 出师盖印的纯黑重影在白底过重 */
+:root[data-theme='light'] .path-day-body input:checked ~ .path-check {
+  box-shadow: 0 2px 6px rgba(60, 45, 20, 0.18);
+}
+
+/* 亮纸下卡片边线偏淡，统一描深一档以保证卡片轮廓清晰 */
+:root[data-theme='light'] .lab-form,
+:root[data-theme='light'] .path-form,
+:root[data-theme='light'] .path-day-body,
+:root[data-theme='light'] .kb-detail,
+:root[data-theme='light'] .graph-panel,
+:root[data-theme='light'] .map-panel,
+:root[data-theme='light'] .ms-card,
+:root[data-theme='light'] .pf-card,
+:root[data-theme='light'] .ab-section,
+:root[data-theme='light'] .ch-input {
+  border-color: rgba(var(--gold-rgb), 0.32);
+}
+
+/* 亮纸下朱红主按钮阴影偏重，适度减轻 */
+:root[data-theme='light'] .app-brand,
+:root[data-theme='light'] .app-nav button.active,
+:root[data-theme='light'] .path-days button.active,
+:root[data-theme='light'] .path-goals button.active,
+:root[data-theme='light'] .path-generate:not(:disabled),
+:root[data-theme='light'] .lab-generate:not(:disabled),
+:root[data-theme='light'] .lab-types button.active,
+:root[data-theme='light'] .home-ask button:not(:disabled) {
+  box-shadow: var(--shadow-brand);
+}
+
+/* 亮纸下骨架屏扫光的描金淡条可见度更弱，提升对比避免与底色融为一体 */
+:root[data-theme='light'] .skeleton::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(var(--gold-rgb), 0.16),
+    transparent
+  );
+}
+
+/* 亮纸下回纹底纹已偏淡，提升至仍可辨但不抢眼 */
+:root[data-theme='light'] .app-shell::before {
+  opacity: 0.06;
+}
+
+/* 亮纸下路由金线与四角回纹已由 token 切换；此处统一保证金线在白底可辨 */
+:root[data-theme='light'] .route-bar {
+  height: 2px;
+  filter: saturate(1.05);
+}
+
+/* 亮纸下 hero 区渐变若使用暗底叠层会发灰，统一替换为暖白叠金 */
+:root[data-theme='light'] .home-hero,
+:root[data-theme='light'] .lab-header,
+:root[data-theme='light'] .path-header,
+:root[data-theme='light'] .kb-header,
+:root[data-theme='light'] .ms-header,
+:root[data-theme='light'] .ab-header,
+:root[data-theme='light'] .pf-header,
+:root[data-theme='light'] .ch-header,
+:root[data-theme='light'] .graph-header,
+:root[data-theme='light'] .map-header,
+:root[data-theme='light'] .challenge-header {
+  background: transparent;
+}
+
+/* 亮纸下错误条朱红 2px 左线已克制，但底色 rgba(red,0.1) 在白底偏粉，转暖灰 */
+:root[data-theme='light'] .path-error,
+:root[data-theme='light'] .lab-error,
+:root[data-theme='light'] .ch-error,
+:root[data-theme='light'] .kb-error {
+  background: rgba(var(--red-rgb), 0.06);
+}
+
+/* 亮纸下「观/习/作」小方印描边偏淡，加深至可辨 */
+:root[data-theme='light'] .path-check {
+  background: var(--ink-1);
+}
+
+/* 亮纸下毛玻璃 backdrop-blur 在白底几乎不可见，避免无效合成层 */
+:root[data-theme='light'] .ab-nav,
+:root[data-theme='light'] .home-prog-bar {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* 亮纸下分隔线（var(--ink-2) = 浅米）偏淡，关键分隔处加深一档 */
+:root[data-theme='light'] .app-nav,
+:root[data-theme='light'] .app-body,
+:root[data-theme='light'] .path-timeline {
+  border-color: rgba(var(--gold-rgb), 0.18);
+}
+:root[data-theme='light'] .path-timeline {
+  border-left-color: rgba(var(--gold-rgb), 0.4);
+}
+
+/* 亮纸下朱印/印章字色（var(--paper) = 近墨）压在朱红底上对比足够，
+   此处不调整；但朱红按钮上的 box-shadow 重影（rgba(0,0,0,0.35)）统一暖灰化 */
+:root[data-theme='light'] .path-day-badge,
+:root[data-theme='light'] .path-finish-seal,
+:root[data-theme='light'] .home-seal,
+:root[data-theme='light'] .ms-seal {
+  box-shadow: 0 4px 12px rgba(var(--red-rgb), 0.32);
+}
+
+/* 亮纸下进度条金青渐变在白底显灰，提升饱和 */
+:root[data-theme='light'] .path-progress-fill {
+  background: linear-gradient(90deg, var(--jade), var(--gold));
+  filter: saturate(1.1);
+}
+
+/* 亮纸下 hover 流光扫过在白底对比不足，加深 paper 通道半透明 */
+:root[data-theme='light'] .home-ask button:not(:disabled)::after,
+:root[data-theme='light'] .lab-generate:not(:disabled)::after,
+:root[data-theme='light'] .path-generate:not(:disabled)::after,
+:root[data-theme='light'] .chat-input button:not(:disabled)::after,
+:root[data-theme='light'] .graph-btn.primary:not(:disabled)::after {
+  background: linear-gradient(100deg, transparent, rgba(var(--paper-rgb), 0.32), transparent);
+}
+
+/* 亮纸下页面底色（var(--ink) = 暖宣纸白）与卡片底（var(--ink-1) = 亮纸白）
+   差值仅 7 单位，卡片轮廓主要靠 1px 描边。此处为关键卡片再加深 1px 边线 */
+:root[data-theme='light'] .lab-result,
+:root[data-theme='light'] .kb-detail,
+:root[data-theme='light'] .ms-card,
+:root[data-theme='light'] .graph-panel,
+:root[data-theme='light'] .map-panel {
+  border-width: 1px;
+}
+
+/* 亮纸下「抄录路线/抄录整案」描金边按钮 hover 加深，避免金边在白底过淡 */
+:root[data-theme='light'] .path-copy,
+:root[data-theme='light'] .lab-copy,
+:root[data-theme='light'] .kb-more,
+:root[data-theme='light'] .graph-btn {
+  border-color: rgba(var(--gold-rgb), 0.6);
+}
+:root[data-theme='light'] .path-copy:hover,
+:root[data-theme='light'] .lab-copy:hover {
+  background: rgba(var(--gold-rgb), 0.16);
+}
+
+/* 亮纸下首页 chip 与导航次要按钮的描边偏淡，加深至可辨 */
+:root[data-theme='light'] .home-chips button,
+:root[data-theme='light'] .home-ask input,
+:root[data-theme='light'] .ch-input,
+:root[data-theme='light'] .lab-form textarea,
+:root[data-theme='light'] .lab-form select,
+:root[data-theme='light'] .path-form select,
+:root[data-theme='light'] .path-form input,
+:root[data-theme='light'] .path-custom-input input,
+:root[data-theme='light'] .kb-search,
+:root[data-theme='light'] .graph-search,
+:root[data-theme='light'] .ms-search,
+:root[data-theme='light'] .map-filters select,
+:root[data-theme='light'] .ab-search,
+:root[data-theme='light'] .pf-input {
+  border-color: rgba(var(--gold-rgb), 0.3);
+}
+:root[data-theme='light'] .home-chips button:hover,
+:root[data-theme='light'] .home-ask input:focus,
+:root[data-theme='light'] .ch-input:focus,
+:root[data-theme='light'] .lab-form textarea:focus,
+:root[data-theme='light'] .lab-form select:focus,
+:root[data-theme='light'] .path-form select:focus,
+:root[data-theme='light'] .path-form input:focus,
+:root[data-theme='light'] .path-custom-input input:focus,
+:root[data-theme='light'] .kb-search:focus,
+:root[data-theme='light'] .graph-search:focus,
+:root[data-theme='light'] .ms-search:focus,
+:root[data-theme='light'] .ab-search:focus,
+:root[data-theme='light'] .pf-input:focus {
+  border-color: var(--gold);
+}
+
+/* 亮纸下「观/习/作」小方印 hover 上浮阴影偏重 */
+:root[data-theme='light'] .path-day-body li label:hover .path-check {
+  box-shadow: 0 3px 8px rgba(60, 45, 20, 0.14);
+}
+
+/* 亮纸下登录页背景渐变若含暗墨叠层会显灰，统一替换为暖宣纸 + 描金晕 */
+:root[data-theme='light'] .login-page,
+:root[data-theme='light'] .splash-page {
+  background: linear-gradient(160deg, var(--ink-1), var(--ink) 70%);
+}
+
+/* 亮纸下知识图谱节点描金在白底过淡，整体饱和度提升 */
+:root[data-theme='light'] .graph-svg {
+  filter: saturate(1.08);
+}
+
+/* 亮纸下非遗地图宣纸晕边缘若过淡，加深至可辨 */
+:root[data-theme='light'] .map-svg-bg {
+  filter: saturate(1.06) contrast(1.02);
 }

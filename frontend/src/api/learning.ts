@@ -27,9 +27,9 @@ export async function fetchLearningPlan(
   signal?: AbortSignal,
 ): Promise<LearningPlan> {
   const o: PlanOptions = typeof opts === 'number' ? { days: opts } : opts
-  // 75s 前端超时兜底（后端短超时+重试+本地兜底，正常应在 30s 内返回）
+  // 25s 前端超时兜底（后端 18s 超时 + 本地兜底，正常应在 5～18s 内返回）
   const ctrl = new AbortController()
-  const timer = window.setTimeout(() => ctrl.abort('timeout'), 75_000)
+  const timer = window.setTimeout(() => ctrl.abort('timeout'), 25_000)
   const onAbort = () => ctrl.abort(signal?.reason)
   signal?.addEventListener('abort', onAbort)
   try {

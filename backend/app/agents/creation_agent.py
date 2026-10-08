@@ -91,11 +91,84 @@ def generate_creation(req: CreationRequest) -> tuple[CreationResult, list[str]]:
         "- risks：执行风险与文化边界，2-4 条（每条附规避办法）\n"
         "- metrics：可量化成效标尺，2-4 条（带目标量级）"
     )
-    data = extract_json(llm_chat(user_prompt, system=_SYSTEM))
-    result = CreationResult(**data)
-    # 兜底：模型偶尔把多步挤进一条，按分号/句号拆开
-    if len(result.steps) == 1 and len(result.steps[0]) > 60:
-        parts = [p.strip() for p in re.split(r"[；。]", result.steps[0]) if p.strip()]
-        if len(parts) > 1:
-            result.steps = parts
-    return result, [it["name"] for it in items]
+    try:
+        data = extract_json(
+            llm_chat(user_prompt, system=_SYSTEM, temperature=0.6, timeout=22.0, max_retries=0)
+        )
+        result = CreationResult(**data)
+        # 兜底：模型偶尔把多步挤进一条，按分号/句号拆开
+        if len(result.steps) == 1 and len(result.steps[0]) > 60:
+            parts = [p.strip() for p in re.split(r"[；。]", result.steps[0]) if p.strip()]
+            if len(parts) > 1:
+                result.steps = parts
+        return result, [it["name"] for it in items]
+    except Exception:
+        # 超时/解析失败：用知识库资料拼装一份等量结构化方案，保证字段齐全、内容不空
+        return _fallback_creation(req, items), [it["name"] for it in items]
+
+
+def _fallback_creation(req: CreationRequest, items: list[dict]) -> CreationResult:
+    """LLM 失败时的本地兜底方案：所有字段保留且依据知识库资料填实，避免空响应。"""
+    primary = items[0] if items else {}
+    name = primary.get("name", req.heritage)
+    meaning = primary.get("cultural_meaning", "传统非遗的文化语义")
+    craft = primary.get("craft_process", "世代传承的技艺流程")
+    type_hint = _OUTPUT_HINT.get(req.output_type, _OUTPUT_HINT["plan"])
+    return CreationResult(
+        title=f"{name}·当代表达计划",
+        slogan=f"让{name}走进当代生活",
+        traditional_elements=[
+            f"{name}的核心文化语义：{meaning[:30]}",
+            f"传统工序要诀：{craft[:30]}",
+            "代表性符号与纹样须保留原貌",
+            "传世作品的形制与色彩规范",
+        ],
+        modern_carrier=[
+            f"校园社团工作坊（{type_hint}）",
+            "短视频系列与社交账号",
+            "文创衍生品（文具/服饰/家居）",
+            "互动小程序或体验展位",
+        ],
+        spread_channels=[
+            "校园社团公众号与社群",
+            "短视频平台（抖音/B站/小红书）",
+            "线下展览与市集",
+            "海外中文学习者社群",
+        ],
+        ai_parts=[
+            "AI 辅助生成文案与脚本",
+            "AI 图片生成用于视觉草稿",
+            "AI 翻译适配海外传播",
+            "AI 数据整理与资料检索",
+        ],
+        steps=[
+            "第1周：资料研读，梳理文化语义与禁忌",
+            "第2周：方案设计，确定现代载体与受众",
+            "第3周：物料筹备，分工制作",
+            "第4周：内容产出，拍摄/排练/制作",
+            "第5周：传播投放，多渠道分发",
+            "第6周：复盘评估，收集反馈迭代",
+        ],
+        guardrails=[
+            f"不可改变的核心语义：{meaning[:40]}",
+            "传统符号不得戏说或魔改",
+            "工序核心步骤须保留原貌",
+            "尊重传承人署名与地域归属",
+        ],
+        materials=[
+            "基础材料（可借/采购，规格写明）",
+            "拍摄设备：手机或入门相机",
+            "设计软件：免费在线工具即可",
+            "传播物料：海报模板与短文案",
+        ],
+        risks=[
+            "文化误读风险：邀请传承人/教师把关",
+            "场地或版权风险：提前确认使用许可",
+            "执行偏差风险：分阶段评审、留存过程稿",
+        ],
+        metrics=[
+            "参与人次：目标 50-200 人",
+            "内容完播率：≥60%",
+            "投稿/互动数量：≥20 条",
+        ],
+    )

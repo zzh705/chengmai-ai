@@ -116,18 +116,23 @@ export default function Lab() {
     setError('')
     setStage(0)
     // 阶段反馈与真实请求并行推进，等待期不再是一段空白
-    timersRef.current = [700, 1600, 2500].map((ms) =>
+    timersRef.current = [600, 1300, 2200].map((ms) =>
       window.setTimeout(() => setStage((s) => s + 1), ms),
     )
     const ctrl = new AbortController()
     abortRef.current = ctrl
     try {
       const name = list.find((h) => h.id === heritage)?.name ?? heritage
-      const resp = await generateCreation(name, requirement.trim(), {
-        outputType,
-        style,
-        audience,
-      })
+      const resp = await generateCreation(
+        name,
+        requirement.trim(),
+        {
+          outputType,
+          style,
+          audience,
+        },
+        ctrl.signal,
+      )
       // 用户已点「取消」：丢弃迟到响应，不再写入结果与历史
       if (ctrl.signal.aborted) return
       setResult(resp)

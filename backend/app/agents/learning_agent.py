@@ -135,20 +135,25 @@ def generate_plan(req: LearningPlanRequest, items: list[dict]) -> list[LearningD
         "最后一天安排产出/传播类任务，体现'知识→理解→实践→创作→传播'闭环。"
     )
 
-    # 短超时 + 低温度：结构化输出求稳不求花哨；失败后换更直白的提示重试一次
-    prompts = [user_prompt, user_prompt + "\n重申：只输出给定格式的 JSON，不要输出任何其他内容。"]
-    for prompt in prompts:
-        try:
-            data = extract_json(
-                llm_chat(prompt, system=_SYSTEM, temperature=0.4, timeout=30.0, max_retries=1)
+    # 短超时 + 不重试：结构化输出求稳不求花哨；失败立即走本地兜底，保证接口快速响应
+    # 单次 18s 超时足以让 qwen-plus 完成大型计划生成，超时即回落弧线计划（内容同样充实）
+    try:
+        data = extract_json(
+            llm_chat(
+                user_prompt + "\n重申：只输出给定格式的 JSON，不要输出任何其他内容。",
+                system=_SYSTEM,
+                temperature=0.4,
+                timeout=18.0,
+                max_retries=0,
             )
-            days = _parse_days(data, req)
-            if days is not None:
-                # 天数不足时用弧线计划补齐
-                if len(days) < req.days:
-                    pad = _fallback_plan(req)[len(days) :]
-                    days += [LearningDay(day=len(days) + 1 + i, title=d.title, tasks=d.tasks) for i, d in enumerate(pad)]
-                return days
-        except Exception:
-            continue
+        )
+        days = _parse_days(data, req)
+        if days is not None:
+            # 天数不足时用弧线计划补齐
+            if len(days) < req.days:
+                pad = _fallback_plan(req)[len(days) :]
+                days += [LearningDay(day=len(days) + 1 + i, title=d.title, tasks=d.tasks) for i, d in enumerate(pad)]
+            return days
+    except Exception:
+        pass
     return _fallback_plan(req)

@@ -353,6 +353,40 @@
   color: var(--paper);
 }
 
+/* 自定义天数/分钟输入：与预设按钮组并列，激活后展开输入框 */
+.path-custom-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: var(--ink);
+  border: 1px dashed rgba(var(--gold-rgb), 0.5);
+  border-radius: 8px;
+  animation: labOn 0.28s ease;
+}
+.path-custom-input input {
+  flex: 1;
+  width: 100%;
+  padding: 7px 10px;
+  background: transparent;
+  border: 1px solid var(--ink-3);
+  border-radius: 8px;
+  color: var(--paper);
+  font-size: 14px;
+  text-align: center;
+}
+.path-custom-input input:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+.path-custom-input span {
+  flex: none;
+  font-size: 12px;
+  color: var(--ink-faint);
+  letter-spacing: 1px;
+}
+
 /* 进度条 */
 .path-progress {
   display: flex;
