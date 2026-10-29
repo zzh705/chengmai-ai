@@ -59,3 +59,8 @@ frontend/public/deck/assets/*.png
 frontend/public/deck/assets/*.jpg
 frontend/public/deck/assets/*.jpeg
 frontend/public/deck/assets/*.gif
+
+# ===== 首页介绍视频等大体积媒体（体积大，不入库，直接传服务器）=====
+frontend/public/videos/*.mp4
+frontend/public/videos/*.webm
+frontend/public/videos/*.mov
