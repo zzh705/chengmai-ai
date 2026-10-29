@@ -25,16 +25,16 @@ LIMIT_KB=90000 # 单文件超 90MB 直接中止（GitHub 上限 100MB）
 log() { printf '\n\033[1;36m==> %s\033[0m\n' "$*"; }
 die() { printf '\033[1;31m[中止] %s\033[0m\n' "$*" >&2; exit 1; }
 
-[[ -f "$KEY" ]] || die "找不到部署密钥 $KEY（还没配置 SSH 免密，请先安装公钥）"
+[[ -f "$KEY" ]] || die "找不到部署密钥 ${KEY}（还没配置 SSH 免密，请先安装公钥）"
 
 # ---------- 1. 大文件哨兵：防止超大文件混进提交 ----------
+# find 先按大小粗筛（快），再逐个问 git 是否已被 .gitignore 忽略
 log "检查大文件"
 big=""
-while IFS= read -r f; do
-  sz=$(stat -f%z "$f" 2>/dev/null || echo 0)
-  if ((sz > LIMIT_KB * 1024)); then big="$f"; break; fi
-done < <(git ls-files -co --exclude-standard)
-[[ -z "$big" ]] || die "发现超大文件「$big」，请移出仓库或加入 .gitignore 后再更新"
+while IFS= read -r -d '' f; do
+  if ! git check-ignore -q "$f"; then big="$f"; break; fi
+done < <(find . -type f -size +${LIMIT_KB}k -not -path './.git/*' -print0)
+[[ -z "$big" ]] || die "发现超大文件「${big}」，请移出仓库或加入 .gitignore 后再更新"
 
 # ---------- 2. 提交 + 推送 ----------
 log "暂存并提交改动"
@@ -48,7 +48,7 @@ log "推送 GitHub"
 git push origin main
 
 # ---------- 3. 服务器部署 ----------
-log "部署到 $SERVER（拉代码→装依赖→构建→重启→自检）"
+log "部署到 ${SERVER}（拉代码→装依赖→构建→重启→自检）"
 ssh -i "$KEY" -o BatchMode=yes -o ConnectTimeout=10 "$SERVER" \
   'chown -R chengmai:chengmai /opt/chengmai-ai; bash /opt/chengmai-ai/deployment/deploy.sh'
 
