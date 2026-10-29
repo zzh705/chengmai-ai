@@ -1,3 +1,7 @@
+# ============================================================
+# 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+# 原创点：传承档案存储：四类成长事件流的落库、聚合统计与徽章/称号解锁判定
+# ============================================================
 """用户传承档案：进度事件记录与聚合（内存版，Phase 5 迁移到 PostgreSQL）。"""
 
 import time
@@ -19,14 +23,20 @@ def _category_of(item_id: str | None) -> str:
 
 def record(user_id: str, event_type: str, item_id: str | None = None,
            item_name: str | None = None, detail: dict | None = None) -> None:
-    """记录一次传承行为事件。"""
+    """记录一次传承行为事件。
+
+    detail 中可携带 _ts（形如 "YYYY-MM-DD HH:MM"）补卡历史时间；
+    事件落库时 _ts 从 detail 中移除，避免污染返回给前端的 detail 字段。
+    """
+    d = dict(detail or {})
+    back_ts = d.pop("_ts", None)
     _events[user_id].append(
         {
             "event_type": event_type,
             "item_id": item_id,
             "item_name": item_name,
-            "detail": detail or {},
-            "ts": time.strftime("%Y-%m-%d %H:%M"),
+            "detail": d,
+            "ts": back_ts if back_ts else time.strftime("%Y-%m-%d %H:%M"),
         }
     )
 

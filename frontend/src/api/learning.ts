@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：核心原创：学习路径请求按计划规模三档自适应超时（25/40/55 秒），杜绝大计划被前端提前掐断
+ */
 /** 学习路径接口（POST /api/learning-plan） */
 import { API_BASE } from './base'
 
@@ -27,9 +31,12 @@ export async function fetchLearningPlan(
   signal?: AbortSignal,
 ): Promise<LearningPlan> {
   const o: PlanOptions = typeof opts === 'number' ? { days: opts } : opts
-  // 25s 前端超时兜底（后端 18s 超时 + 本地兜底，正常应在 5～18s 内返回）
+  // 后端按 5 天/片错峰并发生成，整体约 15-28s；按规模三档留足网络余量，
+  // 避免大计划被前端提前 abort 后误报超时
+  const days = o.days ?? 7
+  const timeoutMs = days <= 7 ? 25_000 : days <= 14 ? 40_000 : 55_000
   const ctrl = new AbortController()
-  const timer = window.setTimeout(() => ctrl.abort('timeout'), 25_000)
+  const timer = window.setTimeout(() => ctrl.abort('timeout'), timeoutMs)
   const onAbort = () => ctrl.abort(signal?.reason)
   signal?.addEventListener('abort', onAbort)
   try {

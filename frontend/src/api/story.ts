@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：故事生成接口客户端
+ */
 /** 故事生成接口（POST /api/story/generate） */
 import { API_BASE } from './base'
 

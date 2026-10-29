@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：首页：今日非遗、AI 推荐、地域探索与学习进度聚合编排
+ */
 import { useEffect, useMemo, useState, type KeyboardEvent } from 'react'
 import { fetchHeritageList, type HeritageSummary } from '../api/heritage'
 import { fetchProfile, type Profile } from '../api/progress'
@@ -42,8 +46,20 @@ const HERITAGE_REELS = [
   { id: 'h_n14304', file: 'zharan', note: '大理风物，蓝白之间染出人间烟火', duration: '01:07', credit: 'CC BY 4.0' },
 ] as const
 
-// 探索矩阵：首页功能总入口（序号+文字，不用小图标）
-const GATES = [
+// 探索矩阵：首页功能总入口（序号+文字，不用小图标）；新手指引横贯第一行，是逛馆的起点
+interface Gate {
+  page: string
+  title: string
+  desc: string
+  /** 序号位（缺省按序生成 01..） */
+  no?: string
+  /** 附加样式类（如横贯整行的新手指引） */
+  cls?: string
+  /** 进入文案（缺省「查看」） */
+  go?: string
+}
+const GATES: Gate[] = [
+  { page: 'guide', no: '引', cls: 'home-gate--wide', title: '新手指引', desc: '十一站一步一景，从首页、对话到图谱与挑战，层层逛进承脉', go: '开始逛馆' },
   { page: 'knowledge', title: '非遗知识库', desc: '故事、工序、谱系一次读透' },
   { page: 'map', title: '非遗地图', desc: '沿华夏地理看非遗分布' },
   { page: 'graph', title: '知识图谱', desc: '项目、人物、地域关系网络' },
@@ -327,13 +343,13 @@ export default function Home({ onNavigate, entered = true }: Props) {
           {GATES.map((g, i) => (
             <button
               key={g.page}
-              className="home-gate"
+              className={`home-gate ${g.cls ?? ''}`}
               onClick={() => onNavigate(g.page)}
             >
-              <span className="home-gate-no">{String(i + 1).padStart(2, '0')}</span>
+              <span className="home-gate-no">{g.no ?? String(i + 1).padStart(2, '0')}</span>
               <strong>{g.title}</strong>
               <p>{g.desc}</p>
-              <span className="home-gate-go">查看</span>
+              <span className="home-gate-go">{g.go ?? '查看'}</span>
             </button>
           ))}
         </div>

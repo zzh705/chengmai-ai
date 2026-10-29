@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：活化实验室接口客户端：透传取消信号与超时控制
+ */
 /** 活化实验室接口（POST /api/creation/generate） */
 import { API_BASE } from './base'
 

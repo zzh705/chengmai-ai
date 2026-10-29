@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：薪火粒子 Canvas：自研粒子运动、页面隐藏暂停与 reduced-motion 静态降级
+ */
 import { useEffect, useRef } from 'react'
 import { subscribeTheme } from '../utils/theme'
 import '../styles/splash.css'

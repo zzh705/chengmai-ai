@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：数字滚动组件：easeOutCubic 缓动与无障碍直跳终值
+ */
 import { useEffect, useState } from 'react'
 
 /** 数字滚动：挂载/值变化后 0 → value 缓动（easeOutCubic），视觉上的"跳动数字" */

@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：活化实验室页：四宫格分步表单、并行阶段反馈与整案纯文本抄录
+ */
 import { useEffect, useRef, useState } from 'react'
 import {
   generateCreation,

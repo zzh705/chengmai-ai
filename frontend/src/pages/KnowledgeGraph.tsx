@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：核心原创：d3-hierarchy 径向族谱 SVG 渲染、邻域高亮/搜索/缩放，与描金三千星尘环带
+ */
 import { memo, useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 import * as d3 from 'd3'
 import { fetchHeritageDetail, type HeritageDetail } from '../api/heritage'
@@ -47,7 +51,7 @@ interface TreeNode extends GraphNode {
 /** 全量收录口径：国家级非遗代表性项目总数（与登录页、关于页一致） */
 const COLLECTION_TOTAL = 3299
 
-/** 星野环带：以三千星尘拟全量收录（静态、aria-hidden，memo 隔离 hover 重渲染） */
+/** 【承脉 AI 原创】星野环带：以三千星尘拟全量收录（静态、aria-hidden，memo 隔离 hover 重渲染） */
 const StarField = memo(function StarField({
   stars,
   color,

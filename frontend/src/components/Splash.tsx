@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：开场入场动画：水墨承脉主题自研序列
+ */
 import { useEffect, useRef, useState } from 'react'
 import '../styles/splash.css'
 

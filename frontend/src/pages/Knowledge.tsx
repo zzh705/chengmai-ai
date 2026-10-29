@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：非遗知识库页：搜索、详情深读与两侧剪影 30px 呼吸间距版式
+ */
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 import {
   fetchHeritageDetail,

@@ -1,3 +1,7 @@
+# ============================================================
+# 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+# 原创点：活化创作 Agent：传统元素分析-文化语义保护-现代转译三步提示词链，附超时本地兜底方案
+# ============================================================
 """活化创作 Agent：传统元素分析 → 文化语义保护 → 现代化方案（总文档 2.5）。"""
 
 import re
@@ -93,7 +97,7 @@ def generate_creation(req: CreationRequest) -> tuple[CreationResult, list[str]]:
     )
     try:
         data = extract_json(
-            llm_chat(user_prompt, system=_SYSTEM, temperature=0.6, timeout=22.0, max_retries=0)
+            llm_chat(user_prompt, system=_SYSTEM, temperature=0.6, timeout=25.0, max_retries=0)
         )
         result = CreationResult(**data)
         # 兜底：模型偶尔把多步挤进一条，按分号/句号拆开
@@ -108,11 +112,13 @@ def generate_creation(req: CreationRequest) -> tuple[CreationResult, list[str]]:
 
 
 def _fallback_creation(req: CreationRequest, items: list[dict]) -> CreationResult:
-    """LLM 失败时的本地兜底方案：所有字段保留且依据知识库资料填实，避免空响应。"""
+    """LLM 失败时的本地兜底方案：所有字段保留且依据知识库资料填实，避免空响应。
+    名称以用户输入为准（req.heritage），知识库资料仅用于补足文化语义与工序描述。"""
+    # 以用户输入的项目名为准，避免 RAG 检索结果错位导致张冠李戴
+    name = req.heritage
     primary = items[0] if items else {}
-    name = primary.get("name", req.heritage)
-    meaning = primary.get("cultural_meaning", "传统非遗的文化语义")
-    craft = primary.get("craft_process", "世代传承的技艺流程")
+    meaning = primary.get("cultural_meaning") or "传统非遗世代相传的文化语义与象征体系"
+    craft = primary.get("craft_process") or "世代传承的技艺流程与师承规矩"
     type_hint = _OUTPUT_HINT.get(req.output_type, _OUTPUT_HINT["plan"])
     return CreationResult(
         title=f"{name}·当代表达计划",

@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：核心原创：卷头总览、师承寄语、资料行囊、功课三印、日卡展收打卡、里程碑与抄录路线整案
+ */
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { fetchHeritageList, type HeritageSummary } from '../api/heritage'
 import { fetchLearningPlan, type LearningPlan, type PlanGoal } from '../api/learning'
@@ -109,6 +113,7 @@ export default function Path() {
 
   /** 卷头总览：日数 / 功课数 / 每日时辰 / 全程学时
    *  若当前处于自定义模式且输入合法，总览按自定义值展示，与生成时一致 */
+  const effDays = daysCustom && /^\d+$/.test(daysInput) ? parseInt(daysInput, 10) : days
   const effMinutes = minsCustom && /^\d+$/.test(minsInput) ? parseInt(minsInput, 10) : minutes
   const overview = useMemo(() => {
     if (!plan) return null
@@ -184,7 +189,10 @@ export default function Path() {
     setStage(0)
     setElapsed(0)
     // 阶段反馈跟随真实节奏放慢，避免「三步走完却还在等」的假进度
-    timersRef.current = [900, 3000].map((ms, i) =>
+    // 大计划把阶段拉长，与真实生成时长匹配
+    const s2 = useDays > 14 ? 2200 : 1400
+    const s3 = useDays > 14 ? 6000 : useDays > 7 ? 4500 : 3000
+    timersRef.current = [s2, s3].map((ms, i) =>
       window.setTimeout(() => setStage(i + 1), ms),
     )
     intervalRef.current = window.setInterval(() => setElapsed((s) => s + 1), 1000)
@@ -375,7 +383,15 @@ export default function Path() {
               ))}
             </div>
             <div className="path-loading-foot">
-              {elapsed >= 12 && <span>模型正在撰写，通常 5～18 秒完成</span>}
+              {elapsed >= 8 && (
+                <span>
+                  {effDays > 14
+                    ? '多个分片正在错峰撰写，大计划约需 15～30 秒完成'
+                    : effDays > 7
+                      ? '多个分片正在并行撰写，约需 12～22 秒完成'
+                      : '模型正在撰写，通常 8～18 秒完成'}
+                </span>
+              )}
               <button className="path-cancel" onClick={() => abortRef.current?.abort()}>
                 取消
               </button>

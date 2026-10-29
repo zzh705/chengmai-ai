@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：名家风采页：开宗立派人物卡、公版影像与无像者字印卡 fallback
+ */
 import { useEffect, useRef, useState } from 'react'
 import { MASTERS, MASTER_MAP, type Master } from '../data/masters'
 import '../styles/masters.css'

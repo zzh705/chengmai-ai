@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：关于项目页：多智能体架构、技术栈与图片许可声明
+ */
 import { useCallback, useEffect, useState } from 'react'
 import CountUp from '../components/CountUp'
 import { useRevealGroup } from '../hooks/useReveal'

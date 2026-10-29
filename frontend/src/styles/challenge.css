@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：非遗挑战页全部中式视觉样式（徽章、战绩环、错题本）
+ */
 /* 非遗挑战页 */
 .ch-page {
   height: 100%;
@@ -188,6 +192,21 @@
   transition:
     border-color 0.2s,
     background-color 0.2s;
+}
+/* 徽章 SVG 图案：居中、自适应宽度 */
+.ch-badge-svg {
+  display: block;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 8px;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.18));
+  transition: transform 0.3s var(--ease-out);
+}
+.ch-badge.earned .ch-badge-svg {
+  filter: drop-shadow(0 2px 6px rgba(217, 164, 65, 0.32));
+}
+.ch-badge.earned:hover .ch-badge-svg {
+  transform: scale(1.06) rotate(-2deg);
 }
 .ch-badge.earned {
   border-color: var(--gold);

@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：暗墨/亮纸双主题切换按钮
+ */
 import { flashThemeTransition, toggleTheme, useTheme } from '../utils/theme'
 
 /**

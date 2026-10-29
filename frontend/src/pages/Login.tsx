@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：题名入馆页：中式动态登录/新客造册双签、游客入口与登录后入场动画衔接
+ */
 import { useEffect, useRef, useState, type FormEvent, type PointerEvent } from 'react'
 import EmberCanvas from '../components/EmberCanvas'
 import { loginAccount, registerAccount } from '../api/auth'

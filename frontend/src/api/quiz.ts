@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：测验接口客户端
+ */
 /** 测验接口（POST /api/quiz/generate） */
 import { API_BASE } from './base'
 

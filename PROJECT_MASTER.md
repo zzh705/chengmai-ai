@@ -23,6 +23,8 @@
 1. **页面**：11 个导航页全部上线（首页 / 承脉 AI / 知识库 / 知识图谱 / 非遗地图 /
    名家风采 / 学习路径 / 活化实验室 / 非遗挑战 / 个人中心 / 关于项目），
    另有题名入馆（登录/注册）页与开屏；state 路由 + 切页转场动效。
+   新增《新手指引》导览页：十一站层层递进（灯线进度 + 字印站牌 + 断点续览），
+   顶栏灯笼钮与首页横贯卡片双入口。
 2. **AI 对话**：三视角（学者/传承人/青年传播者）+ 意图识别 + 来源 + 证据分；
    同时提供 `POST /api/chat` 与 SSE 流式 `POST /api/chat/stream`。
 3. **知识库**：3299 项国家级名录全部完成叙事化扩写
@@ -732,6 +734,100 @@ https://github.com/MEMEXProject/MEMEX-KG
 -   知识图谱；
 -   文化遗产关联；
 -   地理信息组织。
+
+## 6.2 软硬件平台及版本
+
+> 以下均为项目实际落地采用的真实软硬件环境与版本，非规划或推荐值。
+
+### A. 服务器硬件
+
+| 项 | 实际配置 |
+|----|----------|
+| 云服务商 | 阿里云（北京节点） |
+| 实例规格 | ECS / 轻量服务器 2 核 2G，40G 系统盘 |
+| 公网 IP | `123.56.18.7` |
+| 代码目录 | `/opt/chengmai-ai` |
+| 内存兜底 | 额外 2GB swap（`server-init.sh` 自动创建，构建前端与加载向量缓存时兜底） |
+
+> 2G 内存属于轻量级配置，单 worker uvicorn 足以承载比赛演示并发；水平扩容需先替换内存态存储为外置数据库。
+
+### B. 操作系统与系统服务
+
+| 项 | 版本 / 配置 |
+|----|-------------|
+| 操作系统 | Ubuntu 22.04 LTS（24.04 亦可） |
+| Nginx | 系统包管理器安装（22.04 默认 1.18） |
+| systemd | 承载后端服务 `chengmai`，`Restart=always` 崩溃自起 |
+| Git | 系统自带，用于拉取代码 |
+
+### C. 运行时版本
+
+| 运行时 | 实际版本 |
+|--------|----------|
+| Node.js | 20.x（NodeSource 源安装，`server-init.sh` 中 `NODE_MAJOR=20`） |
+| Python | 3.11（虚拟环境 `backend/.venv`） |
+| npm | 随 Node 20 自带 |
+
+### D. 前端技术栈及版本（来自 `frontend/package.json`）
+
+| 依赖 | 版本 | 用途 |
+|------|------|------|
+| React | ^19.2 | 视图层 |
+| React DOM | ^19.2 | DOM 渲染 |
+| TypeScript | ~6.0 | 类型系统 |
+| Vite | ^8.3 | 构建工具与开发服务器 |
+| d3 | ^7.9 | 知识图谱径向族谱布局 |
+| react-force-graph-2d | ^1.29 | （历史版本保留，实际图谱已改用 d3-hierarchy cluster 渲染） |
+| @vitejs/plugin-react | ^6.1 | React 插件 |
+| oxlint | ^1.81 | 代码静态检查 |
+| pptxgenjs | ^4.0 | 答辩 PPT 生成 |
+
+### E. 后端技术栈及版本（来自 `backend/requirements.txt`）
+
+| 依赖 | 版本 | 用途 |
+|------|------|------|
+| FastAPI | >=0.115 | Web 框架 |
+| uvicorn[standard] | >=0.30 | ASGI 服务器（单 worker） |
+| pydantic | >=2.7 | 数据校验 |
+| openai | >=1.50 | 调用 DashScope OpenAI 兼容 API |
+| numpy | >=2.0 | 向量缓存 `.npz` 读写与相似度计算 |
+| python-dotenv | >=1.0 | 加载 `.env` 密钥 |
+
+### F. AI 模型服务
+
+| 模型 / 服务 | 提供方 | 用途 | 调用方式 |
+|-------------|--------|------|----------|
+| qwen-plus | 阿里云百炼 DashScope | 对话 / 学习路径 / 活化创作 / 故事 / 测验 | OpenAI 兼容 API，服务端推理，不自部署权重 |
+| text-embedding-v3 | 阿里云百炼 DashScope | 3299 项知识库向量化检索 | OpenAI 兼容 API |
+
+> 立项时调研过 Qwen3 开源权重，综合 2G 服务器资源与稳定性，实际落地采用 DashScope 托管 API，未本地自部署大模型权重。
+
+### G. 部署与运维中间件
+
+| 组件 | 配置要点 |
+|------|----------|
+| Nginx | 80 端口单机托管：`/` 指向前端 `dist` 静态文件，`/api/` 反代 `127.0.0.1:8000`；SSE 关键三件套 `proxy_buffering off / proxy_cache off / chunked_transfer_encoding on`；`/assets/` 永久缓存，`/images/` 7 天缓存 |
+| systemd | 服务单元 `chengmai.service`，`uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1`，`PYTHONUNBUFFERED=1` |
+| .env | 仓库根目录，权限 600，存 `LLM_API_KEY` 等敏感配置，不入 Git |
+| 向量缓存 | `data/structured/embeddings_cache.npz`（约 70MB），rsync 单独传输至服务器，避免冷启动重新向量化 3299 项 |
+
+### H. 数据与密钥存储（内存态 / 文件态）
+
+| 数据 | 落盘位置 | 说明 |
+|------|----------|------|
+| 用户库 | `backend/data/users.json` | PBKDF2 盐哈希，实名账号制 |
+| 签名密钥 | `backend/data/auth_secret.key` | HMAC 令牌签发，30 天有效期 |
+| 向量缓存 | `data/structured/embeddings_cache.npz` | npz 格式，落盘加速冷启动 |
+| 模型 Key | `/opt/chengmai-ai/.env` | 600 权限，部署代码更新不影响 |
+
+### I. 开发环境（本地）
+
+| 项 | 配置 |
+|----|------|
+| 操作系统 | macOS（开发机） |
+| 编辑器 | VS Code / Trae |
+| 包管理 | npm（前端）、pip + venv（后端） |
+| 版本控制 | Git，远程仓库 https://github.com/zzh705/chengmai-ai |
 
 ------------------------------------------------------------------------
 

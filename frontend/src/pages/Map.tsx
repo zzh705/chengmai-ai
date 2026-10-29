@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：核心原创：d3-geo 禹贡舆图，暗朱至描金色阶、回纹边框朱印、灯火省份脉动与宣纸噪点纹理
+ */
 import { useEffect, useMemo, useState, type KeyboardEvent } from 'react'
 import { geoMercator, geoPath } from 'd3-geo'
 import { fetchHeritageList, type HeritageSummary } from '../api/heritage'

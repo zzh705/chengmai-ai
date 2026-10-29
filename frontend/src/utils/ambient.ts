@@ -1,4 +1,8 @@
 /**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：核心原创：WebAudio 中式环境音前瞻调度器（400ms 节拍 + lookahead），后台节流不断拍
+ */
+/**
  * 背景音：WebAudio 程序化「书房听雨」式极简环境音。
  * 五声音阶（D 羽）稀疏拨弦 + 低音持续层 + 短延迟空间感，默认关闭、显式开启，
  * 不依赖任何音频素材与版权。
@@ -144,7 +148,7 @@ function stopDrone(ac: AudioContext) {
 function scheduleNext() {
   if (!ctx || !master) return
   const ac = ctx
-  // 前瞻窗口内逐记排程；nextNoteTime 落后于当前时间则先追平（节流醒来后补位）
+  // 【承脉 AI 原创算法】前瞻调度：前瞻窗口内逐记排程；nextNoteTime 落后于当前时间则先追平（标签页节流醒来后自动补位不断拍）
   if (nextNoteTime < ac.currentTime) nextNoteTime = ac.currentTime + 0.05
   while (nextNoteTime < ac.currentTime + LOOKAHEAD) {
     const options = NEIGHBOR[step % NEIGHBOR.length]

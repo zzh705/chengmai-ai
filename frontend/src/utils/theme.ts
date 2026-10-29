@@ -1,4 +1,8 @@
 /**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：暗墨/亮纸主题持久化与 data-theme 切换
+ */
+/**
  * 双主题：ink 暗墨（默认，第一种风格原样保留）/ light 亮纸（白色基调）
  * 单一状态源 = documentElement[data-theme]，localStorage 持久化；
  * Canvas/SVG 等非 CSS 渲染层通过 subscribeTheme 订阅后自行换色重绘。

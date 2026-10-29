@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：首页封面：骨架底色与分阶段进场兜底
+ */
 import { useEffect, useRef, useState } from 'react'
 
 interface CoverItem {

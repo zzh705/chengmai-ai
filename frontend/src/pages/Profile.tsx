@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：个人中心页：传承人名片、集印册、称号之路、兴趣画像与退出常驻
+ */
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { fetchProfile, type Profile } from '../api/progress'
 import CountUp from '../components/CountUp'

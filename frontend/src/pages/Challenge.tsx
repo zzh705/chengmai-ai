@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：非遗挑战页：正确率环、八边形图案传承徽章、分主题战绩与错题本
+ */
 import { useEffect, useMemo, useState } from 'react'
 import { fetchHeritageList, type HeritageSummary } from '../api/heritage'
 import { fetchProfile, recordProgress, type Profile } from '../api/progress'
@@ -235,6 +239,90 @@ export default function Challenge({ onNavigate }: Props) {
   const pct = Math.round(quiz.accuracy * 100)
 
   const toPct = (cur: number, goal: number) => Math.max(0, Math.min(100, Math.round((cur / goal) * 100)))
+
+  /** 徽章 SVG 图案：六枚各不相同，统一用八边形印章外形 + 中心纹饰
+   *  已解锁用描金/朱红/青碧原色，未解锁用墨灰底表「待启」 */
+  const BadgeIcon = ({ name, earned }: { name: string; earned: boolean }) => {
+    const c = earned ? 'var(--gold)' : 'var(--ink-faint)'
+    const c2 = earned ? 'var(--vermilion)' : 'var(--ink-3)'
+    const c3 = earned ? 'var(--jade)' : 'var(--ink-3)'
+    const fill = earned ? 'rgba(217,164,65,0.1)' : 'rgba(140,130,118,0.06)'
+    // 八边形印章底
+    const octagon =
+      'M32,4 L52,12 L60,32 L52,52 L32,60 L12,52 L4,32 L12,12 Z'
+    return (
+      <svg viewBox="0 0 64 64" className="ch-badge-svg" aria-hidden="true">
+        <path d={octagon} fill={fill} stroke={c} strokeWidth="1.5" />
+        {name === '初识非遗' && (
+          /* 一只睁开的眼睛 + 三道光毫：表「初见非遗」 */
+          <g stroke={c} strokeWidth="2" fill="none" strokeLinecap="round">
+            <path d="M16,32 Q32,22 48,32 Q32,42 16,32 Z" />
+            <circle cx="32" cy="32" r="4" fill={c2} stroke="none" />
+            <path d="M32,14 L32,20 M22,17 L25,22 M42,17 L39,22" opacity="0.7" />
+          </g>
+        )}
+        {name === '勤学好问' && (
+          /* 半展卷轴 + 三行字：表「勤学」 */
+          <g stroke={c} strokeWidth="2" fill="none" strokeLinecap="round">
+            <path d="M14,18 L50,18 L50,46 L14,46 Z" />
+            <path d="M14,18 Q10,18 10,22 Q10,26 14,26" fill={fill} />
+            <path d="M50,18 Q54,18 54,22 Q54,26 50,26" fill={fill} />
+            <path d="M20,28 L44,28 M20,34 L44,34 M20,40 L38,40" strokeWidth="1.2" opacity="0.8" />
+          </g>
+        )}
+        {name === '答题新秀' && (
+          /* 一枚方印 + 朱泥色块：表「答题盖章」 */
+          <g>
+            <rect x="18" y="18" width="28" height="28" rx="3" fill={c2} opacity="0.85" />
+            <rect x="18" y="18" width="28" height="28" rx="3" fill="none" stroke={c} strokeWidth="1.5" />
+            <text x="32" y="37" textAnchor="middle" fontSize="14" fill="#faf5e9" fontWeight="700" fontFamily="serif">答</text>
+          </g>
+        )}
+        {name === '非遗达人' && (
+          /* 玉璧同心圆：表「圆满意足」 */
+          <g stroke={c3} strokeWidth="2" fill="none">
+            <circle cx="32" cy="32" r="16" fill={fill} />
+            <circle cx="32" cy="32" r="11" />
+            <circle cx="32" cy="32" r="6" fill={c3} stroke="none" opacity="0.85" />
+            <circle cx="32" cy="32" r="2" fill="#faf5e9" stroke="none" />
+          </g>
+        )}
+        {name === '创意传承人' && (
+          /* 一支毛笔 + 墨点迸溅：表「活化创作」 */
+          <g stroke={c} strokeWidth="2" fill="none" strokeLinecap="round">
+            <path d="M20,46 L36,30" />
+            <path d="M36,30 L40,26 L44,30 L40,34 Z" fill={c2} stroke="none" />
+            <path d="M20,46 L17,49" strokeWidth="2.5" />
+            <circle cx="44" cy="40" r="1.5" fill={c} stroke="none" opacity="0.7" />
+            <circle cx="48" cy="36" r="1" fill={c} stroke="none" opacity="0.5" />
+            <circle cx="46" cy="44" r="1.2" fill={c2} stroke="none" opacity="0.6" />
+          </g>
+        )}
+        {name === '承脉大师' && (
+          /* 八芒星日轮：表「承脉之巅」 */
+          <g stroke={c} strokeWidth="1.8" fill="none">
+            <circle cx="32" cy="32" r="6" fill={c} stroke="none" />
+            {Array.from({ length: 8 }).map((_, i) => {
+              const a = (i * Math.PI) / 4
+              return (
+                <line
+                  key={i}
+                  x1={32 + Math.cos(a) * 9}
+                  y1={32 + Math.sin(a) * 9}
+                  x2={32 + Math.cos(a) * (i % 2 ? 14 : 18)}
+                  y2={32 + Math.sin(a) * (i % 2 ? 14 : 18)}
+                  strokeWidth={i % 2 ? 1.2 : 2}
+                  opacity={i % 2 ? 0.6 : 1}
+                />
+              )
+            })}
+            <circle cx="32" cy="32" r="20" strokeWidth="0.8" opacity="0.3" strokeDasharray="2 3" />
+          </g>
+        )}
+      </svg>
+    )
+  }
+
   const badges: Badge[] = [
     {
       name: '初识非遗',
@@ -491,6 +579,7 @@ export default function Challenge({ onNavigate }: Props) {
               className={`ch-badge ${b.earned ? 'earned' : ''}`}
               style={{ animationDelay: `${i * 0.07}s` }}
             >
+              <BadgeIcon name={b.name} earned={b.earned} />
               <strong>{b.name}</strong>
               <em>{b.desc}</em>
               {b.earned ? (

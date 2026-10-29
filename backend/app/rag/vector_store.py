@@ -1,3 +1,7 @@
+# ============================================================
+# 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+# 原创点：核心原创：按简介/技艺/文化内涵/叙事/冷知识多块切分 + numpy 余弦检索 + npz 冷启动缓存的零外部依赖内存向量库
+# ============================================================
 """内存向量库：切块 → 向量化 → 余弦相似度检索（Phase 6 迁移 pgvector）。"""
 
 import json
@@ -20,7 +24,7 @@ _vectors: np.ndarray | None = None
 
 
 def _make_chunks(items: list[dict]) -> list[dict]:
-    """把每个非遗项目切块：简介 / 技艺 / 文化内涵 / 冷知识（RAG 检索单元）。
+    """【承脉 AI 原创】把每个非遗项目按叙事字段切块：简介 / 技艺 / 文化内涵 / 冷知识（RAG 检索单元）。
 
     3250 项索引层已升级为苏绣级叙事（story/timeline/fun_facts），全量纳入。
     """
@@ -93,6 +97,7 @@ def ensure_index(items: list[dict]) -> None:
         _vectors = np.zeros((0, 0), dtype=np.float32)
         return
     _vectors = np.array(embed_texts([c["text"] for c in _chunks]), dtype=np.float32)
+    # 【承脉 AI 原创】npz 冷启动缓存：模型名+条目数双校验，原子替换写入，服务器免重建索引
     tmp = _CACHE_PATH.with_name(_CACHE_PATH.name + ".tmp")
     with open(tmp, "wb") as fh:
         np.savez(

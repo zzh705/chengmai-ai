@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：三视角对话页：流式答复卡、阶段反馈、墨竹剪影随模式变色与卡片动作分流
+ */
 import { Fragment, useEffect, useRef, useState } from 'react'
 import {
   streamChat,

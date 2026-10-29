@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：七页中华剪影视差与粒子动效样式
+ */
 /* ============================================================
    中华剪影（Motif）：内容列两侧留白处的水墨影戏
    出场：毛笔逐笔描边（mf-draw）+ 墨色晕开（mf-ink）+ 整幅浮起（mf-side）
@@ -78,6 +82,9 @@
 .mf-lattice {
   color: rgba(var(--gold-rgb), 0.5);
 }
+.mf-lantern {
+  color: rgba(var(--red-rgb), 0.46);
+}
 
 /* ===== 亮纸主题：剪影由淡金/淡墨改为深彩半透明，立在白纸上仍如水墨影戏 ===== */
 :root[data-theme='light'] .mf-opera {
@@ -101,6 +108,9 @@
 }
 :root[data-theme='light'] .mf-lattice {
   color: rgba(150, 115, 31, 0.52);
+}
+:root[data-theme='light'] .mf-lantern {
+  color: rgba(159, 48, 36, 0.5);
 }
 
 /* ===== 出场两式 ===== */
@@ -284,6 +294,37 @@
     transform: scale(1.055);
   }
 }
+/* 引路灯笼：悬绳自顶轻摆，绳头为支点 */
+.mf-idle-lantern {
+  transform-origin: 50% 0%;
+  animation: mfLanternSway 7.4s ease-in-out 2.2s infinite;
+}
+@keyframes mfLanternSway {
+  0%,
+  100% {
+    transform: rotate(-1.5deg);
+  }
+  50% {
+    transform: rotate(1.5deg);
+  }
+}
+/* 大灯光晕：如烛火吐息 */
+.mf-idle-lantern-glow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mfLanternGlow 4.6s ease-in-out 1.6s infinite;
+}
+@keyframes mfLanternGlow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: var(--o, 0.09);
+  }
+  50% {
+    transform: scale(1.14);
+    opacity: calc(var(--o, 0.09) * 1.5);
+  }
+}
 /* 落瓣：一片循环飘坠 */
 .mf-petal-fall {
   animation: mfPetalFall 7.5s ease-in 2.8s infinite;
@@ -424,6 +465,13 @@
   height: 11px;
   border-radius: 999px;
   background: radial-gradient(circle, currentColor 0 22%, rgba(var(--red-rgb), 0) 32%, transparent 72%);
+}
+/* 火石：灯下飞溅的一点微光 */
+.mf-p-spark {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: radial-gradient(circle, currentColor 0 28%, transparent 76%);
 }
 
 /* 窄屏：留白不足，影戏收箱 */

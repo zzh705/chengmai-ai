@@ -442,7 +442,7 @@ body.cover-mode #corner{opacity:0}
       <div class="seal stamp">追光</div>
       <div class="cover-meta">
         追光小队 · 周子昊　马占赟　李思雨<br>
-        <span class="small">指导教师：于静 教授　赵米傲 讲师　｜　2026 华北五省（市、自治区）及港澳台大学生计算机应用大赛 · 天津赛区</span>
+        <span class="small">2026 华北五省（市、自治区）及港澳台大学生计算机应用大赛 · 天津赛区</span>
       </div>
     </div>
   </section>
@@ -791,22 +791,22 @@ body.cover-mode #corner{opacity:0}
     <div class="films">
       <div class="film anim d2">
         <div class="win"><div class="win-bar"><i></i><i></i><i></i></div>
-          <div class="win-body"><video src="assets/p11-kunqu.webm" muted loop autoplay playsinline preload="metadata"></video><div class="cc">CC BY 3.0</div><div class="dur">03:41</div></div></div>
+          <div class="win-body"><video src="assets/p11-kunqu.webm" muted loop playsinline preload="metadata"></video><div class="cc">CC BY 3.0</div><div class="dur">03:41</div></div></div>
         <h4>昆曲</h4><p>百戏之祖，水磨腔调婉转六百年</p>
       </div>
       <div class="film anim d3">
         <div class="win"><div class="win-bar"><i></i><i></i><i></i></div>
-          <div class="win-body"><video src="assets/p11-jianzhi.webm" muted loop autoplay playsinline preload="metadata"></video><div class="cc">CC BY 3.0</div><div class="dur">04:01</div></div></div>
+          <div class="win-body"><video src="assets/p11-jianzhi.webm" muted loop playsinline preload="metadata"></video><div class="cc">CC BY 3.0</div><div class="dur">04:01</div></div></div>
         <h4>剪纸</h4><p>一剪之巧，红纸生花夺天工</p>
       </div>
       <div class="film anim d4">
         <div class="win"><div class="win-bar"><i></i><i></i><i></i></div>
-          <div class="win-body"><video src="assets/p11-piying.webm" muted loop autoplay playsinline preload="metadata"></video><div class="cc">CC BY-SA 4.0</div><div class="dur">00:19</div></div></div>
+          <div class="win-body"><video src="assets/p11-piying.webm" muted loop playsinline preload="metadata"></video><div class="cc">CC BY-SA 4.0</div><div class="dur">00:19</div></div></div>
         <h4>皮影</h4><p>一口叙说千古事，双手对舞百万兵</p>
       </div>
       <div class="film anim d5">
         <div class="win"><div class="win-bar"><i></i><i></i><i></i></div>
-          <div class="win-body"><video src="assets/p11-zharan.webm" muted loop autoplay playsinline preload="metadata"></video><div class="cc">CC BY 4.0</div><div class="dur">01:07</div></div></div>
+          <div class="win-body"><video src="assets/p11-zharan.webm" muted loop playsinline preload="metadata"></video><div class="cc">CC BY 4.0</div><div class="dur">01:07</div></div></div>
         <h4>扎染</h4><p>大理风物，蓝白之间染出人间烟火</p>
       </div>
     </div>
@@ -959,23 +959,6 @@ body.cover-mode #corner{opacity:0}
         </div>
       </div>
     </div>
-    <div class="teacher-label anim d3">指 导 教 师 · 为 学 与 工 程 双 护 航</div>
-    <div class="teacher-row anim d4">
-      <div class="tcard">
-        <div class="av">于</div>
-        <div>
-          <div class="tname">于 静<span class="ttitle">教授</span></div>
-          <p>负责选题论证与总体方向把关，指导知识工程方法、内容严谨性与学术规范，为作品的文化底色与可信底座定向。</p>
-        </div>
-      </div>
-      <div class="tcard">
-        <div class="av">赵</div>
-        <div>
-          <div class="tname">赵米傲<span class="ttitle">讲师</span></div>
-          <p>负责工程实现与系统架构指导，协调开发资源并指导竞赛组织事务，护航从原型到公网运行的全程落地。</p>
-        </div>
-      </div>
-    </div>
   </section>
 
   <!-- ============ 16 封底 ============ -->
@@ -1044,12 +1027,16 @@ body.cover-mode #corner{opacity:0}
         var ext = exts[i];
         var url = 'assets/'+slot+'.'+ext;
         fetch(url,{method:'HEAD',cache:'no-store'}).then(function(r){
-          if(r.status===404){ tryExt(i+1); return; }
+          // SPA 兜底会把不存在的文件也返回 200(text/html)，必须用 Content-Type 判真伪
+          var ct = (r.headers.get('content-type')||'').toLowerCase();
+          var isVideo = (ext==='mp4'||ext==='webm');
+          var ok = !r.ok ? false : (isVideo ? ct.indexOf('video/')===0 : ct.indexOf('image/')===0);
+          if(!ok){ tryExt(i+1); return; }
           var badge = document.createElement('span');
           badge.className = 'slot-badge';
           if(ext==='mp4'||ext==='webm'){
             var v = document.createElement('video');
-            v.src=url+'?v=1'; v.muted=true; v.loop=true; v.autoplay=true; v.playsInline=true;
+            v.src=url+'?v=1'; v.muted=true; v.loop=true; v.playsInline=true;
             v.preload='auto'; v.setAttribute('aria-label',slot+' 操作录屏');
             body.innerHTML=''; body.classList.add('media-ok'); body.appendChild(v);
             body.appendChild(badge); body.dataset.done='1';
@@ -1073,7 +1060,13 @@ body.cover-mode #corner{opacity:0}
 
   function show(n){
     idx = Math.max(0, Math.min(slides.length-1, n));
+    // 暂停非当前页的视频（保留播放位置），当前页视频从上次位置继续播放
+    slides.forEach(function(s,i){
+      if(i===idx) return;
+      s.querySelectorAll('video').forEach(function(v){ v.pause(); });
+    });
     slides.forEach(function(s,i){ s.classList.toggle('active', i===idx); });
+    slides[idx].querySelectorAll('video').forEach(function(v){ v.play().catch(function(){}); });
     var noChrome = slides[idx].getAttribute('data-chrome') === '0';
     document.body.classList.toggle('cover-mode', noChrome);
     document.getElementById('pn').textContent = idx+1;

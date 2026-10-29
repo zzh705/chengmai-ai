@@ -1,9 +1,14 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：核心原创：无 URL 路由库的纯内部状态十页导航骨架、入馆动画衔接与跨页视频/音频生命周期管理
+ */
 import { useLayoutEffect, useState } from 'react'
 import { flushSync } from 'react-dom'
 import Splash from './components/Splash'
 import About from './pages/About'
 import Chat from './pages/Chat'
 import Challenge from './pages/Challenge'
+import Guide from './pages/Guide'
 import Home from './pages/Home'
 import Knowledge from './pages/Knowledge'
 import KnowledgeGraph from './pages/KnowledgeGraph'
@@ -18,6 +23,7 @@ import { clearSession, getSession } from './utils/auth'
 
 type Page =
   | 'home'
+  | 'guide'
   | 'chat'
   | 'knowledge'
   | 'graph'
@@ -55,6 +61,7 @@ if (HAS_VIEW_TRANSITION) document.documentElement.classList.add('has-vt')
  */
 const MOOD: Record<string, { in: string; dur: string; a: string; b: string }> = {
   home: { in: 'vtInFade', dur: '0.44s', a: '#e8c56b', b: '#b03a2e' },
+  guide: { in: 'vtInInk', dur: '0.6s', a: '#e8c56b', b: '#b03a2e' },
   chat: { in: 'vtInFade', dur: '0.46s', a: '#e8c56b', b: '#b03a2e' },
   knowledge: { in: 'vtInRise', dur: '0.5s', a: '#e8c56b', b: '#4f8f7b' },
   graph: { in: 'vtInRise', dur: '0.5s', a: '#e8c56b', b: '#4f8f7b' },
@@ -189,6 +196,22 @@ function App() {
             </button>
           ))}
         </div>
+        <button
+          type="button"
+          className={`app-guide-btn ${page === 'guide' ? 'active' : ''}`}
+          aria-current={page === 'guide' ? 'page' : undefined}
+          onClick={() => navigate('guide')}
+          title="新手指引 · 十一站逛馆"
+        >
+          <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round">
+            <path d="M3.2 3.2h9.6" />
+            <path d="M5.2 3.2v1.2M10.8 3.2v1.2" />
+            <rect x="3.9" y="4.4" width="8.2" height="8.6" rx="3.4" />
+            <path d="M8 13v1.8" />
+            <path d="M7.1 16.2l.9-.9.9.9" />
+          </svg>
+          <span>新手指引</span>
+        </button>
         <ThemeToggle />
       </nav>
       {/* 路由金线：每次切页重挂载，自左向右扫过后淡出（转场指示器） */}
@@ -204,6 +227,7 @@ function App() {
       <main className="app-body" id="main-content" tabIndex={-1}>
         <div key={page} className="page-transition">
           {page === 'home' && <Home onNavigate={navigate} entered={!splash} />}
+          {page === 'guide' && <Guide onNavigate={navigate} onExit={() => navigate('home')} />}
           {page === 'chat' && <Chat initialQuery={chatQuery} />}
           {/* key 随参数重挂载：关键词预填/详情打开都由初始状态承担，避免 effect 同步 setState */}
           {page === 'knowledge' && (

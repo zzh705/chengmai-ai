@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：账号接口客户端：实名注册/登录与令牌管理
+ */
 /** 账号接口：POST /api/auth/register · POST /api/auth/login */
 import { API_BASE } from './base'
 

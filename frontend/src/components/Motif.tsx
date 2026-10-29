@@ -1,28 +1,33 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：核心原创：六页六种中华剪影体系（水袖/墨竹/书山卷阶/令旗/远山飞鹤/冰梅窗棂），指针视差吐纳、点击粒子回礼
+ */
 import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react'
 import '../styles/motif.css'
 
 /**
  * 中华剪影（Motif）：在内容列两侧留白处立一页「水墨影戏」。
- * 六种图案各页不同，杜绝审美疲劳：
+ * 七种图案各页不同，杜绝审美疲劳：
  *  opera    水袖舞人（活化实验室） bamboo  墨竹（承脉 AI，色随问答模式流转）
  *  steps    书山卷阶（学习路径）   banner  令旗飘幡（非遗挑战）
  *  mountain 远岭飞鹤（非遗知识库） lattice 冰梅窗棂（传承档案）
+ *  lantern  引路灯笼（新手指引）
  *
  * 出场：毛笔逐笔描边（stroke-dashoffset  stagger 落笔），墨色随后晕开，
  *       整幅自纸下轻轻浮起，不呆立。
- * 呼吸：各页专属微动（袖扬/竹摇/星吐/旗扬/鹤游/梅落），只动 transform/opacity。
+ * 呼吸：各页专属微动（袖扬/竹摇/星吐/旗扬/鹤游/梅落/灯摆），只动 transform/opacity。
  * 随行：页面滚动时剪影以不同速率缓缓跟移（左慢右略快），如远山随人。
  * 交互：指针近侧视差吐纳；点击本体回一式并迸出几粒对应符号。
  * 纯装饰：aria-hidden，窄屏隐去，prefers-reduced-motion 全静态。
  */
 
-export type MotifKind = 'opera' | 'bamboo' | 'steps' | 'banner' | 'mountain' | 'lattice'
+export type MotifKind = 'opera' | 'bamboo' | 'steps' | 'banner' | 'mountain' | 'lattice' | 'lantern'
 
 /** 入场节拍：--d 为落笔时刻，--o 为墨色终值 */
 const v = (d: string, o?: number): CSSProperties =>
   ({ '--d': d, ...(o !== undefined ? { '--o': o } : {}) }) as CSSProperties
 
-/* ---- 六组写意 SVG，均以 200×560 竖向取景，currentColor 由 CSS 给色 ---- */
+/* ---- 【承脉 AI 原创】六组写意中华剪影 SVG，均以 200×560 竖向取景，currentColor 由 CSS 给色 ---- */
 
 const OPERA = (
   <>
@@ -402,6 +407,112 @@ const LATTICE = (
   </>
 )
 
+/* 引路灯笼：一绳三盏，自下而上渐小渐远（近大远小），
+   寓意导览层层递进：大灯当前站，两盏在前引路。 */
+function LanternUnit({
+  cx,
+  cy,
+  rx,
+  ry,
+  d,
+  glow,
+}: {
+  cx: number
+  cy: number
+  rx: number
+  ry: number
+  d: number
+  glow?: boolean
+}) {
+  const capW = rx * 0.66
+  const gap = ry + 5
+  const tas = ry * 0.52
+  const t = (s: number, o?: number) => v(`${d + s}s`, o)
+  return (
+    <g transform={`translate(${cx} ${cy})`}>
+      {glow && (
+        <circle className="mf-idle mf-idle-lantern-glow mf-ink" cx="0" cy="0" r={rx * 1.6} style={t(0.06, 0.09)} />
+      )}
+      {/* 笼身：外廓与内骨各一笔 */}
+      <ellipse className="mf-ink" cx="0" cy="0" rx={rx} ry={ry} style={t(0.1, 0.11)} />
+      <path
+        className="mf-draw"
+        style={t(0)}
+        pathLength={1}
+        d={`M ${-rx} 0 A ${rx} ${ry} 0 1 0 ${rx} 0 A ${rx} ${ry} 0 1 0 ${-rx} 0`}
+        fill="none"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+      <path
+        className="mf-draw mf-faint"
+        style={t(0.18)}
+        pathLength={1}
+        d={`M ${-rx * 0.55} 0 A ${rx * 0.55} ${ry * 0.92} 0 1 0 ${rx * 0.55} 0`}
+        fill="none"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+      />
+      {/* 上下杵与穗 */}
+      <path
+        className="mf-draw"
+        style={t(0.28)}
+        pathLength={1}
+        d={`M ${-capW} ${-gap} H ${capW}`}
+        fill="none"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+      <path
+        className="mf-draw"
+        style={t(0.34)}
+        pathLength={1}
+        d={`M 0 ${-gap} V ${-gap - 5}`}
+        fill="none"
+        strokeWidth="2.6"
+        strokeLinecap="round"
+      />
+      <path
+        className="mf-draw"
+        style={t(0.4)}
+        pathLength={1}
+        d={`M ${-capW * 0.7} ${gap} H ${capW * 0.7}`}
+        fill="none"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+      <path
+        className="mf-draw"
+        style={t(0.46)}
+        pathLength={1}
+        d={`M 0 ${gap} V ${gap + tas}`}
+        fill="none"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+      />
+      <circle className="mf-ink" cx="0" cy={gap + tas + 2.6} r="2.6" style={t(0.54, 0.8)} />
+    </g>
+  )
+}
+
+const LANTERN = (
+  <g className="mf-idle mf-idle-lantern">
+    {/* 悬绳一笔到底 */}
+    <path
+      className="mf-draw mf-faint"
+      style={v('0.05s')}
+      pathLength={1}
+      d="M100 8 V 478"
+      fill="none"
+      strokeWidth="2.4"
+      strokeLinecap="round"
+    />
+    <LanternUnit cx={100} cy={132} rx={10} ry={13} d={0.16} />
+    <LanternUnit cx={100} cy={288} rx={15} ry={20} d={0.74} />
+    <LanternUnit cx={100} cy={448} rx={20} ry={27} d={1.34} glow />
+  </g>
+)
+
 const KIND_SVG: Record<MotifKind, ReactNode> = {
   opera: OPERA,
   bamboo: BAMBOO,
@@ -409,6 +520,7 @@ const KIND_SVG: Record<MotifKind, ReactNode> = {
   banner: BANNER,
   mountain: MOUNTAIN,
   lattice: LATTICE,
+  lantern: LANTERN,
 }
 
 /** 点击迸出的粒子符号：每页一种，不重样 */
@@ -419,6 +531,7 @@ const PARTICLE_CLASS: Record<MotifKind, string> = {
   banner: 'mf-p-seal',
   mountain: 'mf-p-feather',
   lattice: 'mf-p-bloom',
+  lantern: 'mf-p-spark',
 }
 
 /**

@@ -1,3 +1,7 @@
+/**
+ * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+ * 原创点：知识图谱接口客户端
+ */
 /** 知识图谱接口（GET /api/graph, GET /api/graph/{id}） */
 import { API_BASE } from './base'
 

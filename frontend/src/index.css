@@ -284,6 +284,46 @@ textarea {
   }
 }
 
+/* 新手指引钮：朱红描边小灯钮，与主题钮并肩；进入指引页时点亮成灯笼红 */
+.app-nav button.app-guide-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border: 1px solid rgba(var(--red-rgb), 0.55);
+  border-radius: 999px;
+  background: rgba(var(--red-rgb), 0.07);
+  color: var(--vermilion);
+  font-size: 12px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    background-color 0.2s,
+    border-color 0.2s,
+    transform 0.2s var(--ease-out);
+}
+.app-nav button.app-guide-btn:hover {
+  background: rgba(var(--red-rgb), 0.14);
+  transform: translateY(-1px);
+}
+.app-nav button.app-guide-btn.active {
+  background: var(--vermilion);
+  border-color: var(--vermilion);
+  color: var(--on-brand);
+  box-shadow: 0 4px 14px rgba(var(--red-rgb), 0.35);
+  animation: none;
+}
+@media (max-width: 960px) {
+  .app-nav button.app-guide-btn span {
+    display: none;
+  }
+  .app-nav button.app-guide-btn {
+    padding: 7px 9px;
+  }
+}
+
 /* 页面切换动效：上浮 + 方向位移 + 轻微缩放（方向由 --vt-x 驱动，仅用合成层属性） */
 .page-transition {
   flex: 1;

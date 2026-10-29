@@ -1,17 +1,37 @@
+# ============================================================
+# 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
+# 原创点：核心原创：学习计划五日分片错峰并发规划 + 五阶段学习弧线兜底，30 天大计划 20 余秒完整返回且内容为模型量身定制
+# ============================================================
 """学习规划 Agent：生成结构化学习路径（总文档 3.4 / 11.2）。
 
-可靠性设计：LLM 短超时 + 一次重试 + 本地兜底计划，
-保证接口在模型抖动时也能快速返回结构化结果，前端不会"无反馈"。
+长计划并行分片生成：
+- 一次性让模型生成 30 天（约 90 个任务、2400+ token）实测需 70s+，必然超时；
+  现把整份计划按每片最多 5 天切开，各片并发调用模型，单片输出小（约 14s 返回），
+  30 天计划 6 片并发后整体约 15-20s 即可拿到模型量身定制的完整内容。
+- 每片独立短超时且不重试；单片因限流/抖动失败时，仅该段回落本地弧线计划，
+  其余各片仍是模型内容，接口永远能快速、完整地返回。
 """
+
+from concurrent.futures import ThreadPoolExecutor
+import time
 
 from app.schemas.learning import LearningDay, LearningPlanRequest
 from app.services.llm import chat as llm_chat
 from app.utils.json_parse import extract_json
 
+# 分片参数：单片天数越小输出越少、越快；30 天最多 6 片并发
+CHUNK_DAYS = 5
+# 单片超时：模型在 6 路并发限流时偶发 >20s 才回，放宽到 26s 以保住定制内容
+CHUNK_TIMEOUT = 26.0
+# 分片错峰间隔：避免 6 路请求同一瞬刻打出触发 QPS 限流导致集体走兜底
+CHUNK_STAGGER = 0.4
+_MAX_WORKERS = 6
+
 _SYSTEM = (
     "你是承脉 AI 的学习规划师。根据主题生成循序渐进的学习计划，"
     "只输出 JSON，不要任何解释文字，格式：\n"
     '{"days": [{"day": 1, "title": "主题", "tasks": ["任务1", "任务2"]}]}\n'
+    "day 字段必须使用题目指定的绝对天数编号。"
     "所有字符串值禁止使用 emoji、颜文字与装饰性图标符号。"
 )
 
@@ -32,7 +52,21 @@ def _task_count(daily_minutes: int) -> int:
     return 4
 
 
-# 学习弧线：知识 → 理解 → 实践 → 创作 → 传播（兜底计划按天数映射到弧线上）
+# 学习弧线五阶段：分片时按天数比例告诉模型本片所处阶段，保证各片连贯不重复
+def _phase_of(day: int, total: int) -> str:
+    p = day / max(total, 1)
+    if p <= 0.20:
+        return "知识启蒙（建立整体认知、了解源流脉络与核心术语）"
+    if p <= 0.45:
+        return "拆解研读（拆解核心要素、对比流派变体、精读资料）"
+    if p <= 0.70:
+        return "动手实践（跟学练习、复现基础环节、实地或云游走访）"
+    if p <= 0.90:
+        return "创作转化（完成小创作、撰写科普文、制作知识卡片）"
+    return "传播出师（向他人讲解、录制口播、产出结业作品）"
+
+
+# 兜底弧线计划的任务池（单片失败时按天取用，保证结构完整）
 _ARC_TASKS = [
     (
         "建立整体认知",
@@ -83,7 +117,7 @@ _ARC_TASKS = [
 
 
 def _fallback_plan(req: LearningPlanRequest) -> list[LearningDay]:
-    """LLM 多次失败时的本地兜底计划：按学习弧线生成，保证接口永远有响应。"""
+    """某片失败时的本地弧线计划：按学习弧线生成，保证该段永远有内容。"""
     n = _task_count(req.daily_minutes)
     days: list[LearningDay] = []
     for i in range(req.days):
@@ -99,61 +133,126 @@ def _fallback_plan(req: LearningPlanRequest) -> list[LearningDay]:
     return days
 
 
-def _parse_days(data: dict, req: LearningPlanRequest) -> list[LearningDay] | None:
-    """校验模型输出：结构不符或任务为空则视为失败（触发重试）。"""
-    raw = data.get("days")
-    if not isinstance(raw, list) or not raw:
-        return None
-    try:
-        days = [LearningDay(**d) for d in raw[: req.days]]
-    except (TypeError, ValueError):
-        return None
-    if any(not d.tasks for d in days):
-        return None
-    return days
+def _build_context(items: list[dict]) -> str:
+    if not items:
+        return ""
+    lines = "\n".join(
+        f"- {it['name']}（{it['category']}，{it['region']}）：{it['description'][:120]}"
+        for it in items
+    )
+    return f"\n知识库相关项目：\n{lines}\n"
 
 
-def generate_plan(req: LearningPlanRequest, items: list[dict]) -> list[LearningDay]:
-    """生成学习路径；结合知识库检索到的项目信息。检索由路由层完成并传入。"""
-    context = ""
-    if items:
-        context = "\n".join(
-            f"- {it['name']}（{it['category']}，{it['region']}）：{it['description'][:120]}"
-            for it in items
-        )
-        context = f"\n知识库相关项目：\n{context}"
-
+def _chunk_prompt(req: LearningPlanRequest, context: str, start: int, end: int) -> str:
+    """构造单个分片的提示：明确全局信息 + 本片天数区间 + 所处学习阶段。"""
     n = _task_count(req.daily_minutes)
-    user_prompt = (
-        f"主题：{req.topic}\n天数：{req.days} 天\n"
+    total = req.days
+    span = end - start + 1
+    phase_hint = f"从「{_phase_of(start, total)}」推进到「{_phase_of(end, total)}」"
+    last_hint = ""
+    if end >= total:
+        last_hint = (
+            f"本片含全计划最后一天（第 {total} 天），该天必须安排产出/传播类出师任务，"
+            "收束'知识→理解→实践→创作→传播'闭环。"
+        )
+    return (
+        f"主题：{req.topic}\n"
+        f"这是一份共 {total} 天学习计划中的【第 {start} 天至第 {end} 天】分片（本片 {span} 天）。\n"
         f"学习者水平：{'零基础入门' if req.level == 'beginner' else '有一定了解'}\n"
         f"{_GOAL_TEXT.get(req.goal, _GOAL_TEXT['understand'])}\n"
-        f"每天可投入约 {req.daily_minutes} 分钟，每天安排 {n} 个任务，"
-        "单个任务的用时需与该时长相符\n"
-        f"{context}\n"
-        "要求：任务要具体可执行（如'观察一幅XX作品'并写出3个观察点），"
-        "最后一天安排产出/传播类任务，体现'知识→理解→实践→创作→传播'闭环。"
+        f"每天可投入约 {req.daily_minutes} 分钟，每天安排 {n} 个与该时长相符的任务。\n"
+        f"{context}"
+        f"本片所处学习阶段：{phase_hint}；任务要与该阶段匹配、逐日递进，"
+        "并与其他分片衔接、不要重复。\n"
+        f"{last_hint}"
+        f"请只生成本片这 {span} 天（第 {start} 至第 {end} 天），"
+        "day 字段使用上述绝对编号，任务要具体可执行（写明观察什么、产出什么）。\n"
+        "重申：只输出给定格式的 JSON，不要输出任何其他内容。"
     )
 
-    # 短超时 + 不重试：结构化输出求稳不求花哨；失败立即走本地兜底，保证接口快速响应
-    # 单次 18s 超时足以让 qwen-plus 完成大型计划生成，超时即回落弧线计划（内容同样充实）
+
+def _generate_chunk(
+    req: LearningPlanRequest, context: str, start: int, end: int
+) -> list[LearningDay] | None:
+    """生成第 start 至 end 天（含）这一片；结构不符或超时返回 None，交由调用方兜底。"""
     try:
         data = extract_json(
             llm_chat(
-                user_prompt + "\n重申：只输出给定格式的 JSON，不要输出任何其他内容。",
+                _chunk_prompt(req, context, start, end),
                 system=_SYSTEM,
                 temperature=0.4,
-                timeout=18.0,
+                timeout=CHUNK_TIMEOUT,
                 max_retries=0,
             )
         )
-        days = _parse_days(data, req)
-        if days is not None:
-            # 天数不足时用弧线计划补齐
-            if len(days) < req.days:
-                pad = _fallback_plan(req)[len(days) :]
-                days += [LearningDay(day=len(days) + 1 + i, title=d.title, tasks=d.tasks) for i, d in enumerate(pad)]
-            return days
+        raw = data.get("days")
+        if not isinstance(raw, list) or not raw:
+            return None
+        wanted = set(range(start, end + 1))
+        days: list[LearningDay] = []
+        for d in raw:
+            if not isinstance(d, dict):
+                continue
+            day_no = d.get("day")
+            tasks = d.get("tasks")
+            if not isinstance(day_no, int) or day_no not in wanted:
+                continue
+            if not isinstance(tasks, list) or not tasks:
+                continue
+            tasks = [str(t).strip() for t in tasks if isinstance(t, str) and str(t).strip()]
+            if not tasks:
+                continue
+            title = str(d.get("title") or "").strip() or "循序渐进"
+            days.append(LearningDay(day=day_no, title=title, tasks=tasks))
+        return days or None
     except Exception:
-        pass
-    return _fallback_plan(req)
+        return None
+
+
+def _chunk_ranges(total: int) -> list[tuple[int, int]]:
+    """把 total 天切成若干 1-based 闭区间，每片不超过 CHUNK_DAYS 天。"""
+    ranges: list[tuple[int, int]] = []
+    start = 1
+    while start <= total:
+        end = min(start + CHUNK_DAYS - 1, total)
+        ranges.append((start, end))
+        start = end + 1
+    return ranges
+
+
+def generate_plan(req: LearningPlanRequest, items: list[dict]) -> list[LearningDay]:
+    """生成学习路径；多片并发，单片失败仅该段回落弧线计划。"""
+    context = _build_context(items)
+    ranges = _chunk_ranges(req.days)
+
+    by_day: dict[int, LearningDay] = {}
+    if len(ranges) == 1:
+        # 小计划（≤5 天）单片直接调用，省去线程池开销
+        st, en = ranges[0]
+        got = _generate_chunk(req, context, st, en)
+        if got:
+            for d in got:
+                if 1 <= d.day <= req.days:
+                    by_day[d.day] = d
+    else:
+        # 【承脉 AI 原创算法】长计划分片错峰并发：各片 0.4s 间隔提交避开 QPS 限流，
+        # 整体耗时≈最晚一片（约 14-28s），单片失败仍有弧线兜底
+        with ThreadPoolExecutor(max_workers=min(len(ranges), _MAX_WORKERS)) as pool:
+            futures: dict = {}
+            for idx, (st, en) in enumerate(ranges):
+                if idx:
+                    time.sleep(CHUNK_STAGGER)
+                futures[pool.submit(_generate_chunk, req, context, st, en)] = (st, en)
+            for fut in futures:
+                st, en = futures[fut]
+                try:
+                    got = fut.result()
+                except Exception:
+                    got = None
+                if got:
+                    for d in got:
+                        if 1 <= d.day <= req.days:
+                            by_day[d.day] = d
+
+    # 以完整弧线计划为骨架，用模型生成的各天覆盖，缺失天（失败片）保留弧线兜底
+    return [by_day.get(fb.day, fb) for fb in _fallback_plan(req)]

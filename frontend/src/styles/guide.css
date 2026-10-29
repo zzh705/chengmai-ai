@@ -1,0 +1,440 @@
+/* ===== 新手指引：十一站层层递进导览 ===== */
+/* 排版层级：题头 → 灯线进度 → 站牌（文案 + 字印）→ 页脚；只动 transform/opacity */
+
+.guide-page {
+  position: relative;
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 34px 32px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  box-sizing: border-box;
+}
+
+/* ---- 题头 ---- */
+.guide-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.guide-head h1 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  color: var(--paper);
+}
+.guide-head p {
+  margin: 8px 0 0;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: var(--ink-faint);
+}
+.guide-head-acts {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.guide-done-seal {
+  padding: 4px 10px;
+  border: 1px solid rgba(var(--gold-rgb), 0.5);
+  border-radius: var(--r-pill);
+  color: var(--gold);
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+.guide-close {
+  padding: 7px 16px;
+  border: 1px solid var(--gold);
+  border-radius: var(--r-pill);
+  background: rgba(var(--gold-rgb), 0.08);
+  color: var(--gold);
+  font-size: 13px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.2s var(--ease-out);
+}
+.guide-close:hover {
+  background: rgba(var(--gold-rgb), 0.16);
+  transform: translateY(-1px);
+}
+
+/* ---- 灯线进度：走过的路描金点亮 ---- */
+.guide-steps {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.guide-steps::-webkit-scrollbar {
+  display: none;
+}
+.guide-track {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  min-width: 792px;
+  padding: 0 2px;
+}
+.guide-line {
+  position: absolute;
+  top: 17px;
+  left: 36px;
+  right: 36px;
+  height: 2px;
+  border-radius: var(--r-pill);
+  background: var(--ink-3);
+}
+.guide-line i {
+  display: block;
+  height: 100%;
+  border-radius: var(--r-pill);
+  background: linear-gradient(90deg, rgba(var(--gold-rgb), 0.55), var(--gold));
+  transition: width 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.guide-stop {
+  position: relative;
+  z-index: 1;
+  width: 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+}
+.guide-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-3);
+  background: var(--ink);
+  color: var(--ink-faint);
+  font-family: var(--font-serif);
+  font-size: 12px;
+  letter-spacing: 1px;
+  transition:
+    border-color 0.25s,
+    color 0.25s,
+    background-color 0.25s,
+    transform 0.2s var(--ease-out);
+}
+.guide-stop-name {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--ink-faint);
+  white-space: nowrap;
+  transition: color 0.25s;
+}
+.guide-stop:hover .guide-dot {
+  border-color: var(--gold);
+  color: var(--gold);
+  transform: translateY(-2px);
+}
+.guide-stop:hover .guide-stop-name {
+  color: var(--ink-soft);
+}
+/* 走过的站：金圈 */
+.guide-stop.is-past .guide-dot {
+  border-color: var(--gold);
+  background: rgba(var(--gold-rgb), 0.1);
+  color: var(--gold);
+}
+/* 当前站：朱红灯，微微吐纳 */
+.guide-stop.is-now .guide-dot {
+  border-color: var(--vermilion);
+  background: var(--vermilion);
+  color: var(--on-brand);
+  box-shadow: 0 0 0 4px rgba(var(--red-rgb), 0.14), 0 4px 14px rgba(var(--red-rgb), 0.35);
+  animation: gdPulse 2.6s ease-in-out infinite;
+}
+@keyframes gdPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 4px rgba(var(--red-rgb), 0.14), 0 4px 14px rgba(var(--red-rgb), 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 7px rgba(var(--red-rgb), 0.06), 0 4px 16px rgba(var(--red-rgb), 0.5);
+  }
+}
+.guide-stop.is-now .guide-stop-name {
+  color: var(--vermilion);
+}
+
+/* ---- 站牌 ---- */
+.guide-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 232px;
+  gap: 30px;
+  align-items: center;
+  padding: 36px 40px;
+  border: 1px solid var(--ink-2);
+  border-radius: 16px;
+  background:
+    radial-gradient(120% 150% at 100% 0%, rgba(var(--gold-rgb), 0.06), transparent 55%),
+    var(--ink-1);
+  overflow: hidden;
+  animation: gdIn 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@keyframes gdIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* 站台主色一览：卡顶一道细线随站换色 */
+.guide-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gd-accent, var(--gold));
+  transform-origin: left;
+  animation: gdLine 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes gdLine {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.guide-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.guide-no {
+  font-family: var(--font-serif);
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--ink-faint);
+}
+.guide-tag {
+  padding: 2px 10px;
+  border: 1px solid var(--gd-accent, var(--gold));
+  border-radius: var(--r-pill);
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--gd-accent, var(--gold));
+}
+.guide-card h2 {
+  margin: 0 0 10px;
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--paper);
+}
+.guide-copy {
+  margin: 0 0 20px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--ink-soft);
+}
+.guide-pts {
+  margin: 0 0 26px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.guide-pts li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+.guide-pts li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  background: var(--gd-accent, var(--gold));
+  transform: rotate(45deg);
+}
+.guide-acts {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.guide-acts button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  font-family: inherit;
+  transition:
+    transform 0.2s var(--ease-out),
+    border-color 0.2s,
+    background-color 0.2s,
+    color 0.2s;
+}
+.guide-prev,
+.guide-next {
+  border: 1px solid var(--ink-3);
+  background: transparent;
+  color: var(--ink-soft);
+}
+.guide-prev:hover:not(:disabled),
+.guide-next:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  transform: translateY(-1px);
+}
+.guide-prev:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.guide-go {
+  border: 1px solid var(--vermilion);
+  background: var(--vermilion);
+  color: var(--on-brand);
+  box-shadow: 0 4px 14px rgba(var(--red-rgb), 0.3);
+}
+.guide-go:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 18px rgba(var(--red-rgb), 0.38);
+}
+
+/* ---- 字印站牌 ---- */
+.guide-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.guide-seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 118px;
+  height: 118px;
+  border: 2px solid var(--gd-accent, var(--gold));
+  border-radius: 50%;
+  font-family: var(--font-serif);
+  font-size: 56px;
+  line-height: 1;
+  color: var(--gd-accent, var(--gold));
+  background: radial-gradient(circle at 50% 42%, rgba(var(--gold-rgb), 0.1), transparent 72%);
+}
+.guide-seal-note {
+  font-family: var(--font-kai);
+  font-style: normal;
+  font-size: 16px;
+  letter-spacing: 4px;
+  color: var(--ink-soft);
+}
+.guide-seal-count {
+  font-family: var(--font-serif);
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--ink-faint);
+}
+
+/* ---- 页脚 ---- */
+.guide-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--ink-faint);
+}
+.guide-restart {
+  padding: 0;
+  border: none;
+  border-bottom: 1px dashed var(--ink-3);
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 12px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.2s, border-color 0.2s;
+}
+.guide-restart:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+
+/* ---- 响应式 ---- */
+@media (max-width: 860px) {
+  .guide-page {
+    padding: 26px 18px 40px;
+  }
+  .guide-card {
+    grid-template-columns: 1fr;
+    padding: 28px 24px;
+  }
+  .guide-panel {
+    flex-direction: row;
+    justify-content: center;
+    gap: 16px;
+  }
+  .guide-seal {
+    width: 76px;
+    height: 76px;
+    font-size: 38px;
+  }
+  .guide-seal-count {
+    display: none;
+  }
+}
+@media (max-width: 480px) {
+  .guide-head h1 {
+    font-size: 26px;
+  }
+  .guide-acts {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .guide-acts button {
+    width: 100%;
+  }
+}
+
+/* 无障碍：减少动态 */
+@media (prefers-reduced-motion: reduce) {
+  .guide-card {
+    animation: none;
+  }
+  .guide-card::before {
+    animation: none;
+  }
+  .guide-stop.is-now .guide-dot {
+    animation: none;
+  }
+  .guide-line i {
+    transition: none;
+  }
+}
