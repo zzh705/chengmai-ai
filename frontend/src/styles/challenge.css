@@ -752,3 +752,31 @@
     font-size: 12px;
   }
 }
+
+@media (max-width: 480px) {
+  /* 徽章栅格降为两列，解锁进度条不显拥挤 */
+  .ch-badges {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  /* 分主题战绩：主题名独占一行，进度条与数值并排 */
+  .ch-topic {
+    flex-wrap: wrap;
+  }
+  .ch-topic-name {
+    width: 100%;
+  }
+  .ch-topic-stat {
+    width: auto;
+  }
+  /* 每日一题头：主题长名与抽题钮换行 */
+  .ch-daily-head {
+    flex-wrap: wrap;
+  }
+  /* 本周打卡：窄屏收小字号，避免「已打卡」在 35px 格内折行 */
+  .ch-week-day b {
+    font-size: 15px;
+  }
+  .ch-week-day em {
+    font-size: 11px;
+  }
+}

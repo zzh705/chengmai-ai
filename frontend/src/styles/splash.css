@@ -219,3 +219,28 @@
     transition: none;
   }
 }
+
+/* 极小屏（≤480px）：主字再收紧、印章缩小贴边、跳过钮让出底条安全区 */
+@media (max-width: 480px) {
+  .splash-word {
+    font-size: 40px;
+    letter-spacing: 12px;
+    text-indent: 12px;
+  }
+  .splash-seal {
+    top: 26px;
+    right: 4px;
+    width: 44px;
+    height: 44px;
+    font-size: 13px;
+  }
+  .splash-sub {
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-indent: 4px;
+  }
+  .splash-skip {
+    right: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+}

@@ -819,3 +819,115 @@
     animation: none;
   }
 }
+
+/* ===== 手机窄屏（≤480px）：站牌 / 灯线 / 四式版面精修 ===== */
+@media (max-width: 480px) {
+  .guide-page {
+    padding: 20px 14px 32px;
+    gap: 20px;
+  }
+  .guide-card {
+    padding: 22px 18px;
+    border-radius: 12px;
+  }
+  /* 照片渐隐罩加浓、透窗右移收窄，窄屏长文压在纯色底上更易读 */
+  .guide-card::after {
+    background: linear-gradient(
+      108deg,
+      var(--ink-1) 18%,
+      rgba(var(--ink-rgb), 0.98) 46%,
+      rgba(var(--ink-rgb), 0.9) 68%,
+      rgba(var(--ink-rgb), 0.74) 100%
+    );
+  }
+  .guide-bg img {
+    -webkit-mask-image: linear-gradient(100deg, transparent 22%, #000 66%);
+    mask-image: linear-gradient(100deg, transparent 22%, #000 66%);
+  }
+  .guide-card h2 {
+    font-size: 21px;
+    letter-spacing: 3px;
+  }
+  .guide-copy {
+    font-size: 13px;
+    line-height: 1.75;
+  }
+  /* 正文右侧留出落款槽：印章 / 站次 / 四字批注竖排悬在槽内，不再压字 */
+  .guide-txt .guide-copy,
+  .guide-txt .guide-pts {
+    padding-right: 40px;
+  }
+  .guide-mini-seal {
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    font-size: 18px;
+  }
+  .guide-seal-count {
+    top: 52px;
+    right: 14px;
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+  .guide-seal-note {
+    top: 90px;
+    bottom: auto;
+    right: 18px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    padding: 6px 3px;
+  }
+  /* 灯线触控圈放大，横滚仍保留 */
+  .guide-track {
+    min-width: 704px;
+  }
+  .guide-stop {
+    width: 64px;
+    gap: 7px;
+  }
+  .guide-dot {
+    width: 38px;
+    height: 38px;
+    font-size: 13px;
+  }
+  .guide-line {
+    top: 18px;
+    left: 32px;
+    right: 32px;
+  }
+  /* 按钮组叠满整行，触控目标 ≥44px */
+  .guide-acts {
+    gap: 10px;
+  }
+  .guide-acts button {
+    min-height: 44px;
+  }
+  /* 四式版面窄屏间距：台阶保留轻微递进，批注与口号缩小避让 */
+  .guide-pts li {
+    font-size: 13px;
+    line-height: 1.65;
+  }
+  .v-scroll .guide-hook {
+    font-size: 14px;
+    letter-spacing: 5px;
+  }
+  .v-steps .guide-pts li:nth-child(2) {
+    margin-left: 8px;
+  }
+  .v-steps .guide-pts li:nth-child(3) {
+    margin-left: 16px;
+  }
+  .v-steps .guide-pts li:nth-child(4) {
+    margin-left: 24px;
+  }
+  .v-steps .guide-pts li:nth-child(5) {
+    margin-left: 32px;
+  }
+  .v-map .guide-hook {
+    right: -4px;
+    bottom: -6px;
+    font-size: 42px;
+    letter-spacing: 6px;
+  }
+}

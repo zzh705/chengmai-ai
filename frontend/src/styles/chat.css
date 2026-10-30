@@ -925,11 +925,51 @@
   .bubble.assistant .answer {
     padding-left: 12px;
   }
+  .source-item {
+    flex-wrap: wrap;
+  }
+  /* 出版来源信息保留：折行缩进到标题下方作轻量呈现 */
   .source-pub {
-    display: none;
+    flex-basis: 100%;
+    margin-left: 28px;
+    font-size: 11px;
   }
   /* 输入框 ≥16px 防 iOS Safari 聚焦自动放大 */
   .chat-input input {
     font-size: 16px;
+  }
+}
+
+/* ===== 手机窄屏（≤480px）：对话流与输入栏精修 ===== */
+@media (max-width: 480px) {
+  .chat-header {
+    padding: 18px 16px 12px;
+  }
+  /* 模式页签窄屏折行，避免三枚页签横向溢出 */
+  .mode-tabs {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+  .chat-list {
+    padding: 16px 12px 20px;
+  }
+  /* 用户气泡占宽放宽，回答左缘收窄 */
+  .bubble.user .bubble-content {
+    max-width: 86%;
+  }
+  /* 输入栏：留白收紧，保留底部安全区，按钮不挤压输入框 */
+  .chat-input {
+    padding: 12px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    gap: 8px;
+  }
+  .chat-input input {
+    padding: 12px 14px;
+  }
+  .chat-input button {
+    padding: 0 20px;
+  }
+  .chat-notice {
+    margin: 0 12px 4px;
   }
 }

@@ -556,9 +556,6 @@
     font-size: 16px;
     min-height: 44px;
   }
-  .lab-duo {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* ===== 落地双卷：物料与准备 / 成效标尺 ===== */
@@ -699,4 +696,55 @@
   border-radius: 8px;
   transform: rotate(-4deg);
   box-shadow: 0 2px 8px rgba(var(--red-rgb), 0.35);
+}
+
+/* ===== 移动端：表单/结果卡/按钮组单列重排，长文可读 ===== */
+@media (max-width: 720px) {
+  /* 落地双卷改单列（原声明位于 .lab-duo 之前被其覆盖，此处在尾部兜底重排） */
+  .lab-duo {
+    grid-template-columns: 1fr;
+  }
+  /* 结果四宫格降为单列，方案书标题与口号收小，给长文留足行长 */
+  .lab-grid {
+    grid-template-columns: 1fr;
+  }
+  .lab-result-head {
+    padding: 18px 16px;
+  }
+  .lab-result-head h2 {
+    font-size: 20px;
+  }
+  .lab-slogan {
+    font-size: 16px;
+  }
+  /* 类型/风格/受众签条折成两列，触控高度达标 */
+  .lab-types {
+    flex-wrap: wrap;
+  }
+  .lab-types button {
+    flex: 1 1 calc(50% - 4px);
+  }
+  /* 表单与步骤卷收紧内边距，窄屏不顶边 */
+  .lab-form {
+    padding: 16px 14px;
+  }
+  .lab-steps {
+    padding: 14px 12px;
+  }
+  .lab-steps li {
+    padding-left: 52px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* 主次操作竖排全宽，清空历史钮触控达标 */
+  .lab-actions {
+    flex-direction: column;
+  }
+  .lab-clear {
+    min-height: 44px;
+  }
+  .lab-result-head h2 {
+    font-size: 18px;
+  }
 }

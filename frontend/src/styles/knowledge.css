@@ -864,3 +864,58 @@
     max-width: 42em;
   }
 }
+
+/* ===== 手机端适配（只在媒体块内，不影响桌面端） ===== */
+/* 中屏：卡片栅格更密一档、收紧页边距，标题与标签允许收缩换行不撑破 */
+@media (max-width: 860px) {
+  .kb-cards {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    padding: 0 16px;
+  }
+  .kb-detail {
+    padding: 20px 16px 28px;
+  }
+  .kb-card-body,
+  .kb-card-name,
+  .kb-card-hook {
+    min-width: 0;
+  }
+}
+
+/* 窄屏：单列浏览、搜索全宽、筛选 chips 横滚、详情留白收窄 */
+@media (max-width: 480px) {
+  .kb-header {
+    padding: 20px 14px 4px;
+  }
+  .kb-header input {
+    width: 100%;
+    font-size: 16px; /* 防 iOS 聚焦放大 */
+  }
+  .kb-cards {
+    grid-template-columns: 1fr;
+    padding: 0 14px;
+  }
+  .kb-chips {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+  }
+  .kb-detail {
+    padding: 16px 14px 28px;
+  }
+  .kb-detail h1 {
+    font-size: 22px;
+  }
+  .kb-level {
+    margin-left: 8px;
+    padding: 2px 8px;
+  }
+  .kb-detail-cover,
+  .kb-detail .cover-fallback {
+    height: 210px;
+  }
+}

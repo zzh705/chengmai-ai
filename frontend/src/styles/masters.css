@@ -588,3 +588,78 @@
 :root[data-theme='light'] .ms-story-seal {
   color: var(--vermilion);
 }
+
+/* ===== 手机端适配（只在媒体块内，不影响桌面端） ===== */
+/* 中屏：肖像栅格更密一档、收紧页边距 */
+@media (max-width: 860px) {
+  .ms-page {
+    padding: 32px 18px 48px;
+  }
+  .ms-grid {
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 16px;
+  }
+}
+
+/* 窄屏：单列浏览、标题收小、触控热区扩容、详情排版收紧 */
+@media (max-width: 480px) {
+  .ms-page {
+    padding: 24px 14px 40px;
+  }
+  .ms-header h1 {
+    font-size: 24px;
+    letter-spacing: 5px;
+  }
+  .ms-subtitle {
+    letter-spacing: 4px;
+  }
+  .ms-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  /* 卡片标题收缩换行，不撑破卡片 */
+  .ms-card-txt,
+  .ms-card-txt h2 {
+    min-width: 0;
+  }
+  .ms-card-cta {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* 返回钮保持居中块级，避免 inline 化后被父级左对齐 */
+  .ms-back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    margin: 0 auto 22px;
+    min-height: 44px;
+  }
+  .ms-detail {
+    gap: 20px;
+  }
+  .ms-detail-main h1 {
+    font-size: 26px;
+    letter-spacing: 4px;
+  }
+  .ms-detail-hook {
+    font-size: 15px;
+    padding: 12px 14px;
+  }
+  .ms-story {
+    padding: 14px 12px 14px 46px;
+  }
+  .ms-detail-actions {
+    gap: 10px;
+  }
+  .ms-btn-primary,
+  .ms-btn-ghost {
+    flex: 1;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

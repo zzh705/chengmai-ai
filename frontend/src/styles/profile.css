@@ -833,6 +833,10 @@
     position: static;
     margin-left: auto;
   }
+  /* 退出钮转为流内后，名号区无需再为右上角留白 */
+  .pf-hero-main {
+    padding-right: 0;
+  }
 }
 
 /* 本页减弱动效：关停入场动画与生长类过渡（全局 * 之外的双保险） */
@@ -865,5 +869,48 @@
   }
   .pf-heat-cell:hover {
     transform: none;
+  }
+}
+
+/* ===== 窄屏精修：统计卡、集印册、每日签 ===== */
+@media (max-width: 480px) {
+  /* 数据卡统计数字收小，颜色与密度不变 */
+  .pf-stat {
+    padding: 14px 8px;
+  }
+  .pf-stat strong {
+    font-size: 26px;
+  }
+  /* 名号区与印章在窄屏收小，名片更紧凑 */
+  .pf-hero-seal {
+    width: 52px;
+    height: 52px;
+    font-size: 24px;
+  }
+  .pf-hero-main h2 {
+    font-size: 20px;
+  }
+  .pf-hero-name {
+    font-size: 18px;
+    letter-spacing: 2px;
+  }
+  /* 集印册在窄屏收小印章、允许达成条件换行 */
+  .pf-badges {
+    gap: 8px;
+  }
+  .pf-badge {
+    padding: 12px 4px 10px;
+  }
+  .pf-badge-cond {
+    white-space: normal;
+  }
+  /* 每日传承签竖排签条收窄字距，侧栏文案照常换行 */
+  .pf-sign-result {
+    gap: 14px;
+  }
+  .pf-sign-slip {
+    padding: 14px 10px;
+    letter-spacing: 3px;
+    font-size: 16px;
   }
 }

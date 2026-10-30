@@ -812,3 +812,40 @@
     display: none;
   }
 }
+
+/* ===== 手机端适配（仅调容器与周边 UI，不动 d3 绘图逻辑） ===== */
+/* 画布留足高度让触控更从容；页面必要时纵向滚动兜住头部换行；关闭双击缩放 */
+@media (max-width: 720px) {
+  .graph-page {
+    overflow-y: auto;
+  }
+  .graph-sky {
+    min-height: 58dvh;
+  }
+  .graph-sky svg {
+    touch-action: manipulation;
+  }
+  /* 底部详情弹层与缩放钮避开安全区，贴边不触底 */
+  .graph-detail {
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    right: calc(12px + env(safe-area-inset-right));
+  }
+  .graph-zoom {
+    left: calc(8px + env(safe-area-inset-left));
+  }
+}
+
+/* 极窄屏：图例收成横滚，工具行不折多行挤占画布 */
+@media (max-width: 480px) {
+  .graph-tools {
+    gap: 8px 12px;
+  }
+  .graph-legend {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+    scrollbar-width: thin;
+  }
+}

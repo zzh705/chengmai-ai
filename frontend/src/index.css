@@ -487,7 +487,7 @@ textarea {
 }
 @keyframes gateVeilFade {
   0%,
-  66% {
+  70% {
     opacity: 1;
   }
   100% {
@@ -540,7 +540,19 @@ textarea {
   align-items: center;
   justify-content: center;
   z-index: 2;
-  animation: gateVeilFade 1.5s cubic-bezier(0.35, 0, 0.55, 1) forwards;
+  /* 谢幕：整幕淡去的同时小人缓缓一低身，再随门光退场 */
+  animation:
+    gateVeilFade 1.5s cubic-bezier(0.35, 0, 0.55, 1) forwards,
+    gateBow 1.5s var(--ease-out) forwards;
+}
+@keyframes gateBow {
+  0%,
+  62% {
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    transform: translate(-50%, calc(-50% + 16px));
+  }
 }
 .gate-door {
   position: absolute;
@@ -563,6 +575,10 @@ textarea {
     transparent 0 26px,
     rgba(0, 0, 0, 0.09) 26px 27px
   );
+  /* 上下描金细梁，双扇如戏台勾金幕门 */
+  box-shadow:
+    inset 0 2px 0 rgba(var(--gold-rgb), 0.34),
+    inset 0 -2px 0 rgba(var(--gold-rgb), 0.2);
 }
 .gate-door-l {
   left: 0;
@@ -577,6 +593,15 @@ textarea {
     inset 1.5px 0 0 rgba(255, 255, 255, 0.16),
     inset 46px 0 64px -30px rgba(0, 0, 0, 0.35);
   animation: gateDoorR 1.05s cubic-bezier(0.72, 0, 0.25, 1) forwards;
+}
+/* 亮纸主题：门板下缘的墨色暗角换成暖纸调，与纸底幕布同息 */
+:root[data-theme='light'] .gate-door {
+  background: linear-gradient(
+    160deg,
+    var(--gate-a, #e8c56b),
+    var(--gate-b, #b03a2e) 60%,
+    color-mix(in srgb, var(--gate-b, #b03a2e) 74%, #efe6d6) 135%
+  );
 }
 @keyframes gateDoorL {
   0%,
@@ -604,7 +629,7 @@ textarea {
   width: 2px;
   margin-left: -1px;
   background: linear-gradient(180deg, var(--gate-a), var(--gate-b));
-  box-shadow: 0 0 20px 5px rgba(232, 197, 107, 0.5);
+  box-shadow: 0 0 20px 5px rgba(var(--gold-rgb), 0.5);
   transform: scaleY(0);
   animation: gateSeam 0.62s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
@@ -1372,4 +1397,99 @@ button:not(:disabled):active,
 :root[data-theme='light'] .app-nav {
   background: linear-gradient(180deg, var(--ink-1), var(--ink));
   border-bottom-color: rgba(var(--gold-rgb), 0.2);
+}
+
+/* =====================================================================
+   手机端全局外壳（≤860px）：
+   导航改两行——首行品牌钮靠左、新手指引/主题钮靠右，
+   次行页面链独占一整行横向滚动（两端渐变淡出 + scroll-snap + 隐藏滚动条）；
+   悬浮返回钮降为贴底胶囊并让出底条，跳链让出顶部刘海。
+   ===================================================================== */
+@media (max-width: 860px) {
+  .app-nav {
+    flex-wrap: wrap;
+    column-gap: 10px;
+    row-gap: 8px;
+    padding: 8px 12px;
+    padding-top: calc(8px + env(safe-area-inset-top));
+  }
+  /* 首行：品牌钮靠左，其余操控钮靠右 */
+  .app-nav .app-brand {
+    order: 1;
+    margin-right: auto;
+    min-height: 40px;
+    height: 40px;
+  }
+  .app-nav .app-guide-btn {
+    order: 2;
+    min-height: 40px;
+  }
+  .app-nav .theme-toggle {
+    order: 3;
+    min-height: 40px;
+  }
+  /* 新手指引钮在窄屏首行仍有位置，补回文字（与 960px 规则的图标态解绑） */
+  .app-nav button.app-guide-btn span {
+    display: inline;
+  }
+  .app-nav button.app-guide-btn {
+    padding: 7px 12px;
+  }
+  /* 次行：页面链铺满整行横向滑动 */
+  .app-nav-links {
+    order: 4;
+    flex: 1 1 100%;
+    justify-content: flex-start;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    -webkit-scroll-snap-type: x proximity;
+    padding-bottom: 2px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 26px, #000 calc(100% - 26px), transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 26px, #000 calc(100% - 26px), transparent 100%);
+  }
+  .app-nav-links::-webkit-scrollbar {
+    display: none;
+  }
+  .app-nav-links button {
+    scroll-snap-align: center;
+    -webkit-scroll-snap-align: center;
+    min-height: 42px;
+    padding: 7px 13px;
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+  /* 悬浮返回钮：贴底胶囊、留白自然、让出 iPhone 底条 */
+  .guide-return {
+    left: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    gap: 6px;
+    padding: 8px 12px 8px 10px;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+  .guide-return em {
+    font-size: 11px;
+    padding-left: 7px;
+  }
+  /* 键盘跳链让出刘海安全区 */
+  .skip-link {
+    top: calc(8px + env(safe-area-inset-top));
+  }
+}
+
+/* 四角回纹：窄屏不撤除，缩为细角饰并贴内四角（金线仍可辨，不遮内容） */
+@media (max-width: 760px) {
+  .zh-corner {
+    display: block;
+    inset: calc(104px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom));
+  }
+  .zh-corner i {
+    width: 20px;
+    height: 20px;
+    opacity: 0.3;
+    background-size: 20px 20px;
+  }
 }

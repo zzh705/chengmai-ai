@@ -34,7 +34,8 @@
   width: auto;
   color: var(--paper);
   filter: drop-shadow(0 10px 26px rgba(0, 0, 0, 0.5));
-  animation: gateFigIn 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) 0.05s both;
+  /* 登台与推门同拍起步（门约 0.18s 开始向两侧让开），避免小人压在门板剪影上浮现 */
+  animation: gateFigIn 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) 0.18s both;
 }
 :root[data-theme='light'] .gate-figure {
   filter: drop-shadow(0 7px 16px rgba(33, 27, 20, 0.28));
@@ -703,5 +704,20 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+/* ===== 小屏揭幕：小人收高、台后灯晕随视口收小，不触碰任何关键帧 ===== */
+@media (max-width: 860px) {
+  .gate-figure {
+    height: min(44vh, 300px);
+  }
+  .gate-glow {
+    width: 58vmin;
+    height: 58vmin;
+  }
+  /* 中缝辉光在窄屏收敛，避免金线糊成一片 */
+  .gate-seam {
+    box-shadow: 0 0 12px 3px rgba(var(--gold-rgb), 0.42);
   }
 }

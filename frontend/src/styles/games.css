@@ -685,3 +685,41 @@
     width: 100%;
   }
 }
+
+/* ===== 手机窄屏（≤480px）：游艺坊栅格与舞台控件精修 ===== */
+@media (max-width: 480px) {
+  .ch-game-grid {
+    gap: 10px;
+  }
+  .ch-game-card {
+    padding: 14px 12px;
+    gap: 5px;
+  }
+  /* 舞台标题行可折行，退出钮不下沉挤压 */
+  .gm-stage-head {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .gm-exit {
+    min-height: 40px;
+  }
+  .gm-btn-primary,
+  .gm-btn-ghost {
+    min-height: 40px;
+  }
+  .gm-result-actions {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .gm-result-actions button {
+    flex: 1 1 40%;
+  }
+  /* 点色面板换行后占满整行，五个色点仍均布 */
+  .gm-dye-panel {
+    min-width: 0;
+    width: 100%;
+  }
+  .gm-mem-grid {
+    gap: 6px;
+  }
+}

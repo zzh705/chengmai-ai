@@ -562,3 +562,51 @@
     display: none;
   }
 }
+
+/* 窄屏（≤720px）：题名仪式纵向可滚，键盘弹出或矮视口不遮挡底部；
+   卡片内边距收紧，题款与朱印等比缩小，输入框满宽、造册入口铺满。 */
+@media (max-width: 720px) {
+  .login-page {
+    align-items: flex-start;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: calc(18px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom));
+  }
+  .login-stage {
+    width: 100%;
+    max-width: 400px;
+    margin: auto 0;
+  }
+  .login-title {
+    font-size: 48px;
+    letter-spacing: 10px;
+    text-indent: 10px;
+  }
+  .login-title-seal {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+  .login-subtitle {
+    font-size: 13px;
+    letter-spacing: 2px;
+  }
+  .login-paper {
+    padding: 18px 16px 16px;
+  }
+  .login-tabs {
+    gap: 20px;
+  }
+  .login-seal-btn {
+    width: 108px;
+    height: 108px;
+    font-size: 19px;
+  }
+  .login-guest {
+    width: 100%;
+    padding: 6px 0;
+  }
+  .login-foot {
+    margin-top: 20px;
+  }
+}

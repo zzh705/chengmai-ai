@@ -726,14 +726,33 @@
   margin-bottom: 6px;
 }
 
+@media (max-width: 860px) {
+  /* 时间线内收，日序号小圆印缩小并居中于左侧金线 */
+  .path-timeline {
+    margin-left: 16px;
+    padding-left: 14px;
+  }
+  .path-day-badge {
+    left: -29px;
+    width: 30px;
+    height: 30px;
+    font-size: 11px;
+  }
+  .path-day-body {
+    padding: 12px 14px;
+  }
+}
+
 @media (max-width: 720px) {
   /* 输入控件 16px 防 iOS 聚焦缩放；触控钮 ≥44px */
-  .path-form input {
+  .path-form input,
+  .path-form select {
     font-size: 16px;
   }
   .path-cancel,
   .path-retry,
-  .path-reset {
+  .path-reset,
+  .path-copy {
     min-height: 44px;
   }
 }
@@ -750,6 +769,32 @@
   }
   .path-day-time {
     display: none;
+  }
+  /* 表单与日卡贴边收紧；天数/分钟预设折两列，避免「90 分钟」等文案折行 */
+  .path-form {
+    padding: 16px 14px;
+  }
+  .path-days {
+    flex-wrap: wrap;
+  }
+  .path-days button {
+    flex: 1 1 calc(50% - 4px);
+  }
+  .path-day-body {
+    padding: 12px 12px;
+  }
+  /* 卷头题名与抄录钮换行；进度条独占一行、统计与重置钮并排 */
+  .path-scroll-head {
+    flex-wrap: wrap;
+  }
+  .path-progress {
+    flex-wrap: wrap;
+  }
+  .path-progress-bar {
+    flex: 1 1 100%;
+  }
+  .path-reset {
+    margin-left: auto;
   }
 }
 

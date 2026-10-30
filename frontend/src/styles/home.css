@@ -995,8 +995,14 @@
   .home-stories {
     grid-template-columns: 1fr;
   }
+  .home-sec-head {
+    flex-wrap: wrap;
+  }
+  /* 节头注记保留可见：折行到标题下方做轻量呈现，不丢信息 */
   .home-sec-note {
-    display: none;
+    flex-basis: 100%;
+    font-size: 12px;
+    letter-spacing: 1px;
   }
 }
 @media (max-width: 560px) {
@@ -1361,5 +1367,82 @@
   }
   .home-reel-goto {
     opacity: 1;
+  }
+}
+
+/* ===== 手机窄屏（≤480px）：首屏与信息卡精修 ===== */
+@media (max-width: 480px) {
+  .home-hero {
+    padding: 26px 12px 20px;
+  }
+  .home-hero h1 {
+    font-size: 19px;
+    letter-spacing: 2px;
+  }
+  .home-slogan {
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+  /* 功能清单带：窄屏折行居中，不横向溢出 */
+  .home-slogan-feats {
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    padding: 10px 14px;
+  }
+  /* 点击即聊输入区：按钮收窄，让输入框保留足够宽度 */
+  .home-ask {
+    gap: 6px;
+    margin-top: 22px;
+  }
+  .home-ask input {
+    padding: 12px 14px;
+  }
+  .home-ask button {
+    padding: 0 20px;
+    font-size: 14px;
+    letter-spacing: 2px;
+  }
+  /* 快捷提问 chips：一行横滚，不折行占高 */
+  .home-chips {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .home-chips::-webkit-scrollbar {
+    display: none;
+  }
+  .home-chips button {
+    flex: none;
+  }
+  /* 学习进度：两列网格 + 通栏按钮，四格不再挤作一行 */
+  .home-progress {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px 12px;
+    padding: 16px 14px;
+  }
+  .home-prog-item {
+    min-width: 0;
+  }
+  .home-prog-cta {
+    grid-column: 1 / -1;
+  }
+  /* 今日非遗：封面略收、标题轻降 */
+  .home-today-img {
+    height: 128px;
+  }
+  .home-today-main {
+    padding: 0 8px;
+  }
+  .home-today-main h3 {
+    font-size: 20px;
+    letter-spacing: 2px;
+  }
+  /* 底部安全区：滚动到底不顶住全面屏手势条 */
+  .home-page {
+    padding-bottom: calc(40px + env(safe-area-inset-bottom));
   }
 }

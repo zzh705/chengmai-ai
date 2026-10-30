@@ -509,3 +509,15 @@
     display: none;
   }
 }
+
+/* 手机窄屏（≤860px）：影戏不撤除，收窄为两侧细墨边饰；
+   灯笼等比例缩小，不溢出屏幕、不压内容与导航（z 阶与 pointer-events 原样保留）。 */
+@media (max-width: 860px) {
+  .mf-layer {
+    display: block;
+  }
+  .mf-side {
+    width: 68px;
+    opacity: 0.5;
+  }
+}

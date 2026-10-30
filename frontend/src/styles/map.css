@@ -954,3 +954,38 @@
     animation: none;
   }
 }
+
+/* ===== 手机端适配（只在媒体块内，不影响桌面端） ===== */
+/* 舆图上置、侧栏全宽已由 map-main 单列承载；此处微调面板留白与图例字号 */
+@media (max-width: 720px) {
+  .map-side {
+    padding: 12px 14px;
+  }
+  .map-legend {
+    gap: 6px;
+  }
+}
+
+/* 窄屏：筛选行横滚、画布与页脚避开安全区 */
+@media (max-width: 480px) {
+  .map-page {
+    padding-bottom: calc(40px + env(safe-area-inset-bottom));
+  }
+  .map-filters {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+  }
+  .map-wrap {
+    padding: 10px;
+  }
+  .map-side {
+    padding: 12px;
+  }
+  .map-side h2 {
+    letter-spacing: 2px;
+  }
+}
