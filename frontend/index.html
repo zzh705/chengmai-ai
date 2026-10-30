@@ -7,10 +7,10 @@
     <meta name="description" content="承脉 AI · 非遗多智能体系统 —— 检索问答、知识图谱、学习路径与活化创作" />
     <title>承脉 AI · 非遗多智能体系统</title>
     <script>
-      // 防主题闪烁：React 挂载前按本地偏好落 data-theme（默认暗墨）
+      // 防主题闪烁：默认恒为亮纸；仅本标签页手动切到暗墨后刷新保持（sessionStorage）
       (function () {
         try {
-          var t = localStorage.getItem('cm-theme') === 'light' ? 'light' : 'ink'
+          var t = sessionStorage.getItem('cm-theme') === 'ink' ? 'ink' : 'light'
           document.documentElement.setAttribute('data-theme', t)
           document.documentElement.style.colorScheme = t === 'light' ? 'light' : 'dark'
         } catch (e) {}

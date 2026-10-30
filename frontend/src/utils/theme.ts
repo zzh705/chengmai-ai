@@ -3,8 +3,8 @@
  * 原创点：暗墨/亮纸主题持久化与 data-theme 切换
  */
 /**
- * 双主题：ink 暗墨（默认，第一种风格原样保留）/ light 亮纸（白色基调）
- * 单一状态源 = documentElement[data-theme]，localStorage 持久化；
+ * 双主题：light 亮纸（默认初始风格，白色基调）/ ink 暗墨（手动切换的第二种风格）
+ * 单一状态源 = documentElement[data-theme]，sessionStorage 会话内记忆（换标签页即回亮纸）；
  * Canvas/SVG 等非 CSS 渲染层通过 subscribeTheme 订阅后自行换色重绘。
  */
 import { useEffect, useSyncExternalStore } from 'react'
@@ -14,20 +14,21 @@ export type Theme = 'ink' | 'light'
 const KEY = 'cm-theme'
 const listeners = new Set<(t: Theme) => void>()
 
+/** 初始一律亮纸；仅当本标签页内手动切到暗墨后，刷新生效（新开页面仍从亮纸开始） */
 function readStored(): Theme {
   try {
-    return localStorage.getItem(KEY) === 'light' ? 'light' : 'ink'
+    return sessionStorage.getItem(KEY) === 'ink' ? 'ink' : 'light'
   } catch {
-    return 'ink'
+    return 'light'
   }
 }
 
 let current: Theme =
   typeof document !== 'undefined'
-    ? document.documentElement.getAttribute('data-theme') === 'light'
-      ? 'light'
+    ? document.documentElement.getAttribute('data-theme') === 'ink'
+      ? 'ink'
       : readStored()
-    : 'ink'
+    : 'light'
 
 function applyDOM(t: Theme) {
   const el = document.documentElement
@@ -43,7 +44,7 @@ export function setTheme(t: Theme) {
   if (t === current) return
   current = t
   try {
-    localStorage.setItem(KEY, t)
+    sessionStorage.setItem(KEY, t)
   } catch {
     /* 隐私模式：仅本会话生效 */
   }
@@ -67,7 +68,7 @@ export function useTheme(): Theme {
   return useSyncExternalStore(
     (cb) => subscribeTheme(cb),
     () => current,
-    () => 'ink' as Theme,
+    () => 'light' as Theme,
   )
 }
 

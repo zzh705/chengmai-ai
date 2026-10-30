@@ -177,10 +177,6 @@
 /* ---- 站牌 ---- */
 .guide-card {
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 232px;
-  gap: 30px;
-  align-items: center;
   padding: 36px 40px;
   border: 1px solid var(--ink-2);
   border-radius: 16px;
@@ -254,6 +250,7 @@
   left: 0;
   right: 0;
   height: 2px;
+  z-index: 3;
   background: var(--gd-accent, var(--gold));
   transform-origin: left;
   animation: gdLine 0.5s cubic-bezier(0.22, 1, 0.36, 1);
@@ -267,8 +264,143 @@
   }
 }
 
+/* ---- 站台照片：不做板块，直接以渐变融入卡面背景 ----
+   照片铺满整卡，右侧显、左缘借遮罩化开；卡面再盖一层「左浓右淡」的底色渐隐罩，
+   让文案区干净可读、照片自右半景里透出来，过渡自然。 */
+.guide-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.guide-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 52%,
+    rgba(0, 0, 0, 0.05) 66%,
+    color-mix(in srgb, var(--gd-accent, var(--gold)) 10%, transparent) 100%
+  );
+}
+.guide-bg img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.09) translateX(12px);
+  filter: saturate(0.85) brightness(0.72);
+  -webkit-mask-image: linear-gradient(100deg, transparent 17%, #000 52%);
+  mask-image: linear-gradient(100deg, transparent 17%, #000 52%);
+  transition:
+    opacity 0.9s var(--ease-out),
+    transform 1.15s var(--ease-out),
+    filter 0.9s var(--ease-out);
+}
+.guide-bg img.on {
+  opacity: 1;
+  transform: none;
+  filter: saturate(1) brightness(1);
+}
+/* 亮纸主题：照片提亮一点，不要暗沉压纸 */
+:root[data-theme='light'] .guide-bg img {
+  filter: saturate(0.9) brightness(1.02);
+}
+:root[data-theme='light'] .guide-bg img.on {
+  filter: saturate(0.94) brightness(1.04);
+}
+/* 卡面渐隐罩：文字区底色稳稳托住，右侧留出照片呼吸（两主题同用 --ink-rgb 自适配） */
+.guide-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    var(--ink-1) 10%,
+    rgba(var(--ink-rgb), 0.97) 34%,
+    rgba(var(--ink-rgb), 0.86) 52%,
+    rgba(var(--ink-rgb), 0.6) 70%,
+    rgba(var(--ink-rgb), 0.24) 100%
+  );
+}
+/* 落款点缀浮上景面 */
+.guide-mini-seal {
+  position: absolute;
+  z-index: 3;
+  top: 18px;
+  right: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid var(--gd-accent, var(--gold));
+  border-radius: 50%;
+  background: rgba(14, 11, 8, 0.62);
+  color: var(--gd-accent, var(--gold));
+  font-family: var(--font-serif);
+  font-size: 21px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(3px);
+  animation: gdStamp 0.5s var(--ease-spring) 0.15s backwards;
+}
+@keyframes gdStamp {
+  from {
+    opacity: 0;
+    transform: rotate(10deg) scale(1.7);
+  }
+}
+:root[data-theme='light'] .guide-mini-seal {
+  background: rgba(255, 253, 247, 0.86);
+  box-shadow: 0 4px 12px rgba(33, 27, 20, 0.18);
+}
+.guide-seal-note {
+  position: absolute;
+  z-index: 2;
+  right: 20px;
+  bottom: 20px;
+  writing-mode: vertical-rl;
+  font-family: var(--font-kai);
+  font-style: normal;
+  font-size: 14px;
+  letter-spacing: 3px;
+  color: var(--ink-soft);
+  padding: 9px 5px;
+  border-radius: 8px;
+  background: rgba(var(--ink-rgb), 0.46);
+  backdrop-filter: blur(4px);
+  animation: gdNote 0.6s var(--ease-out) 0.18s backwards;
+}
+@keyframes gdNote {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+}
+.guide-seal-count {
+  position: absolute;
+  z-index: 2;
+  top: 68px;
+  right: 20px;
+  font-family: var(--font-serif);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--ink-soft);
+  padding: 3px 8px;
+  border-radius: var(--r-pill);
+  background: rgba(var(--ink-rgb), 0.46);
+  backdrop-filter: blur(4px);
+  animation: gdNote 0.6s var(--ease-out) 0.22s backwards;
+}
+
 .guide-txt {
   position: relative;
+  z-index: 2;
   min-width: 0;
 }
 .guide-meta {
@@ -596,99 +728,6 @@
   box-shadow: 0 7px 18px rgba(var(--gold-rgb), 0.34);
 }
 
-/* ---- 站台照片：换站渐变渐入，角上留一枚小章 ---- */
-.guide-panel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-.guide-photo {
-  position: relative;
-  width: 100%;
-  max-width: 232px;
-  aspect-ratio: 3 / 4;
-  border-radius: 14px;
-  overflow: hidden;
-  border: 1px solid rgba(var(--gold-rgb), 0.25);
-  box-shadow:
-    0 18px 40px -22px var(--gd-accent, var(--gold)),
-    0 4px 16px rgba(0, 0, 0, 0.35);
-}
-.guide-photo img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  transform: scale(1.09);
-  filter: saturate(0.82) brightness(0.8);
-  transition:
-    opacity 0.9s var(--ease-out),
-    transform 1.15s var(--ease-out),
-    filter 0.9s var(--ease-out);
-}
-.guide-photo img.on {
-  opacity: 1;
-  transform: scale(1);
-  filter: saturate(1) brightness(1);
-}
-/* 底部墨色渐隐 + 站色薄染，让照片融进卡面 */
-.guide-photo::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: linear-gradient(180deg, transparent 55%, rgba(8, 6, 4, 0.55));
-  pointer-events: none;
-}
-.guide-photo::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: linear-gradient(160deg, var(--gd-accent, var(--gold)), transparent 46%);
-  opacity: 0.14;
-  pointer-events: none;
-}
-.guide-mini-seal {
-  position: absolute;
-  z-index: 2;
-  top: 12px;
-  right: 12px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: 1.5px solid var(--gd-accent, var(--gold));
-  border-radius: 50%;
-  background: rgba(14, 11, 8, 0.68);
-  color: var(--gd-accent, var(--gold));
-  font-family: var(--font-serif);
-  font-size: 21px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(3px);
-}
-:root[data-theme='light'] .guide-mini-seal {
-  background: rgba(255, 253, 247, 0.82);
-}
-.guide-seal-note {
-  font-family: var(--font-kai);
-  font-style: normal;
-  font-size: 16px;
-  letter-spacing: 4px;
-  color: var(--ink-soft);
-}
-.guide-seal-count {
-  font-family: var(--font-serif);
-  font-size: 12px;
-  letter-spacing: 3px;
-  color: var(--ink-faint);
-}
-
 /* ---- 页脚 ---- */
 .guide-foot {
   display: flex;
@@ -723,19 +762,7 @@
     padding: 26px 18px 40px;
   }
   .guide-card {
-    grid-template-columns: 1fr;
     padding: 28px 26px;
-  }
-  .guide-panel {
-    flex-direction: row;
-    justify-content: center;
-    gap: 16px;
-  }
-  .guide-photo {
-    max-width: 148px;
-  }
-  .guide-seal-count {
-    display: none;
   }
   .v-scroll .guide-hook {
     left: -16px;
@@ -780,9 +807,11 @@
   .guide-line i {
     transition: none;
   }
-  .guide-photo img {
+  .guide-bg img,
+  .guide-bg img.on {
     transition: none;
     transform: none;
+    filter: none;
   }
   .v-ink .guide-pts li,
   .v-steps .guide-pts li,

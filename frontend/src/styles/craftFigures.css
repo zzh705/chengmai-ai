@@ -1,0 +1,707 @@
+/* ===== 揭幕小人：十一式非遗手艺的关节动画 =====
+   视框 200×260，各关节（头/身/臂/腿/道具）分层为 m-* 组，
+   全部用 transform-box: fill-box + 小组旋转/位移驱动，只碰合成层属性。
+   主色为剪影色（随主题：暗墨=米纸小人，亮纸=墨色小人），
+   站色饰件 .acc（--gate-b）/ 描金 .accr（--gate-a）/ 线描 .ln / 描墨纹 .lnd。 */
+
+.gate-figure .acc {
+  fill: var(--gate-b, #b03a2e);
+}
+.gate-figure .accr {
+  fill: var(--gate-a, #e8c56b);
+}
+.gate-figure .ln {
+  fill: none;
+  stroke: var(--gate-b, #b03a2e);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+.gate-figure .lnd {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-opacity: 0.7;
+}
+.gate-figure .gw {
+  fill: #ffe2a3;
+}
+
+/* 剪影主色调：暗墨下为米纸白（--paper=浅），亮纸下为墨黑（--paper=深） */
+.gate-figure {
+  height: min(50vh, 402px);
+  width: auto;
+  color: var(--paper);
+  filter: drop-shadow(0 10px 26px rgba(0, 0, 0, 0.5));
+  animation: gateFigIn 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) 0.05s both;
+}
+:root[data-theme='light'] .gate-figure {
+  filter: drop-shadow(0 7px 16px rgba(33, 27, 20, 0.28));
+}
+@keyframes gateFigIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 地面影：随表演轻轻一呼一吸 */
+.gate-figure .gf-ground {
+  fill: currentColor;
+  opacity: 0.15;
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: grPulse 3.2s ease-in-out infinite alternate;
+}
+@keyframes grPulse {
+  from {
+    transform: scale(1, 1);
+    opacity: 0.13;
+  }
+  to {
+    transform: scale(1.05, 1.12);
+    opacity: 0.2;
+  }
+}
+
+/* 关节统一启用 fill-box 定位 */
+.gate-figure .m-head,
+.gate-figure .m-body,
+.gate-figure .m-larm,
+.gate-figure .m-rarm,
+.gate-figure .m-rleg,
+.gate-figure .m-p1,
+.gate-figure .m-p2,
+.gate-figure .m-p3,
+.gate-figure .m-p4 {
+  transform-box: fill-box;
+}
+
+/* 通用小动作 */
+@keyframes nod {
+  from {
+    transform: rotate(-3deg);
+  }
+  to {
+    transform: rotate(3deg);
+  }
+}
+@keyframes swayX {
+  from {
+    transform: translateX(-2px);
+  }
+  to {
+    transform: translateX(2px);
+  }
+}
+@keyframes breath {
+  from {
+    transform: scaleY(1);
+  }
+  to {
+    transform: scaleY(1.016);
+  }
+}
+@keyframes twitch {
+  from {
+    transform: rotate(-6deg);
+  }
+  to {
+    transform: rotate(6deg);
+  }
+}
+
+/* ---- 展卷（首页）：双臂持轴徐徐展开，纸面自左向右铺开 ---- */
+.gf-scroll .m-head {
+  transform-origin: 50% 100%;
+  animation: nod 2.4s ease-in-out infinite alternate;
+}
+.gf-scroll .m-body {
+  transform-origin: 20% 88%;
+  animation: breath 2.6s ease-in-out infinite alternate;
+}
+.gf-scroll .m-larm {
+  transform-origin: 100% 0%;
+  animation: scArmL 1.9s ease-in-out infinite alternate;
+}
+@keyframes scArmL {
+  from {
+    transform: rotate(3deg);
+  }
+  to {
+    transform: rotate(-2deg);
+  }
+}
+.gf-scroll .m-rarm {
+  transform-origin: 0% 0%;
+  animation: scArmR 1.9s ease-in-out infinite alternate;
+}
+@keyframes scArmR {
+  from {
+    transform: rotate(-3deg);
+  }
+  to {
+    transform: rotate(2deg);
+  }
+}
+.gf-scroll .m-p1,
+.gf-scroll .m-p2 {
+  animation: twitch 1.9s ease-in-out infinite alternate;
+}
+.gf-scroll .m-p3 {
+  transform-origin: 0% 50%;
+  animation: scOpen 1.9s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes scOpen {
+  0% {
+    transform: scaleX(0.08);
+  }
+  38% {
+    transform: scaleX(1);
+  }
+  78% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0.08);
+  }
+}
+
+/* ---- 挥毫（承脉AI）：低头走笔，笔锋轻颤，字字见痕 ---- */
+.gf-brush .m-head {
+  transform-origin: 50% 100%;
+  animation: brNod 1.5s ease-in-out infinite;
+}
+@keyframes brNod {
+  0%,
+  100% {
+    transform: rotate(8deg);
+  }
+  50% {
+    transform: rotate(12deg);
+  }
+}
+.gf-brush .m-body {
+  animation: swayX 2.2s ease-in-out infinite alternate;
+}
+.gf-brush .m-rarm {
+  transform-origin: 100% 0%;
+  animation: brWrite 1.3s ease-in-out infinite;
+}
+@keyframes brWrite {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  28% {
+    transform: rotate(4deg);
+  }
+  55% {
+    transform: rotate(-2deg);
+  }
+  80% {
+    transform: rotate(3deg);
+  }
+}
+.gf-brush .m-p3 {
+  transform-origin: 50% 0%;
+  animation: twitch 0.5s ease-in-out infinite alternate;
+}
+.gf-brush .m-larm {
+  transform-origin: 100% 0%;
+  animation: brHold 2.4s ease-in-out infinite alternate;
+}
+@keyframes brHold {
+  from {
+    transform: rotate(1.5deg);
+  }
+  to {
+    transform: rotate(-1.5deg);
+  }
+}
+
+/* ---- 翻书（知识库）：俯首诵读，右页往复翻起 ---- */
+.gf-book .m-head {
+  transform-origin: 50% 100%;
+  animation: bkDip 2s ease-in-out infinite alternate;
+}
+@keyframes bkDip {
+  from {
+    transform: rotate(12deg);
+  }
+  to {
+    transform: rotate(16deg);
+  }
+}
+.gf-book .m-larm {
+  transform-origin: 100% 0%;
+  animation: bkCradle 1.7s ease-in-out infinite alternate;
+}
+@keyframes bkCradle {
+  from {
+    transform: rotate(2deg);
+  }
+  to {
+    transform: rotate(-1.5deg);
+  }
+}
+.gf-book .m-rarm {
+  transform-origin: 0% 0%;
+  animation: bkCradleR 1.7s ease-in-out infinite alternate;
+}
+@keyframes bkCradleR {
+  from {
+    transform: rotate(-1.5deg);
+  }
+  to {
+    transform: rotate(2deg);
+  }
+}
+.gf-book .m-p2 {
+  transform-origin: 0% 24%;
+  animation: bkFlip 1.7s cubic-bezier(0.5, 0, 0.4, 1) infinite alternate;
+}
+@keyframes bkFlip {
+  from {
+    transform: rotate(1deg);
+  }
+  to {
+    transform: rotate(-58deg);
+  }
+}
+.gf-book .m-body {
+  transform-origin: 20% 88%;
+  animation: breath 2.6s ease-in-out infinite alternate;
+}
+
+/* ---- 牵丝（图谱）：两手一上一下交替抽丝，丝线明灭如星 ---- */
+.gf-silk .m-head {
+  transform-origin: 50% 100%;
+  animation: nod 2.4s ease-in-out infinite alternate;
+}
+.gf-silk .m-body {
+  animation: swayX 3s ease-in-out infinite alternate;
+}
+.gf-silk .m-larm {
+  transform-origin: 100% 0%;
+  animation: skPull 1.1s ease-in-out infinite alternate;
+}
+@keyframes skPull {
+  from {
+    transform: rotate(5deg);
+  }
+  to {
+    transform: rotate(-6deg);
+  }
+}
+.gf-silk .m-rarm {
+  transform-origin: 0% 0%;
+  animation: skPullB 1.1s ease-in-out infinite alternate;
+}
+@keyframes skPullB {
+  from {
+    transform: rotate(-5deg);
+  }
+  to {
+    transform: rotate(6deg);
+  }
+}
+.gf-silk .m-p2 {
+  animation: shimmer 1.1s ease-in-out infinite alternate;
+}
+@keyframes shimmer {
+  from {
+    opacity: 0.6;
+  }
+  to {
+    opacity: 0.95;
+  }
+}
+
+/* ---- 点舆图（地图）：侧身指点，臂起臂落如落子 ---- */
+.gf-map .m-head {
+  transform: rotate(-8deg);
+}
+.gf-map .m-body {
+  animation: swayX 2.6s ease-in-out infinite alternate;
+}
+.gf-map .m-rarm {
+  transform-origin: 100% 0%;
+  animation: mpTap 0.8s ease-in-out infinite alternate;
+}
+@keyframes mpTap {
+  from {
+    transform: rotate(2deg);
+  }
+  to {
+    transform: rotate(-3deg);
+  }
+}
+.gf-map .m-larm {
+  transform-origin: 100% 0%;
+  animation: brHold 2.6s ease-in-out infinite alternate;
+}
+.gf-map .m-p1 {
+  animation: mnBloom 2.6s ease-in-out infinite alternate;
+}
+@keyframes mnBloom {
+  from {
+    opacity: 0.88;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---- 水袖（名家）：双臂渐次扬落，长袖翻浪 ---- */
+.gf-sleeves .m-head {
+  transform-origin: 50% 100%;
+  animation: slHead 3s ease-in-out infinite alternate;
+}
+@keyframes slHead {
+  from {
+    transform: rotate(-3deg);
+  }
+  to {
+    transform: rotate(3deg);
+  }
+}
+.gf-sleeves .m-body {
+  transform-origin: 20% 90%;
+  animation: breath 2.6s ease-in-out infinite alternate;
+}
+.gf-sleeves .m-larm {
+  transform-origin: 100% 0%;
+  animation: slW1 1.9s ease-in-out infinite alternate;
+}
+@keyframes slW1 {
+  from {
+    transform: rotate(-8deg);
+  }
+  to {
+    transform: rotate(8deg);
+  }
+}
+.gf-sleeves .m-rarm {
+  transform-origin: 0% 0%;
+  animation: slW2 1.9s ease-in-out infinite alternate;
+}
+@keyframes slW2 {
+  from {
+    transform: rotate(8deg);
+  }
+  to {
+    transform: rotate(-8deg);
+  }
+}
+.gf-sleeves .m-p1 {
+  transform-origin: 100% 0%;
+  animation: flutter 0.65s ease-in-out infinite alternate;
+}
+@keyframes flutter {
+  from {
+    transform: rotate(-5deg);
+  }
+  to {
+    transform: rotate(4deg);
+  }
+}
+.gf-sleeves .m-p2 {
+  transform-origin: 0% 0%;
+  animation: flutterB 0.65s ease-in-out infinite alternate;
+}
+@keyframes flutterB {
+  from {
+    transform: rotate(4deg);
+  }
+  to {
+    transform: rotate(-5deg);
+  }
+}
+
+/* ---- 登阶（路径）：一步一坎，摆臂抬膝向上 ---- */
+.gf-steps .m-head {
+  transform-origin: 50% 100%;
+  animation: stHead 0.9s ease-in-out infinite alternate;
+}
+@keyframes stHead {
+  from {
+    transform: rotate(-9deg);
+  }
+  to {
+    transform: rotate(-5deg);
+  }
+}
+.gf-steps .m-body {
+  transform-origin: 50% 100%;
+  animation: stBob 0.9s ease-in-out infinite;
+}
+@keyframes stBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2.5px);
+  }
+}
+.gf-steps .m-rleg {
+  transform-origin: 100% 10%;
+  animation: stLeg 0.9s ease-in-out infinite alternate;
+}
+@keyframes stLeg {
+  from {
+    transform: rotate(-7deg);
+  }
+  to {
+    transform: rotate(5deg);
+  }
+}
+.gf-steps .m-larm {
+  transform-origin: 100% 0%;
+  animation: stArm 0.9s ease-in-out infinite alternate;
+}
+@keyframes stArm {
+  from {
+    transform: rotate(-9deg);
+  }
+  to {
+    transform: rotate(9deg);
+  }
+}
+.gf-steps .m-rarm {
+  transform-origin: 0% 0%;
+  animation: stArmB 0.9s ease-in-out infinite alternate;
+}
+@keyframes stArmB {
+  from {
+    transform: rotate(9deg);
+  }
+  to {
+    transform: rotate(-9deg);
+  }
+}
+
+/* ---- 剪纸（实验室）：一手捻纸慢旋，一手剪刀嚓嚓 ---- */
+.gf-cut .m-head {
+  transform-origin: 50% 100%;
+  animation: ctNod 2s ease-in-out infinite alternate;
+}
+@keyframes ctNod {
+  from {
+    transform: rotate(6deg);
+  }
+  to {
+    transform: rotate(10deg);
+  }
+}
+.gf-cut .m-body {
+  transform-origin: 20% 88%;
+  animation: breath 2.6s ease-in-out infinite alternate;
+}
+.gf-cut .m-p1 {
+  transform-origin: 50% 50%;
+  animation: ctTwist 2.8s ease-in-out infinite alternate;
+}
+@keyframes ctTwist {
+  from {
+    transform: rotate(-9deg);
+  }
+  to {
+    transform: rotate(9deg);
+  }
+}
+.gf-cut .m-p2 {
+  animation: ctAdv 0.9s ease-in-out infinite alternate;
+}
+@keyframes ctAdv {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(2.5px);
+  }
+}
+.gf-cut .m-p3 {
+  transform-origin: 100% 100%;
+  animation: ctSnipA 0.52s ease-in-out infinite alternate;
+}
+@keyframes ctSnipA {
+  from {
+    transform: rotate(-8deg);
+  }
+  to {
+    transform: rotate(5deg);
+  }
+}
+.gf-cut .m-p4 {
+  transform-origin: 0% 100%;
+  animation: ctSnipB 0.52s ease-in-out infinite alternate;
+}
+@keyframes ctSnipB {
+  from {
+    transform: rotate(5deg);
+  }
+  to {
+    transform: rotate(-8deg);
+  }
+}
+
+/* ---- 猜灯谜（挑战）：歪头挠腮，谜签风里轻摇 ---- */
+.gf-riddle .m-head {
+  transform-origin: 50% 100%;
+  animation: rdTilt 2.2s ease-in-out infinite alternate;
+}
+@keyframes rdTilt {
+  from {
+    transform: rotate(4deg);
+  }
+  to {
+    transform: rotate(9deg);
+  }
+}
+.gf-riddle .m-body {
+  animation: swayX 3s ease-in-out infinite alternate;
+}
+.gf-riddle .m-p1 {
+  transform-origin: 50% 0%;
+  animation: rdSlip 1.5s ease-in-out infinite alternate;
+}
+@keyframes rdSlip {
+  from {
+    transform: rotate(-8deg);
+  }
+  to {
+    transform: rotate(8deg);
+  }
+}
+.gf-riddle .m-larm {
+  transform-origin: 100% 0%;
+  animation: rdScratch 0.6s ease-in-out infinite alternate;
+}
+@keyframes rdScratch {
+  from {
+    transform: rotate(-3deg);
+  }
+  to {
+    transform: rotate(4deg);
+  }
+}
+.gf-riddle .m-rarm {
+  transform-origin: 0% 0%;
+  animation: rdLean 2.2s ease-in-out infinite alternate;
+}
+@keyframes rdLean {
+  from {
+    transform: rotate(2deg);
+  }
+  to {
+    transform: rotate(-1deg);
+  }
+}
+
+/* ---- 钤印（个人中心）：扬臂落印，一呼一压 ---- */
+.gf-seal .m-head {
+  transform-origin: 50% 100%;
+  animation: seNod 1.05s ease-in-out infinite;
+}
+@keyframes seNod {
+  0%,
+  100% {
+    transform: rotate(-5deg);
+  }
+  34%,
+  60% {
+    transform: rotate(0deg);
+  }
+}
+.gf-seal .m-body {
+  transform-origin: 50% 100%;
+  animation: seBob 1.05s ease-in-out infinite;
+}
+@keyframes seBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  34%,
+  60% {
+    transform: translateY(1.6px);
+  }
+}
+.gf-seal .m-rarm {
+  transform-origin: 100% 0%;
+  animation: sePress 1.05s cubic-bezier(0.5, 0, 0.6, 0.4) infinite;
+}
+@keyframes sePress {
+  0%,
+  100% {
+    transform: rotate(-26deg);
+  }
+  36%,
+  56% {
+    transform: rotate(-5deg);
+  }
+}
+.gf-seal .m-larm {
+  transform-origin: 100% 0%;
+  animation: brHold 2.1s ease-in-out infinite alternate;
+}
+
+/* ---- 提灯望檐（关于）：仰首望檐，灯笼悠悠，灯心明灭 ---- */
+.gf-lantern .m-head {
+  transform-origin: 50% 100%;
+  animation: lnGaze 2.4s ease-in-out infinite alternate;
+}
+@keyframes lnGaze {
+  from {
+    transform: rotate(-15deg);
+  }
+  to {
+    transform: rotate(-9deg);
+  }
+}
+.gf-lantern .m-body {
+  transform-origin: 20% 88%;
+  animation: breath 2.6s ease-in-out infinite alternate;
+}
+.gf-lantern .m-larm {
+  transform-origin: 100% 0%;
+  animation: lnShade 2.4s ease-in-out infinite alternate;
+}
+@keyframes lnShade {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(2deg);
+  }
+}
+.gf-lantern .m-p3 {
+  transform-origin: 50% 2%;
+  animation: lnSwing 1.15s ease-in-out infinite alternate;
+}
+@keyframes lnSwing {
+  from {
+    transform: rotate(-9deg);
+  }
+  to {
+    transform: rotate(9deg);
+  }
+}
+.gf-lantern .m-p4 {
+  animation: lnGlow 0.9s ease-in-out infinite alternate;
+}
+@keyframes lnGlow {
+  from {
+    opacity: 0.45;
+  }
+  to {
+    opacity: 1;
+  }
+}

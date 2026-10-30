@@ -460,15 +460,30 @@ textarea {
 }
 
 /* ===== 揭幕转场幕布：guide ↔ 功能页 =====
-   双扇以站色（--gate-a/b）盖满整屏，中缝金线一亮，双扇左右揭开，
-   站台照片随之由雾里现景，最后整幕淡去，新页已在幕布下就位。 */
+   全幕取 --gate-b 站色作底（亮纸主题下作纸色底），站色双扇盖满整屏；
+   中缝金线一亮、双扇左右揭开，台前专属小人（非遗手艺动作）自 0.18s 起登台表演，
+   门开尽处新页已在幕布下就位，最后整幕连同小人一并淡去。 */
 .gate-veil {
   position: fixed;
   inset: 0;
   z-index: 88;
   pointer-events: none;
-  background: var(--ink);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--gate-b, #b03a2e) 78%, #14110b) 0%,
+    var(--gate-b, #b03a2e) 55%,
+    color-mix(in srgb, var(--gate-b, #b03a2e) 55%, #14110b) 100%
+  );
   animation: gateVeilFade 1.5s cubic-bezier(0.35, 0, 0.55, 1) forwards;
+}
+/* 亮纸主题：幕底换暖纸色，站色只作上下晕染；双扇保持站色身子 */
+:root[data-theme='light'] .gate-veil {
+  background: linear-gradient(
+    180deg,
+    #f9f5ec 0%,
+    color-mix(in srgb, var(--gate-b, #b03a2e) 14%, #f7f1e5) 42%,
+    #f4ecdd 100%
+  );
 }
 @keyframes gateVeilFade {
   0%,
@@ -479,33 +494,53 @@ textarea {
     opacity: 0;
   }
 }
-.gate-photo {
+/* 台后余光：站色圆晕如戏台灯，随门开阖吐纳，最后与幕同隐 */
+.gate-glow {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scale(1.2);
-  filter: blur(14px) brightness(0.58) saturate(1.05);
-  animation: gatePhoto 1.5s cubic-bezier(0.22, 0.7, 0.2, 1) forwards;
+  left: 50%;
+  top: 50%;
+  width: 70vmin;
+  height: 70vmin;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--gate-b, #b03a2e) 55%, transparent) 0%,
+    transparent 62%
+  );
+  transform: translate(-50%, -50%);
+  animation: gateGlow 1.4s cubic-bezier(0.3, 0, 0.4, 1) forwards;
 }
-@keyframes gatePhoto {
+:root[data-theme='light'] .gate-glow {
+  opacity: 0.8;
+}
+@keyframes gateGlow {
   0% {
-    transform: scale(1.2);
-    filter: blur(14px) brightness(0.55);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
   }
-  38% {
-    transform: scale(1.08);
-    filter: blur(5px) brightness(0.82);
+  22% {
+    opacity: 1;
   }
-  70% {
-    transform: scale(1.01);
-    filter: blur(0.5px) brightness(0.98);
+  60% {
+    opacity: 0.85;
+    transform: translate(-50%, -50%) scale(1.12);
   }
   100% {
-    transform: scale(1.05);
-    filter: blur(0) brightness(0.92);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.3);
   }
+}
+/* 站台：小人立于台中台前（双扇潜在景后，门从其后向两侧揭开，人在台前表演） */
+.gate-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  animation: gateVeilFade 1.5s cubic-bezier(0.35, 0, 0.55, 1) forwards;
 }
 .gate-door {
   position: absolute;
@@ -635,7 +670,8 @@ textarea {
 }
 @media (prefers-reduced-motion: reduce) {
   .gate-veil,
-  .gate-photo,
+  .gate-glow,
+  .gate-stage,
   .gate-door-l,
   .gate-door-r,
   .gate-seam,
@@ -1285,4 +1321,55 @@ button:not(:disabled):active,
 /* 亮纸下非遗地图宣纸晕边缘若过淡，加深至可辨 */
 :root[data-theme='light'] .map-svg-bg {
   filter: saturate(1.06) contrast(1.02);
+}
+
+/* ---- 亮纸下新手指引专修 ---- */
+/* 当前站圆点：熄掉暗墨的纯黑重影，改暖灰浅影并保持站色吐纳 */
+:root[data-theme='light'] .guide-stop.is-now .guide-dot {
+  animation-name: gdPulseLight;
+}
+@keyframes gdPulseLight {
+  0%,
+  100% {
+    box-shadow: 0 0 0 4px rgba(var(--gold-rgb), 0.18), 0 4px 12px rgba(60, 45, 20, 0.22);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(var(--gold-rgb), 0.08), 0 4px 16px rgba(60, 45, 20, 0.28);
+  }
+}
+/* 「去体验」站色按钮在亮纸下略降阴影强度，与按钮底色一致亮堂 */
+:root[data-theme='light'] .guide-go {
+  box-shadow: 0 4px 12px rgba(60, 45, 20, 0.16);
+}
+:root[data-theme='light'] .guide-go:hover {
+  box-shadow: 0 7px 16px rgba(60, 45, 20, 0.24);
+}
+/* 标题/要点句的颜色在照片渐隐罩上略提一档，保证长文可读 */
+:root[data-theme='light'] .guide-copy,
+:root[data-theme='light'] .guide-pts li {
+  color: var(--ink-soft);
+}
+
+/* ---- 亮纸下返回新手指引悬浮钮 ---- */
+:root[data-theme='light'] .guide-return {
+  background: linear-gradient(135deg, #fffdf7, #f1e8d8);
+  border-color: rgba(var(--gold-rgb), 0.6);
+  box-shadow: 0 10px 24px rgba(60, 45, 20, 0.16);
+}
+:root[data-theme='light'] .guide-return:hover {
+  border-color: var(--gold);
+  color: var(--paper);
+  box-shadow:
+    0 14px 28px rgba(60, 45, 20, 0.2),
+    0 0 16px rgba(var(--gold-rgb), 0.26);
+}
+/* 返回钮内金印小标：亮纸下把隔线换深一档，不糊成一团 */
+:root[data-theme='light'] .guide-return em {
+  border-left-color: rgba(var(--gold-rgb), 0.3);
+}
+
+/* ---- 亮纸下导航微调：纸色下加一层极浅的向下暖晕，与页面底色自然分开 ---- */
+:root[data-theme='light'] .app-nav {
+  background: linear-gradient(180deg, var(--ink-1), var(--ink));
+  border-bottom-color: rgba(var(--gold-rgb), 0.2);
 }

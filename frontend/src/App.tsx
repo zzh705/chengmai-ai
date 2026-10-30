@@ -2,14 +2,15 @@
  * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
  * 原创点：核心原创：无 URL 路由库的纯内部状态十页导航骨架、入馆动画衔接与跨页视频/音频生命周期管理
  */
-import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import Splash from './components/Splash'
+import CraftVeil from './components/CraftFigures'
 import About from './pages/About'
 import Chat from './pages/Chat'
 import Challenge from './pages/Challenge'
 import Guide from './pages/Guide'
-import { GUIDE_VEILS } from './guideStations'
+import { GUIDE_VEILS, type CraftKey } from './guideStations'
 import Home from './pages/Home'
 import Knowledge from './pages/Knowledge'
 import KnowledgeGraph from './pages/KnowledgeGraph'
@@ -119,8 +120,8 @@ function App() {
   const [kbParam, setKbParam] = useState<string | undefined>(undefined)
   const [mapParam, setMapParam] = useState<string | undefined>(undefined)
   const [masterParam, setMasterParam] = useState<string | undefined>(undefined)
-  /** 揭幕转场幕布：guide ↔ 功能页之间用站台照片与站色做双扇揭幕 */
-  const [veil, setVeil] = useState<{ img: string; a: string; b: string } | null>(null)
+  /** 揭幕转场幕布：guide ↔ 功能页之间由专属小人登台表演 + 站色双扇揭幕 */
+  const [veil, setVeil] = useState<{ craft: CraftKey; a: string; b: string } | null>(null)
   const veilTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   /** 从指引「去体验」跳离后，在任意页面亮起悬浮返回钮 */
   const [fromGuide, setFromGuide] = useState(false)
@@ -146,8 +147,8 @@ function App() {
     setPhase('login')
   }
 
-  /** 揭幕转场：以所在站的站台照片 + 站色盖满整屏，双扇向两侧揭开现出新页面 */
-  function fireVeil(v: { img: string; a: string; b: string }) {
+  /** 揭幕转场：所在站的专属小人登台表演，站色双扇向两侧揭开现出新页面 */
+  function fireVeil(v: { craft: CraftKey; a: string; b: string }) {
     if (REDUCED_MOTION) return
     setVeil(v)
     clearTimeout(veilTimer.current)
@@ -156,9 +157,9 @@ function App() {
 
   /**
    * 导航并携带参数：chat=问题文本，knowledge=项目 id 或 kw:关键词，map=省份 key；
-   * 第二参为对象时视作揭幕视觉（新手指引「去体验」带入当前站照片与主色）
+   * 第二参为对象时视作揭幕视觉（新手指引「去体验」带入当前站专属小人与主色）
    */
-  function navigate(target: string, param?: string | { img: string; b: string }) {
+  function navigate(target: string, param?: string | { craft: CraftKey; b: string }) {
     const veilArg = param && typeof param === 'object' ? param : undefined
     const paramStr = typeof param === 'string' ? param : undefined
     // 方向感知：按导航序判断前进/回切，决定入场方向与金线扫光起点
@@ -179,10 +180,10 @@ function App() {
     // 返回钮标记：从指引跳出去亮起；回到指引本身即熄灭
     if (page === 'guide' && target !== 'guide') setFromGuide(true)
     if (target === 'guide' && page !== 'guide') setFromGuide(false)
-    // guide ↔ 功能页：不叠 VT，改用站台照片揭幕转场（幕布盖满整屏，页面在其下完成切换）
+    // guide ↔ 功能页：不叠 VT，改由小人登台的站色揭幕（幕布盖满整屏，页面在其下完成切换）
     if (page === 'guide' || target === 'guide') {
       const v = veilArg ?? GUIDE_VEILS[guideStepIndex()] ?? GUIDE_VEILS[0]
-      fireVeil({ img: v.img, a: '#e8c56b', b: v.b })
+      fireVeil({ craft: v.craft, a: '#e8c56b', b: v.b })
       apply()
       return
     }
@@ -281,19 +282,8 @@ function App() {
           <i />
         </div>
       )}
-      {/* 揭幕转场幕布：guide ↔ 功能页时盖满全屏，照片现景后整体隐去 */}
-      {veil && (
-        <div
-          className="gate-veil"
-          style={{ '--gate-a': veil.a, '--gate-b': veil.b } as CSSProperties}
-          aria-hidden
-        >
-          <img className="gate-photo" src={veil.img} alt="" />
-          <i className="gate-door gate-door-l" />
-          <i className="gate-door gate-door-r" />
-          <i className="gate-seam" />
-        </div>
-      )}
+      {/* 揭幕转场幕布：guide ↔ 功能页时盖满全屏，台前小人登台表演后整幕隐去 */}
+      {veil && <CraftVeil craft={veil.craft} a={veil.a} b={veil.b} />}
       {/* 返回新手指引：从指引跳去体验后亮起，随时可回原站续逛 */}
       {!splash && phase === 'app' && page !== 'guide' && fromGuide && (
         <button

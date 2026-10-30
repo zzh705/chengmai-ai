@@ -1,16 +1,16 @@
 /**
  * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
- * 原创点：核心原创：新手导览十一站层层递进（灯线进度 + 站台照片渐变渐入 + 四式版面轮换 +
+ * 原创点：核心原创：新手导览十一站层层递进（灯线进度 + 站台照片渐变融底 + 四式版面轮换 +
  * 灯笼与站台同色 + 断点续览）
  */
 import { useEffect, useState, type CSSProperties } from 'react'
 import Motif from '../components/Motif'
-import { STEPS, type Variant } from '../guideStations'
+import { STEPS, type CraftKey, type Variant } from '../guideStations'
 import '../styles/guide.css'
 
 interface Props {
-  /** 去体验某页：跳到真实功能页；可选带上当前站的揭幕视觉（照片 + 主色） */
-  onNavigate: (page: string, veil?: { img: string; b: string }) => void
+  /** 去体验某页：跳到真实功能页；可选带上当前站的揭幕视觉（专属小人 + 主色） */
+  onNavigate: (page: string, veil?: { craft: CraftKey; b: string }) => void
   /** 结束导览：回到首页 */
   onExit: () => void
 }
@@ -98,14 +98,14 @@ export default function Guide({ onNavigate, onExit }: Props) {
 
   const pct = (step / LAST) * 100
 
-  /** 去体验：把当前站记为返回断点，并把本站照片与主色交给 App 做揭幕转场 */
+  /** 去体验：把当前站记为返回断点，并带上本站专属小人与主色交给 App 做揭幕转场 */
   const goTry = () => {
     try {
       localStorage.setItem(STEP_KEY, String(step))
     } catch {
       /* 忽略存储失败 */
     }
-    onNavigate(s.page, { img: s.img, b: s.hexb })
+    onNavigate(s.page, { craft: s.craft, b: s.hexb })
   }
 
   return (
@@ -155,12 +155,25 @@ export default function Guide({ onNavigate, onExit }: Props) {
         </div>
       </nav>
 
-      {/* 站牌：key 随站次重挂载，换站即换景；四式版面轮换，站站不同味 */}
+      {/* 站牌：key 随站次重挂载，换站即换景；照片以渐变方式融入卡面背景，四式版面轮换 */}
       <section
         key={step}
         className={`guide-card v-${s.variant}`}
         style={{ '--gd-accent': s.tone } as CSSProperties}
       >
+        {/* 站台照片背景：十一张同铺一框，换站交叉渐隐渐显，右侧浓、左缘淡，直融卡底 */}
+        <div className="guide-bg" aria-hidden>
+          {STEPS.map((t, i) => (
+            <img
+              key={t.page}
+              src={t.img}
+              alt=""
+              className={i === step ? 'on' : ''}
+              draggable={false}
+            />
+          ))}
+        </div>
+
         <div className="guide-txt">
           <div className="guide-meta">
             <span className="guide-no">
@@ -194,25 +207,14 @@ export default function Guide({ onNavigate, onExit }: Props) {
           </div>
         </div>
 
-        {/* 站台照片：十一张同处一框，换站如换景，前一张淡出、后一张渐显 */}
-        <aside className="guide-panel" aria-hidden>
-          <div className="guide-photo">
-            {STEPS.map((t, i) => (
-              <img
-                key={t.page}
-                src={t.img}
-                alt={i === step ? `${t.title}站台图` : ''}
-                className={i === step ? 'on' : ''}
-                draggable={false}
-              />
-            ))}
-            <span className="guide-mini-seal">{s.seal}</span>
-          </div>
-          <em className="guide-seal-note">{s.sealNote}</em>
-          <span className="guide-seal-count">
-            站次 {String(step + 1).padStart(2, '0')} / {String(STEPS.length).padStart(2, '0')}
-          </span>
-        </aside>
+        {/* 落款点缀：小小一方印章浮于照片景上，右下角添四字注与站次，随换站重落 */}
+        <span className="guide-mini-seal" aria-hidden>
+          {s.seal}
+        </span>
+        <em className="guide-seal-note">{s.sealNote}</em>
+        <span className="guide-seal-count" aria-hidden>
+          站次 {String(step + 1).padStart(2, '0')} / {String(STEPS.length).padStart(2, '0')}
+        </span>
       </section>
 
       <footer className="guide-foot">

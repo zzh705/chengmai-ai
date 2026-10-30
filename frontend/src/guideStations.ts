@@ -18,6 +18,20 @@ import photoAbout from './assets/guide/s11.jpg'
 /** 版面四式：scroll 卷轴批注 / ink 墨戏散点 / steps 书山台阶 / map 舆图方格，十一站交替不重样 */
 export type Variant = 'scroll' | 'ink' | 'steps' | 'map'
 
+/** 揭幕小人：十一站各一位专属「正在做手艺」的皮影小人，动作各不相同（见 CraftFigures.tsx） */
+export type CraftKey =
+  | 'scroll' // 首页·展卷
+  | 'brush' // 承脉AI·挥毫书答
+  | 'book' // 知识库·翻书夜读
+  | 'silk' // 图谱·牵丝织网
+  | 'map' // 地图·点舆图
+  | 'sleeves' // 名家·水袖
+  | 'steps' // 路径·登阶
+  | 'cut' // 实验室·剪纸
+  | 'riddle' // 挑战·猜灯谜
+  | 'seal' // 个人中心·钤印
+  | 'lantern' // 关于·提灯望檐
+
 export interface GuideStep {
   page: string
   title: string
@@ -39,6 +53,8 @@ export interface GuideStep {
   /** 揭幕转场主色（hex），跳转到功能页时与灯笼同色同脉 */
   hexb: string
   img: string
+  /** 专属揭幕小人（非遗动作各不相同） */
+  craft: CraftKey
   variant: Variant
 }
 
@@ -63,6 +79,7 @@ export const STEPS: GuideStep[] = [
     lantern: 'rgba(var(--red-rgb), 0.5)',
     hexb: '#b03a2e',
     img: photoHome,
+    craft: 'scroll',
     variant: 'scroll',
   },
   {
@@ -84,6 +101,7 @@ export const STEPS: GuideStep[] = [
     lantern: 'rgba(var(--jade-rgb), 0.55)',
     hexb: '#4f8f7b',
     img: photoChat,
+    craft: 'brush',
     variant: 'ink',
   },
   {
@@ -104,6 +122,7 @@ export const STEPS: GuideStep[] = [
     lantern: 'rgba(var(--gold-rgb), 0.42)',
     hexb: '#c19a45',
     img: photoKnowledge,
+    craft: 'book',
     variant: 'map',
   },
   {
@@ -124,6 +143,7 @@ export const STEPS: GuideStep[] = [
     lantern: 'rgba(96, 112, 152, 0.55)',
     hexb: '#56688f',
     img: photoGraph,
+    craft: 'silk',
     variant: 'steps',
   },
   {
@@ -144,6 +164,7 @@ export const STEPS: GuideStep[] = [
     lantern: 'rgba(var(--jade-rgb), 0.55)',
     hexb: '#4f8f7b',
     img: photoMap,
+    craft: 'map',
     variant: 'scroll',
   },
   {
@@ -165,6 +186,7 @@ export const STEPS: GuideStep[] = [
     lantern: 'rgba(var(--red-rgb), 0.5)',
     hexb: '#b03a2e',
     img: photoMasters,
+    craft: 'sleeves',
     variant: 'ink',
   },
   {
@@ -185,6 +207,7 @@ export const STEPS: GuideStep[] = [
     lantern: 'rgba(var(--gold-rgb), 0.42)',
     hexb: '#c19a45',
     img: photoPath,
+    craft: 'steps',
     variant: 'steps',
   },
   {
@@ -205,6 +228,7 @@ export const STEPS: GuideStep[] = [
     lantern: 'rgba(96, 112, 152, 0.55)',
     hexb: '#56688f',
     img: photoLab,
+    craft: 'cut',
     variant: 'map',
   },
   {
@@ -225,6 +249,7 @@ export const STEPS: GuideStep[] = [
     lantern: 'rgba(var(--red-rgb), 0.5)',
     hexb: '#b03a2e',
     img: photoChallenge,
+    craft: 'riddle',
     variant: 'ink',
   },
   {
@@ -245,6 +270,7 @@ export const STEPS: GuideStep[] = [
     lantern: 'rgba(var(--gold-rgb), 0.42)',
     hexb: '#c19a45',
     img: photoProfile,
+    craft: 'seal',
     variant: 'map',
   },
   {
@@ -265,12 +291,13 @@ export const STEPS: GuideStep[] = [
     lantern: 'rgba(var(--jade-rgb), 0.55)',
     hexb: '#4f8f7b',
     img: photoAbout,
+    craft: 'lantern',
     variant: 'steps',
   },
 ]
 
 /**
  * 揭幕转场视觉表：App 从 guide 跳到功能页（或回 guide）时，
- * 按所在站次取照片与站色，做「双扇揭幕·照片现景」的全屏转场。
+ * 按所在站次取专属小人（非遗手艺动作）与站色，做「双扇揭幕·台前手艺」的全屏转场。
  */
-export const GUIDE_VEILS = STEPS.map((s) => ({ img: s.img, a: '#e8c56b', b: s.hexb }))
+export const GUIDE_VEILS = STEPS.map((s) => ({ craft: s.craft, a: '#e8c56b', b: s.hexb }))
