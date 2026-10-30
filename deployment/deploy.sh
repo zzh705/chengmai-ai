@@ -61,8 +61,17 @@ systemctl reload nginx
 
 # ---------- 5. 自检 ----------
 log "健康检查"
-sleep 2
-curl -sf http://127.0.0.1:8000/api/health >/dev/null && echo "后端 ✅" || { echo "后端 ❌，日志：journalctl -u chengmai -n 50"; exit 1; }
+backend_ok=0
+for i in $(seq 1 20); do
+  if curl -sf http://127.0.0.1:8000/api/health >/dev/null; then backend_ok=1; break; fi
+  sleep 2
+done
+if [[ $backend_ok -eq 1 ]]; then
+  echo "后端 ✅"
+else
+  echo "后端 ❌，日志：journalctl -u chengmai -n 50"
+  exit 1
+fi
 curl -sfo /dev/null http://127.0.0.1/ && echo "前端 ✅" || { echo "前端 ❌"; exit 1; }
 
 log "部署完成 🎉"
