@@ -62,7 +62,9 @@ systemctl reload nginx
 # ---------- 5. 自检 ----------
 log "健康检查"
 backend_ok=0
-for i in $(seq 1 20); do
+i=0
+while ((i < 20)); do
+  i=$((i + 1))
   if curl -sf http://127.0.0.1:8000/api/health >/dev/null; then backend_ok=1; break; fi
   sleep 2
 done
