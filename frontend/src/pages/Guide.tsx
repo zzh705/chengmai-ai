@@ -1,212 +1,36 @@
 /**
  * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
- * 原创点：核心原创：新手导览十一站层层递进（灯线进度 + 字印站牌 + 去体验跳转 + 断点续览）
+ * 原创点：核心原创：新手导览十一站层层递进（灯线进度 + 站台照片渐变渐入 + 四式版面轮换 +
+ * 灯笼与站台同色 + 断点续览）
  */
 import { useEffect, useState, type CSSProperties } from 'react'
 import Motif from '../components/Motif'
+import { STEPS, type Variant } from '../guideStations'
 import '../styles/guide.css'
 
 interface Props {
-  /** 去体验某页：跳到真实功能页 */
-  onNavigate: (page: string) => void
+  /** 去体验某页：跳到真实功能页；可选带上当前站的揭幕视觉（照片 + 主色） */
+  onNavigate: (page: string, veil?: { img: string; b: string }) => void
   /** 结束导览：回到首页 */
   onExit: () => void
 }
-
-interface GuideStep {
-  page: string
-  title: string
-  /** 导航条短名 */
-  short: string
-  /** 一句话定位 */
-  tag: string
-  line: string
-  points: string[]
-  /** 站牌大字 */
-  seal: string
-  sealNote: string
-  /** 站台主色（CSS 变量名） */
-  tone: string
-}
-
-/** 十一站：按主站导航序层层递进，每站对应一个功能页面，文案与页面实况一一对应 */
-const STEPS: GuideStep[] = [
-  {
-    page: 'home',
-    title: '首页',
-    short: '首页',
-    tag: '门面',
-    line: '全站的门面与总入口，进来先落落脚。',
-    points: [
-      '「问 AI」输入框，一句话直达承脉 AI 对话',
-      '今日非遗、一分钟认识，从悬念走进项目详情',
-      '地域探索与非遗全景，一眼看遍分布与数据',
-      '我的学习进度，把足迹收进首页',
-    ],
-    seal: '启',
-    sealNote: '开卷见山',
-    tone: 'var(--vermilion)',
-  },
-  {
-    page: 'chat',
-    title: '承脉 AI',
-    short: '承脉AI',
-    tag: '三释',
-    line: '非遗多智能体在这里坐堂，问什么都有来处。',
-    points: [
-      '学者 / 传承人 / 青年传播者，三种视角随时切换',
-      '回答逐字流式生成，并附来源与证据分',
-      '从首页、名家风采等地带问题进入，直接开问',
-      '追问续聊，一路把话题聊深',
-    ],
-    seal: '问',
-    sealNote: '三声各有答',
-    tone: 'var(--jade)',
-  },
-  {
-    page: 'knowledge',
-    title: '非遗知识库',
-    short: '知识库',
-    tag: '深读',
-    line: '全量名录在此归档，逐条可查、逐档案可读。',
-    points: [
-      '关键词搜索 + 十大类筛选，3299 项名录在册',
-      '深读档案：钩子、工序、时间线与文化内涵',
-      '语音讲解随点随停，浏览进度自动记录',
-    ],
-    seal: '读',
-    sealNote: '下笔知来处',
-    tone: 'var(--gold)',
-  },
-  {
-    page: 'graph',
-    title: '知识图谱',
-    short: '图谱',
-    tag: '族谱',
-    line: '一张会呼吸的非遗族谱，关系触手可及。',
-    points: [
-      '根 → 十大类 → 项目 → 传承人，四级层层舒展',
-      '拖拽、缩放、搜索，一点即见节点详情',
-      '三千星尘环带，拟全量收录的星野',
-    ],
-    seal: '系',
-    sealNote: '千丝一线牵',
-    tone: 'var(--viz-indigo)',
-  },
-  {
-    page: 'map',
-    title: '非遗地图',
-    short: '地图',
-    tag: '舆图',
-    line: '沿华夏地理铺开，非遗的分布一目了然。',
-    points: [
-      '舆图与方格双视图，山河形胜由你切换',
-      '点选省份，看当地名录与热度色阶',
-      '「带我去一个省」，随手开启一场云游',
-    ],
-    seal: '览',
-    sealNote: '舆图入九州',
-    tone: 'var(--jade)',
-  },
-  {
-    page: 'masters',
-    title: '名家风采',
-    short: '名家',
-    tag: '溯源',
-    line: '先认得北斗，再望星河万千。',
-    points: [
-      '十六位开宗立派的源头人物，星河里的北斗',
-      '肖像、生平年表与代表作品，逐位深读',
-      '「向承脉 AI 问起」，把好奇续进对话',
-    ],
-    seal: '仰',
-    sealNote: '星河识北斗',
-    tone: 'var(--vermilion)',
-  },
-  {
-    page: 'path',
-    title: '学习路径',
-    short: '路径',
-    tag: '精进',
-    line: '把兴趣排成一条路，一天一坎走上去。',
-    points: [
-      '输入一个主题，选择天数、目标与每日时长',
-      '一键生成分日计划：日卡打卡、里程碑递进',
-      '「抄录路线」，整案带进课堂与社团',
-    ],
-    seal: '行',
-    sealNote: '书山自卷开',
-    tone: 'var(--gold)',
-  },
-  {
-    page: 'lab',
-    title: '活化实验室',
-    short: '实验室',
-    tag: '活化',
-    line: '让古老手艺，长出新世代的模样。',
-    points: [
-      '选定非遗、写下需求，方案即刻生成',
-      '输出文案、活动、短视频等多种形制',
-      '风格与受众可定制，整案可抄录、历史可回看',
-    ],
-    seal: '创',
-    sealNote: '古艺焕新枝',
-    tone: 'var(--viz-indigo)',
-  },
-  {
-    page: 'challenge',
-    title: '非遗挑战',
-    short: '挑战',
-    tag: '试锋',
-    line: '学过的都算数，三题一试见真章。',
-    points: [
-      '每日一题：AI 现场出题，即答即评',
-      '五款迷你游艺坊，战绩与挑战同档记账',
-      '正确率、连对、打卡联动，攒下六枚传承徽章',
-    ],
-    seal: '试',
-    sealNote: '三题试锋芒',
-    tone: 'var(--vermilion)',
-  },
-  {
-    page: 'profile',
-    title: '个人中心',
-    short: '个人',
-    tag: '档案',
-    line: '每一次浏览与作答，都在这里留下印痕。',
-    points: [
-      '传承人名片与称号之路，成长看得见',
-      '集印册八枚印章，达成条件即盖印',
-      '兴趣雷达、答题分析与浏览足迹，同页复盘',
-    ],
-    seal: '籍',
-    sealNote: '印留岁月痕',
-    tone: 'var(--gold)',
-  },
-  {
-    page: 'about',
-    title: '关于项目',
-    short: '关于',
-    tag: '立心',
-    line: '一切声明可验证，这是承脉的立身之本。',
-    points: [
-      '项目简介与设计理念，认识承脉的来路',
-      '系统架构与多智能体分工，口径公开可查',
-      '数据、图片许可逐条可验，里程碑一路走来',
-    ],
-    seal: '承',
-    sealNote: '一脉承至今',
-    tone: 'var(--jade)',
-  },
-]
 
 const STEP_KEY = 'cm-guide-step'
 const DONE_KEY = 'cm-guide-done'
 const LAST = STEPS.length - 1
 
-/** 读入上回逛到的站次（越界/损坏时回第 1 站） */
+/** 各版面的要点序号字体：卷一壹贰 / 台阶零一 / 舆图甲乙（墨戏无序号） */
+const NUM: Record<Variant, string[]> = {
+  scroll: ['壹', '贰', '叁', '肆', '伍'],
+  ink: [],
+  steps: ['01', '02', '03', '04', '05'],
+  map: ['甲', '乙', '丙', '丁', '戊'],
+}
+
+/** 读入上回逛到的站次（越界/损坏时回第 1 站；已走完全程者也从第 1 站重新开逛） */
 function readSaved(): number {
   try {
+    if (localStorage.getItem(DONE_KEY) === '1') return 0
     const n = parseInt(localStorage.getItem(STEP_KEY) ?? '0', 10)
     return Number.isFinite(n) && n >= 0 && n <= LAST ? n : 0
   } catch {
@@ -274,8 +98,23 @@ export default function Guide({ onNavigate, onExit }: Props) {
 
   const pct = (step / LAST) * 100
 
+  /** 去体验：把当前站记为返回断点，并把本站照片与主色交给 App 做揭幕转场 */
+  const goTry = () => {
+    try {
+      localStorage.setItem(STEP_KEY, String(step))
+    } catch {
+      /* 忽略存储失败 */
+    }
+    onNavigate(s.page, { img: s.img, b: s.hexb })
+  }
+
   return (
-    <div className="guide-page">
+    <div
+      className="guide-page"
+      style={
+        { '--gd-accent': s.tone, '--lantern-color': s.lantern } as CSSProperties
+      }
+    >
       <header className="guide-head">
         <div>
           <h1>新手指引</h1>
@@ -293,7 +132,7 @@ export default function Guide({ onNavigate, onExit }: Props) {
         </div>
       </header>
 
-      {/* 灯线进度：十一个站次一字排开，走过的路被描金点亮 */}
+      {/* 灯线进度：十一个站次一字排开，走过的路描金点亮，当前站亮起站色 */}
       <nav className="guide-steps" aria-label="导览进度">
         <div className="guide-track">
           <div className="guide-line" aria-hidden>
@@ -316,10 +155,10 @@ export default function Guide({ onNavigate, onExit }: Props) {
         </div>
       </nav>
 
-      {/* 站牌：key 随站次重挂载，换站即换景 */}
+      {/* 站牌：key 随站次重挂载，换站即换景；四式版面轮换，站站不同味 */}
       <section
         key={step}
-        className="guide-card"
+        className={`guide-card v-${s.variant}`}
         style={{ '--gd-accent': s.tone } as CSSProperties}
       >
         <div className="guide-txt">
@@ -329,18 +168,24 @@ export default function Guide({ onNavigate, onExit }: Props) {
             </span>
             <span className="guide-tag">{s.tag}</span>
           </div>
-          <h2>{s.title}</h2>
+          <span className="guide-hook" aria-hidden>
+            {s.hook}
+          </span>
+          <h2 data-seal={s.seal}>{s.title}</h2>
           <p className="guide-copy">{s.line}</p>
           <ul className="guide-pts">
-            {s.points.map((p) => (
-              <li key={p}>{p}</li>
+            {s.points.map((p, i) => (
+              <li key={p} style={{ '--pi': `${0.1 + i * 0.08}s` } as CSSProperties}>
+                {NUM[s.variant][i] && <span className="guide-pt-no">{NUM[s.variant][i]}</span>}
+                <span>{p}</span>
+              </li>
             ))}
           </ul>
           <div className="guide-acts">
             <button type="button" className="guide-prev" disabled={step === 0} onClick={() => go(step - 1)}>
               上一步
             </button>
-            <button type="button" className="guide-go" onClick={() => onNavigate(s.page)}>
+            <button type="button" className="guide-go" onClick={goTry}>
               去「{s.title}」看看
             </button>
             <button type="button" className="guide-next" onClick={next}>
@@ -348,8 +193,21 @@ export default function Guide({ onNavigate, onExit }: Props) {
             </button>
           </div>
         </div>
+
+        {/* 站台照片：十一张同处一框，换站如换景，前一张淡出、后一张渐显 */}
         <aside className="guide-panel" aria-hidden>
-          <span className="guide-seal">{s.seal}</span>
+          <div className="guide-photo">
+            {STEPS.map((t, i) => (
+              <img
+                key={t.page}
+                src={t.img}
+                alt={i === step ? `${t.title}站台图` : ''}
+                className={i === step ? 'on' : ''}
+                draggable={false}
+              />
+            ))}
+            <span className="guide-mini-seal">{s.seal}</span>
+          </div>
           <em className="guide-seal-note">{s.sealNote}</em>
           <span className="guide-seal-count">
             站次 {String(step + 1).padStart(2, '0')} / {String(STEPS.length).padStart(2, '0')}

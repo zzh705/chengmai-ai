@@ -1,5 +1,7 @@
 /* ===== 新手指引：十一站层层递进导览 ===== */
-/* 排版层级：题头 → 灯线进度 → 站牌（文案 + 字印）→ 页脚；只动 transform/opacity */
+/* 排版层级：题头 → 灯线进度 → 站牌（文案 + 站台照片）→ 页脚
+   站色 --gd-accent 由 Guide 随站写入，灯线/标签/按钮/照片光晕/灯笼同源换色
+   版面四式：v-scroll 卷轴批注 / v-ink 墨戏散点 / v-steps 书山台阶 / v-map 舆图方格 */
 
 .guide-page {
   position: relative;
@@ -66,7 +68,7 @@
   transform: translateY(-1px);
 }
 
-/* ---- 灯线进度：走过的路描金点亮 ---- */
+/* ---- 灯线进度：走过的路描金点亮，当前站亮起站色 ---- */
 .guide-steps {
   overflow-x: auto;
   scrollbar-width: none;
@@ -151,25 +153,25 @@
   background: rgba(var(--gold-rgb), 0.1);
   color: var(--gold);
 }
-/* 当前站：朱红灯，微微吐纳 */
+/* 当前站：点亮站色，微微吐纳 */
 .guide-stop.is-now .guide-dot {
-  border-color: var(--vermilion);
-  background: var(--vermilion);
-  color: var(--on-brand);
-  box-shadow: 0 0 0 4px rgba(var(--red-rgb), 0.14), 0 4px 14px rgba(var(--red-rgb), 0.35);
+  border-color: var(--gd-accent);
+  background: var(--gd-accent);
+  color: #17120b;
+  box-shadow: 0 0 0 4px rgba(var(--gold-rgb), 0.16), 0 4px 14px rgba(0, 0, 0, 0.4);
   animation: gdPulse 2.6s ease-in-out infinite;
 }
 @keyframes gdPulse {
   0%,
   100% {
-    box-shadow: 0 0 0 4px rgba(var(--red-rgb), 0.14), 0 4px 14px rgba(var(--red-rgb), 0.35);
+    box-shadow: 0 0 0 4px rgba(var(--gold-rgb), 0.16), 0 4px 14px rgba(0, 0, 0, 0.4);
   }
   50% {
-    box-shadow: 0 0 0 7px rgba(var(--red-rgb), 0.06), 0 4px 16px rgba(var(--red-rgb), 0.5);
+    box-shadow: 0 0 0 8px rgba(var(--gold-rgb), 0.07), 0 4px 18px rgba(0, 0, 0, 0.5);
   }
 }
 .guide-stop.is-now .guide-stop-name {
-  color: var(--vermilion);
+  color: var(--gd-accent);
 }
 
 /* ---- 站牌 ---- */
@@ -198,6 +200,52 @@
     transform: none;
   }
 }
+/* 版面入场各不同：卷轴自下卷起 / 墨戏雾散 / 舆图自照片处拓来
+   （全用 transform/opacity：即使动画被浏览器节流停在半途，卡面也始终可点） */
+.guide-card.v-scroll {
+  animation: gdInRoll 0.55s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.guide-card.v-ink {
+  animation: gdInBlur 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.guide-card.v-map {
+  animation: gdInMap 0.62s cubic-bezier(0.25, 0.8, 0.3, 1);
+}
+@keyframes gdInRoll {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes gdInBlur {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+}
+@keyframes gdInMap {
+  from {
+    opacity: 0;
+    transform: translateX(28px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.v-map .guide-pts li {
+  transform-origin: 100% 30%;
+}
 /* 站台主色一览：卡顶一道细线随站换色 */
 .guide-card::before {
   content: '';
@@ -219,11 +267,15 @@
   }
 }
 
+.guide-txt {
+  position: relative;
+  min-width: 0;
+}
 .guide-meta {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 .guide-no {
   font-family: var(--font-serif);
@@ -239,6 +291,53 @@
   letter-spacing: 2px;
   color: var(--gd-accent, var(--gold));
 }
+
+/* 四字点睛：卷轴=左侧竖批 / 墨戏=题后巨字水印 / 台阶=条签书签 / 舆图=右下淡印 */
+.guide-hook {
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--font-serif);
+  color: var(--gd-accent, var(--gold));
+}
+.v-scroll .guide-hook {
+  position: absolute;
+  left: -24px;
+  top: 30px;
+  writing-mode: vertical-rl;
+  font-size: 17px;
+  letter-spacing: 8px;
+  opacity: 0.4;
+}
+.v-ink .guide-hook {
+  position: absolute;
+  right: -6px;
+  top: -2px;
+  font-size: 50px;
+  letter-spacing: 14px;
+  opacity: 0.08;
+}
+.v-steps .guide-hook {
+  position: static;
+  display: inline-block;
+  margin: 0 0 10px;
+  padding: 3px 12px;
+  border-left: 3px solid var(--gd-accent, var(--gold));
+  border-radius: 0 6px 6px 0;
+  background: rgba(var(--gold-rgb), 0.08);
+  font-family: var(--font-kai);
+  font-size: 14px;
+  letter-spacing: 3px;
+  opacity: 0.92;
+}
+.v-map .guide-hook {
+  position: absolute;
+  right: -8px;
+  bottom: -10px;
+  font-size: 56px;
+  letter-spacing: 10px;
+  opacity: 0.06;
+}
+
 .guide-card h2 {
   margin: 0 0 10px;
   font-family: var(--font-serif);
@@ -247,12 +346,43 @@
   letter-spacing: 4px;
   color: var(--paper);
 }
+/* 标题装饰随版面：墨戏=标题前一印 / 台阶=左侧站色立柱 / 舆图=大字距微光 */
+.v-ink h2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.v-ink h2::before {
+  content: attr(data-seal);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: var(--gd-accent, var(--gold));
+  color: #17120b;
+  font-size: 18px;
+  transform: rotate(-6deg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.v-steps h2 {
+  padding-left: 14px;
+  border-left: 3px solid var(--gd-accent, var(--gold));
+}
+.v-map h2 {
+  letter-spacing: 8px;
+  text-shadow: 0 0 24px rgba(var(--gold-rgb), 0.25);
+}
 .guide-copy {
   margin: 0 0 20px;
   font-size: 14px;
   line-height: 1.8;
   color: var(--ink-soft);
 }
+
+/* ---- 要点四式 ---- */
 .guide-pts {
   margin: 0 0 26px;
   padding: 0;
@@ -261,23 +391,163 @@
   flex-direction: column;
   gap: 10px;
 }
+.guide-pts span {
+  min-width: 0;
+}
 .guide-pts li {
-  position: relative;
-  padding-left: 18px;
   font-size: 14px;
   line-height: 1.7;
   color: var(--ink-soft);
 }
-.guide-pts li::before {
-  content: '';
-  position: absolute;
-  left: 2px;
-  top: 0.62em;
-  width: 6px;
-  height: 6px;
-  background: var(--gd-accent, var(--gold));
-  transform: rotate(45deg);
+
+/* 卷轴批注：壹贰叁方形角章 + 虚线隔行 */
+.v-scroll .guide-pts {
+  gap: 0;
 }
+.v-scroll .guide-pts li {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 11px 0;
+  border-bottom: 1px dashed var(--ink-3);
+}
+.v-scroll .guide-pts li:last-child {
+  border-bottom: none;
+}
+.v-scroll .guide-pt-no {
+  flex-shrink: 0;
+  padding: 1px 7px;
+  border: 1px solid var(--gd-accent, var(--gold));
+  border-radius: 4px;
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--gd-accent, var(--gold));
+  transform: rotate(-2deg);
+}
+
+/* 墨戏散点：句句是墨点，落笔有先后，悬停轻轻一浮 */
+.v-ink .guide-pts {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.v-ink .guide-pts li {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 14px;
+  border: 1px solid var(--ink-2);
+  border-radius: 999px;
+  background:
+    radial-gradient(60% 160% at 18% 18%, rgba(var(--gold-rgb), 0.1), transparent 60%),
+    var(--ink-1);
+  font-size: 13px;
+  line-height: 1.5;
+  animation: gdBlot 0.5s var(--ease-out) backwards;
+  animation-delay: var(--pi, 0s);
+  transition:
+    border-color 0.25s,
+    transform 0.25s var(--ease-out);
+}
+.v-ink .guide-pts li::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gd-accent, var(--gold));
+  flex-shrink: 0;
+}
+.v-ink .guide-pts li:hover {
+  border-color: var(--gd-accent, var(--gold));
+  transform: translateY(-2px);
+}
+@keyframes gdBlot {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.94);
+    filter: blur(4px);
+  }
+}
+
+/* 书山台阶：一级一阶向右递进，站色笔锋标号 */
+.v-steps .guide-pts {
+  gap: 8px;
+}
+.v-steps .guide-pts li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  border: 1px solid var(--ink-2);
+  border-left: 3px solid var(--gd-accent, var(--gold));
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(var(--gold-rgb), 0.08), transparent 72%);
+  animation: gdStep 0.5s var(--ease-out) backwards;
+  animation-delay: var(--pi, 0s);
+}
+.v-steps .guide-pts li:nth-child(2) {
+  margin-left: 18px;
+}
+.v-steps .guide-pts li:nth-child(3) {
+  margin-left: 36px;
+}
+.v-steps .guide-pts li:nth-child(4) {
+  margin-left: 54px;
+}
+.v-steps .guide-pts li:nth-child(5) {
+  margin-left: 72px;
+}
+.v-steps .guide-pt-no {
+  flex-shrink: 0;
+  font-family: var(--font-serif);
+  font-size: 16px;
+  color: var(--ink-soft);
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--gd-accent, var(--gold));
+}
+@keyframes gdStep {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+}
+
+/* 舆图方格：甲乙丙丁各占一方，如舆图注记 */
+.v-map .guide-pts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.v-map .guide-pts li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 12px;
+  border: 1px solid var(--ink-2);
+  border-radius: 10px;
+  background:
+    linear-gradient(135deg, rgba(var(--gold-rgb), 0.05), transparent 55%),
+    var(--ink-1);
+  animation: gdPin 0.5s var(--ease-out) backwards;
+  animation-delay: var(--pi, 0s);
+}
+.v-map .guide-pt-no {
+  flex-shrink: 0;
+  margin-top: 1px;
+  padding: 1px 6px;
+  border: 1px solid var(--ink-3);
+  border-radius: 4px;
+  font-family: var(--font-serif);
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+@keyframes gdPin {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.92);
+  }
+}
+
 .guide-acts {
   display: flex;
   align-items: center;
@@ -295,7 +565,8 @@
     transform 0.2s var(--ease-out),
     border-color 0.2s,
     background-color 0.2s,
-    color 0.2s;
+    color 0.2s,
+    box-shadow 0.2s;
 }
 .guide-prev,
 .guide-next {
@@ -313,37 +584,96 @@
   opacity: 0.35;
   cursor: default;
 }
+/* 去体验：底色随站色，落地便与跳转揭幕同脉 */
 .guide-go {
-  border: 1px solid var(--vermilion);
-  background: var(--vermilion);
-  color: var(--on-brand);
-  box-shadow: 0 4px 14px rgba(var(--red-rgb), 0.3);
+  border: 1px solid var(--gd-accent, var(--vermilion));
+  background: var(--gd-accent, var(--vermilion));
+  color: #17120b;
+  box-shadow: 0 4px 14px rgba(var(--gold-rgb), 0.26);
 }
 .guide-go:hover {
   transform: translateY(-2px);
-  box-shadow: 0 7px 18px rgba(var(--red-rgb), 0.38);
+  box-shadow: 0 7px 18px rgba(var(--gold-rgb), 0.34);
 }
 
-/* ---- 字印站牌 ---- */
+/* ---- 站台照片：换站渐变渐入，角上留一枚小章 ---- */
 .guide-panel {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
+  min-width: 0;
 }
-.guide-seal {
+.guide-photo {
+  position: relative;
+  width: 100%;
+  max-width: 232px;
+  aspect-ratio: 3 / 4;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(var(--gold-rgb), 0.25);
+  box-shadow:
+    0 18px 40px -22px var(--gd-accent, var(--gold)),
+    0 4px 16px rgba(0, 0, 0, 0.35);
+}
+.guide-photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.09);
+  filter: saturate(0.82) brightness(0.8);
+  transition:
+    opacity 0.9s var(--ease-out),
+    transform 1.15s var(--ease-out),
+    filter 0.9s var(--ease-out);
+}
+.guide-photo img.on {
+  opacity: 1;
+  transform: scale(1);
+  filter: saturate(1) brightness(1);
+}
+/* 底部墨色渐隐 + 站色薄染，让照片融进卡面 */
+.guide-photo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, transparent 55%, rgba(8, 6, 4, 0.55));
+  pointer-events: none;
+}
+.guide-photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(160deg, var(--gd-accent, var(--gold)), transparent 46%);
+  opacity: 0.14;
+  pointer-events: none;
+}
+.guide-mini-seal {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  right: 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 118px;
-  height: 118px;
-  border: 2px solid var(--gd-accent, var(--gold));
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid var(--gd-accent, var(--gold));
   border-radius: 50%;
-  font-family: var(--font-serif);
-  font-size: 56px;
-  line-height: 1;
+  background: rgba(14, 11, 8, 0.68);
   color: var(--gd-accent, var(--gold));
-  background: radial-gradient(circle at 50% 42%, rgba(var(--gold-rgb), 0.1), transparent 72%);
+  font-family: var(--font-serif);
+  font-size: 21px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(3px);
+}
+:root[data-theme='light'] .guide-mini-seal {
+  background: rgba(255, 253, 247, 0.82);
 }
 .guide-seal-note {
   font-family: var(--font-kai);
@@ -394,20 +724,27 @@
   }
   .guide-card {
     grid-template-columns: 1fr;
-    padding: 28px 24px;
+    padding: 28px 26px;
   }
   .guide-panel {
     flex-direction: row;
     justify-content: center;
     gap: 16px;
   }
-  .guide-seal {
-    width: 76px;
-    height: 76px;
-    font-size: 38px;
+  .guide-photo {
+    max-width: 148px;
   }
   .guide-seal-count {
     display: none;
+  }
+  .v-scroll .guide-hook {
+    left: -16px;
+  }
+  .v-map .guide-pts {
+    grid-template-columns: 1fr;
+  }
+  .v-steps .guide-pts li:nth-child(n + 2) {
+    margin-left: 0;
   }
 }
 @media (max-width: 480px) {
@@ -421,11 +758,17 @@
   .guide-acts button {
     width: 100%;
   }
+  .v-ink .guide-hook {
+    display: none;
+  }
 }
 
 /* 无障碍：减少动态 */
 @media (prefers-reduced-motion: reduce) {
-  .guide-card {
+  .guide-card,
+  .guide-card.v-scroll,
+  .guide-card.v-ink,
+  .guide-card.v-map {
     animation: none;
   }
   .guide-card::before {
@@ -436,5 +779,14 @@
   }
   .guide-line i {
     transition: none;
+  }
+  .guide-photo img {
+    transition: none;
+    transform: none;
+  }
+  .v-ink .guide-pts li,
+  .v-steps .guide-pts li,
+  .v-map .guide-pts li {
+    animation: none;
   }
 }

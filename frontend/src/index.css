@@ -459,6 +459,191 @@ textarea {
   }
 }
 
+/* ===== 揭幕转场幕布：guide ↔ 功能页 =====
+   双扇以站色（--gate-a/b）盖满整屏，中缝金线一亮，双扇左右揭开，
+   站台照片随之由雾里现景，最后整幕淡去，新页已在幕布下就位。 */
+.gate-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 88;
+  pointer-events: none;
+  background: var(--ink);
+  animation: gateVeilFade 1.5s cubic-bezier(0.35, 0, 0.55, 1) forwards;
+}
+@keyframes gateVeilFade {
+  0%,
+  66% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.gate-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.2);
+  filter: blur(14px) brightness(0.58) saturate(1.05);
+  animation: gatePhoto 1.5s cubic-bezier(0.22, 0.7, 0.2, 1) forwards;
+}
+@keyframes gatePhoto {
+  0% {
+    transform: scale(1.2);
+    filter: blur(14px) brightness(0.55);
+  }
+  38% {
+    transform: scale(1.08);
+    filter: blur(5px) brightness(0.82);
+  }
+  70% {
+    transform: scale(1.01);
+    filter: blur(0.5px) brightness(0.98);
+  }
+  100% {
+    transform: scale(1.05);
+    filter: blur(0) brightness(0.92);
+  }
+}
+.gate-door {
+  position: absolute;
+  top: -3%;
+  bottom: -3%;
+  width: 50.6%;
+  background: linear-gradient(
+    160deg,
+    var(--gate-a, #e8c56b),
+    var(--gate-b, #b03a2e) 58%,
+    #14100b 135%
+  );
+}
+.gate-door::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    115deg,
+    transparent 0 26px,
+    rgba(0, 0, 0, 0.09) 26px 27px
+  );
+}
+.gate-door-l {
+  left: 0;
+  box-shadow:
+    inset -1.5px 0 0 rgba(255, 255, 255, 0.16),
+    inset -46px 0 64px -30px rgba(0, 0, 0, 0.35);
+  animation: gateDoorL 1.05s cubic-bezier(0.72, 0, 0.25, 1) forwards;
+}
+.gate-door-r {
+  right: 0;
+  box-shadow:
+    inset 1.5px 0 0 rgba(255, 255, 255, 0.16),
+    inset 46px 0 64px -30px rgba(0, 0, 0, 0.35);
+  animation: gateDoorR 1.05s cubic-bezier(0.72, 0, 0.25, 1) forwards;
+}
+@keyframes gateDoorL {
+  0%,
+  18% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100.5%);
+  }
+}
+@keyframes gateDoorR {
+  0%,
+  18% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100.5%);
+  }
+}
+.gate-seam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  background: linear-gradient(180deg, var(--gate-a), var(--gate-b));
+  box-shadow: 0 0 20px 5px rgba(232, 197, 107, 0.5);
+  transform: scaleY(0);
+  animation: gateSeam 0.62s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+@keyframes gateSeam {
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/* ===== 返回新手指引悬浮钮：guide 跳去体验后亮起，点击回原站续逛 ===== */
+.guide-return {
+  position: fixed;
+  left: 18px;
+  bottom: 18px;
+  z-index: 84;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px 10px 13px;
+  border: 1px solid rgba(var(--gold-rgb), 0.55);
+  border-radius: var(--r-pill);
+  background: linear-gradient(135deg, var(--ink-1), var(--ink-2));
+  color: var(--ink-soft);
+  font-family: inherit;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.4);
+  animation: guideReturnIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  transition:
+    transform 0.2s var(--ease-out),
+    border-color 0.2s,
+    color 0.2s,
+    box-shadow 0.2s;
+}
+.guide-return svg {
+  color: var(--gold);
+  flex-shrink: 0;
+}
+.guide-return em {
+  font-style: normal;
+  font-family: var(--font-serif);
+  font-size: 12px;
+  color: var(--gold);
+  border-left: 1px solid var(--ink-3);
+  padding-left: 10px;
+}
+.guide-return:hover {
+  transform: translateY(-2px);
+  border-color: var(--gold);
+  color: var(--paper);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.46), 0 0 18px rgba(var(--gold-rgb), 0.22);
+}
+.guide-return:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+@keyframes guideReturnIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gate-veil,
+  .gate-photo,
+  .gate-door-l,
+  .gate-door-r,
+  .gate-seam,
+  .guide-return {
+    animation: none;
+  }
+}
+
 /* 页面主标题：全站统一规格（正文页 26px / 移动 20px，hero 另行覆盖），
    各页 CSS 不再各自声明字号与字距，避免 34/28/26/24/22px 五套并存 */
 .app-body h1 {

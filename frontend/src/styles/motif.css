@@ -83,7 +83,9 @@
   color: rgba(var(--gold-rgb), 0.5);
 }
 .mf-lantern {
-  color: rgba(var(--red-rgb), 0.46);
+  /* 站点可经 --lantern-color 注入站色（Guide 页随站切换，与跳转揭幕同色同脉） */
+  color: var(--lantern-color, rgba(var(--red-rgb), 0.46));
+  transition: color 0.9s var(--ease-out);
 }
 
 /* ===== 亮纸主题：剪影由淡金/淡墨改为深彩半透明，立在白纸上仍如水墨影戏 ===== */
@@ -110,7 +112,7 @@
   color: rgba(150, 115, 31, 0.52);
 }
 :root[data-theme='light'] .mf-lantern {
-  color: rgba(159, 48, 36, 0.5);
+  color: var(--lantern-color, rgba(159, 48, 36, 0.5));
 }
 
 /* ===== 出场两式 ===== */
