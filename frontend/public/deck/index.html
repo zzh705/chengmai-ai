@@ -196,12 +196,13 @@ body.cover-mode #corner{opacity:0}
 .film p{font-size:16px;line-height:1.7;color:var(--ink2);padding:0 2px}
 
 /* ---------- 游戏页 ---------- */
-.games-row{display:flex;gap:18px;margin-bottom:36px}
-.gm{flex:1;text-align:center;background:rgba(255,253,246,.9);border:1px solid var(--line);border-radius:14px;padding:20px 8px;
-  box-shadow:0 8px 20px rgba(46,61,51,.08)}
-.gm .gi{font-family:'Ma Shan Zheng',serif;font-size:30px;color:var(--zhu-d)}
-.gm .gt{font-size:17px;color:var(--ink2);margin-top:6px}
-.gm::after{content:'缝';display:none}
+.games-row{display:flex;gap:16px;margin-bottom:20px}
+.gm{flex:1;text-align:center;background:rgba(255,253,246,.92);border:1px solid var(--line);border-radius:14px;
+  padding:16px 8px 14px;box-shadow:0 8px 20px rgba(46,61,51,.08);position:relative;overflow:hidden}
+.gm::before{content:'';position:absolute;left:0;top:0;right:0;height:5px;
+  background:linear-gradient(90deg,var(--zhu),var(--gold))}
+.gm .gi{font-family:'Ma Shan Zheng',serif;font-size:28px;color:var(--zhu-d);line-height:1.1}
+.gm .gt{font-size:16px;color:var(--ink2);margin-top:5px;letter-spacing:.06em}
 
 /* ---------- 架构页 ---------- */
 .layers{display:flex;flex-direction:column;gap:13px}
@@ -681,7 +682,7 @@ body.cover-mode #corner{opacity:0}
           <div class="win-body" data-slot="p06-guide"><span class="slot-badge">录屏</span><div class="ph">引</div><div class="ph-t">录屏位 · 新手指引</div>
             <div class="ph-h">已录：邀请卡 1 秒轻现 → 双扇揭幕 → 十一站逐站导览 → 去体验直达功能页（assets/p06-guide）</div></div>
         </div>
-        <div class="fcap">录屏 · 新手指引逛馆实录（10 月 31 日实机录制）</div>
+        <div class="fcap">录屏 · 新手指引 · 一声邀请，带你逛完十一站</div>
       </div>
     </div>
     <div class="page-strip anim d4" style="margin-top:14px">
@@ -796,7 +797,7 @@ body.cover-mode #corner{opacity:0}
       <div class="gm anim d2"><div class="gi">旗</div><div class="gt">投令旗</div></div>
       <div class="gm anim d3"><div class="gi">染</div><div class="gt">点色成画</div></div>
     </div>
-    <div class="split" style="grid-template-columns:minmax(0,9fr) minmax(0,7fr)">
+    <div class="split" style="grid-template-columns:minmax(0,8fr) minmax(0,8fr)">
       <div class="anim d3">
         <div class="win">
           <div class="win-bar"><i></i><i></i><i></i><div class="win-url">123.56.18.7 · 非遗挑战 · 游艺坊</div></div>
