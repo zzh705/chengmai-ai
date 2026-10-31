@@ -221,19 +221,20 @@ body.cover-mode #corner{opacity:0}
 .techgrid div b{color:var(--ink)}
 
 /* ---------- 反馈闭环页 ---------- */
-.fb-row{display:grid;grid-template-columns:1fr 70px 1fr;align-items:center;gap:0;margin-bottom:30px}
-.fb-q{background:rgba(176,58,46,.07);border:1.5px solid rgba(176,58,46,.35);border-radius:14px;padding:24px 30px;position:relative}
+.fb-page .h2{font-size:54px;margin-bottom:12px}
+.fb-row{display:grid;grid-template-columns:1fr 62px 1fr;align-items:center;gap:0;margin-bottom:14px}
+.fb-q{background:rgba(176,58,46,.07);border:1.5px solid rgba(176,58,46,.35);border-radius:12px;padding:15px 26px;position:relative}
 .fb-q::after{content:'';position:absolute;right:-16px;top:50%;transform:translateY(-50%);
-  border-left:16px solid rgba(176,58,46,.35);border-top:13px solid transparent;border-bottom:13px solid transparent}
-.fb-q .who{font-size:15px;letter-spacing:.2em;color:var(--zhu-d);margin-bottom:8px}
-.fb-q .say{font-family:'Ma Shan Zheng',serif;font-size:28px;color:var(--ink);line-height:1.4}
-.fb-arrow{text-align:center;color:var(--gold);font-size:34px}
-.fb-a{background:rgba(255,253,246,.92);border:1px solid var(--line);border-radius:14px;padding:24px 30px;box-shadow:0 10px 26px rgba(46,61,51,.1)}
-.fb-a h4{font-size:24px;color:var(--jade-d);margin-bottom:8px}
-.fb-a p{font-size:17px;line-height:1.7;color:var(--ink2)}
-.loop{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:6px;flex-wrap:wrap}
-.loop span{font-size:19px;color:var(--ink2);border:1px solid var(--line);border-radius:999px;padding:10px 24px;background:rgba(255,253,246,.75)}
-.loop i{color:var(--gold);font-style:normal;font-size:22px}
+  border-left:16px solid rgba(176,58,46,.35);border-top:12px solid transparent;border-bottom:12px solid transparent}
+.fb-q .who{font-size:14px;letter-spacing:.2em;color:var(--zhu-d);margin-bottom:5px}
+.fb-q .say{font-family:'Ma Shan Zheng',serif;font-size:24px;color:var(--ink);line-height:1.35}
+.fb-arrow{text-align:center;color:var(--gold);font-size:30px}
+.fb-a{background:rgba(255,253,246,.92);border:1px solid var(--line);border-radius:12px;padding:14px 26px;box-shadow:0 10px 26px rgba(46,61,51,.1)}
+.fb-a h4{font-size:20px;color:var(--jade-d);margin-bottom:5px}
+.fb-a p{font-size:15px;line-height:1.55;color:var(--ink2)}
+.loop{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:2px;flex-wrap:wrap}
+.loop span{font-size:18px;color:var(--ink2);border:1px solid var(--line);border-radius:999px;padding:7px 20px;background:rgba(255,253,246,.75)}
+.loop i{color:var(--gold);font-style:normal;font-size:20px}
 
 /* ---------- 团队页 ---------- */
 .team{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:8px}
@@ -337,7 +338,7 @@ body.cover-mode #corner{opacity:0}
 .titem p{font-size:15.5px;color:var(--ink2);line-height:1.5}
 .titem.wide b{font-size:20px;letter-spacing:.02em}
 
-/* ---------- 13 架构页补充 ---------- */
+/* ---------- 14 架构页补充 ---------- */
 .layer .ln{display:flex;align-items:center;gap:12px}
 .layer .ln::after{content:'';width:8px;height:8px;border-radius:50%;background:rgba(243,216,160,.85);
   box-shadow:0 0 10px rgba(243,216,160,.9)}
@@ -360,7 +361,7 @@ body.cover-mode #corner{opacity:0}
 .fnode span{display:block;font-size:15px;color:var(--ink2);line-height:1.45}
 .farrow{flex:none;width:30px;text-align:center;padding-top:10px;color:var(--gold);font-size:22px}
 
-/* ---------- 15 团队页改版 ---------- */
+/* ---------- 16 团队页改版 ---------- */
 .team-v{display:flex;flex-direction:column;gap:16px}
 .member{display:flex;gap:16px;align-items:flex-start;text-align:left;padding:22px 24px;position:relative}
 .member .av{width:60px;height:60px;font-size:29px;margin:0;flex:none}
@@ -431,7 +432,7 @@ body.cover-mode #corner{opacity:0}
   <div id="progress"></div>
   <div id="corner">承脉</div>
   <div id="footL">承脉AI · 中华非遗智能传承与活化智能体</div>
-  <div id="footR"><span id="pn">1</span> / 16</div>
+  <div id="footR"><span id="pn">1</span> / 17</div>
 
   <!-- ============ 01 封面 ============ -->
   <section class="slide cover" data-chrome="0">
@@ -662,7 +663,37 @@ body.cover-mode #corner{opacity:0}
     </div>
   </section>
 
-  <!-- ============ 06 创新一：三视角证据链对话 ============ -->
+  <!-- ============ 06 新手指引（体验优化）★ ============ -->
+  <section class="slide">
+    <div class="kk anim">体验 · 新手指引 <span style="color:var(--zhu)">★</span></div>
+    <h2 class="h2 brush">一位非遗小人，带你<span class="j">先逛完一座馆</span></h2>
+    <p class="lead anim d1" style="margin-bottom:14px">新客第一次进馆，最常见的犹豫是——内容不少，该从哪一页看起？新手指引让一位非遗小人牵着你走，先把整座馆的脉络走通，再放你慢慢探索。</p>
+    <div class="split" style="grid-template-columns:minmax(0,9fr) minmax(0,7fr)">
+      <ul class="flist anim d2">
+        <li><b>十一站逛馆</b>：从首页到关于，非遗小人一站一站带你看——对话怎么聊、族谱怎么读、舆图怎么用，由浅入深，站站有景</li>
+        <li><b>双扇揭幕 · 一页一色</b>：每站专属配色，双扇开合如掀帘换景，转场本身，就是一场小戏</li>
+        <li><b>断点续览</b>：逛到哪记到哪，悬浮返回钮随时唤起，下次直接从离开处接着走</li>
+        <li><b>把选择权还给访客</b>：入馆一秒后才轻轻递上邀请卡——「去逛逛」或「暂不」，愿者进馆、绝不强拉；看完还能「去体验」直达功能页</li>
+      </ul>
+      <div class="anim d3">
+        <div class="win">
+          <div class="win-bar"><i></i><i></i><i></i><div class="win-url">123.56.18.7 · 新手指引 · 逛馆十一站</div></div>
+          <div class="win-body" data-slot="p06-guide"><span class="slot-badge">录屏</span><div class="ph">引</div><div class="ph-t">录屏位 · 新手指引</div>
+            <div class="ph-h">已录：邀请卡 1 秒轻现 → 双扇揭幕 → 十一站逐站导览 → 去体验直达功能页（assets/p06-guide）</div></div>
+        </div>
+        <div class="fcap">录屏 · 新手指引逛馆实录（10 月 31 日实机录制）</div>
+      </div>
+    </div>
+    <div class="page-strip anim d4" style="margin-top:14px">
+      <div class="ps-l">十 一 站 · 从 进 馆 到 离 馆</div>
+      <div class="chips">
+        <span>首页</span><span>承脉AI</span><span>知识库</span><span>族谱</span><span>舆图</span><span>名家</span>
+        <span>学习路径</span><span>实验室</span><span>挑战</span><span>个人中心</span><span>关于</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 07 创新一：三视角证据链对话 ============ -->
   <section class="slide">
     <div class="kk anim">创新壹 · 承脉AI 对话</div>
     <h2 class="h2 brush">同一个问题，<span class="j">三种人的讲法</span></h2>
@@ -684,7 +715,7 @@ body.cover-mode #corner{opacity:0}
     </div>
   </section>
 
-  <!-- ============ 07 创新二：知识族谱 ============ -->
+  <!-- ============ 08 创新二：知识族谱 ============ -->
   <section class="slide">
     <div class="kk anim">创新贰 · 知识族谱</div>
     <h2 class="h2 brush">三千星尘，<span class="j">各有所承</span></h2>
@@ -706,7 +737,7 @@ body.cover-mode #corner{opacity:0}
     </div>
   </section>
 
-  <!-- ============ 08 创新三：地图 + 名家 ============ -->
+  <!-- ============ 09 创新三：地图 + 名家 ============ -->
   <section class="slide">
     <div class="kk anim">创新叁 · 山河与北斗</div>
     <h2 class="h2 brush">省域有<span class="z">灯火</span>，星河<span class="r">认北斗</span></h2>
@@ -730,7 +761,7 @@ body.cover-mode #corner{opacity:0}
     </div>
   </section>
 
-  <!-- ============ 09 创新四：学习路径 + 活化实验室 ============ -->
+  <!-- ============ 10 创新四：学习路径 + 活化实验室 ============ -->
   <section class="slide">
     <div class="kk anim">创新肆 · 习与创</div>
     <h2 class="h2 brush">有<span class="j">功课</span>，也有<span class="z">活化的边界</span></h2>
@@ -754,7 +785,7 @@ body.cover-mode #corner{opacity:0}
     </div>
   </section>
 
-  <!-- ============ 10 创新五：游艺坊 ★ ============ -->
+  <!-- ============ 11 创新五：游艺坊 ★ ============ -->
   <section class="slide">
     <div class="kk anim">创新伍 · 游艺坊 <span style="color:var(--zhu)">★</span></div>
     <h2 class="h2 brush">非遗挑战 · <span class="r">游艺坊五戏</span></h2>
@@ -783,7 +814,7 @@ body.cover-mode #corner{opacity:0}
     </div>
   </section>
 
-  <!-- ============ 11 创新六：今日非遗·影像 ★ ============ -->
+  <!-- ============ 12 创新六：今日非遗·影像 ★ ============ -->
   <section class="slide">
     <div class="kk anim">创新陆 · 今日非遗 <span style="color:var(--zhu)">★</span></div>
     <h2 class="h2 brush">首页内嵌 <span class="r">今日非遗 · 影像</span></h2>
@@ -813,7 +844,7 @@ body.cover-mode #corner{opacity:0}
     <p class="data-note anim d6" style="margin-top:26px">影像全部来自 <b>Wikimedia Commons</b> 开放授权资源，逐支标注协议与时长；点击卡片即跳转对应知识库详情，影像与知识相互连通。</p>
   </section>
 
-  <!-- ============ 12 创新七：双主题 + 语音 ★ ============ -->
+  <!-- ============ 13 创新七：双主题 + 语音 ★ ============ -->
   <section class="slide">
     <div class="kk anim">创新柒 · 双主题与语音 <span style="color:var(--zhu)">★</span></div>
     <h2 class="h2 brush">暗墨 / 亮纸，<span class="j">一双眼睛一种月光</span></h2>
@@ -846,7 +877,7 @@ body.cover-mode #corner{opacity:0}
     </div>
   </section>
 
-  <!-- ============ 13 技术架构 ============ -->
+  <!-- ============ 14 技术架构 ============ -->
   <section class="slide">
     <div class="kk anim">实现 · 总体架构</div>
     <h2 class="h2 brush">五层架构，<span class="z">五智能体</span>协同</h2>
@@ -897,9 +928,9 @@ body.cover-mode #corner{opacity:0}
     </div>
   </section>
 
-  <!-- ============ 14 用户反馈闭环（情感）★ ============ -->
-  <section class="slide">
-    <div class="kk anim">迭代 · 来自真实用户的三句话</div>
+  <!-- ============ 15 用户反馈闭环（情感）★ ============ -->
+  <section class="slide fb-page">
+    <div class="kk anim">迭代 · 来自真实用户的声音</div>
     <h2 class="h2 brush">最好的设计，<span class="r">长在用户的声音里</span></h2>
     <div class="fb-row anim d1">
       <div class="fb-q"><div class="who">公网用户 · 视觉反馈</div><div class="say">「整体太暗了，看久了眼睛累。」</div></div>
@@ -916,13 +947,23 @@ body.cover-mode #corner{opacity:0}
       <div class="fb-arrow">→</div>
       <div class="fb-a"><h4>非遗挑战 · 游艺坊</h4><p>五款主题小游戏联动正确率环、徽章、战绩与错题本，知识在游戏里被记住。</p></div>
     </div>
-    <div class="loop anim d4">
+    <div class="fb-row anim d4">
+      <div class="fb-q"><div class="who">公网用户 · 习惯反馈</div><div class="say">「手机上打开，排版有些挤。」</div></div>
+      <div class="fb-arrow">→</div>
+      <div class="fb-a"><h4>移动端全站响应式适配</h4><p>导航收纳为菜单抽屉，标题、输入区与卡片随屏自然重排，深浅双主题同频适配——手机上的承脉，同样舒展。</p></div>
+    </div>
+    <div class="fb-row anim d5">
+      <div class="fb-q"><div class="who">公网用户 · 新客反馈</div><div class="say">「第一次来，不知从哪逛起。」</div></div>
+      <div class="fb-arrow">→</div>
+      <div class="fb-a"><h4>新手指引 · 逛馆十一站</h4><p>一位非遗小人带你走遍 11 站，双扇揭幕、断点续览，看完可「去体验」直达功能页——新客进门即有方向。</p></div>
+    </div>
+    <div class="loop anim d6">
       <span>发布试用</span><i>→</i><span>用户反馈</span><i>→</i><span>筛选验证</span><i>→</i>
       <span>版本更新</span><i>→</i><span>回归测试</span><i>↻</i>
     </div>
   </section>
 
-  <!-- ============ 15 工程完成度 + 团队 ============ -->
+  <!-- ============ 16 工程完成度 + 团队 ============ -->
   <section class="slide">
     <div class="kk anim">交付 · 工程完成度与团队</div>
     <h2 class="h2 brush">已公网运行，<span class="j">不是概念稿</span></h2>
@@ -978,7 +1019,7 @@ body.cover-mode #corner{opacity:0}
     </div>
   </section>
 
-  <!-- ============ 16 封底 ============ -->
+  <!-- ============ 17 封底 ============ -->
   <section class="slide closing" data-chrome="0">
     <div class="kk anim" style="justify-content:center">尾声 · 承</div>
     <div class="bigtitle brush" style="font-size:128px;letter-spacing:.16em">文脉不绝 · 其命维新</div>
@@ -1087,7 +1128,7 @@ body.cover-mode #corner{opacity:0}
     var noChrome = slides[idx].getAttribute('data-chrome') === '0';
     document.body.classList.toggle('cover-mode', noChrome);
     document.getElementById('pn').textContent = idx+1;
-    document.getElementById('hc').textContent = (idx+1)+' / 16';
+    document.getElementById('hc').textContent = (idx+1)+' / 17';
     document.getElementById('progress').style.width = ((idx+1)/slides.length*100)+'%';
     runCounters(slides[idx]);
   }
