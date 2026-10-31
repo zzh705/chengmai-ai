@@ -835,17 +835,15 @@
   }
 }
 
-/* 极窄屏：图例收成横滚，工具行不折多行挤占画布 */
+/* 极窄屏：图例自然折行居中，全部类型一屏可点，不做横向裁切 */
 @media (max-width: 480px) {
   .graph-tools {
     gap: 8px 12px;
   }
   .graph-legend {
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 2px;
-    scrollbar-width: thin;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 8px;
+    overflow: visible;
   }
 }

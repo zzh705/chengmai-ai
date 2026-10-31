@@ -2,7 +2,7 @@
  * 【承脉 AI · 原创代码】追光小队自研，非框架/非第三方代码
  * 原创点：核心原创：无 URL 路由库的纯内部状态十页导航骨架、入馆动画衔接与跨页视频/音频生命周期管理
  */
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import Splash from './components/Splash'
 import CraftVeil from './components/CraftFigures'
@@ -128,7 +128,36 @@ function App() {
   /** 入馆两秒后的新手指引邀请卡：轻声浮出，由访客自行决定是否进馆 */
   const [guideInvite, setGuideInvite] = useState(false)
   const inviteTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  /** 手机端导航面板：窄屏下页面链收进「菜单」抽屉，宽屏自动失效 */
+  const [navOpen, setNavOpen] = useState(false)
+  const navRef = useRef<HTMLElement>(null)
   const splash = phase === 'splash'
+
+  // 导航面板：Esc 收起、点面板外收起；视口回到桌面宽度时复位，避免宽屏残留展开态
+  useEffect(() => {
+    if (!navOpen) return
+    const onKey = (e: globalThis.KeyboardEvent) => {
+      if (e.key === 'Escape') setNavOpen(false)
+    }
+    const onDown = (e: globalThis.PointerEvent) => {
+      if (!navRef.current?.contains(e.target as Node)) setNavOpen(false)
+    }
+    document.addEventListener('keydown', onKey)
+    document.addEventListener('pointerdown', onDown)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.removeEventListener('pointerdown', onDown)
+    }
+  }, [navOpen])
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 861px)')
+    const onChange = () => {
+      if (mq.matches) setNavOpen(false)
+    }
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
 
   // 窄屏导航横向溢出时，保证当前页按钮居中可见（避免 active 项被裁成一条红边）
   useLayoutEffect(() => {
@@ -163,6 +192,11 @@ function App() {
    * 第二参为对象时视作揭幕视觉（新手指引「去体验」带入当前站专属小人与主色）
    */
   function navigate(target: string, param?: string | { craft: CraftKey; b: string }) {
+    // 手机端：任一导航动作后收起抽屉，避免面板压在目标页上
+    setNavOpen(false)
+    // 任何主动导航都视为「已开始探索」，邀请卡随之收起，不再悬在底部遮挡内容
+    setGuideInvite(false)
+    clearTimeout(inviteTimer.current)
     const veilArg = param && typeof param === 'object' ? param : undefined
     const paramStr = typeof param === 'string' ? param : undefined
     // 方向感知：按导航序判断前进/回切，决定入场方向与金线扫光起点
@@ -246,7 +280,11 @@ function App() {
       <a className="skip-link" href="#main-content">
         跳到主要内容
       </a>
-      <nav className="app-nav" aria-label="主导航">
+      <nav
+        ref={navRef}
+        className={`app-nav ${navOpen ? 'nav-open' : ''}`}
+        aria-label="主导航"
+      >
         <button
           type="button"
           className="app-brand"
@@ -255,7 +293,32 @@ function App() {
         >
           承脉
         </button>
-        <div className="app-nav-links">
+        {/* 手机端导航开关：页面链收进下方抽屉面板，宽屏隐藏 */}
+        <button
+          type="button"
+          className="app-nav-toggle"
+          aria-expanded={navOpen}
+          aria-controls="app-nav-panel"
+          aria-label={navOpen ? '收起导航菜单' : '展开导航菜单'}
+          onClick={() => setNavOpen((v) => !v)}
+        >
+          <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round">
+            {navOpen ? (
+              <>
+                <path d="M3.4 3.4l9.2 9.2" />
+                <path d="M12.6 3.4 3.4 12.6" />
+              </>
+            ) : (
+              <>
+                <path d="M2.6 4.4h10.8" />
+                <path d="M2.6 8h10.8" />
+                <path d="M2.6 11.6h10.8" />
+              </>
+            )}
+          </svg>
+          <span>{navOpen ? '收起' : '菜单'}</span>
+        </button>
+        <div className="app-nav-links" id="app-nav-panel">
           {NAV.map((n) => (
             <button
               key={n.key}

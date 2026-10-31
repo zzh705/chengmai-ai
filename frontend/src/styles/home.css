@@ -185,6 +185,7 @@
 }
 .home-ask input {
   flex: 1;
+  min-width: 0;
   padding: 14px 18px;
   background: rgba(var(--ink-rgb), 0.9);
   border: 1px solid var(--ink-3);
@@ -742,7 +743,16 @@
   }
   .home-hero h1 {
     font-size: 21px;
+    line-height: 1.45;
     letter-spacing: 3px;
+    text-wrap: balance;
+  }
+  /* 飘落花瓣在手机上减量、减淡：保留氛围，不遮字、不耗性能 */
+  .home-petals {
+    opacity: 0.6;
+  }
+  .home-petals span:nth-child(n + 6) {
+    display: none;
   }
   .home-slogan {
     font-size: 12px;
@@ -1377,7 +1387,9 @@
   }
   .home-hero h1 {
     font-size: 19px;
+    line-height: 1.5;
     letter-spacing: 2px;
+    text-wrap: balance;
   }
   .home-slogan {
     font-size: 11px;
@@ -1402,20 +1414,16 @@
     font-size: 14px;
     letter-spacing: 2px;
   }
-  /* 快捷提问 chips：一行横滚，不折行占高 */
+  /* 快捷提问 chips：自然折行居中，全部问题一屏可读，不做横向裁切 */
   .home-chips {
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 4px;
-    scrollbar-width: none;
-  }
-  .home-chips::-webkit-scrollbar {
-    display: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 8px;
+    overflow: visible;
+    padding-bottom: 0;
   }
   .home-chips button {
-    flex: none;
+    flex: 0 1 auto;
   }
   /* 学习进度：两列网格 + 通栏按钮，四格不再挤作一行 */
   .home-progress {
@@ -1444,5 +1452,23 @@
   /* 底部安全区：滚动到底不顶住全面屏手势条 */
   .home-page {
     padding-bottom: calc(40px + env(safe-area-inset-bottom));
+  }
+}
+
+/* ===== 极窄屏（≤380px）：提问区改为上下布局，输入框拿满整行宽度 ===== */
+@media (max-width: 380px) {
+  .home-ask {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .home-ask input {
+    width: 100%;
+    flex: none;
+  }
+  .home-ask button {
+    min-height: 44px;
+    padding: 10px 0;
   }
 }

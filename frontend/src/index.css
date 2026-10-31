@@ -123,6 +123,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  /* 兜底：任何越界装饰都不得引发整页横向滚动（内部横滑组件各自声明 overflow-x:auto） */
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 /* 表单控件与按钮必须继承字体栈，否则 Chrome 会回落到 UA 默认 Arial（数字/拉丁与正文不一致）；
@@ -322,6 +325,11 @@ textarea {
   .app-nav button.app-guide-btn {
     padding: 7px 9px;
   }
+}
+
+/* 手机端导航开关：宽屏不出现，窄屏在 ≤860px 块内启用 */
+.app-nav button.app-nav-toggle {
+  display: none;
 }
 
 /* 页面切换动效：上浮 + 方向位移 + 轻微缩放（方向由 --vt-x 驱动，仅用合成层属性） */
@@ -944,7 +952,8 @@ textarea {
     letter-spacing: 1px;
   }
   .app-body {
-    padding: 0 12px;
+    padding-left: calc(12px + env(safe-area-inset-left));
+    padding-right: calc(12px + env(safe-area-inset-right));
   }
   .app-body h1 {
     font-size: 20px;
@@ -1486,17 +1495,20 @@ button:not(:disabled):active,
 
 /* =====================================================================
    手机端全局外壳（≤860px）：
-   导航改两行——首行品牌钮靠左、新手指引/主题钮靠右，
-   次行页面链独占一整行横向滚动（两端渐变淡出 + scroll-snap + 隐藏滚动条）；
+   顶部首行只留品牌钮 + 新手指引 + 主题切换 + 「菜单」开关；
+   十项页面链收进下拉抽屉（两列网格，全部入口同屏可达，不裁切、不横向滑动）；
+   抽屉支持 Esc / 点击外部收起，选中态沿用朱红实心。
    悬浮返回钮降为贴底胶囊并让出底条，跳链让出顶部刘海。
    ===================================================================== */
 @media (max-width: 860px) {
   .app-nav {
-    flex-wrap: wrap;
-    column-gap: 10px;
-    row-gap: 8px;
+    flex-wrap: nowrap;
+    column-gap: 8px;
+    row-gap: 0;
     padding: 8px 12px;
     padding-top: calc(8px + env(safe-area-inset-top));
+    padding-left: calc(12px + env(safe-area-inset-left));
+    padding-right: calc(12px + env(safe-area-inset-right));
   }
   /* 首行：品牌钮靠左，其余操控钮靠右 */
   .app-nav .app-brand {
@@ -1513,6 +1525,36 @@ button:not(:disabled):active,
     order: 3;
     min-height: 40px;
   }
+  .app-nav button.app-nav-toggle {
+    order: 4;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    flex-shrink: 0;
+    min-height: 40px;
+    padding: 7px 11px;
+    border: 1px solid var(--ink-3);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink-soft);
+    font-size: 12px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition:
+      color 0.2s,
+      border-color 0.2s,
+      background-color 0.2s;
+  }
+  .app-nav button.app-nav-toggle:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .app-nav.nav-open button.app-nav-toggle {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(var(--gold-rgb), 0.1);
+  }
   /* 新手指引钮在窄屏首行仍有位置，补回文字（与 960px 规则的图标态解绑） */
   .app-nav button.app-guide-btn span {
     display: inline;
@@ -1520,31 +1562,46 @@ button:not(:disabled):active,
   .app-nav button.app-guide-btn {
     padding: 7px 12px;
   }
-  /* 次行：页面链铺满整行横向滑动 */
+  /* 页面链 → 顶部抽屉面板 */
   .app-nav-links {
-    order: 4;
-    flex: 1 1 100%;
-    justify-content: flex-start;
-    gap: 6px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x proximity;
-    -webkit-scroll-snap-type: x proximity;
-    padding-bottom: 2px;
-    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 26px, #000 calc(100% - 26px), transparent 100%);
-    mask-image: linear-gradient(90deg, transparent 0, #000 26px, #000 calc(100% - 26px), transparent 100%);
-  }
-  .app-nav-links::-webkit-scrollbar {
+    order: 5;
     display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 6;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 10px 12px calc(12px + env(safe-area-inset-bottom));
+    background: linear-gradient(180deg, var(--ink-1), var(--ink));
+    border-bottom: 1px solid rgba(var(--gold-rgb), 0.24);
+    border-radius: 0 0 var(--r-md) var(--r-md);
+    box-shadow: 0 20px 38px rgba(var(--ink-rgb), 0.55);
+    max-height: calc(100vh - 88px);
+    max-height: calc(100dvh - 88px - env(safe-area-inset-top));
+    overflow: hidden auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .app-nav.nav-open .app-nav-links {
+    display: grid;
+    animation: navPanelIn 0.22s var(--ease-out);
   }
   .app-nav-links button {
-    scroll-snap-align: center;
-    -webkit-scroll-snap-align: center;
-    min-height: 42px;
-    padding: 7px 13px;
+    flex: none;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 12px;
     font-size: 13px;
     letter-spacing: 1px;
+    white-space: nowrap;
+    text-align: center;
   }
   /* 悬浮返回钮：贴底胶囊、留白自然、让出 iPhone 底条 */
   .guide-return {
@@ -1562,6 +1619,39 @@ button:not(:disabled):active,
   /* 键盘跳链让出刘海安全区 */
   .skip-link {
     top: calc(8px + env(safe-area-inset-top));
+  }
+}
+@keyframes navPanelIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 平板竖屏（561-860px）：抽屉改三列，入口不必拉成一排过长按钮 */
+@media (min-width: 561px) and (max-width: 860px) {
+  .app-nav-links {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* 极窄屏（≤360px）：首行把新手指引收成图标，给品牌与菜单留出呼吸 */
+@media (max-width: 360px) {
+  .app-nav button.app-guide-btn span {
+    display: none;
+  }
+  .app-nav button.app-guide-btn {
+    padding: 7px 9px;
+  }
+  .app-nav button.app-nav-toggle span {
+    display: none;
+  }
+  .app-nav button.app-nav-toggle {
+    padding: 7px 10px;
   }
 }
 

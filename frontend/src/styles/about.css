@@ -861,19 +861,14 @@
   box-shadow: 0 0 0 1px rgba(150, 115, 31, 0.22), 0 10px 26px rgba(60, 45, 20, 0.14);
 }
 
-/* ===== 窄屏：吸顶目录改横滚、卡片贴边收紧 ===== */
+/* ===== 窄屏：吸顶目录签条自然折行居中，6 项全部同屏可见 ===== */
 @media (max-width: 720px) {
-  /* 目录签条改一行横向滑动，避免多行折叠挤占首屏 */
   .ab-nav {
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    overflow: visible;
     padding: 10px 12px;
-  }
-  .ab-nav::-webkit-scrollbar {
-    display: none;
   }
   .ab-nav button {
     flex: none;
