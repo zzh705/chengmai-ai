@@ -27,19 +27,22 @@ const NUM: Record<Variant, string[]> = {
   map: ['甲', '乙', '丙', '丁', '戊'],
 }
 
-/** 读入上回逛到的站次（越界/损坏时回第 1 站；已走完全程者也从第 1 站重新开逛） */
+/** 读入上回逛到的站次（越界/损坏时回第 1 站）。
+    断点语义：STEP_KEY 始终指向「上次读到的站」——中途「去体验」会把断点刷新为当前站；
+    仅当断点仍在终点且已走完全程（DONE）时，整馆重开从第 1 站再逛。 */
 function readSaved(): number {
   try {
-    if (localStorage.getItem(DONE_KEY) === '1') return 0
     const n = parseInt(localStorage.getItem(STEP_KEY) ?? '0', 10)
-    return Number.isFinite(n) && n >= 0 && n <= LAST ? n : 0
+    const saved = Number.isFinite(n) && n >= 0 && n <= LAST ? n : 0
+    if (saved === LAST && localStorage.getItem(DONE_KEY) === '1') return 0
+    return saved
   } catch {
     return 0
   }
 }
 
 export default function Guide({ onNavigate, onExit }: Props) {
-  const [step, setStep] = useState(() => (readSaved() >= LAST ? 0 : readSaved()))
+  const [step, setStep] = useState(readSaved)
   const [done, setDone] = useState(() => {
     try {
       return localStorage.getItem(DONE_KEY) === '1'
@@ -64,6 +67,8 @@ export default function Guide({ onNavigate, onExit }: Props) {
     if (step >= LAST) {
       try {
         localStorage.setItem(DONE_KEY, '1')
+        // 断点落在终点，配合 DONE 让下次入馆从第 1 站整馆重开
+        localStorage.setItem(STEP_KEY, String(LAST))
       } catch {
         /* 忽略存储失败 */
       }

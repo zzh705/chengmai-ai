@@ -693,6 +693,90 @@ textarea {
     transform: translateY(16px);
   }
 }
+
+/* ===== 新手指引邀请卡：入馆两秒后右下角轻声浮出，进馆与否交还访客 ===== */
+.guide-invite {
+  position: fixed;
+  right: 18px;
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  z-index: 85;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: min(90vw, 430px);
+  padding: 14px 16px;
+  border: 1px solid rgba(var(--gold-rgb), 0.45);
+  border-radius: var(--r-md);
+  background: linear-gradient(135deg, var(--ink-1), var(--ink-2));
+  box-shadow:
+    0 12px 34px rgba(0, 0, 0, 0.42),
+    0 0 0 1px rgba(var(--gold-rgb), 0.05);
+  animation: guideInviteIn 0.55s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+@keyframes guideInviteIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.guide-invite-txt {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.guide-invite-txt strong {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--paper);
+}
+.guide-invite-txt span {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--ink-faint);
+}
+.guide-invite-acts {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.guide-invite-acts button {
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  font-size: 13px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    color 0.2s,
+    transform 0.2s var(--ease-out);
+}
+.guide-invite-go {
+  background: var(--vermilion);
+  color: var(--on-brand);
+  box-shadow: 0 4px 14px rgba(var(--red-rgb), 0.32);
+}
+.guide-invite-go:hover {
+  transform: translateY(-1px);
+}
+.guide-invite-later {
+  background: transparent;
+  border-color: var(--ink-3);
+  color: var(--ink-soft);
+}
+.guide-invite-later:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .gate-veil,
   .gate-glow,
@@ -700,7 +784,8 @@ textarea {
   .gate-door-l,
   .gate-door-r,
   .gate-seam,
-  .guide-return {
+  .guide-return,
+  .guide-invite {
     animation: none;
   }
 }
@@ -1491,5 +1576,30 @@ button:not(:disabled):active,
     height: 20px;
     opacity: 0.3;
     background-size: 20px 20px;
+  }
+}
+
+/* 窄屏：邀请卡贴底通栏——文案占整行、两个按钮平分第二行（文字不折行），触控目标达标 */
+@media (max-width: 720px) {
+  .guide-invite {
+    left: 12px;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    max-width: none;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .guide-invite-txt {
+    flex: 1 1 100%;
+  }
+  .guide-invite-acts {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+  .guide-invite-acts button {
+    flex: 1;
+    min-height: 44px;
+    padding: 8px 10px;
+    white-space: nowrap;
   }
 }

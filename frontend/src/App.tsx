@@ -125,6 +125,9 @@ function App() {
   const veilTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   /** 从指引「去体验」跳离后，在任意页面亮起悬浮返回钮 */
   const [fromGuide, setFromGuide] = useState(false)
+  /** 入馆两秒后的新手指引邀请卡：轻声浮出，由访客自行决定是否进馆 */
+  const [guideInvite, setGuideInvite] = useState(false)
+  const inviteTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const splash = phase === 'splash'
 
   // 窄屏导航横向溢出时，保证当前页按钮居中可见（避免 active 项被裁成一条红边）
@@ -178,8 +181,17 @@ function App() {
       if (target === 'masters') setMasterParam(paramStr)
     }
     // 返回钮标记：从指引跳出去亮起；回到指引本身即熄灭
-    if (page === 'guide' && target !== 'guide') setFromGuide(true)
-    if (target === 'guide' && page !== 'guide') setFromGuide(false)
+    if (page === 'guide' && target !== 'guide') {
+      setFromGuide(true)
+      // 刚逛完指引出来不再补弹邀请，避免「被请出馆又立刻被问要不要进馆」
+      setGuideInvite(false)
+    }
+    if (target === 'guide' && page !== 'guide') {
+      setFromGuide(false)
+      // 无论从邀请卡还是顶部按钮进馆，邀请卡都随之收起；尚未到点的邀请计时一并作废
+      setGuideInvite(false)
+      clearTimeout(inviteTimer.current)
+    }
     // guide ↔ 功能页：不叠 VT，改由小人登台的站色揭幕（幕布盖满整屏，页面在其下完成切换）
     if (page === 'guide' || target === 'guide') {
       const v = veilArg ?? GUIDE_VEILS[guideStepIndex()] ?? GUIDE_VEILS[0]
@@ -208,17 +220,18 @@ function App() {
     }
   }
 
-  /** 开屏动画结束入馆：本会话内首次入馆自动拉起新手指引（刷新不重复打断） */
+  /** 开屏动画结束入馆：本会话内首次入馆两秒后弹一次「是否进入新手指引」邀请，
+      不做自动拉起，把进馆与否交还给访客（刷新不重复打扰） */
   function afterSplash() {
     setPhase('app')
     try {
-      if (sessionStorage.getItem('cm-guide-auto') !== '1') {
-        sessionStorage.setItem('cm-guide-auto', '1')
-        // 等开屏层完全卸载再揭幕进指引（用定时器而非 rAF：后台标签页 rAF 会被挂起）
-        setTimeout(() => navigate('guide'), 260)
+      if (sessionStorage.getItem('cm-guide-invite') !== '1') {
+        sessionStorage.setItem('cm-guide-invite', '1')
+        clearTimeout(inviteTimer.current)
+        inviteTimer.current = setTimeout(() => setGuideInvite(true), 2000)
       }
     } catch {
-      /* 存储不可用时静默跳过自动拉起 */
+      /* 存储不可用时静默跳过邀请 */
     }
   }
 
@@ -284,6 +297,23 @@ function App() {
       )}
       {/* 揭幕转场幕布：guide ↔ 功能页时盖满全屏，台前小人登台表演后整幕隐去 */}
       {veil && <CraftVeil craft={veil.craft} a={veil.a} b={veil.b} />}
+      {/* 新手指引邀请卡：入馆两秒后浮出，访客自选进馆或暂不（本会话只邀一次） */}
+      {!splash && phase === 'app' && page !== 'guide' && guideInvite && (
+        <aside className="guide-invite" role="dialog" aria-label="是否进入新手指引">
+          <div className="guide-invite-txt">
+            <strong>新手指引</strong>
+            <span>十一站一步一景 · 两分钟逛遍承脉</span>
+          </div>
+          <div className="guide-invite-acts">
+            <button type="button" className="guide-invite-go" onClick={() => navigate('guide')}>
+              去逛逛
+            </button>
+            <button type="button" className="guide-invite-later" onClick={() => setGuideInvite(false)}>
+              暂不
+            </button>
+          </div>
+        </aside>
+      )}
       {/* 返回新手指引：从指引跳去体验后亮起，随时可回原站续逛 */}
       {!splash && phase === 'app' && page !== 'guide' && fromGuide && (
         <button
