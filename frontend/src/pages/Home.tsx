@@ -301,7 +301,7 @@ export default function Home({ onNavigate, entered = true }: Props) {
               if (e.key === 'Enter' && !e.nativeEvent.isComposing) askAI()
             }}
             aria-label="向承脉 AI 提问"
-            placeholder="问问承脉 AI：什么是昆曲百戏之祖？"
+            placeholder="问承脉 AI 任意非遗问题"
           />
           <button onClick={askAI}>问 AI</button>
         </div>

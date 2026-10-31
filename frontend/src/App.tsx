@@ -254,19 +254,12 @@ function App() {
     }
   }
 
-  /** 开屏动画结束入馆：本会话内首次入馆两秒后弹一次「是否进入新手指引」邀请，
-      不做自动拉起，把进馆与否交还给访客（刷新不重复打扰） */
+  /** 开屏动画结束入馆：每次进入网页都在一秒后弹出「是否进入新手指引」邀请，
+      不做自动拉起，把进馆与否交还给访客 */
   function afterSplash() {
     setPhase('app')
-    try {
-      if (sessionStorage.getItem('cm-guide-invite') !== '1') {
-        sessionStorage.setItem('cm-guide-invite', '1')
-        clearTimeout(inviteTimer.current)
-        inviteTimer.current = setTimeout(() => setGuideInvite(true), 2000)
-      }
-    } catch {
-      /* 存储不可用时静默跳过邀请 */
-    }
+    clearTimeout(inviteTimer.current)
+    inviteTimer.current = setTimeout(() => setGuideInvite(true), 1000)
   }
 
   if (phase === 'login') {

@@ -736,10 +736,10 @@
   }
 }
 
-/* 小屏首页：收紧首屏留白 */
+/* 小屏首页：收紧首屏留白（收紧但留呼吸：块间距仍逐级递进，不挤作一团） */
 @media (max-width: 720px) {
   .home-hero {
-    padding: 34px 14px 22px;
+    padding: 36px 16px 24px;
   }
   .home-hero h1 {
     font-size: 21px;
@@ -1394,17 +1394,21 @@
   .home-slogan {
     font-size: 11px;
     letter-spacing: 1px;
+    margin-top: 14px;
   }
-  /* 功能清单带：窄屏折行居中，不横向溢出 */
+  /* 功能清单带：窄屏折行居中，与上方提问区拉开一段清晰的间距，不横向溢出 */
   .home-slogan-feats {
     flex-wrap: wrap;
     gap: 10px 16px;
     padding: 10px 14px;
   }
+  .home-page > .home-slogan-feats {
+    margin: 16px auto 0;
+  }
   /* 点击即聊输入区：按钮收窄，让输入框保留足够宽度 */
   .home-ask {
     gap: 6px;
-    margin-top: 22px;
+    margin-top: 24px;
   }
   .home-ask input {
     padding: 12px 14px;
@@ -1414,11 +1418,11 @@
     font-size: 14px;
     letter-spacing: 2px;
   }
-  /* 快捷提问 chips：自然折行居中，全部问题一屏可读，不做横向裁切 */
+  /* 快捷提问 chips：自然折行居中，行距略宽于列距，两行错落不挤 */
   .home-chips {
     flex-wrap: wrap;
     justify-content: center;
-    gap: 6px 8px;
+    gap: 10px 8px;
     overflow: visible;
     padding-bottom: 0;
   }

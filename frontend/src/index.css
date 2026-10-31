@@ -1669,18 +1669,27 @@ button:not(:disabled):active,
   }
 }
 
-/* 窄屏：邀请卡贴底通栏——文案占整行、两个按钮平分第二行（文字不折行），触控目标达标 */
+/* 窄屏：邀请卡贴底通栏——文案占整行、两个按钮平分第二行（文字不折行）；
+   内边距收紧一档，卡不显笨重，底部留出安全区 */
 @media (max-width: 720px) {
   .guide-invite {
     left: 12px;
     right: 12px;
     bottom: calc(12px + env(safe-area-inset-bottom));
     max-width: none;
-    gap: 10px;
+    gap: 8px;
+    padding: 12px 14px 14px;
     flex-wrap: wrap;
   }
   .guide-invite-txt {
     flex: 1 1 100%;
+    gap: 2px;
+  }
+  .guide-invite-txt strong {
+    font-size: 15px;
+  }
+  .guide-invite-txt span {
+    font-size: 11px;
   }
   .guide-invite-acts {
     flex: 1 1 100%;
