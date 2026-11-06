@@ -1,60 +1,60 @@
 /* ============================================================
    新手指引 · 游龙入画
-   直接采用所给画稿（已抠去薄荷底色）：
-   · 页面右侧铺一幅龙图作为背景画心，与夜色相融；
-   · 每次换站复用同一龙形穿屏而过，三种飞法轮换，前后翻页方向可逆。
+   · 龙图置于介绍卡片下方（正常文档流，不会卡片遮住）
+   · 静止时：低频湍流蠕动 + 缓慢浮游 + 横向轻摆，像在云上游走
+   · 换站时：同一龙形腾云穿屏，三种飞法，前后翻页方向可逆
    ============================================================ */
 
-/* ---- 画心：右侧大幅龙图，压暗后融入背景 ---- */
+.gd-warp-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* ---- 卡片下方的画心 ---- */
 .guide-dragon {
-  position: fixed;
-  right: -5vw;
-  bottom: 0;
-  z-index: 0;
-  width: min(56vw, 880px);
+  position: relative;
+  width: min(560px, 86%);
+  margin: 0 auto -6px;
   pointer-events: none;
-  opacity: 0.42;
-  filter: saturate(1.06) brightness(1.04) drop-shadow(0 20px 54px rgba(0, 0, 0, 0.45));
-  -webkit-mask-image: radial-gradient(70% 68% at 50% 50%, #000 42%, rgba(0, 0, 0, 0.6) 68%, transparent 88%);
-  mask-image: radial-gradient(70% 68% at 50% 50%, #000 42%, rgba(0, 0, 0, 0.6) 68%, transparent 88%);
-  animation: dragonBreathe 12s ease-in-out infinite alternate;
+  animation: dragonFloat 9s ease-in-out infinite alternate;
 }
-.guide-dragon img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-/* 薄荷色雾：承接原画底色，让画面与夜色过渡不生硬 */
+/* 薄荷色雾：承接画中底色，让画面与夜色自然过渡 */
 .guide-dragon::before {
   content: '';
   position: absolute;
-  inset: 8% 6% 4%;
+  inset: 4% 0 0;
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(150, 205, 186, 0.22), rgba(150, 205, 186, 0) 72%);
-  filter: blur(14px);
+  background: radial-gradient(closest-side, rgba(150, 205, 186, 0.18), rgba(150, 205, 186, 0) 70%);
+  filter: blur(18px);
 }
-
-@keyframes dragonBreathe {
+.gd-img {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: url(#gd-warp) drop-shadow(0 26px 46px rgba(0, 0, 0, 0.5));
+  animation: dragonSway 7.5s ease-in-out infinite alternate;
+}
+@keyframes dragonFloat {
   from {
-    transform: translate3d(0, 0, 0) scale(1);
-    opacity: 0.38;
+    transform: translate3d(0, 0, 0) rotate(-0.6deg);
   }
   to {
-    transform: translate3d(-14px, -12px, 0) scale(1.018);
-    opacity: 0.5;
+    transform: translate3d(9px, -12px, 0) rotate(0.8deg);
+  }
+}
+@keyframes dragonSway {
+  from {
+    transform: translateX(-6px);
+  }
+  to {
+    transform: translateX(8px);
   }
 }
 
-/* ---- 内容压住画心：题头 / 灯线 / 站牌 / 页脚均在龙图之上 ---- */
-.guide-head,
-.guide-steps,
-.guide-card,
-.guide-foot {
-  position: relative;
-  z-index: 2;
-}
-
-/* ===== 每站转场：游龙穿屏 =====
+/* ===== 每站转场：游龙穿屏，腾云驾雾 =====
    不改页面结构，龙作为一层转场过屏；前进自左下掠出，回看反向回溯。
    三种飞法轮换：掠影 / 扶摇 / 滚云。 */
 .guide-flight {
@@ -83,14 +83,42 @@
   top: 50%;
   width: min(48vw, 660px);
   aspect-ratio: 670 / 458;
-  filter: drop-shadow(0 16px 34px rgba(0, 0, 0, 0.48));
+  filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.5));
   will-change: transform, opacity;
 }
+/* 云雾：随龙同行，龙在云中穿 */
+.df-mist {
+  position: absolute;
+  left: 6%;
+  top: 12%;
+  width: 80%;
+  height: 72%;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side, rgba(242, 246, 238, 0.5), rgba(242, 246, 238, 0) 70%),
+    radial-gradient(closest-side at 68% 62%, rgba(150, 205, 186, 0.32), rgba(150, 205, 186, 0) 72%);
+  filter: blur(12px);
+  opacity: 0.9;
+}
+.df-mist::after {
+  content: '';
+  position: absolute;
+  left: 4%;
+  bottom: -8%;
+  width: 46%;
+  height: 46%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(235, 242, 236, 0.42), rgba(235, 242, 236, 0) 70%);
+  filter: blur(9px);
+}
 .df-art {
+  position: relative;
+  z-index: 1;
   display: block;
   width: 100%;
   height: auto;
   transform: scaleX(-1);
+  filter: url(#gd-warp);
 }
 .guide-flight.is-back .df-art {
   transform: none;
@@ -130,10 +158,13 @@
     opacity: 0.98;
   }
   38% {
-    transform: translate(-50%, -50%) translate3d(-4vw, 16vh, 0) rotate(-5deg) scale(1.06);
+    transform: translate(-50%, -50%) translate3d(-4vw, 16vh, 0) rotate(-7deg) scale(1.06);
   }
-  64% {
-    transform: translate(-50%, -50%) translate3d(40vw, 4vh, 0) rotate(5deg) scale(1);
+  56% {
+    transform: translate(-50%, -50%) translate3d(18vw, 2vh, 0) rotate(2deg) scale(1.03);
+  }
+  72% {
+    transform: translate(-50%, -50%) translate3d(46vw, 8vh, 0) rotate(7deg);
   }
   86% {
     opacity: 0.94;
@@ -153,14 +184,17 @@
   14% {
     opacity: 0.98;
   }
-  34% {
-    transform: translate(-50%, -50%) translate3d(-16vw, 22vh, 0) rotate(-8deg);
+  30% {
+    transform: translate(-50%, -50%) translate3d(-22vw, 30vh, 0) rotate(-13deg);
   }
-  54% {
-    transform: translate(-50%, -50%) translate3d(14vw, 38vh, 0) rotate(8deg);
+  46% {
+    transform: translate(-50%, -50%) translate3d(-4vw, 18vh, 0) rotate(-4deg);
+  }
+  60% {
+    transform: translate(-50%, -50%) translate3d(12vw, 34vh, 0) rotate(7deg);
   }
   76% {
-    transform: translate(-50%, -50%) translate3d(44vw, -2vh, 0) rotate(-6deg);
+    transform: translate(-50%, -50%) translate3d(40vw, 0vh, 0) rotate(-5deg);
   }
   90% {
     opacity: 0.92;
@@ -198,24 +232,21 @@
   }
 }
 
-/* ---- 窄屏：龙图更大、更靠下，仍压在内容之后 ---- */
+/* ---- 窄屏：画心更宽，飞龙略收 ---- */
 @media (max-width: 640px) {
   .guide-dragon {
-    width: 118vw;
-    right: -32vw;
-    bottom: 10vh;
-    opacity: 0.3;
+    width: 94%;
   }
   .df-inner {
     width: min(80vw, 460px);
   }
 }
 
-/* ---- 减少动态：留静画，不飞 ---- */
+/* ---- 减少动态：留静画，不游不飞 ---- */
 @media (prefers-reduced-motion: reduce) {
-  .guide-dragon {
+  .guide-dragon,
+  .gd-img {
     animation: none;
-    opacity: 0.42;
   }
   .guide-flight {
     display: none;

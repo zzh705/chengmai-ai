@@ -257,6 +257,8 @@ export default function Guide({ onNavigate, onExit }: Props) {
         </span>
       </section>
 
+      <GuideDragon />
+
       <footer className="guide-foot">
         {step > 0 && (
           <button type="button" className="guide-restart" onClick={restart}>
@@ -267,7 +269,6 @@ export default function Guide({ onNavigate, onExit }: Props) {
         <span className="guide-touch-hint">点上方站号可跳站 · 逐步翻阅也行</span>
       </footer>
 
-      <GuideDragon />
       {flight && <GuideDragonFlight key={flight.id} variant={flight.v} dir={flight.dir} />}
       <Motif kind="lantern" />
     </div>
