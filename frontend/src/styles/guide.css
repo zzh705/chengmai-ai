@@ -1139,3 +1139,156 @@
     font-size: 12.5px;
   }
 }
+
+/* ===== 手机端：页脚游龙落位 + 十一站各自的入场转场 =====
+   转场原则：只动 opacity / transform / clip-path，位移 ≤24px、缩放 ≤2%，
+   时长为 0.42–0.62s，每站换一条轴或一种起势，避免十一站看下来只剩一种节奏。 */
+@media (max-width: 640px) {
+  /* 页面撑满可视高度，游龙借 margin-top:auto 落进灯线下方留白 */
+  .guide-page {
+    flex: 1 1 auto;
+  }
+
+  .guide-card {
+    --t-dir: 1;
+  }
+  .guide-card.is-back {
+    --t-dir: -1;
+  }
+
+  /* 0 首页 · 展卷入画：自下缓缓铺开 */
+  .guide-card.t-0 {
+    animation: gtUnroll 0.54s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  /* 1 承脉 AI · 墨落纸上：自上轻沉，如一团墨刚刚化开 */
+  .guide-card.t-1 {
+    animation: gtInk 0.6s cubic-bezier(0.33, 0.9, 0.4, 1) both;
+  }
+  /* 2 知识库 · 翻过一页：横向切入，带一丝纸页的斜势 */
+  .guide-card.t-2 {
+    animation: gtPage 0.5s cubic-bezier(0.25, 0.9, 0.3, 1) both;
+  }
+  /* 3 图谱 · 牵丝收拢：由松到紧的一收 */
+  .guide-card.t-3 {
+    animation: gtThread 0.52s cubic-bezier(0.2, 0.85, 0.25, 1) both;
+  }
+  /* 4 地图 · 舆图推移：由侧向归位，幅度略大 */
+  .guide-card.t-4 {
+    animation: gtMap 0.54s cubic-bezier(0.24, 0.9, 0.3, 1) both;
+  }
+  /* 5 名家 · 帷幕上提：下缘收起再放全，像戏台开帘 */
+  .guide-card.t-5 {
+    animation: gtVeil 0.58s cubic-bezier(0.3, 0.9, 0.35, 1) both;
+  }
+  /* 6 路径 · 拾级而上：起手更快、收势更缓 */
+  .guide-card.t-6 {
+    animation: gtStairs 0.6s cubic-bezier(0.16, 0.84, 0.28, 1) both;
+  }
+  /* 7 实验室 · 拓印落纸：轻轻一压 */
+  .guide-card.t-7 {
+    animation: gtPress 0.46s cubic-bezier(0.3, 0.9, 0.35, 1) both;
+  }
+  /* 8 挑战 · 点灯自上而下：光自题头淌下来 */
+  .guide-card.t-8 {
+    animation: gtLamp 0.58s cubic-bezier(0.28, 0.9, 0.3, 1) both;
+  }
+  /* 9 个人 · 钤印落定：压印一刻的微旋 */
+  .guide-card.t-9 {
+    animation: gtSeal 0.44s cubic-bezier(0.3, 1.1, 0.4, 1) both;
+  }
+  /* 10 关于 · 远山淡入：自上轻落，收束全程 */
+  .guide-card.t-10 {
+    animation: gtMist 0.56s cubic-bezier(0.25, 0.9, 0.3, 1) both;
+  }
+}
+
+@keyframes gtUnroll {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.996);
+  }
+}
+@keyframes gtInk {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.99);
+  }
+}
+@keyframes gtPage {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--t-dir) * 18px)) skewX(-1.2deg);
+  }
+}
+@keyframes gtThread {
+  from {
+    opacity: 0;
+    transform: scale(0.978);
+  }
+}
+@keyframes gtMap {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--t-dir) * 22px)) scale(1.01);
+  }
+}
+@keyframes gtVeil {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 12% 0);
+    transform: translateY(6px);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes gtStairs {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+@keyframes gtPress {
+  from {
+    opacity: 0;
+    transform: scale(1.016);
+  }
+}
+@keyframes gtLamp {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes gtSeal {
+  from {
+    opacity: 0;
+    transform: scale(1.02) rotate(0.5deg);
+  }
+}
+@keyframes gtMist {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(1.004);
+  }
+}
+
+/* 减少动态：十一站转场一并停用 */
+@media (prefers-reduced-motion: reduce) {
+  .guide-card.t-0,
+  .guide-card.t-1,
+  .guide-card.t-2,
+  .guide-card.t-3,
+  .guide-card.t-4,
+  .guide-card.t-5,
+  .guide-card.t-6,
+  .guide-card.t-7,
+  .guide-card.t-8,
+  .guide-card.t-9,
+  .guide-card.t-10 {
+    animation: none;
+  }
+}

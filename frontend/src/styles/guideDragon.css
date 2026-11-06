@@ -1,0 +1,351 @@
+/* ===== 新手指引 · 手机端页脚游龙灯影 =====
+   只在 ≤640px 出现，落在灯线与页脚下方的大块留白里；网页端完全不出现。
+   取传统团龙之势（金鳞蛇身 / 朱红腹甲 / 青碧鬃尾 / 双角四爪 / 祥云托底），
+   以白描金线重绘，龙珠与脊线流光随每一站的 --gd-accent 换气韵。 */
+
+.guide-dragon {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .guide-dragon {
+    display: block;
+    /* 空间充裕时贴底站定，空间紧张时按比例收一点，绝不给页面添滚动条 */
+    flex: 0 1 auto;
+    margin-top: auto;
+    padding-top: 6px;
+    height: clamp(112px, 40vw, 178px);
+    min-height: 0;
+    pointer-events: none;
+    color: var(--gold);
+    opacity: 0.9;
+  }
+  .guide-dragon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+}
+
+/* ---- 描线取色：颈亮尾淡，龙身自左向右化入夜色 ---- */
+.gd-stop-neck {
+  stop-color: currentColor;
+  stop-opacity: 0.9;
+}
+.gd-stop-mid {
+  stop-color: currentColor;
+  stop-opacity: 0.62;
+}
+.gd-stop-tail {
+  stop-color: currentColor;
+  stop-opacity: 0.34;
+}
+
+/* ---- 龙身：上金下朱，鳞片压在上面 ---- */
+.gd-body-top {
+  stop-color: var(--gold);
+  stop-opacity: 0.17;
+}
+.gd-body-mid {
+  stop-color: var(--gold);
+  stop-opacity: 0.1;
+}
+.gd-body-belly {
+  stop-color: var(--vermilion);
+  stop-opacity: 0.16;
+}
+.gd-body {
+  fill: url(#gd-body);
+  stroke: url(#gd-line);
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+}
+.gd-belly {
+  fill: none;
+  stroke: color-mix(in srgb, var(--vermilion) 62%, transparent);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  opacity: 0.8;
+}
+.gd-scales {
+  fill: none;
+  stroke: url(#gd-line);
+  stroke-width: 0.85;
+  opacity: 0.55;
+}
+.gd-fins {
+  fill: url(#gd-line);
+  fill-opacity: 0.22;
+  stroke: url(#gd-line);
+  stroke-width: 0.9;
+  stroke-linejoin: round;
+}
+
+/* ---- 脊线流光：一缕站色沿龙身游走 ---- */
+.gd-flow {
+  fill: none;
+  stroke: color-mix(in srgb, var(--gd-accent, var(--gold)) 58%, var(--gold));
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-dasharray: 20 420;
+  opacity: 0.9;
+  animation: gdFlow 7.4s linear infinite;
+}
+@keyframes gdFlow {
+  to {
+    stroke-dashoffset: -440;
+  }
+}
+
+/* ---- 四爪与尾锋 ---- */
+.gd-leg {
+  fill: none;
+  stroke: url(#gd-line);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.gd-tail-fill {
+  fill: color-mix(in srgb, var(--jade) 55%, var(--gold));
+  fill-opacity: 0.22;
+  stroke: color-mix(in srgb, var(--jade) 72%, var(--gold));
+  stroke-width: 1.3;
+  stroke-linejoin: round;
+}
+.gd-tongue {
+  fill: none;
+  stroke: color-mix(in srgb, var(--vermilion) 70%, var(--gold));
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  opacity: 0.75;
+}
+.gd-tail {
+  fill: none;
+  stroke: color-mix(in srgb, var(--jade) 72%, var(--gold));
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  opacity: 0.82;
+}
+
+/* ---- 龙头 ---- */
+.gd-head-a {
+  stop-color: var(--vermilion);
+  stop-opacity: 0.26;
+}
+.gd-head-b {
+  stop-color: var(--gold);
+  stop-opacity: 0.16;
+}
+.gd-mouth-line {
+  fill: none;
+  stroke: url(#gd-line);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+.gd-head {
+  fill: url(#gd-head-fill);
+  stroke: url(#gd-line);
+  stroke-width: 1.9;
+  stroke-linejoin: round;
+}
+.gd-jaw-fill {
+  fill: url(#gd-body);
+  stroke: url(#gd-line);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+.gd-brow {
+  fill: none;
+  stroke: url(#gd-line);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.gd-teeth {
+  fill: none;
+  stroke: var(--paper);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.6;
+}
+.gd-eye {
+  fill: var(--paper);
+  opacity: 0.95;
+}
+.gd-pupil {
+  fill: var(--ink);
+  opacity: 0.92;
+}
+.gd-nostril {
+  fill: var(--paper);
+  opacity: 0.45;
+}
+.gd-horn {
+  fill: none;
+  stroke: url(#gd-line);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+.gd-horn-faint {
+  fill: none;
+  stroke: url(#gd-line);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  opacity: 0.5;
+}
+.gd-mane {
+  fill: none;
+  stroke: color-mix(in srgb, var(--jade) 70%, var(--gold));
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  opacity: 0.78;
+}
+.gd-whisker {
+  fill: none;
+  stroke: color-mix(in srgb, var(--gold) 80%, var(--paper));
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  opacity: 0.75;
+}
+.gd-beard {
+  fill: none;
+  stroke: color-mix(in srgb, var(--gold) 60%, var(--paper));
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  opacity: 0.55;
+}
+
+/* ---- 祥云 ---- */
+.gd-cloud {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  opacity: 0.38;
+}
+.gd-cloud-faint {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 1;
+  stroke-linecap: round;
+  opacity: 0.14;
+}
+
+/* ---- 龙珠 ---- */
+.gd-pearl-core {
+  stop-color: var(--paper);
+  stop-opacity: 0.92;
+}
+.gd-pearl-edge {
+  stop-color: var(--gd-accent, var(--gold));
+  stop-opacity: 0.16;
+}
+.gd-pearl-body {
+  fill: url(#gd-pearl);
+}
+.gd-pearl-spark {
+  fill: var(--paper);
+  opacity: 0.72;
+}
+.gd-pearl-halo {
+  fill: var(--gd-accent, var(--gold));
+  opacity: 0.1;
+  animation: gdHalo 4.8s ease-in-out infinite;
+}
+@keyframes gdHalo {
+  0%,
+  100% {
+    opacity: 0.06;
+  }
+  50% {
+    opacity: 0.18;
+  }
+}
+
+/* ---- 整龙起伏、龙首轻颔、长须微摆、龙珠浮沉 ---- */
+.gd-scroll {
+  animation: gdDrift 13s ease-in-out infinite;
+}
+@keyframes gdDrift {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3.5px);
+  }
+}
+.gd-head-g {
+  transform-box: view-box;
+  transform-origin: 96px 92px;
+  animation: gdNod 8.5s ease-in-out infinite;
+}
+@keyframes gdNod {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-1.6deg);
+  }
+}
+.gd-whiskers {
+  transform-box: view-box;
+  transform-origin: 40px 76px;
+  animation: gdWhisk 6.8s ease-in-out infinite;
+}
+@keyframes gdWhisk {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(2.6deg);
+  }
+}
+.gd-tail-g {
+  transform-box: view-box;
+  transform-origin: 392px 58px;
+  animation: gdTail 7.6s ease-in-out infinite;
+}
+@keyframes gdTail {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-2.2deg);
+  }
+}
+.gd-pearl-g {
+  transform-box: view-box;
+  transform-origin: 20px 46px;
+  animation: gdBob 7.2s ease-in-out infinite;
+}
+@keyframes gdBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* ---- 减少动态：只留静态龙影 ---- */
+@media (prefers-reduced-motion: reduce) {
+  .gd-scroll,
+  .gd-head-g,
+  .gd-whiskers,
+  .gd-tail-g,
+  .gd-pearl-g,
+  .gd-pearl-halo {
+    animation: none;
+  }
+  .gd-flow {
+    animation: none;
+    stroke-dasharray: none;
+    opacity: 0.22;
+  }
+}

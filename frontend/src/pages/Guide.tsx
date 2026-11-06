@@ -3,10 +3,12 @@
  * 原创点：核心原创：新手导览十一站层层递进（灯线进度 + 站台照片渐变融底 + 四式版面轮换 +
  * 灯笼与站台同色 + 断点续览）
  */
-import { useEffect, useState, type CSSProperties } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import GuideDragon from '../components/GuideDragon'
 import Motif from '../components/Motif'
 import { STEPS, type CraftKey, type Variant } from '../guideStations'
 import '../styles/guide.css'
+import '../styles/guideDragon.css'
 
 interface Props {
   /** 去体验某页：跳到真实功能页；可选带上当前站的揭幕视觉（专属小人 + 主色） */
@@ -43,6 +45,8 @@ function readSaved(): number {
 
 export default function Guide({ onNavigate, onExit }: Props) {
   const [step, setStep] = useState(readSaved)
+  /** 翻站方向：+1 前进 / -1 回看，供窄屏每站转场决定切入方向 */
+  const dirRef = useRef(1)
   const [done, setDone] = useState(() => {
     try {
       return localStorage.getItem(DONE_KEY) === '1'
@@ -62,8 +66,13 @@ export default function Guide({ onNavigate, onExit }: Props) {
     }
   }
 
-  const go = (i: number) => persist(Math.min(LAST, Math.max(0, i)))
+  const go = (i: number) => {
+    const target = Math.min(LAST, Math.max(0, i))
+    dirRef.current = target >= step ? 1 : -1
+    persist(target)
+  }
   const next = () => {
+    dirRef.current = 1
     if (step >= LAST) {
       try {
         localStorage.setItem(DONE_KEY, '1')
@@ -79,6 +88,7 @@ export default function Guide({ onNavigate, onExit }: Props) {
     go(step + 1)
   }
   const restart = () => {
+    dirRef.current = -1
     try {
       localStorage.removeItem(STEP_KEY)
       localStorage.removeItem(DONE_KEY)
@@ -163,7 +173,7 @@ export default function Guide({ onNavigate, onExit }: Props) {
       {/* 站牌：key 随站次重挂载，换站即换景；照片以渐变方式融入卡面背景，四式版面轮换 */}
       <section
         key={step}
-        className={`guide-card v-${s.variant}`}
+        className={`guide-card v-${s.variant} t-${step}${dirRef.current < 0 ? ' is-back' : ''}`}
         style={{ '--gd-accent': s.tone } as CSSProperties}
       >
         {/* 站台照片背景：十一张同铺一框，换站交叉渐隐渐显，右侧浓、左缘淡，直融卡底 */}
@@ -232,6 +242,7 @@ export default function Guide({ onNavigate, onExit }: Props) {
         <span className="guide-touch-hint">点上方站号可跳站 · 逐步翻阅也行</span>
       </footer>
 
+      <GuideDragon />
       <Motif kind="lantern" />
     </div>
   )
