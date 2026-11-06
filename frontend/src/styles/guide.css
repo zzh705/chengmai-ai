@@ -1089,7 +1089,8 @@
   .guide-go {
     border-color: color-mix(in srgb, var(--gd-accent, var(--gold)) 55%, transparent);
     background: color-mix(in srgb, var(--gd-accent, var(--gold)) 13%, transparent);
-    color: var(--gd-accent, var(--gold));
+    /* 黛蓝等深站色直接压在暗底上偏灰，掺一档纸色提亮，两种主题都清楚 */
+    color: color-mix(in srgb, var(--gd-accent, var(--gold)) 45%, var(--paper));
     box-shadow: none;
   }
   .guide-go:hover {
