@@ -2,7 +2,6 @@
    新手指引 · 游龙入画
    · 龙图置于介绍卡片下方（正常文档流，不会卡片遮住）
    · 静止时：低频湍流蠕动 + 缓慢浮游 + 横向轻摆，像在云上游走
-   · 换站时：同一龙形腾云穿屏，三种飞法，前后翻页方向可逆
    ============================================================ */
 
 .gd-warp-defs {
@@ -54,191 +53,10 @@
   }
 }
 
-/* ===== 每站转场：游龙穿屏，腾云驾雾 =====
-   不改页面结构，龙作为一层转场过屏；前进自左下掠出，回看反向回溯。
-   三种飞法轮换：掠影 / 扶摇 / 滚云。 */
-.guide-flight {
-  position: fixed;
-  inset: 0;
-  z-index: 70;
-  pointer-events: none;
-  overflow: hidden;
-}
-.guide-flight::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    62% 58% at 50% 52%,
-    rgba(10, 14, 12, 0) 0%,
-    rgba(10, 14, 12, 0.24) 74%,
-    rgba(10, 14, 12, 0.5) 100%
-  );
-  opacity: 0;
-  animation: dfVeil 0.9s ease both;
-}
-.df-inner {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: min(48vw, 660px);
-  aspect-ratio: 670 / 458;
-  filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.5));
-  will-change: transform, opacity;
-}
-/* 云雾：随龙同行，龙在云中穿 */
-.df-mist {
-  position: absolute;
-  left: 6%;
-  top: 12%;
-  width: 80%;
-  height: 72%;
-  border-radius: 50%;
-  background:
-    radial-gradient(closest-side, rgba(242, 246, 238, 0.5), rgba(242, 246, 238, 0) 70%),
-    radial-gradient(closest-side at 68% 62%, rgba(150, 205, 186, 0.32), rgba(150, 205, 186, 0) 72%);
-  filter: blur(12px);
-  opacity: 0.9;
-}
-.df-mist::after {
-  content: '';
-  position: absolute;
-  left: 4%;
-  bottom: -8%;
-  width: 46%;
-  height: 46%;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(235, 242, 236, 0.42), rgba(235, 242, 236, 0) 70%);
-  filter: blur(9px);
-}
-.df-art {
-  position: relative;
-  z-index: 1;
-  display: block;
-  width: 100%;
-  height: auto;
-  transform: scaleX(-1);
-  filter: url(#gd-warp);
-}
-.guide-flight.is-back .df-art {
-  transform: none;
-}
-.guide-flight.v0 .df-inner {
-  animation: dfSwoop 0.9s cubic-bezier(0.33, 0.1, 0.25, 1) both;
-}
-.guide-flight.v1 .df-inner {
-  animation: dfRise 0.94s cubic-bezier(0.35, 0.08, 0.22, 1) both;
-}
-.guide-flight.v2 .df-inner {
-  animation: dfLoop 0.96s cubic-bezier(0.4, 0.05, 0.25, 1) both;
-}
-.guide-flight.is-back .df-inner {
-  animation-direction: reverse;
-}
-
-@keyframes dfVeil {
-  0% {
-    opacity: 0;
-  }
-  30% {
-    opacity: 0.75;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-/* 一 · 贴地掠影：自左下起势，掠过台前，斜上出画 */
-@keyframes dfSwoop {
-  0% {
-    transform: translate(-50%, -50%) translate3d(-54vw, 40vh, 0) rotate(-13deg) scale(0.9);
-    opacity: 0;
-  }
-  12% {
-    opacity: 0.98;
-  }
-  38% {
-    transform: translate(-50%, -50%) translate3d(-4vw, 16vh, 0) rotate(-7deg) scale(1.06);
-  }
-  56% {
-    transform: translate(-50%, -50%) translate3d(18vw, 2vh, 0) rotate(2deg) scale(1.03);
-  }
-  72% {
-    transform: translate(-50%, -50%) translate3d(46vw, 8vh, 0) rotate(7deg);
-  }
-  86% {
-    opacity: 0.94;
-  }
-  100% {
-    transform: translate(-50%, -50%) translate3d(112vw, -20vh, 0) rotate(11deg) scale(0.94);
-    opacity: 0;
-  }
-}
-
-/* 二 · 扶摇直上：自下而起，S 形摆过中线 */
-@keyframes dfRise {
-  0% {
-    transform: translate(-50%, -50%) translate3d(-44vw, 66vh, 0) rotate(-19deg) scale(0.92);
-    opacity: 0;
-  }
-  14% {
-    opacity: 0.98;
-  }
-  30% {
-    transform: translate(-50%, -50%) translate3d(-22vw, 30vh, 0) rotate(-13deg);
-  }
-  46% {
-    transform: translate(-50%, -50%) translate3d(-4vw, 18vh, 0) rotate(-4deg);
-  }
-  60% {
-    transform: translate(-50%, -50%) translate3d(12vw, 34vh, 0) rotate(7deg);
-  }
-  76% {
-    transform: translate(-50%, -50%) translate3d(40vw, 0vh, 0) rotate(-5deg);
-  }
-  90% {
-    opacity: 0.92;
-  }
-  100% {
-    transform: translate(-50%, -50%) translate3d(108vw, -24vh, 0) rotate(-14deg) scale(0.96);
-    opacity: 0;
-  }
-}
-
-/* 三 · 滚云翻浪：入画即腾空回旋，翻半身姿再破云而出 */
-@keyframes dfLoop {
-  0% {
-    transform: translate(-50%, -50%) translate3d(-52vw, 8vh, 0) rotate(-6deg) scale(0.9);
-    opacity: 0;
-  }
-  12% {
-    opacity: 0.98;
-  }
-  30% {
-    transform: translate(-50%, -50%) translate3d(-6vw, -20vh, 0) rotate(120deg) scale(1.04);
-  }
-  52% {
-    transform: translate(-50%, -50%) translate3d(28vw, 20vh, 0) rotate(230deg);
-  }
-  74% {
-    transform: translate(-50%, -50%) translate3d(50vw, -10vh, 0) rotate(320deg);
-  }
-  88% {
-    opacity: 0.92;
-  }
-  100% {
-    transform: translate(-50%, -50%) translate3d(116vw, 2vh, 0) rotate(360deg) scale(0.94);
-    opacity: 0;
-  }
-}
-
-/* ---- 窄屏：画心更宽，飞龙略收 ---- */
+/* ---- 窄屏：画心更宽 ---- */
 @media (max-width: 640px) {
   .guide-dragon {
     width: 94%;
-  }
-  .df-inner {
-    width: min(80vw, 460px);
   }
 }
 
@@ -247,8 +65,5 @@
   .guide-dragon,
   .gd-img {
     animation: none;
-  }
-  .guide-flight {
-    display: none;
   }
 }

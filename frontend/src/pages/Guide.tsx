@@ -4,7 +4,8 @@
  * 灯笼与站台同色 + 断点续览）
  */
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
-import GuideDragon, { GuideDragonFlight } from '../components/GuideDragon'
+import GuideDragon from '../components/GuideDragon'
+import GuideTransit from '../components/GuideTransit'
 import Motif from '../components/Motif'
 import { STEPS, type CraftKey, type Variant } from '../guideStations'
 import '../styles/guide.css'
@@ -56,24 +57,24 @@ export default function Guide({ onNavigate, onExit }: Props) {
   })
   const s = STEPS[step]
 
-  /** 每站转场：游龙穿屏。id 递增用于重挂载动画，v 轮换三种飞法，dir 记翻站方向 */
-  const [flight, setFlight] = useState<{ id: number; v: number; dir: 1 | -1 } | null>(null)
-  const flyId = useRef(0)
-  const flyTimer = useRef<number | null>(null)
+  /** 每站换景：id 递增用于重挂载动画，step 定本页主意象，dir 记翻站方向 */
+  const [transit, setTransit] = useState<{ id: number; step: number; dir: 1 | -1 } | null>(null)
+  const transitId = useRef(0)
+  const transitTimer = useRef<number | null>(null)
 
-  const fly = (dir: 1 | -1) => {
-    flyId.current += 1
-    const id = flyId.current
-    setFlight({ id, v: id % 3, dir })
-    if (flyTimer.current) window.clearTimeout(flyTimer.current)
-    flyTimer.current = window.setTimeout(() => {
-      setFlight((f) => (f && f.id === id ? null : f))
-    }, 940)
+  const playTransit = (target: number, dir: 1 | -1) => {
+    transitId.current += 1
+    const id = transitId.current
+    setTransit({ id, step: target, dir })
+    if (transitTimer.current) window.clearTimeout(transitTimer.current)
+    transitTimer.current = window.setTimeout(() => {
+      setTransit((t) => (t && t.id === id ? null : t))
+    }, 1100)
   }
 
   useEffect(
     () => () => {
-      if (flyTimer.current) window.clearTimeout(flyTimer.current)
+      if (transitTimer.current) window.clearTimeout(transitTimer.current)
     },
     [],
   )
@@ -93,7 +94,7 @@ export default function Guide({ onNavigate, onExit }: Props) {
     if (target === step) return
     dirRef.current = target >= step ? 1 : -1
     persist(target)
-    fly(dirRef.current)
+    playTransit(target, dirRef.current)
   }
   const next = () => {
     dirRef.current = 1
@@ -121,7 +122,7 @@ export default function Guide({ onNavigate, onExit }: Props) {
     }
     setDone(false)
     persist(0)
-    fly(-1)
+    playTransit(0, -1)
   }
 
   // 键盘：← → 翻站，Esc 回首页
@@ -269,7 +270,7 @@ export default function Guide({ onNavigate, onExit }: Props) {
         <span className="guide-touch-hint">点上方站号可跳站 · 逐步翻阅也行</span>
       </footer>
 
-      {flight && <GuideDragonFlight key={flight.id} variant={flight.v} dir={flight.dir} />}
+      {transit && <GuideTransit key={transit.id} stepIdx={transit.step} dir={transit.dir} />}
       <Motif kind="lantern" />
     </div>
   )
