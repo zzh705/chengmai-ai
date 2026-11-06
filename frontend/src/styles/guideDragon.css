@@ -1,352 +1,57 @@
-/* ===== 新手指引 · 手机端页脚游龙灯影 =====
-   只在 ≤640px 出现，落在灯线与页脚下方的大块留白里；网页端完全不出现。
-   取传统团龙之势（金鳞蛇身 / 朱红腹甲 / 青碧鬃尾 / 双角四爪 / 祥云托底），
-   以白描金线重绘，龙珠与脊线流光随每一站的 --gd-accent 换气韵。 */
+/* ============================================================
+   新手指引 · 游龙入画
+   直接采用所给画稿（已抠去薄荷底色）：
+   · 页面右侧铺一幅龙图作为背景画心，与夜色相融；
+   · 每次换站复用同一龙形穿屏而过，三种飞法轮换，前后翻页方向可逆。
+   ============================================================ */
 
+/* ---- 画心：右侧大幅龙图，压暗后融入背景 ---- */
 .guide-dragon {
-  display: none;
+  position: fixed;
+  right: -5vw;
+  bottom: 0;
+  z-index: 0;
+  width: min(56vw, 880px);
+  pointer-events: none;
+  opacity: 0.42;
+  filter: saturate(1.06) brightness(1.04) drop-shadow(0 20px 54px rgba(0, 0, 0, 0.45));
+  -webkit-mask-image: radial-gradient(70% 68% at 50% 50%, #000 42%, rgba(0, 0, 0, 0.6) 68%, transparent 88%);
+  mask-image: radial-gradient(70% 68% at 50% 50%, #000 42%, rgba(0, 0, 0, 0.6) 68%, transparent 88%);
+  animation: dragonBreathe 12s ease-in-out infinite alternate;
+}
+.guide-dragon img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+/* 薄荷色雾：承接原画底色，让画面与夜色过渡不生硬 */
+.guide-dragon::before {
+  content: '';
+  position: absolute;
+  inset: 8% 6% 4%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(150, 205, 186, 0.22), rgba(150, 205, 186, 0) 72%);
+  filter: blur(14px);
 }
 
-@media (max-width: 640px) {
-  .guide-dragon {
-    display: block;
-    /* 空间充裕时贴底站定，空间紧张时按比例收一点，绝不给页面添滚动条 */
-    flex: 0 1 auto;
-    margin-top: auto;
-    padding-top: 6px;
-    height: clamp(112px, 40vw, 178px);
-    min-height: 0;
-    pointer-events: none;
-    color: #e9b45c;
-    opacity: 0.96;
+@keyframes dragonBreathe {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.38;
   }
-  .guide-dragon svg {
-    display: block;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-  }
-}
-
-/* ---- 描线取色：颈亮尾淡，龙身自左向右化入夜色 ---- */
-.gd-stop-neck {
-  stop-color: currentColor;
-  stop-opacity: 0.95;
-}
-.gd-stop-mid {
-  stop-color: currentColor;
-  stop-opacity: 0.72;
-}
-.gd-stop-tail {
-  stop-color: currentColor;
-  stop-opacity: 0.42;
-}
-
-/* ---- 龙身：金鳞压朱，鳞纹与腹甲取画中橙红 ---- */
-.gd-body-top {
-  stop-color: #f7ca52;
-  stop-opacity: 0.95;
-}
-.gd-body-mid {
-  stop-color: #eea83a;
-  stop-opacity: 0.92;
-}
-.gd-body-belly {
-  stop-color: #c2482f;
-  stop-opacity: 0.86;
-}
-.gd-body {
-  fill: url(#gd-body);
-  stroke: url(#gd-line);
-  stroke-width: 2;
-  stroke-linejoin: round;
-}
-.gd-belly {
-  fill: none;
-  stroke: #f8ecd2;
-  stroke-width: 2.1;
-  stroke-linecap: round;
-  opacity: 0.9;
-}
-.gd-scales {
-  fill: none;
-  stroke: #a33a27;
-  stroke-width: 1;
-  opacity: 0.5;
-}
-.gd-fins {
-  fill: #e2663c;
-  fill-opacity: 0.5;
-  stroke: #b6432a;
-  stroke-width: 0.9;
-  stroke-linejoin: round;
-}
-
-/* ---- 脊线流光：一缕站色沿龙身游走 ---- */
-.gd-flow {
-  fill: none;
-  stroke: color-mix(in srgb, var(--gd-accent, var(--gold)) 58%, var(--gold));
-  stroke-width: 1.7;
-  stroke-linecap: round;
-  stroke-dasharray: 20 420;
-  opacity: 0.9;
-  animation: gdFlow 7.4s linear infinite;
-}
-@keyframes gdFlow {
   to {
-    stroke-dashoffset: -440;
+    transform: translate3d(-14px, -12px, 0) scale(1.018);
+    opacity: 0.5;
   }
 }
 
-/* ---- 四爪与尾锋 ---- */
-.gd-leg {
-  fill: none;
-  stroke: #b03a2e;
-  stroke-width: 2.4;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.gd-tail-fill {
-  fill: #2fa59a;
-  fill-opacity: 0.4;
-  stroke: #2b948b;
-  stroke-width: 1.4;
-  stroke-linejoin: round;
-}
-.gd-tongue {
-  fill: none;
-  stroke: #d1503d;
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  opacity: 0.8;
-}
-.gd-tail {
-  fill: none;
-  stroke: #2fa59a;
-  stroke-width: 2;
-  stroke-linecap: round;
-  opacity: 0.95;
-}
-
-/* ---- 龙头 ---- */
-.gd-head-a {
-  stop-color: #d9583b;
-  stop-opacity: 0.6;
-}
-.gd-head-b {
-  stop-color: #f2c14e;
-  stop-opacity: 0.45;
-}
-.gd-mouth-line {
-  fill: none;
-  stroke: url(#gd-line);
-  stroke-width: 1.4;
-  stroke-linecap: round;
-}
-.gd-head {
-  fill: url(#gd-head-fill);
-  stroke: url(#gd-line);
-  stroke-width: 1.9;
-  stroke-linejoin: round;
-}
-.gd-jaw-fill {
-  fill: url(#gd-body);
-  stroke: url(#gd-line);
-  stroke-width: 1.5;
-  stroke-linejoin: round;
-}
-.gd-brow {
-  fill: none;
-  stroke: url(#gd-line);
-  stroke-width: 1.5;
-  stroke-linecap: round;
-}
-.gd-teeth {
-  fill: none;
-  stroke: var(--paper);
-  stroke-width: 1.1;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: 0.6;
-}
-.gd-eye {
-  fill: var(--paper);
-  opacity: 0.95;
-}
-.gd-pupil {
-  fill: var(--ink);
-  opacity: 0.92;
-}
-.gd-nostril {
-  fill: var(--paper);
-  opacity: 0.45;
-}
-.gd-horn {
-  fill: none;
-  stroke: #f6e8c6;
-  stroke-width: 3;
-  stroke-linecap: round;
-}
-.gd-horn-faint {
-  fill: none;
-  stroke: #f6e8c6;
-  stroke-width: 1.4;
-  stroke-linecap: round;
-  opacity: 0.6;
-}
-.gd-mane {
-  fill: none;
-  stroke: #35a99e;
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  opacity: 0.95;
-}
-.gd-whisker {
-  fill: none;
-  stroke: #f8efdb;
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  opacity: 0.9;
-}
-.gd-beard {
-  fill: none;
-  stroke: #f8efdb;
-  stroke-width: 1.3;
-  stroke-linecap: round;
-  opacity: 0.7;
-}
-
-/* ---- 祥云 ---- */
-.gd-cloud {
-  fill: none;
-  stroke: #f6f1e2;
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  opacity: 0.85;
-}
-.gd-cloud-faint {
-  fill: none;
-  stroke: #f6f1e2;
-  stroke-width: 1.1;
-  stroke-linecap: round;
-  opacity: 0.2;
-}
-
-/* ---- 龙珠 ---- */
-.gd-pearl-core {
-  stop-color: var(--paper);
-  stop-opacity: 0.92;
-}
-.gd-pearl-edge {
-  stop-color: var(--gd-accent, var(--gold));
-  stop-opacity: 0.16;
-}
-.gd-pearl-body {
-  fill: url(#gd-pearl);
-}
-.gd-pearl-spark {
-  fill: var(--paper);
-  opacity: 0.72;
-}
-.gd-pearl-halo {
-  fill: var(--gd-accent, var(--gold));
-  opacity: 0.1;
-  animation: gdHalo 4.8s ease-in-out infinite;
-}
-@keyframes gdHalo {
-  0%,
-  100% {
-    opacity: 0.06;
-  }
-  50% {
-    opacity: 0.18;
-  }
-}
-
-/* ---- 整龙起伏、龙首轻颔、长须微摆、龙珠浮沉 ---- */
-.gd-scroll {
-  animation: gdDrift 13s ease-in-out infinite;
-}
-@keyframes gdDrift {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-3.5px);
-  }
-}
-.gd-head-g {
-  transform-box: view-box;
-  transform-origin: 96px 92px;
-  animation: gdNod 8.5s ease-in-out infinite;
-}
-@keyframes gdNod {
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-  50% {
-    transform: rotate(-1.6deg);
-  }
-}
-.gd-whiskers {
-  transform-box: view-box;
-  transform-origin: 40px 76px;
-  animation: gdWhisk 6.8s ease-in-out infinite;
-}
-@keyframes gdWhisk {
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-  50% {
-    transform: rotate(2.6deg);
-  }
-}
-.gd-tail-g {
-  transform-box: view-box;
-  transform-origin: 392px 58px;
-  animation: gdTail 7.6s ease-in-out infinite;
-}
-@keyframes gdTail {
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-  50% {
-    transform: rotate(-2.2deg);
-  }
-}
-.gd-pearl-g {
-  transform-box: view-box;
-  transform-origin: 20px 46px;
-  animation: gdBob 7.2s ease-in-out infinite;
-}
-@keyframes gdBob {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
-/* ---- 朱文小印：白描团龙的落款，与画中「龍」印呼应 ---- */
-.gd-seal-g {
-  opacity: 0.95;
-}
-.gd-seal-bg {
-  fill: #b03a2e;
-  stroke: rgba(248, 239, 219, 0.6);
-  stroke-width: 0.8;
-}
-.gd-seal-txt {
-  fill: #f8efdb;
-  font-family: 'Noto Serif SC', serif;
-  font-size: 17px;
-  font-weight: 700;
+/* ---- 内容压住画心：题头 / 灯线 / 站牌 / 页脚均在龙图之上 ---- */
+.guide-head,
+.guide-steps,
+.guide-card,
+.guide-foot {
+  position: relative;
+  z-index: 2;
 }
 
 /* ===== 每站转场：游龙穿屏 =====
@@ -366,39 +71,38 @@
   background: radial-gradient(
     62% 58% at 50% 52%,
     rgba(10, 14, 12, 0) 0%,
-    rgba(10, 14, 12, 0.26) 74%,
-    rgba(10, 14, 12, 0.52) 100%
+    rgba(10, 14, 12, 0.24) 74%,
+    rgba(10, 14, 12, 0.5) 100%
   );
   opacity: 0;
-  animation: dfVeil 0.86s ease both;
+  animation: dfVeil 0.9s ease both;
 }
 .df-inner {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: min(48vw, 640px);
-  aspect-ratio: 440 / 190;
-  filter: drop-shadow(0 16px 30px rgba(0, 0, 0, 0.42));
+  width: min(48vw, 660px);
+  aspect-ratio: 670 / 458;
+  filter: drop-shadow(0 16px 34px rgba(0, 0, 0, 0.48));
   will-change: transform, opacity;
 }
 .df-art {
   display: block;
   width: 100%;
-  height: 100%;
-  overflow: visible;
+  height: auto;
   transform: scaleX(-1);
 }
 .guide-flight.is-back .df-art {
   transform: none;
 }
 .guide-flight.v0 .df-inner {
-  animation: dfSwoop 0.86s cubic-bezier(0.33, 0.1, 0.25, 1) both;
+  animation: dfSwoop 0.9s cubic-bezier(0.33, 0.1, 0.25, 1) both;
 }
 .guide-flight.v1 .df-inner {
-  animation: dfRise 0.9s cubic-bezier(0.35, 0.08, 0.22, 1) both;
+  animation: dfRise 0.94s cubic-bezier(0.35, 0.08, 0.22, 1) both;
 }
 .guide-flight.v2 .df-inner {
-  animation: dfLoop 0.92s cubic-bezier(0.4, 0.05, 0.25, 1) both;
+  animation: dfLoop 0.96s cubic-bezier(0.4, 0.05, 0.25, 1) both;
 }
 .guide-flight.is-back .df-inner {
   animation-direction: reverse;
@@ -494,25 +198,26 @@
   }
 }
 
+/* ---- 窄屏：龙图更大、更靠下，仍压在内容之后 ---- */
 @media (max-width: 640px) {
+  .guide-dragon {
+    width: 118vw;
+    right: -32vw;
+    bottom: 10vh;
+    opacity: 0.3;
+  }
   .df-inner {
-    width: min(78vw, 420px);
+    width: min(80vw, 460px);
   }
 }
 
-/* ---- 减少动态：只留静态龙影 ---- */
+/* ---- 减少动态：留静画，不飞 ---- */
 @media (prefers-reduced-motion: reduce) {
-  .gd-scroll,
-  .gd-head-g,
-  .gd-whiskers,
-  .gd-tail-g,
-  .gd-pearl-g,
-  .gd-pearl-halo {
+  .guide-dragon {
     animation: none;
+    opacity: 0.42;
   }
-  .gd-flow {
-    animation: none;
-    stroke-dasharray: none;
-    opacity: 0.22;
+  .guide-flight {
+    display: none;
   }
 }
