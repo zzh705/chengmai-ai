@@ -979,6 +979,11 @@
     padding-bottom: 4px;
     scrollbar-width: thin;
   }
+  /* 同上：筛选胶囊按内容取宽，横滚而不是把字挤成竖排 */
+  .map-filters button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
   .map-wrap {
     padding: 10px;
   }

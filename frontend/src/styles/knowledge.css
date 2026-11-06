@@ -904,6 +904,11 @@
     padding-bottom: 4px;
     scrollbar-width: thin;
   }
+  /* 横滚行里的分类胶囊不参与收缩：否则中文会一字一行竖排成高柱 */
+  .kb-chips button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
   .kb-detail {
     padding: 16px 14px 28px;
   }

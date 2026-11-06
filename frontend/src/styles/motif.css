@@ -519,5 +519,16 @@
   .mf-side {
     width: 68px;
     opacity: 0.5;
+    /* 手机窄屏：左右墨饰贴着屏边，78px 触区会盖住贴边按钮的点击热点，
+       只作纯装饰，不接收指针事件（桌面端保留点击回礼）。 */
+    pointer-events: none;
+  }
+}
+
+/* 手机端（≤720px）：内容已接近满宽，左右墨饰会压在卡片与按钮上，
+   按 Motif 组件「窄屏隐去」的本意直接收起，留白还给内容。 */
+@media (max-width: 720px) {
+  .mf-layer {
+    display: none;
   }
 }

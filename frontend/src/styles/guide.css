@@ -774,22 +774,6 @@
     margin-left: 0;
   }
 }
-@media (max-width: 480px) {
-  .guide-head h1 {
-    font-size: 26px;
-  }
-  .guide-acts {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .guide-acts button {
-    width: 100%;
-  }
-  .v-ink .guide-hook {
-    display: none;
-  }
-}
-
 /* 无障碍：减少动态 */
 @media (prefers-reduced-motion: reduce) {
   .guide-card,
@@ -820,114 +804,337 @@
   }
 }
 
-/* ===== 手机窄屏（≤480px）：站牌 / 灯线 / 四式版面精修 ===== */
-@media (max-width: 480px) {
+/* ===== 手机端（≤640px）：新手指引重新排布 =====
+   目标：一屏读完一站——题头压成一行、灯线收成 11 点均分一线、
+   站牌收起与正文争位的重复落款、按钮改为「上一步/下一步 + 去体验」两行。
+   全部规则只在窄屏生效，网页端版式不受影响。 */
+
+/* 触屏提示：宽屏不出现 */
+.guide-touch-hint {
+  display: none;
+}
+
+@media (max-width: 640px) {
   .guide-page {
-    padding: 20px 14px 32px;
-    gap: 20px;
+    padding: 14px 14px calc(26px + env(safe-area-inset-bottom));
+    gap: 14px;
   }
+
+  /* ---- 题头：标题与「回首页」同排，副题收成一行 ---- */
+  .guide-head {
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .guide-head > div:first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .guide-head h1 {
+    font-size: 22px;
+    letter-spacing: 3px;
+    line-height: 1.2;
+  }
+  .guide-head p {
+    margin-top: 5px;
+    font-size: 11.5px;
+    letter-spacing: 1px;
+    line-height: 1.5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .guide-head-acts {
+    flex: 0 0 auto;
+    gap: 6px;
+  }
+  .guide-close {
+    min-height: 36px;
+    padding: 6px 12px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  /* 完成印记让位给窄屏题头，进度本身已在灯线上写明 */
+  .guide-done-seal {
+    display: none;
+  }
+
+  /* ---- 灯线：11 站均分一行，不再横向滚动，一眼看清全程 ---- */
+  .guide-steps {
+    overflow: visible;
+  }
+  .guide-track {
+    width: 100%;
+    max-width: 420px;
+    min-width: 0;
+    margin: 0 auto;
+    gap: 0;
+    padding: 0;
+    align-items: flex-start;
+  }
+  .guide-line {
+    top: 50%;
+    left: 4.5%;
+    right: 4.5%;
+    margin-top: -1px;
+  }
+  .guide-stop {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    gap: 0;
+    /* 圆点 28px，上下补 5px 让整格热区近 40px，仍不撑高灯线 */
+    padding: 5px 0;
+  }
+  .guide-dot {
+    width: 100%;
+    max-width: 28px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    font-family: var(--font-sans);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+  .guide-stop-name {
+    display: none;
+  }
+  /* 当前站吐纳收小一圈，避免与相邻站点相碰 */
+  .guide-stop.is-now .guide-dot {
+    box-shadow: 0 0 0 3px rgba(var(--gold-rgb), 0.16), 0 3px 10px rgba(0, 0, 0, 0.38);
+    animation: gdPulsePhone 2.6s ease-in-out infinite;
+  }
+  @keyframes gdPulsePhone {
+    0%,
+    100% {
+      box-shadow: 0 0 0 3px rgba(var(--gold-rgb), 0.16), 0 3px 10px rgba(0, 0, 0, 0.38);
+    }
+    50% {
+      box-shadow: 0 0 0 5px rgba(var(--gold-rgb), 0.06), 0 3px 12px rgba(0, 0, 0, 0.45);
+    }
+  }
+
+  /* ---- 站牌：收紧留白，收起压字/重复的落款 ---- */
   .guide-card {
-    padding: 22px 18px;
-    border-radius: 12px;
+    padding: 18px 16px 16px;
+    border-radius: 14px;
   }
-  /* 照片渐隐罩加浓、透窗右移收窄，窄屏长文压在纯色底上更易读 */
   .guide-card::after {
     background: linear-gradient(
       108deg,
-      var(--ink-1) 18%,
-      rgba(var(--ink-rgb), 0.98) 46%,
-      rgba(var(--ink-rgb), 0.9) 68%,
-      rgba(var(--ink-rgb), 0.74) 100%
+      var(--ink-1) 16%,
+      rgba(var(--ink-rgb), 0.98) 44%,
+      rgba(var(--ink-rgb), 0.92) 66%,
+      rgba(var(--ink-rgb), 0.76) 100%
     );
   }
   .guide-bg img {
-    -webkit-mask-image: linear-gradient(100deg, transparent 22%, #000 66%);
-    mask-image: linear-gradient(100deg, transparent 22%, #000 66%);
+    -webkit-mask-image: linear-gradient(100deg, transparent 20%, #000 64%);
+    mask-image: linear-gradient(100deg, transparent 20%, #000 64%);
+  }
+  /* 四字点睛的竖批/水印/巨字在窄屏都会压住正文，一律收起，只留站色与题签 */
+  .guide-hook,
+  .v-scroll .guide-hook,
+  .v-ink .guide-hook,
+  .v-steps .guide-hook,
+  .v-map .guide-hook {
+    display: none;
+  }
+  /* 落款只留右上角一方小印；站次已写在题头，竖排批注与重复站次收起 */
+  .guide-seal-note,
+  .guide-seal-count {
+    display: none;
+  }
+  .guide-mini-seal {
+    top: 14px;
+    right: 14px;
+    width: 30px;
+    height: 30px;
+    border-width: 1px;
+    font-size: 16px;
+  }
+  /* 题签行给小印让出位置，标签不再被压住 */
+  .guide-meta {
+    gap: 8px;
+    padding-right: 40px;
+    margin-bottom: 9px;
+  }
+  .guide-no {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+  }
+  .guide-tag {
+    padding: 1px 8px;
+    font-size: 11px;
+    letter-spacing: 1px;
   }
   .guide-card h2 {
+    margin-bottom: 8px;
     font-size: 21px;
+    letter-spacing: 2px;
+    line-height: 1.35;
+  }
+  .v-ink h2 {
+    gap: 8px;
+  }
+  /* 右上角已有落款小印，标题前的方印在窄屏收起，免一方两印 */
+  .v-ink h2::before {
+    display: none;
+  }
+  .v-steps h2 {
+    padding-left: 10px;
+  }
+  .v-map h2 {
     letter-spacing: 3px;
   }
   .guide-copy {
+    margin-bottom: 14px;
     font-size: 13px;
-    line-height: 1.75;
+    line-height: 1.7;
   }
-  /* 正文右侧留出落款槽：印章 / 站次 / 四字批注竖排悬在槽内，不再压字 */
+  /* 落款已收起，正文不再预留右侧竖槽，行宽回满 */
   .guide-txt .guide-copy,
   .guide-txt .guide-pts {
-    padding-right: 40px;
+    padding-right: 0;
   }
-  .guide-mini-seal {
-    top: 12px;
-    right: 12px;
-    width: 34px;
-    height: 34px;
-    font-size: 18px;
+
+  /* ---- 要点四式：同一套紧凑间距，台阶递进收窄 ---- */
+  .guide-pts {
+    gap: 8px;
+    margin-bottom: 16px;
   }
-  .guide-seal-count {
-    top: 52px;
-    right: 14px;
-    font-size: 10px;
-    letter-spacing: 1px;
-  }
-  .guide-seal-note {
-    top: 90px;
-    bottom: auto;
-    right: 18px;
-    font-size: 12px;
-    letter-spacing: 2px;
-    padding: 6px 3px;
-  }
-  /* 灯线触控圈放大，横滚仍保留 */
-  .guide-track {
-    min-width: 704px;
-  }
-  .guide-stop {
-    width: 64px;
-    gap: 7px;
-  }
-  .guide-dot {
-    width: 38px;
-    height: 38px;
-    font-size: 13px;
-  }
-  .guide-line {
-    top: 18px;
-    left: 32px;
-    right: 32px;
-  }
-  /* 按钮组叠满整行，触控目标 ≥44px */
-  .guide-acts {
-    gap: 10px;
-  }
-  .guide-acts button {
-    min-height: 44px;
-  }
-  /* 四式版面窄屏间距：台阶保留轻微递进，批注与口号缩小避让 */
   .guide-pts li {
     font-size: 13px;
-    line-height: 1.65;
+    line-height: 1.6;
   }
-  .v-scroll .guide-hook {
-    font-size: 14px;
-    letter-spacing: 5px;
+  .v-scroll .guide-pts li {
+    gap: 10px;
+    padding: 8px 0;
+  }
+  .v-scroll .guide-pt-no {
+    padding: 0 5px;
+    font-size: 11px;
+  }
+  .v-ink .guide-pts li {
+    padding: 7px 11px;
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+  .v-steps .guide-pts li {
+    gap: 10px;
+    padding: 8px 10px;
   }
   .v-steps .guide-pts li:nth-child(2) {
-    margin-left: 8px;
+    margin-left: 6px;
   }
   .v-steps .guide-pts li:nth-child(3) {
-    margin-left: 16px;
+    margin-left: 12px;
   }
   .v-steps .guide-pts li:nth-child(4) {
-    margin-left: 24px;
+    margin-left: 18px;
   }
   .v-steps .guide-pts li:nth-child(5) {
-    margin-left: 32px;
+    margin-left: 24px;
   }
-  .v-map .guide-hook {
-    right: -4px;
-    bottom: -6px;
-    font-size: 42px;
-    letter-spacing: 6px;
+  .v-steps .guide-pt-no {
+    font-size: 13px;
+  }
+  .v-map .guide-pts {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .v-map .guide-pts li {
+    padding: 9px 10px;
+  }
+
+  /* ---- 按钮：上一/下一步同排，去体验独占一行 ---- */
+  .guide-acts {
+    display: grid;
+    grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+    grid-template-areas:
+      'prev next'
+      'go go';
+    gap: 8px;
+  }
+  .guide-prev {
+    grid-area: prev;
+  }
+  .guide-next {
+    grid-area: next;
+  }
+  .guide-go {
+    grid-area: go;
+  }
+  .guide-acts button {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 0 14px;
+    font-size: 13px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  /* 下一步是导览主路径：站色实心；去体验改同色淡底，主次分明不抢眼 */
+  .guide-next {
+    border-color: var(--gd-accent, var(--gold));
+    background: var(--gd-accent, var(--gold));
+    color: #17120b;
+    box-shadow: 0 4px 12px rgba(var(--gold-rgb), 0.22);
+  }
+  .guide-next:hover {
+    transform: none;
+    color: #17120b;
+  }
+  .guide-go {
+    border-color: color-mix(in srgb, var(--gd-accent, var(--gold)) 55%, transparent);
+    background: color-mix(in srgb, var(--gd-accent, var(--gold)) 13%, transparent);
+    color: var(--gd-accent, var(--gold));
+    box-shadow: none;
+  }
+  .guide-go:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* ---- 页脚：手机上不提示键盘操作 ---- */
+  .guide-foot {
+    gap: 8px;
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+  .guide-key-hint {
+    display: none;
+  }
+  .guide-touch-hint {
+    display: inline;
+  }
+}
+
+/* 减少动态：窄屏灯线吐纳同样停用（置于末尾以覆盖上面的手机端动画声明） */
+@media (prefers-reduced-motion: reduce) {
+  .guide-stop.is-now .guide-dot {
+    animation: none;
+  }
+}
+
+/* 极窄屏（≤380px）：11 点一线仍要排得下，字号/留白再收半档 */
+@media (max-width: 380px) {
+  .guide-page {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .guide-card {
+    padding: 16px 14px 14px;
+  }
+  .guide-dot {
+    font-size: 9.5px;
+  }
+  .guide-head h1 {
+    font-size: 20px;
+  }
+  .guide-acts button {
+    padding: 0 10px;
+    font-size: 12.5px;
   }
 }

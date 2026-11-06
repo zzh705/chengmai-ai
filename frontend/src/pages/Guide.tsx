@@ -228,7 +228,8 @@ export default function Guide({ onNavigate, onExit }: Props) {
             从头逛起
           </button>
         )}
-        <span>方向键 ← → 翻页 · Esc 回首页</span>
+        <span className="guide-key-hint">方向键 ← → 翻页 · Esc 回首页</span>
+        <span className="guide-touch-hint">点上方站号可跳站 · 逐步翻阅也行</span>
       </footer>
 
       <Motif kind="lantern" />
