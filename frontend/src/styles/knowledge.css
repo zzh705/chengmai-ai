@@ -888,6 +888,10 @@
   .kb-header {
     padding: 20px 14px 4px;
   }
+  /* 统计句在窄屏易折出孤字，交给浏览器做均衡换行 */
+  .kb-count {
+    text-wrap: pretty;
+  }
   .kb-header input {
     width: 100%;
     font-size: 16px; /* 防 iOS 聚焦放大 */
