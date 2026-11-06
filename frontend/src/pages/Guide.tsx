@@ -4,7 +4,7 @@
  * 灯笼与站台同色 + 断点续览）
  */
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
-import GuideDragon from '../components/GuideDragon'
+import GuideDragon, { GuideDragonFlight } from '../components/GuideDragon'
 import Motif from '../components/Motif'
 import { STEPS, type CraftKey, type Variant } from '../guideStations'
 import '../styles/guide.css'
@@ -46,7 +46,7 @@ function readSaved(): number {
 export default function Guide({ onNavigate, onExit }: Props) {
   const [step, setStep] = useState(readSaved)
   /** 翻站方向：+1 前进 / -1 回看，供窄屏每站转场决定切入方向 */
-  const dirRef = useRef(1)
+  const dirRef = useRef<1 | -1>(1)
   const [done, setDone] = useState(() => {
     try {
       return localStorage.getItem(DONE_KEY) === '1'
@@ -55,6 +55,28 @@ export default function Guide({ onNavigate, onExit }: Props) {
     }
   })
   const s = STEPS[step]
+
+  /** 每站转场：游龙穿屏。id 递增用于重挂载动画，v 轮换三种飞法，dir 记翻站方向 */
+  const [flight, setFlight] = useState<{ id: number; v: number; dir: 1 | -1 } | null>(null)
+  const flyId = useRef(0)
+  const flyTimer = useRef<number | null>(null)
+
+  const fly = (dir: 1 | -1) => {
+    flyId.current += 1
+    const id = flyId.current
+    setFlight({ id, v: id % 3, dir })
+    if (flyTimer.current) window.clearTimeout(flyTimer.current)
+    flyTimer.current = window.setTimeout(() => {
+      setFlight((f) => (f && f.id === id ? null : f))
+    }, 940)
+  }
+
+  useEffect(
+    () => () => {
+      if (flyTimer.current) window.clearTimeout(flyTimer.current)
+    },
+    [],
+  )
 
   const persist = (i: number) => {
     setStep(i)
@@ -68,8 +90,10 @@ export default function Guide({ onNavigate, onExit }: Props) {
 
   const go = (i: number) => {
     const target = Math.min(LAST, Math.max(0, i))
+    if (target === step) return
     dirRef.current = target >= step ? 1 : -1
     persist(target)
+    fly(dirRef.current)
   }
   const next = () => {
     dirRef.current = 1
@@ -97,6 +121,7 @@ export default function Guide({ onNavigate, onExit }: Props) {
     }
     setDone(false)
     persist(0)
+    fly(-1)
   }
 
   // 键盘：← → 翻站，Esc 回首页
@@ -243,6 +268,7 @@ export default function Guide({ onNavigate, onExit }: Props) {
       </footer>
 
       <GuideDragon />
+      {flight && <GuideDragonFlight key={flight.id} variant={flight.v} dir={flight.dir} />}
       <Motif kind="lantern" />
     </div>
   )

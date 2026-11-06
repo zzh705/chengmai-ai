@@ -24,10 +24,14 @@ const FINS =
 const FLOW =
   'M108.6 90.4 L111.0 89.4 L113.3 88.2 L115.4 86.7 L117.5 85.1 L119.5 83.3 L121.5 81.4 L123.4 79.4 L125.2 77.3 L127.0 75.1 L128.8 72.8 L130.6 70.5 L132.3 68.2 L134.1 65.9 L135.8 63.7 L137.6 61.5 L139.4 59.3 L141.2 57.3 L143.1 55.3 L145.0 53.5 L146.9 51.8 L148.9 50.3 L151.0 49.0 L153.2 47.9 L155.5 47.0 L157.8 46.4 L160.3 46.1 L162.9 46.0 L165.3 46.3 L167.7 46.9 L169.8 47.7 L171.9 48.8 L173.9 50.2 L175.7 51.7 L177.5 53.5 L179.1 55.4 L180.7 57.5 L182.3 59.7 L183.8 62.0 L185.2 64.4 L186.7 66.9 L188.1 69.3 L189.5 71.8 L190.9 74.3 L192.3 76.8 L193.7 79.2 L195.2 81.5 L196.7 83.8 L198.3 85.9 L200.0 87.9 L201.7 89.7 L203.5 91.3 L205.4 92.7 L207.5 93.9 L209.6 94.9 L211.9 95.6 L214.3 95.9 L216.9 96.0 L219.6 95.7 L222.2 95.1 L224.6 94.2 L227.0 93.1 L229.3 91.7 L231.4 90.0 L233.5 88.2 L235.6 86.2 L237.5 84.0 L239.4 81.7 L241.3 79.3 L243.2 76.9 L245.0 74.3 L246.8 71.7 L248.6 69.1 L250.4 66.5 L252.2 64.0 L254.1 61.5 L255.9 59.0 L257.8 56.7 L259.8 54.5 L261.8 52.5 L263.9 50.6 L266.0 48.9 L268.2 47.4 L270.6 46.1 L273.0 45.2 L275.5 44.5 L278.2 44.1 L280.9 44.0 L283.6 44.3 L286.0 44.8 L288.3 45.6 L290.4 46.7 L292.4 48.0 L294.2 49.5 L296.0 51.2 L297.6 53.1 L299.1 55.0 L300.5 57.2 L301.9 59.4 L303.2 61.7 L304.5 64.0 L305.7 66.4 L306.9 68.8 L308.1 71.2 L309.3 73.6 L310.5 75.9 L311.7 78.1 L313.0 80.3 L314.4 82.3 L315.8 84.2 L317.2 85.9 L318.8 87.5 L320.5 88.9 L322.3 90.0 L324.2 90.9 L326.2 91.6 L328.4 91.9 L330.9 92.0 L333.3 91.8 L335.7 91.4 L337.9 90.8 L340.0 90.1 L342.1 89.2 L344.0 88.1 L345.9 86.9 L347.6 85.6 L349.4 84.2 L351.1 82.7 L352.7 81.1 L354.4 79.5 L356.0 77.8 L357.7 76.1 L359.3 74.4 L361.0 72.7 L362.7 71.1 L364.4 69.4 L366.2 67.8 L368.1 66.3 L370.1 64.9 L372.1 63.5 L374.3 62.3 L376.5 61.2 L378.9 60.2 L381.4 59.4 L384.1 58.8 L386.9 58.3'
 
-export default function GuideDragon() {
+export function DragonArt({ className }: { className?: string }) {
   return (
-    <div className="guide-dragon" aria-hidden="true">
-      <svg viewBox="0 0 440 190" preserveAspectRatio="xMidYMax meet" focusable="false">
+      <svg
+        viewBox="0 0 440 190"
+        preserveAspectRatio="xMidYMax meet"
+        focusable="false"
+        className={className}
+      >
         <defs>
           <linearGradient id="gd-line" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0" className="gd-stop-neck" />
@@ -124,8 +128,34 @@ export default function GuideDragon() {
             <circle className="gd-pearl-body" cx="20" cy="46" r="6.4" />
             <circle className="gd-pearl-spark" cx="18" cy="43.8" r="1.8" />
           </g>
+
+          {/* 朱文小印：白描团龙的点睛落款，与画中「龍」印呼应 */}
+          <g className="gd-seal-g" transform="rotate(4 374 18)">
+            <rect className="gd-seal-bg" x="360" y="4" width="28" height="28" rx="3" />
+            <text className="gd-seal-txt" x="374" y="25" textAnchor="middle">
+              龍
+            </text>
+          </g>
         </g>
       </svg>
+  )
+}
+
+export default function GuideDragon() {
+  return (
+    <div className="guide-dragon" aria-hidden="true">
+      <DragonArt />
+    </div>
+  )
+}
+
+/** 每站转场：游龙穿屏而过，一页换景；上一页反向回溯 */
+export function GuideDragonFlight({ variant, dir }: { variant: number; dir: 1 | -1 }) {
+  return (
+    <div className={`guide-flight v${variant % 3}${dir < 0 ? ' is-back' : ''}`} aria-hidden="true">
+      <div className="df-inner">
+        <DragonArt className="df-art" />
+      </div>
     </div>
   )
 }

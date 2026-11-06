@@ -17,8 +17,8 @@
     height: clamp(112px, 40vw, 178px);
     min-height: 0;
     pointer-events: none;
-    color: var(--gold);
-    opacity: 0.9;
+    color: #e9b45c;
+    opacity: 0.96;
   }
   .guide-dragon svg {
     display: block;
@@ -31,53 +31,53 @@
 /* ---- 描线取色：颈亮尾淡，龙身自左向右化入夜色 ---- */
 .gd-stop-neck {
   stop-color: currentColor;
-  stop-opacity: 0.9;
+  stop-opacity: 0.95;
 }
 .gd-stop-mid {
   stop-color: currentColor;
-  stop-opacity: 0.62;
+  stop-opacity: 0.72;
 }
 .gd-stop-tail {
   stop-color: currentColor;
-  stop-opacity: 0.34;
+  stop-opacity: 0.42;
 }
 
-/* ---- 龙身：上金下朱，鳞片压在上面 ---- */
+/* ---- 龙身：金鳞压朱，鳞纹与腹甲取画中橙红 ---- */
 .gd-body-top {
-  stop-color: var(--gold);
-  stop-opacity: 0.17;
+  stop-color: #f7ca52;
+  stop-opacity: 0.95;
 }
 .gd-body-mid {
-  stop-color: var(--gold);
-  stop-opacity: 0.1;
+  stop-color: #eea83a;
+  stop-opacity: 0.92;
 }
 .gd-body-belly {
-  stop-color: var(--vermilion);
-  stop-opacity: 0.16;
+  stop-color: #c2482f;
+  stop-opacity: 0.86;
 }
 .gd-body {
   fill: url(#gd-body);
   stroke: url(#gd-line);
-  stroke-width: 1.8;
+  stroke-width: 2;
   stroke-linejoin: round;
 }
 .gd-belly {
   fill: none;
-  stroke: color-mix(in srgb, var(--vermilion) 62%, transparent);
-  stroke-width: 1.7;
+  stroke: #f8ecd2;
+  stroke-width: 2.1;
   stroke-linecap: round;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 .gd-scales {
   fill: none;
-  stroke: url(#gd-line);
-  stroke-width: 0.85;
-  opacity: 0.55;
+  stroke: #a33a27;
+  stroke-width: 1;
+  opacity: 0.5;
 }
 .gd-fins {
-  fill: url(#gd-line);
-  fill-opacity: 0.22;
-  stroke: url(#gd-line);
+  fill: #e2663c;
+  fill-opacity: 0.5;
+  stroke: #b6432a;
   stroke-width: 0.9;
   stroke-linejoin: round;
 }
@@ -101,41 +101,41 @@
 /* ---- 四爪与尾锋 ---- */
 .gd-leg {
   fill: none;
-  stroke: url(#gd-line);
-  stroke-width: 2;
+  stroke: #b03a2e;
+  stroke-width: 2.4;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 .gd-tail-fill {
-  fill: color-mix(in srgb, var(--jade) 55%, var(--gold));
-  fill-opacity: 0.22;
-  stroke: color-mix(in srgb, var(--jade) 72%, var(--gold));
-  stroke-width: 1.3;
+  fill: #2fa59a;
+  fill-opacity: 0.4;
+  stroke: #2b948b;
+  stroke-width: 1.4;
   stroke-linejoin: round;
 }
 .gd-tongue {
   fill: none;
-  stroke: color-mix(in srgb, var(--vermilion) 70%, var(--gold));
+  stroke: #d1503d;
   stroke-width: 2.2;
   stroke-linecap: round;
-  opacity: 0.75;
+  opacity: 0.8;
 }
 .gd-tail {
   fill: none;
-  stroke: color-mix(in srgb, var(--jade) 72%, var(--gold));
-  stroke-width: 1.7;
+  stroke: #2fa59a;
+  stroke-width: 2;
   stroke-linecap: round;
-  opacity: 0.82;
+  opacity: 0.95;
 }
 
 /* ---- 龙头 ---- */
 .gd-head-a {
-  stop-color: var(--vermilion);
-  stop-opacity: 0.26;
+  stop-color: #d9583b;
+  stop-opacity: 0.6;
 }
 .gd-head-b {
-  stop-color: var(--gold);
-  stop-opacity: 0.16;
+  stop-color: #f2c14e;
+  stop-opacity: 0.45;
 }
 .gd-mouth-line {
   fill: none;
@@ -183,53 +183,53 @@
 }
 .gd-horn {
   fill: none;
-  stroke: url(#gd-line);
-  stroke-width: 2.6;
+  stroke: #f6e8c6;
+  stroke-width: 3;
   stroke-linecap: round;
 }
 .gd-horn-faint {
   fill: none;
-  stroke: url(#gd-line);
-  stroke-width: 1.2;
+  stroke: #f6e8c6;
+  stroke-width: 1.4;
   stroke-linecap: round;
-  opacity: 0.5;
+  opacity: 0.6;
 }
 .gd-mane {
   fill: none;
-  stroke: color-mix(in srgb, var(--jade) 70%, var(--gold));
-  stroke-width: 1.8;
+  stroke: #35a99e;
+  stroke-width: 2.2;
   stroke-linecap: round;
-  opacity: 0.78;
+  opacity: 0.95;
 }
 .gd-whisker {
   fill: none;
-  stroke: color-mix(in srgb, var(--gold) 80%, var(--paper));
-  stroke-width: 1.5;
+  stroke: #f8efdb;
+  stroke-width: 1.6;
   stroke-linecap: round;
-  opacity: 0.75;
+  opacity: 0.9;
 }
 .gd-beard {
   fill: none;
-  stroke: color-mix(in srgb, var(--gold) 60%, var(--paper));
-  stroke-width: 1.2;
+  stroke: #f8efdb;
+  stroke-width: 1.3;
   stroke-linecap: round;
-  opacity: 0.55;
+  opacity: 0.7;
 }
 
 /* ---- 祥云 ---- */
 .gd-cloud {
   fill: none;
-  stroke: var(--gold);
-  stroke-width: 1.3;
+  stroke: #f6f1e2;
+  stroke-width: 2.2;
   stroke-linecap: round;
-  opacity: 0.38;
+  opacity: 0.85;
 }
 .gd-cloud-faint {
   fill: none;
-  stroke: var(--gold);
-  stroke-width: 1;
+  stroke: #f6f1e2;
+  stroke-width: 1.1;
   stroke-linecap: round;
-  opacity: 0.14;
+  opacity: 0.2;
 }
 
 /* ---- 龙珠 ---- */
@@ -330,6 +330,173 @@
   }
   50% {
     transform: translateY(-5px);
+  }
+}
+
+/* ---- 朱文小印：白描团龙的落款，与画中「龍」印呼应 ---- */
+.gd-seal-g {
+  opacity: 0.95;
+}
+.gd-seal-bg {
+  fill: #b03a2e;
+  stroke: rgba(248, 239, 219, 0.6);
+  stroke-width: 0.8;
+}
+.gd-seal-txt {
+  fill: #f8efdb;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* ===== 每站转场：游龙穿屏 =====
+   不改页面结构，龙作为一层转场过屏；前进自左下掠出，回看反向回溯。
+   三种飞法轮换：掠影 / 扶摇 / 滚云。 */
+.guide-flight {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  overflow: hidden;
+}
+.guide-flight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    62% 58% at 50% 52%,
+    rgba(10, 14, 12, 0) 0%,
+    rgba(10, 14, 12, 0.26) 74%,
+    rgba(10, 14, 12, 0.52) 100%
+  );
+  opacity: 0;
+  animation: dfVeil 0.86s ease both;
+}
+.df-inner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(48vw, 640px);
+  aspect-ratio: 440 / 190;
+  filter: drop-shadow(0 16px 30px rgba(0, 0, 0, 0.42));
+  will-change: transform, opacity;
+}
+.df-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform: scaleX(-1);
+}
+.guide-flight.is-back .df-art {
+  transform: none;
+}
+.guide-flight.v0 .df-inner {
+  animation: dfSwoop 0.86s cubic-bezier(0.33, 0.1, 0.25, 1) both;
+}
+.guide-flight.v1 .df-inner {
+  animation: dfRise 0.9s cubic-bezier(0.35, 0.08, 0.22, 1) both;
+}
+.guide-flight.v2 .df-inner {
+  animation: dfLoop 0.92s cubic-bezier(0.4, 0.05, 0.25, 1) both;
+}
+.guide-flight.is-back .df-inner {
+  animation-direction: reverse;
+}
+
+@keyframes dfVeil {
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.75;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* 一 · 贴地掠影：自左下起势，掠过台前，斜上出画 */
+@keyframes dfSwoop {
+  0% {
+    transform: translate(-50%, -50%) translate3d(-54vw, 40vh, 0) rotate(-13deg) scale(0.9);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.98;
+  }
+  38% {
+    transform: translate(-50%, -50%) translate3d(-4vw, 16vh, 0) rotate(-5deg) scale(1.06);
+  }
+  64% {
+    transform: translate(-50%, -50%) translate3d(40vw, 4vh, 0) rotate(5deg) scale(1);
+  }
+  86% {
+    opacity: 0.94;
+  }
+  100% {
+    transform: translate(-50%, -50%) translate3d(112vw, -20vh, 0) rotate(11deg) scale(0.94);
+    opacity: 0;
+  }
+}
+
+/* 二 · 扶摇直上：自下而起，S 形摆过中线 */
+@keyframes dfRise {
+  0% {
+    transform: translate(-50%, -50%) translate3d(-44vw, 66vh, 0) rotate(-19deg) scale(0.92);
+    opacity: 0;
+  }
+  14% {
+    opacity: 0.98;
+  }
+  34% {
+    transform: translate(-50%, -50%) translate3d(-16vw, 22vh, 0) rotate(-8deg);
+  }
+  54% {
+    transform: translate(-50%, -50%) translate3d(14vw, 38vh, 0) rotate(8deg);
+  }
+  76% {
+    transform: translate(-50%, -50%) translate3d(44vw, -2vh, 0) rotate(-6deg);
+  }
+  90% {
+    opacity: 0.92;
+  }
+  100% {
+    transform: translate(-50%, -50%) translate3d(108vw, -24vh, 0) rotate(-14deg) scale(0.96);
+    opacity: 0;
+  }
+}
+
+/* 三 · 滚云翻浪：入画即腾空回旋，翻半身姿再破云而出 */
+@keyframes dfLoop {
+  0% {
+    transform: translate(-50%, -50%) translate3d(-52vw, 8vh, 0) rotate(-6deg) scale(0.9);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.98;
+  }
+  30% {
+    transform: translate(-50%, -50%) translate3d(-6vw, -20vh, 0) rotate(120deg) scale(1.04);
+  }
+  52% {
+    transform: translate(-50%, -50%) translate3d(28vw, 20vh, 0) rotate(230deg);
+  }
+  74% {
+    transform: translate(-50%, -50%) translate3d(50vw, -10vh, 0) rotate(320deg);
+  }
+  88% {
+    opacity: 0.92;
+  }
+  100% {
+    transform: translate(-50%, -50%) translate3d(116vw, 2vh, 0) rotate(360deg) scale(0.94);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .df-inner {
+    width: min(78vw, 420px);
   }
 }
 
