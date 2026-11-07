@@ -1095,7 +1095,7 @@ body.cover-mode #corner{opacity:0}
           badge.className = 'slot-badge';
           if(ext==='mp4'||ext==='webm'){
             var v = document.createElement('video');
-            v.src=url+'?v=1'; v.muted=true; v.loop=true; v.playsInline=true;
+            v.src=url+'?v=2'; v.muted=true; v.loop=true; v.playsInline=true;
             v.preload='auto'; v.setAttribute('aria-label',slot+' 操作录屏');
             body.innerHTML=''; body.classList.add('media-ok'); body.appendChild(v);
             body.appendChild(badge); body.dataset.done='1';
