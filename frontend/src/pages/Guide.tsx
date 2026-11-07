@@ -196,9 +196,9 @@ export default function Guide({ onNavigate, onExit }: Props) {
         </div>
       </nav>
 
-      {/* 站牌：key 随站次重挂载，换站即换景；照片以渐变方式融入卡面背景，四式版面轮换 */}
+      {/* 站牌：卡面常驻不重挂载（避免旧卡动画层残留导致两张卡重叠），
+          换站只换卡内文案，由 key 让文字层淡入；照片与站色照旧渐变过渡 */}
       <section
-        key={step}
         className={`guide-card v-${s.variant} t-${step}${dirRef.current < 0 ? ' is-back' : ''}`}
         style={{ '--gd-accent': s.tone } as CSSProperties}
       >
@@ -215,7 +215,7 @@ export default function Guide({ onNavigate, onExit }: Props) {
           ))}
         </div>
 
-        <div className="guide-txt">
+        <div className="guide-txt" key={step}>
           <div className="guide-meta">
             <span className="guide-no">
               第 {step + 1} 站 · {String(step + 1).padStart(2, '0')} / {String(STEPS.length).padStart(2, '0')}
