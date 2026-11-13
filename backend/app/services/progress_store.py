@@ -13,6 +13,9 @@ _events: dict[str, list[dict]] = defaultdict(list)
 
 _CATEGORY_BY_ID = None  # 延迟加载
 
+# 演示账号：首次读取档案时预置满级成长记录（等级 / 集印 / 徽章全部拉满）
+_DEMO_USER = "追光小队"
+
 
 def _category_of(item_id: str | None) -> str:
     global _CATEGORY_BY_ID
@@ -41,8 +44,55 @@ def record(user_id: str, event_type: str, item_id: str | None = None,
     )
 
 
+def _seed_demo(user_id: str) -> None:
+    """演示账号「追光小队」首次读取档案时，预置满级成长记录。
+
+    满级称号需 1350 EXP；此处 80 次浏览 + 5 份计划 + 40 次答题 + 3 次创作 = 1480 EXP，
+    并覆盖 8 个活跃日，同时满足「集印册」8 枚与「传承徽章」6 枚的全部解锁条件。
+    只在该账号尚无任何事件时写入一次，不影响其他用户。
+    """
+    if user_id != _DEMO_USER or _events.get(user_id):
+        return
+    items = _load_items()
+    if not items:
+        return
+
+    # 均匀抽样 80 项，保证浏览记录覆盖多个门类（兴趣画像不为空）
+    step = max(1, len(items) // 80)
+    picked = items[::step][:80]
+    if len(picked) < 80:  # 数据量异常时兜底，不足则循环补齐
+        picked = (picked * 2)[:80]
+
+    def stamp(day: int) -> str:
+        return time.strftime("%Y-%m-%d %H:%M", time.localtime(time.time() - day * 86400))
+
+    # 近 8 天，每天 10 项浏览
+    for d in range(7, -1, -1):
+        for it in picked[(7 - d) * 10 : (7 - d) * 10 + 10]:
+            record(user_id, "view", it["id"], it["name"], {"_ts": stamp(d)})
+
+    # 5 份学习计划
+    for d, topic in zip((6, 4, 3, 1, 0), ("传统技艺", "传统美术", "传统音乐", "传统戏剧", "民俗")):
+        record(user_id, "learning_plan", None, topic, {"_ts": stamp(d)})
+
+    # 40 次答题，38 对 2 错（正确率 95%，满足 30 题 + 90% 的最高徽章）
+    for i in range(40):
+        record(
+            user_id,
+            "quiz_answer",
+            None,
+            "综合",
+            {"correct": i not in (7, 23), "_ts": stamp(7 - i // 5)},
+        )
+
+    # 3 次活化创作
+    for d, topic in zip((5, 2, 0), ("苏绣纹样活化", "皮影角色再设计", "扎染配色方案")):
+        record(user_id, "creation", None, topic, {"_ts": stamp(d)})
+
+
 def profile(user_id: str) -> dict:
     """聚合生成个人非遗成长档案。"""
+    _seed_demo(user_id)
     events = _events.get(user_id, [])
 
     viewed: dict[str, dict] = {}
