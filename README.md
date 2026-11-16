@@ -65,39 +65,141 @@
 
 **检索与数据**：结构化 JSON 知识库 · numpy 内存向量库（余弦检索，npz 缓存） · 知识族谱关系网络 · 文件型会话/进度存储（V1）
 
-## 快速开始
+## 本地运行与测试
 
-### 环境要求
+### 0. 环境要求
 
-- Python 3.11（uv 或 pip 管理）· Node.js 18+ · 已配置 DashScope API Key
+| 工具 | 版本 | 检查命令 |
+|------|------|---------|
+| Node.js | 20.19+ 或 22.12+（Vite 8 要求） | `node -v` |
+| npm | 随 Node 安装 | `npm -v` |
+| Python | 3.11 | `python3 --version` |
+| Git | 任意近版 | `git --version` |
 
-### 后端
+本地验收分两条路线：
+
+- **只看界面（无需 Key）**：知识库、知识图谱、非遗地图、名家风采等纯数据页面全部可用；对话、学习路径、测验、创作需要模型。
+- **完整验收**：在根目录 `.env` 填入 DashScope Key，并按第 5 步构建向量索引。
+
+### 1. 获取代码
+
+```bash
+git clone https://github.com/zzh705/chengmai-ai.git
+cd chengmai-ai
+```
+
+### 2. 配置环境变量
+
+```bash
+cp .env.example .env
+# Windows PowerShell: copy .env.example .env
+```
+
+打开根目录 `.env`，至少填入 `LLM_API_KEY`（阿里云百炼 DashScope，`sk-` 开头），其余保持默认即可。
+`.env` 位于项目根目录，后端启动时自动读取；该文件已被 gitignore，不会上传。修改后需重启后端。
+
+### 3. 启动后端（终端 1）
+
+推荐使用 uv（先安装：`pip install uv` 或 `brew install uv`；本机没有 Python 3.11 时 uv 会自动下载）：
 
 ```bash
 cd backend
-uv venv --python 3.11 && source .venv/bin/activate
+uv venv --python 3.11
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
 uv pip install -r requirements.txt
-cp ../.env.example ../.env   # 填入 LLM_API_KEY（DashScope）
-python -m uvicorn app.main:app --reload   # http://localhost:8000
+uvicorn app.main:app --reload --port 8000
 ```
 
-向量库在首次对话时按知识库自动构建并缓存至 `data/structured/embeddings_cache.npz`；
-内容扩充脚本：`python -m scripts.expand_deep_fields`（断点续传，按需运行）。
+已有 Python 3.11 也可用 pip：
 
-### 前端
+```bash
+cd backend
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+```
+
+看到 `Uvicorn running on http://127.0.0.1:8000` 即启动成功。另开终端验证：
+
+```bash
+curl http://127.0.0.1:8000/api/health
+```
+
+预期返回 `{"status":"ok","service":"chengmai-ai",...}`；接口文档在 http://127.0.0.1:8000/docs 。
+
+数据说明：`data/structured/heritage_items.json`（3299 项）已随仓库提供；向量缓存 `embeddings_cache.npz` 约 70MB，未入库，首次 AI 对话会自动构建（需 Key，耗时数分钟），也可按第 5 步提前构建。
+
+### 4. 启动前端（终端 2）
 
 ```bash
 cd frontend
-npm install
-npm run dev   # http://localhost:5173（/api 已代理到 8000）
+npm install        # 下载慢可临时换源：npm config set registry https://registry.npmmirror.com
+npm run dev
 ```
 
-### 测试与构建
+浏览器打开 http://localhost:5173 。开发服务器已把 `/api` 代理到 `http://localhost:8000`，本地无需配置 `VITE_API_BASE`，也不会有跨域问题。
+
+### 5. 构建向量索引（可选，配好 Key 后建议执行）
+
+在项目根目录、后端虚拟环境已激活时执行：
 
 ```bash
-cd backend && source .venv/bin/activate && python -m pytest tests/ -q
-cd frontend && npm run lint && npx tsc --noEmit && npm run build
+source backend/.venv/bin/activate
+python scripts/build_embeddings.py
 ```
+
+生成 `data/structured/embeddings_cache.npz`。缓存带「模型名 + 条目数」双校验，数据或 Embedding 模型变化时会自动重建；也可删除该文件强制重建。
+
+### 6. 本地验收清单
+
+| 检查项 | 操作 | 预期结果 |
+|--------|------|---------|
+| 后端健康 | `curl /api/health` | 返回 `status: ok` |
+| 接口文档 | 打开 http://127.0.0.1:8000/docs | 九组业务接口可见 |
+| 首页 | 打开 http://localhost:5173 | 背景、导航、卡片正常 |
+| 知识库 | 进入列表并搜索 | 3299 项，可搜索、可筛选 |
+| 知识详情 | 点开任意一项 | 图文、工序、来源正常 |
+| 知识图谱 | 进入族谱页 | 可缩放、可点节点、可搜索 |
+| 非遗地图 | 进入地图页 | 中国地图按省着色，可点省份 |
+| 名家风采 | 进入名家页 | 16 位名家档案与年表正常 |
+| 新手指引 | 登录或游客入馆后等待约 2 秒 | 邀请卡出现，进入后十一站可翻页、可断点续览 |
+| AI 对话 | 提问「苏绣有什么特点？」 | 逐字流式输出，附来源与证据分（需 Key） |
+| 学习路径 | 自定义天数 1-30、每日 15-240 分钟 | 返回分阶段任务，可打卡 |
+| 活化实验室 | 生成一份活化方案 | 四宫格内容完整，可存档 |
+| 非遗挑战 | 答一题 | 正确率、徽章、错题本更新 |
+| 个人中心 | 名号填「追光小队」注册后查看档案 | 自动预置满级：1480 EXP / Lv.10、6 枚传承徽章、8 枚集印 |
+| 路演页 | 打开 http://localhost:5173/deck/ | 16 页网页版路演可翻页 |
+| 移动端 | 浏览器设备模式选手机尺寸；或 `npm run dev -- --host` 后同 Wi-Fi 访问 `http://<本机局域网 IP>:5173` | 折叠菜单、单列排版正常，无横向滚动 |
+
+### 7. 测试与构建
+
+```bash
+# 后端（在 backend 目录，虚拟环境已激活）
+uv pip install -r requirements-dev.txt
+python -m pytest tests/ -q
+
+# 前端
+cd ../frontend
+npm run lint
+npx tsc -b        # 与构建同源的类型检查
+npm run build      # 产物在 frontend/dist
+npm run preview    # 可选：本地预览构建结果
+```
+
+### 8. 常见问题
+
+| 现象 | 处理 |
+|------|------|
+| 8000 或 5173 被占用 | `lsof -i :8000` 找到进程后结束；或改端口并同步修改 `frontend/vite.config.ts` 的代理目标 |
+| 页面空白、接口 404 | 确认后端已在 8000 运行；看浏览器 Network；检查 Vite 代理是否指向 `http://localhost:8000` |
+| AI 报 401 / 403 / 超时 | 检查 `.env` 中 Key 是否正确、百炼额度是否用尽、网络是否可达；改完重启后端 |
+| Python 报联合类型语法错误 | 当前解释器低于 3.10，请改用 Python 3.11 创建虚拟环境 |
+| `npm install` 失败 | 确认 Node 20.19+ 或 22.12+；网络慢可换 npmmirror 源 |
+| `npm run build` 类型错误 | 按报错文件修类型，不要跳过 `tsc` |
+| 首页视频、路演录屏缺失 | `frontend/public/videos/`、`frontend/public/deck/assets/` 的大体积媒体未入库，不影响其余功能；把文件放入对应目录即可 |
+| 手机打不开 5173 | 用 `npm run dev -- --host` 启动，手机与电脑同一 Wi-Fi，并放行本机防火墙 |
+| Windows 终端中文乱码 | 执行 `chcp 65001` 切换到 UTF-8 |
 
 ## 路演材料
 
